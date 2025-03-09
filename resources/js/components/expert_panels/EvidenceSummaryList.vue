@@ -1,39 +1,3 @@
-<template>
-    <div>
-        <ul v-if="summaries.length > 0">
-            <transition-group name="slide-fade-down">
-                <li class="my-4 flex" v-for="(summary, idx) in group.expert_panel.evidence_summaries" :key="idx">
-                    <div class="text-lg pr-4">{{idx+1}}</div>
-                    <EvidenceSummary
-                        :summary="summary"
-                        :group="group"
-                        @saved="handleSavedSummary"
-                        @deleted="handleDeleted"
-                        class="flex-1"
-                        :readonly="readonly"
-                    ></EvidenceSummary>
-                </li>
-            </transition-group>
-        </ul>
-        <div class="well text-center" v-else-if="loading">Loading...</div>
-        <div class="well text-center" :class="{'cursor-pointer': !readonly}" v-else @click="startNewSummary">No example evidence summaries have been added.</div>
-        <ul v-show="adding">
-            <li class="my-4 flex" v-for="(newSummary, idx) in newSummaries" :key="idx">
-                <div class="text-lg pr-4">{{(idx+1+summaries.length)}}</div>
-                <EvidenceSummaryForm
-                    class="flex-1"
-                    :group="group"
-                    :summary="newSummary"
-                    @saved="handleSavedSummary"
-                    @canceled="cancelAdd"
-                ></EvidenceSummaryForm>
-            </li>
-        </ul>
-        <div v-show="!adding && canEdit">
-            <button class="btn btn-xs" @click="startNewSummary" v-show="!adding">Add Summary</button>
-        </div>
-    </div>
-</template>
 <script>
 import EvidenceSummary from '@/components/expert_panels/EvidenceSummary.vue'
 import EvidenceSummaryForm from '@/components/expert_panels/EvidenceSummaryForm.vue'
@@ -146,3 +110,39 @@ export default {
     },
 }
 </script>
+<template>
+    <div>
+        <ul v-if="summaries.length > 0">
+            <transition-group name="slide-fade-down">
+                <li class="my-4 flex" v-for="(summary, idx) in group.expert_panel.evidence_summaries" :key="idx">
+                    <div class="text-lg pr-4">{{idx+1}}</div>
+                    <EvidenceSummary
+                        :summary="summary"
+                        :group="group"
+                        @saved="handleSavedSummary"
+                        @deleted="handleDeleted"
+                        class="flex-1"
+                        :readonly="readonly"
+                    ></EvidenceSummary>
+                </li>
+            </transition-group>
+        </ul>
+        <div class="well text-center" v-else-if="loading">Loading...</div>
+        <div class="well text-center" :class="{'cursor-pointer': !readonly}" v-else @click="startNewSummary">No example evidence summaries have been added.</div>
+        <ul v-show="adding">
+            <li class="my-4 flex" v-for="(newSummary, idx) in newSummaries" :key="idx">
+                <div class="text-lg pr-4">{{(idx+1+summaries.length)}}</div>
+                <EvidenceSummaryForm
+                    class="flex-1"
+                    :group="group"
+                    :summary="newSummary"
+                    @saved="handleSavedSummary"
+                    @canceled="cancelAdd"
+                ></EvidenceSummaryForm>
+            </li>
+        </ul>
+        <div v-show="!adding && canEdit">
+            <button class="btn btn-xs" @click="startNewSummary" v-show="!adding">Add Summary</button>
+        </div>
+    </div>
+</template>

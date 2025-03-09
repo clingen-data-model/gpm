@@ -1,16 +1,3 @@
-<template>
-    <div>
-        <input 
-            ref="input"
-            type="date"
-            class="date-input"
-            :value="date" 
-            @input="handleInput"
-            @change="$emit('change')"
-            :disabled="disabled"
-        >
-    </div>
-</template>
 <script>
 export default {
     props: {
@@ -93,3 +80,16 @@ export default {
     }
 }
 </script>
+<template>
+    <div>
+        <input 
+            ref="input"
+            type="date"
+            class="date-input"
+            :value="date" 
+            @input="handleInput"
+            @change="$emit('change')"
+            :disabled="disabled"
+        >
+    </div>
+</template>

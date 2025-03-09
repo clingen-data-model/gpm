@@ -1,34 +1,3 @@
-<template>
-    <div>
-        <p v-if="group.isVcep()">
-            Curated variants and genes are expected to be approved and posted for the community as soon as possible as described in Section 2.4 of the <vcep-protocol-link />. 
-            Note that upon approval, a VCEP must finalize their set of variants for upload to the ClinGen Evidence Repository within 30 days.
-        </p>
-        <p v-if="group.is_gcep">
-            Curated genes and variants are expected to be approved and posted for the community as soon as possible and should not wait for the publication of a manuscript.
-        </p>
-
-        <p class="my-4">
-            <input-row label="" :vertical="true">
-                <checkbox 
-                    :disabled="disabled" 
-                    v-model="attestation" 
-                    id="nhgri-checkbox" 
-                    :label="checkboxLabel"
-                />
-            </input-row>
-        </p>
-
-        <p v-if="group.is_vcep_or_scvcep">
-            Please review the
-            <publication-policy-link />
-            and refer to guidance on submissions to a preprint server (e.g. bioRxiv or medRxiv).
-        </p>
-        <p v-if="group.is_gcep">
-            <em>It is expected that, whenever possible, Expert Panel manuscripts will be pre-published (e.g. medRXiv) . If the authors do not anticipate submitting their manuscript to a prepublication resource they must provide a written justification.</em>
-        </p>
-    </div>
-</template>
 <script>
 import api from '@/http/api';
 import is_validation_error from '../../http/is_validation_error';
@@ -95,3 +64,34 @@ export default {
     }
 }
 </script>
+<template>
+    <div>
+        <p v-if="group.isVcep()">
+            Curated variants and genes are expected to be approved and posted for the community as soon as possible as described in Section 2.4 of the <vcep-protocol-link />. 
+            Note that upon approval, a VCEP must finalize their set of variants for upload to the ClinGen Evidence Repository within 30 days.
+        </p>
+        <p v-if="group.is_gcep">
+            Curated genes and variants are expected to be approved and posted for the community as soon as possible and should not wait for the publication of a manuscript.
+        </p>
+
+        <p class="my-4">
+            <input-row label="" :vertical="true">
+                <checkbox 
+                    :disabled="disabled" 
+                    v-model="attestation" 
+                    id="nhgri-checkbox" 
+                    :label="checkboxLabel"
+                />
+            </input-row>
+        </p>
+
+        <p v-if="group.is_vcep_or_scvcep">
+            Please review the
+            <publication-policy-link />
+            and refer to guidance on submissions to a preprint server (e.g. bioRxiv or medRxiv).
+        </p>
+        <p v-if="group.is_gcep">
+            <em>It is expected that, whenever possible, Expert Panel manuscripts will be pre-published (e.g. medRXiv) . If the authors do not anticipate submitting their manuscript to a prepublication resource they must provide a written justification.</em>
+        </p>
+    </div>
+</template>

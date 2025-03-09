@@ -1,63 +1,3 @@
-<style scoped>
-    li a {
-        @apply text-black no-underline;
-        color: black !important;
-        text-decoration: none !important;
-    }
-    .item .label {
-        @apply px-2 py-2 cursor-pointer border-t border-b border-transparent;
-    }
-    .item .label:hover {
-        @apply bg-blue-50 border-blue-200;
-    }
-    .cheveron {
-        transition: 250ms all;
-    }
-
-    .open .cheveron {
-        transform: rotate(90deg);
-    }
-    .text-smaller { 
-        font-size: .95em;
-    }
-    .item .label.current-step {
-        @apply  bg-blue-100;
-    }
-</style>
-<template>
-    <div class="item">
-        <div
-            v-if="isStep"
-        >
-            <header v-if="item.title"
-                class="flex justify-between label"
-                :class="{open: !collapsed, 'current-step': isCurrentStep}"
-                @click="toggleContents"
-            >
-                <div class="font-bold">
-                    {{item.title}}
-                    <icon-cheveron-right class="cheveron inline -mt-1" v-if="hasManySections" />
-                </div>
-                <badge v-if="item.isComplete(group)" color="green">
-                    <icon-checkmark width="12" height="12"></icon-checkmark>
-                </badge>
-            </header>
-            <transition name="slide-fade-down">
-                <ul 
-                    v-if="item.sections && hasManySections" 
-                    :class="{'ml-4 text-smaller': item.title}" v-show="!collapsed"
-                >
-                    <li v-for="(section, idx) in item.sections" :key="idx">
-                        <menu-item :item="section"></menu-item>
-                    </li>
-                </ul>
-            </transition>
-        </div>
-        <div v-else class="label" @click="goToItem()">
-            {{item.title}}
-        </div>
-    </div>
-</template>
 <script>
 
 export default {
@@ -135,3 +75,63 @@ export default {
     },
 }
 </script>
+<template>
+    <div class="item">
+        <div
+            v-if="isStep"
+        >
+            <header v-if="item.title"
+                class="flex justify-between label"
+                :class="{open: !collapsed, 'current-step': isCurrentStep}"
+                @click="toggleContents"
+            >
+                <div class="font-bold">
+                    {{item.title}}
+                    <icon-cheveron-right class="cheveron inline -mt-1" v-if="hasManySections" />
+                </div>
+                <badge v-if="item.isComplete(group)" color="green">
+                    <icon-checkmark width="12" height="12"></icon-checkmark>
+                </badge>
+            </header>
+            <transition name="slide-fade-down">
+                <ul 
+                    v-if="item.sections && hasManySections" 
+                    :class="{'ml-4 text-smaller': item.title}" v-show="!collapsed"
+                >
+                    <li v-for="(section, idx) in item.sections" :key="idx">
+                        <menu-item :item="section"></menu-item>
+                    </li>
+                </ul>
+            </transition>
+        </div>
+        <div v-else class="label" @click="goToItem()">
+            {{item.title}}
+        </div>
+    </div>
+</template>
+<style scoped>
+    li a {
+        @apply text-black no-underline;
+        color: black !important;
+        text-decoration: none !important;
+    }
+    .item .label {
+        @apply px-2 py-2 cursor-pointer border-t border-b border-transparent;
+    }
+    .item .label:hover {
+        @apply bg-blue-50 border-blue-200;
+    }
+    .cheveron {
+        transition: 250ms all;
+    }
+
+    .open .cheveron {
+        transform: rotate(90deg);
+    }
+    .text-smaller { 
+        font-size: .95em;
+    }
+    .item .label.current-step {
+        @apply  bg-blue-100;
+    }
+</style>

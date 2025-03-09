@@ -1,15 +1,3 @@
-<template>
-    <div>
-        <button class="btn btn-xs" @click="showModal = true">Upload COI file</button>
-        <modal-dialog v-model="showModal">
-            <h2>Upload a legacy COI file</h2>
-            <input-row label="COI File" :errors="errors.file">
-                <input type="file" ref="fileInput">
-            </input-row>
-            <button-row @submitClicked="save" @cancelClicked="cancel" submit-text="Save"></button-row>
-        </modal-dialog>
-    </div>
-</template>
 <script>
 import Application from '@/domain/application'
 import is_validation_error from '@/http/is_validation_error'
@@ -98,3 +86,15 @@ export default {
     }
 }
 </script>
+<template>
+    <div>
+        <button class="btn btn-xs" @click="showModal = true">Upload COI file</button>
+        <modal-dialog v-model="showModal">
+            <h2>Upload a legacy COI file</h2>
+            <input-row label="COI File" :errors="errors.file">
+                <input type="file" ref="fileInput">
+            </input-row>
+            <button-row @submitClicked="save" @cancelClicked="cancel" submit-text="Save"></button-row>
+        </modal-dialog>
+    </div>
+</template>

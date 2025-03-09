@@ -1,17 +1,3 @@
-<style lang="postcss" scoped>
-    .progress-date {
-        @apply text-xs;
-        width: 10em;
-    }
-</style>
-<template>
-    <div>
-        <h3 class="pb-2">EP Progress</h3>
-        <div class="flex flex-row space-x-1">
-            <ProgressStep v-for="i in steps" :key="i" :step="i" :application="application"></ProgressStep>
-        </div>
-    </div>
-</template>
 <script>
 import ProgressStep from '@/components/applications/ProgressStep.vue'
 
@@ -32,3 +18,17 @@ export default {
     }
 }
 </script>
+<template>
+    <div>
+        <h3 class="pb-2">EP Progress</h3>
+        <div class="flex flex-row space-x-1">
+            <ProgressStep v-for="i in steps" :key="i" :step="i" :application="application"></ProgressStep>
+        </div>
+    </div>
+</template>
+<style lang="postcss" scoped>
+    .progress-date {
+        @apply text-xs;
+        width: 10em;
+    }
+</style>

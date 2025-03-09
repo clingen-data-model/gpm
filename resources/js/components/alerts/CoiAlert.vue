@@ -1,3 +1,19 @@
+<script>
+export default {
+    name: 'CoiAlert',
+    props: {
+        membership: {
+            type: Object,
+            required: true
+        }
+    },
+    computed: {
+        groupName () {
+            return this.membership.group.display_name
+        }
+    }
+}
+</script>
 <template>
     <static-alert
         class="pb-3 flex space-x-2 items-center"
@@ -21,19 +37,3 @@
         </div>
     </static-alert>
 </template>
-<script>
-export default {
-    name: 'CoiAlert',
-    props: {
-        membership: {
-            type: Object,
-            required: true
-        }
-    },
-    computed: {
-        groupName () {
-            return this.membership.group.display_name
-        }
-    }
-}
-</script>

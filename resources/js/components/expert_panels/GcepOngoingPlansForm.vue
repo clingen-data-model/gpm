@@ -1,3 +1,38 @@
+<script>
+export default {
+    name: 'GcepOngoingPlansForm',
+    props: {
+        errors: {
+            type: Object,
+            required: false,
+            default: () => ({})
+        },
+        readonly: {
+            type: Boolean,
+            required: false,
+            default: false
+        }
+    },
+    computed: {
+        group: {
+            get () {
+                return this.$store.getters['groups/currentItemOrNew'];
+            },
+            set (value) {
+                this.$store.commit('groups/addItem', value);
+            }
+        },
+        canEdit () {
+            return this.hasAnyPermission([
+                        'ep-applications-manage',
+                        ['application-edit', this.group]
+                    ]) 
+                    && !this.readonly;
+        }
+    }
+    
+}
+</script>
 <template>
     <div>
         <p>Three examples of ClinGen-approved curation and review protocols are below (additional details may be requested from the CDWG Oversight Committee).  Check or describe the curation and review protocol that this Expert Panel will use.</p>
@@ -57,39 +92,4 @@
             </input-row>
         </div>
     </div>
-</template>
-<script>
-export default {
-    name: 'GcepOngoingPlansForm',
-    props: {
-        errors: {
-            type: Object,
-            required: false,
-            default: () => ({})
-        },
-        readonly: {
-            type: Boolean,
-            required: false,
-            default: false
-        }
-    },
-    computed: {
-        group: {
-            get () {
-                return this.$store.getters['groups/currentItemOrNew'];
-            },
-            set (value) {
-                this.$store.commit('groups/addItem', value);
-            }
-        },
-        canEdit () {
-            return this.hasAnyPermission([
-                        'ep-applications-manage',
-                        ['application-edit', this.group]
-                    ]) 
-                    && !this.readonly;
-        }
-    }
-    
-}
-</script> 
+</template> 

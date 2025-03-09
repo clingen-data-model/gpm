@@ -1,13 +1,3 @@
-<template>
-    <input-row 
-        label="Step" 
-        :modelValue="modelValue" 
-        @input="$emit('update:modelValue', $event.target.value)"
-        :errors="errors.step" 
-        type="select" 
-        :options="stepOptions"
-    />
-</template>
 <script>
 export default {
     props: {
@@ -41,3 +31,13 @@ export default {
     }
 }
 </script>
+<template>
+    <input-row 
+        label="Step" 
+        :modelValue="modelValue" 
+        @input="$emit('update:modelValue', $event.target.value)"
+        :errors="errors.step" 
+        type="select" 
+        :options="stepOptions"
+    />
+</template>

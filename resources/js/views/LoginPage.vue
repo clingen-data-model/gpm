@@ -1,11 +1,3 @@
-<template>
-    <div>
-        <card title="Login" class="md:w-1/2 mx-auto">
-            <LoginForm @authenticated="redirect"></LoginForm>
-        </card>
-    </div>
-</template>
-
 <script>
 import LoginForm from '@/components/LoginForm.vue';
 import { mapGetters } from 'vuex';
@@ -45,3 +37,11 @@ export default {
     }
 };
 </script>
+
+<template>
+    <div>
+        <card title="Login" class="md:w-1/2 mx-auto">
+            <LoginForm @authenticated="redirect"></LoginForm>
+        </card>
+    </div>
+</template>

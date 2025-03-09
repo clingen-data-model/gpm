@@ -1,30 +1,3 @@
-<style lang="postcss">
-    .link.active {
-        @apply text-gray-600;
-    }
-</style>
-<template>
-    <div>
-        <ul class="flex pagination-control">
-            <li>
-                <button class="link" @click="goToPreviousPage" :class="{active: currentPage === 1}">&lt;</button>
-            </li>
-            <li v-for="(page, idx) in displayPages" :key="idx">
-                <button
-                    v-if="page.page !== null"
-                    class="link px-2" :class="{active: page.page === currentPage}"
-                    @click="$emit('update:currentPage', page.page)"
-                >
-                    {{page.label}}
-                </button>
-                <span v-else>&hellip;</span>
-            </li>
-            <li>
-                <button class="link" @click="goToNextPage" :class="{active: currentPage == pagesCount}">&gt;</button>
-            </li>
-        </ul>
-    </div>
-</template>
 <script>
 import {range} from 'lodash-es';
 
@@ -99,3 +72,30 @@ export default {
     }
 }
 </script>
+<template>
+    <div>
+        <ul class="flex pagination-control">
+            <li>
+                <button class="link" @click="goToPreviousPage" :class="{active: currentPage === 1}">&lt;</button>
+            </li>
+            <li v-for="(page, idx) in displayPages" :key="idx">
+                <button
+                    v-if="page.page !== null"
+                    class="link px-2" :class="{active: page.page === currentPage}"
+                    @click="$emit('update:currentPage', page.page)"
+                >
+                    {{page.label}}
+                </button>
+                <span v-else>&hellip;</span>
+            </li>
+            <li>
+                <button class="link" @click="goToNextPage" :class="{active: currentPage == pagesCount}">&gt;</button>
+            </li>
+        </ul>
+    </div>
+</template>
+<style lang="postcss">
+    .link.active {
+        @apply text-gray-600;
+    }
+</style>

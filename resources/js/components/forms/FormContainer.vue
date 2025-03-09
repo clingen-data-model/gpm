@@ -1,8 +1,3 @@
-<template>
-    <div>
-        <slot></slot>
-    </div>
-</template>
 <script>
 export default {
     props: {
@@ -36,4 +31,9 @@ export default {
         clearInterval(this.visibilityInterval);
     }
 }
-</script>   
+</script>
+<template>
+    <div>
+        <slot></slot>
+    </div>
+</template>   

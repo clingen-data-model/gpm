@@ -1,3 +1,52 @@
+<script>
+import UserMenu from '@/components/UserMenu.vue'
+import AlertViewer from '@/components/alerts/AlertViewer.vue'
+import IssueReportForm from '@/components/IssueReportForm.vue'
+import { mapGetters } from 'vuex'
+import configs from '@/configs';
+
+export default {
+  components: {
+    UserMenu,
+    AlertViewer,
+    IssueReportForm,
+  },
+  data() {
+    return {
+      showLogin: false,
+      systemInfo: configs.systemInfo
+    }
+  },
+  computed: {
+    ...mapGetters(['isAuthed']),
+    appName () {
+      return this.$store.state && this.$store.state.systemInfo && this.$store.state.systemInfo.app? 
+              this.$store.state.systemInfo.app.name
+              : 'GPM'
+    }
+  },
+  watch: {
+    isAuthed () {
+      if (this.$route.meta && this.$route.meta.protected && this.isAuthed === false && this.$route.name !== 'login') {
+        this.$router.push({name: 'login'});
+      }
+    }
+  },
+  methods: {
+    getLookupResources() {
+      this.$store.dispatch('cdwgs/getAll');
+    },
+    refreshCurrentRoute() {
+      this.$router.push(this.$route)
+    },
+  },
+  mounted() {
+    this.getLookupResources()
+    this.$store.dispatch('getCurrentUser');
+  }
+}
+</script>
+
 <template>
   <div id="epam-app-root">
     <header id="nav" class="border-b bg-gray-100 print:hidden">
@@ -87,54 +136,5 @@
     <!-- This is a comment test -->
   </div>
 </template>
-
-<script>
-import UserMenu from '@/components/UserMenu.vue'
-import AlertViewer from '@/components/alerts/AlertViewer.vue'
-import IssueReportForm from '@/components/IssueReportForm.vue'
-import { mapGetters } from 'vuex'
-import configs from '@/configs';
-
-export default {
-  components: {
-    UserMenu,
-    AlertViewer,
-    IssueReportForm,
-  },
-  data() {
-    return {
-      showLogin: false,
-      systemInfo: configs.systemInfo
-    }
-  },
-  computed: {
-    ...mapGetters(['isAuthed']),
-    appName () {
-      return this.$store.state && this.$store.state.systemInfo && this.$store.state.systemInfo.app? 
-              this.$store.state.systemInfo.app.name
-              : 'GPM'
-    }
-  },
-  watch: {
-    isAuthed () {
-      if (this.$route.meta && this.$route.meta.protected && this.isAuthed === false && this.$route.name !== 'login') {
-        this.$router.push({name: 'login'});
-      }
-    }
-  },
-  methods: {
-    getLookupResources() {
-      this.$store.dispatch('cdwgs/getAll');
-    },
-    refreshCurrentRoute() {
-      this.$router.push(this.$route)
-    },
-  },
-  mounted() {
-    this.getLookupResources()
-    this.$store.dispatch('getCurrentUser');
-  }
-}
-</script>
 
 <style src="./assets/styles/app.css" />

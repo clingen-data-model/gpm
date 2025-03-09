@@ -1,8 +1,3 @@
-<template>
-    <button class="btn btn-xs">
-        <icon-edit width="12" height="16"></icon-edit>
-    </button>
-</template>
 <script>
 
 
@@ -22,3 +17,8 @@ export default {
     }
 }
 </script>
+<template>
+    <button class="btn btn-xs">
+        <icon-edit width="12" height="16"></icon-edit>
+    </button>
+</template>

@@ -1,8 +1,52 @@
-<style lang="postcss">
-    .response-data > .dictionary-row {
-        @apply pb-2 mb-1 border-b border-gray-100;
+<script>
+export default {
+    props: {
+        coi: {
+            type: Object,
+            required: true
+        },
+        group: {
+            type: Object,
+            required: true,
+        },
+    },
+    data() {
+        return {
+
+        }
+    },
+    computed: {
+        isLegacy() {
+            return false;
+        },
+        response () {
+            return this.coi.response_document
+        },
+        version () {
+            return this.coi.version
+        }
+    },
+    methods: {
+        getQuestionValue(response) {
+
+            if (response === 1) {
+                return 'Yes';
+            }
+            if (response === 0) {
+                return 'No';
+            }
+            if (response === 2) {
+                return 'Unsure';
+            }
+
+            return response;
+        },
+        downloadDocument(downloadUrl) {
+            window.location = downloadUrl;
+        },
     }
-</style>
+}
+</script>
 <template>
     <div v-if="response">
         <h2 class="block-title">
@@ -103,52 +147,8 @@
         </div>
     </div>
 </template>
-<script>
-export default {
-    props: {
-        coi: {
-            type: Object,
-            required: true
-        },
-        group: {
-            type: Object,
-            required: true,
-        },
-    },
-    data() {
-        return {
-
-        }
-    },
-    computed: {
-        isLegacy() {
-            return false;
-        },
-        response () {
-            return this.coi.response_document
-        },
-        version () {
-            return this.coi.version
-        }
-    },
-    methods: {
-        getQuestionValue(response) {
-
-            if (response === 1) {
-                return 'Yes';
-            }
-            if (response === 0) {
-                return 'No';
-            }
-            if (response === 2) {
-                return 'Unsure';
-            }
-
-            return response;
-        },
-        downloadDocument(downloadUrl) {
-            window.location = downloadUrl;
-        },
+<style lang="postcss">
+    .response-data > .dictionary-row {
+        @apply pb-2 mb-1 border-b border-gray-100;
     }
-}
-</script>
+</style>

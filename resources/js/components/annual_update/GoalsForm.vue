@@ -1,3 +1,35 @@
+<script>
+import mirror from '@/composables/setup_working_mirror'
+
+export default {
+    name: 'GoalsForm',
+    props: {
+        ...mirror.props,
+        errors: {
+            type: Object,
+            required: true
+        },
+        version: {
+            type: Number,
+            required: false,
+            default: 0,
+        },
+    },
+    emits: [ ...mirror.emits ],
+    computed: {
+        isComplete () {
+            return Boolean(this.modelValue.completed_at)
+        }
+    },
+    setup(props, context) {
+        const {workingCopy} = mirror.setup(props, context);
+        return {
+            workingCopy
+        }
+    }
+}
+</script>
+
 <template>
     <div>
         <input-row
@@ -56,35 +88,3 @@
         </input-row>
     </div>
 </template>
-
-<script>
-import mirror from '@/composables/setup_working_mirror'
-
-export default {
-    name: 'GoalsForm',
-    props: {
-        ...mirror.props,
-        errors: {
-            type: Object,
-            required: true
-        },
-        version: {
-            type: Number,
-            required: false,
-            default: 0,
-        },
-    },
-    emits: [ ...mirror.emits ],
-    computed: {
-        isComplete () {
-            return Boolean(this.modelValue.completed_at)
-        }
-    },
-    setup(props, context) {
-        const {workingCopy} = mirror.setup(props, context);
-        return {
-            workingCopy
-        }
-    }
-}
-</script>

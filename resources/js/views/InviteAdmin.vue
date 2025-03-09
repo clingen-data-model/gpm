@@ -1,37 +1,3 @@
-<template>
-    <div>
-        <note>Admin</note>
-        <h1>Invites</h1>
-        <data-table
-            :data="itemProvider"
-            :fields="fields"
-            v-model:sort="tableSort"
-            class="text-sm"
-            v-remaining-height
-            paginated
-            ref="dataTable"
-        >
-            <template v-slot:header>
-                <input type="text" v-model="searchTerm" placeholder="filter by name or email" class="mb-2">
-            </template>
-            <template v-slot:cell-reset="{item}">
-                <button class="btn btn-xs" @click="confirmReset(item)" v-if="item.redeemed_at">
-                    Reset
-                </button>
-            </template>
-        </data-table>
-
-        <teleport to="body">
-            <modal-dialog title="Reset Invite" v-model="showConfirmation">
-                <p>You are about to reset the invite for {{resettingInvite.first_name}} {{resettingInvite.last_name}}.</p>
-                <p>This cannot be undone.</p>
-                <p>Do you want to reset the invite?</p>
-                <button-row submit-text="Reset Invite" @submitted="resetInvite(resettingInvite)"></button-row>
-
-            </modal-dialog>
-        </teleport>
-    </div>
-</template>
 <script>
 import {api, isValidationError} from '@/http'
 import {debounce} from 'lodash-es'
@@ -141,3 +107,37 @@ export default {
     }
 }
 </script>
+<template>
+    <div>
+        <note>Admin</note>
+        <h1>Invites</h1>
+        <data-table
+            :data="itemProvider"
+            :fields="fields"
+            v-model:sort="tableSort"
+            class="text-sm"
+            v-remaining-height
+            paginated
+            ref="dataTable"
+        >
+            <template v-slot:header>
+                <input type="text" v-model="searchTerm" placeholder="filter by name or email" class="mb-2">
+            </template>
+            <template v-slot:cell-reset="{item}">
+                <button class="btn btn-xs" @click="confirmReset(item)" v-if="item.redeemed_at">
+                    Reset
+                </button>
+            </template>
+        </data-table>
+
+        <teleport to="body">
+            <modal-dialog title="Reset Invite" v-model="showConfirmation">
+                <p>You are about to reset the invite for {{resettingInvite.first_name}} {{resettingInvite.last_name}}.</p>
+                <p>This cannot be undone.</p>
+                <p>Do you want to reset the invite?</p>
+                <button-row submit-text="Reset Invite" @submitted="resetInvite(resettingInvite)"></button-row>
+
+            </modal-dialog>
+        </teleport>
+    </div>
+</template>

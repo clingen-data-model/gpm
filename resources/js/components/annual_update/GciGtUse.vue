@@ -1,3 +1,29 @@
+<script>
+import mirror from '@/composables/setup_working_mirror'
+
+export default {
+    name: 'GcGtUse',
+    props: {
+        ...mirror.props,
+        errors: {
+            type: Object,
+            required: true
+        },
+    },
+    emits: [ ...mirror.emits ],
+    computed: {
+        isComplete () {
+            return Boolean(this.modelValue.completed_at);
+        }
+    },
+    setup(props, context) {
+        const {workingCopy} = mirror.setup(props, context);
+        return {
+            workingCopy
+        }
+    }
+}
+</script>
 <template>
     <div>
         <note>For additional information please contact <a href="mailto:clingentrackerhelp@unc.edu">clingentrackerhelp@unc.edu</a></note>
@@ -65,29 +91,3 @@
         </transition>
     </div>
 </template>
-<script>
-import mirror from '@/composables/setup_working_mirror'
-
-export default {
-    name: 'GcGtUse',
-    props: {
-        ...mirror.props,
-        errors: {
-            type: Object,
-            required: true
-        },
-    },
-    emits: [ ...mirror.emits ],
-    computed: {
-        isComplete () {
-            return Boolean(this.modelValue.completed_at);
-        }
-    },
-    setup(props, context) {
-        const {workingCopy} = mirror.setup(props, context);
-        return {
-            workingCopy
-        }
-    }
-}
-</script>

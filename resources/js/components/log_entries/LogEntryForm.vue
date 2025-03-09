@@ -1,16 +1,3 @@
-<template>
-    <form-container class="log-entry-form" ref="form-container">
-        <input-row label="Log Date" v-model="newEntry.log_date" :errors="errors.log_date" type="date" ref="logdate"></input-row>
-        <StepInput v-model="newEntry.step" v-if="application.expert_panel_type_id == 2" :errors="errors.step"/>
-        <input-row label="Entry" :errors="errors.entry">
-            <RichTextEditor v-model="newEntry.entry" />
-        </input-row>
-        <button-row>
-            <button class="btn" @click="cancel">Cancel</button>
-            <button class="btn blue" @click="save">Save</button>
-        </button-row>
-    </form-container>
-</template>
 <script>
 import {mapGetters} from 'vuex'
 import { formatDate } from '@/date_utils'
@@ -125,3 +112,16 @@ export default {
     }
 }
 </script>
+<template>
+    <form-container class="log-entry-form" ref="form-container">
+        <input-row label="Log Date" v-model="newEntry.log_date" :errors="errors.log_date" type="date" ref="logdate"></input-row>
+        <StepInput v-model="newEntry.step" v-if="application.expert_panel_type_id == 2" :errors="errors.step"/>
+        <input-row label="Entry" :errors="errors.entry">
+            <RichTextEditor v-model="newEntry.entry" />
+        </input-row>
+        <button-row>
+            <button class="btn" @click="cancel">Cancel</button>
+            <button class="btn blue" @click="save">Save</button>
+        </button-row>
+    </form-container>
+</template>

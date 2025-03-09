@@ -1,8 +1,3 @@
-<template>
-    <div>
-        <textarea rows="5" class="w-full" v-model="recipientsString"></textarea>
-    </div>
-</template>
 <script>
 import {debounce} from 'lodash-es'
 
@@ -48,3 +43,8 @@ export default {
     }
 }
 </script>
+<template>
+    <div>
+        <textarea rows="5" class="w-full" v-model="recipientsString"></textarea>
+    </div>
+</template>

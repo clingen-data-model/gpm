@@ -1,3 +1,22 @@
+<script>
+export default {
+    name: 'MemberSuggestions',
+    props: {
+        suggestions: {
+            required: true,
+            type: Array
+        }
+    },
+    emits: [
+        'selected'
+    ],
+    methods: {
+        useSuggestion(item) {
+            this.$emit('selected', item);
+        }
+    }
+}
+</script>
 <template>
     <div>
         <ul>
@@ -21,22 +40,3 @@
         </ul>
     </div>
 </template>
-<script>
-export default {
-    name: 'MemberSuggestions',
-    props: {
-        suggestions: {
-            required: true,
-            type: Array
-        }
-    },
-    emits: [
-        'selected'
-    ],
-    methods: {
-        useSuggestion(item) {
-            this.$emit('selected', item);
-        }
-    }
-}
-</script>

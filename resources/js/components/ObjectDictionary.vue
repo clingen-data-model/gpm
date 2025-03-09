@@ -1,15 +1,3 @@
-<template>
-    <div v-if="filteredObj">
-        <dictionary-row 
-            v-for="(value, key) in filteredObj" 
-            :key="key" 
-            :label="titleCase(key)"
-            :label-class="labelClass"
-        >
-            {{value}}
-        </dictionary-row>
-    </div>
-</template>
 <script>
 import { formatDate } from '@/date_utils'
 
@@ -111,3 +99,15 @@ export default {
     }
 }
 </script>
+<template>
+    <div v-if="filteredObj">
+        <dictionary-row 
+            v-for="(value, key) in filteredObj" 
+            :key="key" 
+            :label="titleCase(key)"
+            :label-class="labelClass"
+        >
+            {{value}}
+        </dictionary-row>
+    </div>
+</template>

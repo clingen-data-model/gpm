@@ -1,44 +1,3 @@
-<template>
-    <div>
-        <SearchSelect
-            v-model="selectedInstitution"
-            :search-function="search"
-            style="z-index: 2"
-            placeholder="Institution name or abbreviation"
-            @update:modelValue="searchText = null"
-            keyOptionsBy="id"
-            showOptionsOnFocus
-            :options="institutions"
-            showOptionsWhenEmpty
-        >
-            <template v-slot:selection-label="{selection}">
-                <div>
-                    {{selection.name}} <span v-if="selection.abbreviation">({{selection.abbreviation}})</span>
-                </div>
-            </template>
-            <template v-slot:option="{option}">
-                <div v-if="typeof option == 'object'">
-                    {{option.name}} <span v-if="option.abbreviation">({{option.abbreviation}})</span>
-                </div>
-                <div v-else>
-                    {{option}}
-                </div>
-            </template>
-            <template v-slot:fixedBottomOption  v-if="allowAdd">
-                <button class="font-bold link cursor-pointer" @click="initAddNew">Add your institution</button>
-            </template>
-        </SearchSelect>
-        <teleport to='body'>
-            <modal-dialog title="Add an institution" v-model="showAddForm">
-                <InstitutionForm
-                    :name="formName"
-                    @saved="useNewInstitution"
-                    @canceled="cancelNewInstitution"
-                />
-            </modal-dialog>
-        </teleport>
-    </div>
-</template>
 <script>
 import {api, queryStringFromParams} from '@/http'
 import SearchSelect from '@/components/forms/SearchSelect.vue'
@@ -129,3 +88,44 @@ export default {
     }
 }
 </script>
+<template>
+    <div>
+        <SearchSelect
+            v-model="selectedInstitution"
+            :search-function="search"
+            style="z-index: 2"
+            placeholder="Institution name or abbreviation"
+            @update:modelValue="searchText = null"
+            keyOptionsBy="id"
+            showOptionsOnFocus
+            :options="institutions"
+            showOptionsWhenEmpty
+        >
+            <template v-slot:selection-label="{selection}">
+                <div>
+                    {{selection.name}} <span v-if="selection.abbreviation">({{selection.abbreviation}})</span>
+                </div>
+            </template>
+            <template v-slot:option="{option}">
+                <div v-if="typeof option == 'object'">
+                    {{option.name}} <span v-if="option.abbreviation">({{option.abbreviation}})</span>
+                </div>
+                <div v-else>
+                    {{option}}
+                </div>
+            </template>
+            <template v-slot:fixedBottomOption  v-if="allowAdd">
+                <button class="font-bold link cursor-pointer" @click="initAddNew">Add your institution</button>
+            </template>
+        </SearchSelect>
+        <teleport to='body'>
+            <modal-dialog title="Add an institution" v-model="showAddForm">
+                <InstitutionForm
+                    :name="formName"
+                    @saved="useNewInstitution"
+                    @canceled="cancelNewInstitution"
+                />
+            </modal-dialog>
+        </teleport>
+    </div>
+</template>

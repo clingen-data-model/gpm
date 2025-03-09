@@ -1,3 +1,35 @@
+<script>
+import VcepOngoingPlansForm from '@/components/expert_panels/VcepOngoingPlansForm.vue'
+import ApplicationSection from '@/components/expert_panels/ApplicationSection.vue'
+import mirror from '@/composables/setup_working_mirror'
+
+export default {
+    name: 'VcepOngoingPlansUpdateForm',
+    components: {
+        VcepOngoingPlansForm,
+        ApplicationSection
+    },
+    props: {
+        ...mirror.props,
+        errors: {
+            type: Object,
+            required: true
+        },
+    },
+    computed: {
+        isComplete () {
+            return Boolean(this.modelValue.completed_at);
+        }
+    },
+    emits: [ ...mirror.emits, 'updated'],
+    setup(props, context) {
+        const {workingCopy} = mirror.setup(props, context);
+        return {
+            workingCopy
+        }
+    }
+}
+</script>
 <template>
     <ApplicationSection title="Sustained Variant Curation">
         <p>Please review and update the following information previously provided regarding your
@@ -62,36 +94,3 @@
         </input-row>
     </ApplicationSection>
 </template>
-<script>
-import VcepOngoingPlansForm from '@/components/expert_panels/VcepOngoingPlansForm.vue'
-import ApplicationSection from '@/components/expert_panels/ApplicationSection.vue'
-import VcepProtocolLink from '@/components/links/VcepProtocolLink.vue'
-import mirror from '@/composables/setup_working_mirror'
-
-export default {
-    name: 'VcepOngoingPlansUpdateForm',
-    components: {
-        VcepOngoingPlansForm,
-        ApplicationSection
-    },
-    props: {
-        ...mirror.props,
-        errors: {
-            type: Object,
-            required: true
-        },
-    },
-    computed: {
-        isComplete () {
-            return Boolean(this.modelValue.completed_at);
-        }
-    },
-    emits: [ ...mirror.emits, 'updated'],
-    setup(props, context) {
-        const {workingCopy} = mirror.setup(props, context);
-        return {
-            workingCopy
-        }
-    }
-}
-</script>

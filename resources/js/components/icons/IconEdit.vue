@@ -1,3 +1,7 @@
+<script>
+export default {
+}
+</script>
 <template>
     <icon-base icon-name="Edit">
         <g>
@@ -5,7 +9,3 @@
         </g>
     </icon-base>
 </template>
-<script>
-export default {
-}
-</script>

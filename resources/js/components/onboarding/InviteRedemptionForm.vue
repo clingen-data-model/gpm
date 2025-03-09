@@ -1,23 +1,3 @@
-<template>
-    <div class="w-64 mx-auto">
-        <label for="invite-code-input" class="text-lg block">
-            Enter your registration code:
-        </label>
-        <input type="text"
-            id="invite-code-input"
-            v-model="inviteCode" 
-            placeholder="XXXXXXXXXX" 
-            class="w-full"
-        >
-        <InputErrors :errors="errors"></InputErrors>
-        <button 
-            class="btn blue btn-lg block mt-2 w-full" 
-            @click="checkInvite"
-        >
-            Submit
-        </button>
-    </div>
-</template>
 <script>
 import { ref, toRefs, watch } from 'vue'
 import {fetchInvite} from '@/domain/onboarding_service'
@@ -103,3 +83,23 @@ export default {
     }
 }
 </script>
+<template>
+    <div class="w-64 mx-auto">
+        <label for="invite-code-input" class="text-lg block">
+            Enter your registration code:
+        </label>
+        <input type="text"
+            id="invite-code-input"
+            v-model="inviteCode" 
+            placeholder="XXXXXXXXXX" 
+            class="w-full"
+        >
+        <InputErrors :errors="errors"></InputErrors>
+        <button 
+            class="btn blue btn-lg block mt-2 w-full" 
+            @click="checkInvite"
+        >
+            Submit
+        </button>
+    </div>
+</template>

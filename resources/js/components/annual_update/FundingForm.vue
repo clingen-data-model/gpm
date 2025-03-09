@@ -1,3 +1,45 @@
+<script>
+// NOTE: this is obsolete as of the 2024 annual update!
+// keeping it in for now to be able to view old data
+
+import mirror from '@/composables/setup_working_mirror'
+
+export default {
+    name: 'FundingForm',
+    props: {
+        ...mirror.props,
+        errors: {
+            type: Object,
+            required: true
+        },
+    },
+    data() {
+        return {
+            fundingOptions: [
+                {value: 'NIH U24', label: 'NIH U24'},
+                {value: 'Professional society'},
+                {value: 'Patient Advocacy Group'},
+                {value: 'Pharma'},
+                {value: 'Industry'},
+                {value: 'Other'},
+            ]
+        }
+    },
+    emits: [ ...mirror.emits ],
+    computed: {
+        isComplete () {
+            return Boolean(this.modelValue.completed_at)
+        }
+    },
+    setup(props, context) {
+        const {workingCopy} = mirror.setup(props, context);
+        return {
+            workingCopy
+        }
+    }
+}
+</script>
+
 <template>
     <div>
         <input-row
@@ -44,45 +86,3 @@
 
     </div>
 </template>
-
-<script>
-// NOTE: this is obsolete as of the 2024 annual update!
-// keeping it in for now to be able to view old data
-
-import mirror from '@/composables/setup_working_mirror'
-
-export default {
-    name: 'FundingForm',
-    props: {
-        ...mirror.props,
-        errors: {
-            type: Object,
-            required: true
-        },
-    },
-    data() {
-        return {
-            fundingOptions: [
-                {value: 'NIH U24', label: 'NIH U24'},
-                {value: 'Professional society'},
-                {value: 'Patient Advocacy Group'},
-                {value: 'Pharma'},
-                {value: 'Industry'},
-                {value: 'Other'},
-            ]
-        }
-    },
-    emits: [ ...mirror.emits ],
-    computed: {
-        isComplete () {
-            return Boolean(this.modelValue.completed_at)
-        }
-    },
-    setup(props, context) {
-        const {workingCopy} = mirror.setup(props, context);
-        return {
-            workingCopy
-        }
-    }
-}
-</script>

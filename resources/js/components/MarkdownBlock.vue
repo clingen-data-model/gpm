@@ -1,6 +1,3 @@
-<template>
-    <div class="markdown" v-html="rendered"></div>
-</template>
 <script setup>
 import { htmlFromMarkdown } from '@/markdown-utils';
 import purify from 'dompurify';
@@ -19,3 +16,6 @@ const rendered = computed(() => {
     return purify.sanitize(htmlFromMarkdown(props.markdown));
 });
 </script>
+<template>
+    <div class="markdown" v-html="rendered"></div>
+</template>

@@ -1,11 +1,49 @@
-<style scoped>
-    .csv-item:after {
-        content: ', ';
+<script>
+import mirror from '@/composables/setup_working_mirror'
+import ApplicationSection from '@/components/expert_panels/ApplicationSection.vue'
+
+export default {
+    name: 'SubmitterInformation',
+    components: {
+        ApplicationSection
+    },
+    props: {
+        ...mirror.props,
+        errors: {
+            type: Object,
+            required: true
+        },
+    },
+    emits: [ ...mirror.emits, ],
+    data () {
+        return {
+            grants: ['Broad/Geisinger', 'Stanford/Baylor', 'UNC', 'Unsure'],
+            activityOptions: [
+                {value: 'active', label: 'Active - Group meets on a routine basis and/or is on hiatus but planning to reconvene to recurate.'},
+                {value: 'inactive', label: 'Inactive - The group is no longer routinely meeting, and plans to, or has, transferred the responsibility of re-curating has been to a different GCEP.'}
+            ]
+        };
+    },
+    computed: {
+        members () {
+            return this.workingCopy.expert_panel.group.members.filter(m => m !== null);
+        },
+        coordinators () {
+            return this.workingCopy.expert_panel.group.coordinators;
+        },
+        isComplete () {
+            return Boolean(this.modelValue.completed_at);
+        }
+    },
+    setup(props, context) {
+        const {workingCopy} = mirror.setup(props, context);
+
+        return {
+            workingCopy
+        }
     }
-    .csv-item:last-child:after {
-        content: '';
-    }
-</style>
+}
+</script>
 <template>
     <ApplicationSection title="Submitter Information">
         <dictionary-row label="Expert Panel">{{workingCopy.expert_panel.display_name}}</dictionary-row>
@@ -65,54 +103,16 @@
 
     </ApplicationSection>
 </template>
+<style scoped>
+    .csv-item:after {
+        content: ', ';
+    }
+    .csv-item:last-child:after {
+        content: '';
+    }
+</style>
 <style lang="postcss" scoped>
     .input-row .label-container label {
         font-weight: bold;
     }
 </style>
-<script>
-import mirror from '@/composables/setup_working_mirror'
-import ApplicationSection from '@/components/expert_panels/ApplicationSection.vue'
-
-export default {
-    name: 'SubmitterInformation',
-    components: {
-        ApplicationSection
-    },
-    props: {
-        ...mirror.props,
-        errors: {
-            type: Object,
-            required: true
-        },
-    },
-    emits: [ ...mirror.emits, ],
-    data () {
-        return {
-            grants: ['Broad/Geisinger', 'Stanford/Baylor', 'UNC', 'Unsure'],
-            activityOptions: [
-                {value: 'active', label: 'Active - Group meets on a routine basis and/or is on hiatus but planning to reconvene to recurate.'},
-                {value: 'inactive', label: 'Inactive - The group is no longer routinely meeting, and plans to, or has, transferred the responsibility of re-curating has been to a different GCEP.'}
-            ]
-        };
-    },
-    computed: {
-        members () {
-            return this.workingCopy.expert_panel.group.members.filter(m => m !== null);
-        },
-        coordinators () {
-            return this.workingCopy.expert_panel.group.coordinators;
-        },
-        isComplete () {
-            return Boolean(this.modelValue.completed_at);
-        }
-    },
-    setup(props, context) {
-        const {workingCopy} = mirror.setup(props, context);
-
-        return {
-            workingCopy
-        }
-    }
-}
-</script>

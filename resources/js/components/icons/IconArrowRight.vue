@@ -1,8 +1,3 @@
-<template>
-    <icon-base>
-        <path d="M10 7H2v6h8v5l8-8-8-8v5z"/>
-    </icon-base>
-</template>
 <script>
 export default {
     name: 'IconBug',
@@ -22,3 +17,8 @@ export default {
     }
 }
 </script>
+<template>
+    <icon-base>
+        <path d="M10 7H2v6h8v5l8-8-8-8v5z"/>
+    </icon-base>
+</template>

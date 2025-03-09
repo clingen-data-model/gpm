@@ -1,3 +1,8 @@
+<script>
+export default {
+    name: 'ApplicationSummary',
+}
+</script>
 <template>
     <div>
         <h1>Expert Panel Application Summary</h1>
@@ -15,11 +20,6 @@
         </div>
     </div>
 </template>
-<script>
-export default {
-    name: 'ApplicationSummary',
-}
-</script>
 <style lang="postcss" scoped>
 .tabs {
     @apply flex space-x-2;

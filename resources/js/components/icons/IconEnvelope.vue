@@ -1,3 +1,8 @@
+<script>
+export default {
+    name: 'EnvelopeIcon'
+}
+</script>
 <template>
     <icon-base icon-name="Envelope">
         <g>
@@ -5,8 +10,3 @@
         </g>
     </icon-base>
 </template>
-<script>
-export default {
-    name: 'EnvelopeIcon'
-}
-</script>

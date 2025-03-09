@@ -1,13 +1,3 @@
-<template>
-    <dev-component>
-        <h4>TODO</h4>
-        <ul>
-            <li v-for="(item, idx) in items" :key="idx" class="list-decimal ml-6">
-                {{item}}
-            </li>
-        </ul>
-    </dev-component>
-</template>
 <script>
 export default {
     name: 'DevTodo',
@@ -30,3 +20,13 @@ export default {
     }
 }
 </script>
+<template>
+    <dev-component>
+        <h4>TODO</h4>
+        <ul>
+            <li v-for="(item, idx) in items" :key="idx" class="list-decimal ml-6">
+                {{item}}
+            </li>
+        </ul>
+    </dev-component>
+</template>

@@ -1,3 +1,29 @@
+<script>
+import mirror from '@/composables/setup_working_mirror'
+
+export default {
+    name: 'GroupRereviewForm',
+    props: {
+        ...mirror.props,
+        errors: {
+            type: Object,
+            required: true
+        },
+    },
+    computed: {
+        isComplete () {
+            return Boolean(this.modelValue.completed_at)
+        }
+    },
+    emits: [ ...mirror.emits ],
+    setup(props, context) {
+        const {workingCopy} = mirror.setup(props, context);
+        return {
+            workingCopy
+        }
+    }
+}
+</script>
 <template>
     <div>
         <p>Gene Curation Expert Panels are expected to review current clinical validity classifications for their approved genes based on the guidance provided in the <gcep-recuration-process-link />. Please indicate the following:</p>
@@ -26,29 +52,3 @@
         </input-row>
     </div>
 </template>
-<script>
-import mirror from '@/composables/setup_working_mirror'
-
-export default {
-    name: 'GroupRereviewForm',
-    props: {
-        ...mirror.props,
-        errors: {
-            type: Object,
-            required: true
-        },
-    },
-    computed: {
-        isComplete () {
-            return Boolean(this.modelValue.completed_at)
-        }
-    },
-    emits: [ ...mirror.emits ],
-    setup(props, context) {
-        const {workingCopy} = mirror.setup(props, context);
-        return {
-            workingCopy
-        }
-    }
-}
-</script>

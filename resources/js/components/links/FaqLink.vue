@@ -1,12 +1,3 @@
-<template>
-    <a
-        v-bind="$attrs"
-        :href="url" 
-        target="FAQ"
-    >
-        <slot>FAQ</slot>  
-    </a>
-</template>
 <script>
 
 const baseUrl = 'https://docs.google.com/document/d/1adqRiW8UYTOKpIfBPWDcA-tO7I9Q5UGGYHVpTP9n-6E';
@@ -36,3 +27,12 @@ export default {
     }
 }
 </script>
+<template>
+    <a
+        v-bind="$attrs"
+        :href="url" 
+        target="FAQ"
+    >
+        <slot>FAQ</slot>  
+    </a>
+</template>

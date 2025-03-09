@@ -1,24 +1,3 @@
-<template>
-    <form-container>        
-        <dictionary-row label="File">
-            {{document.filename}}
-        </dictionary-row>
-        <input-row label="Type" :errors="errors.document_type_id">
-            <select v-model="docProxy.document_type_id">
-                <option :value="type.id" v-for="type in documentTypes" :key="type.id">
-                    {{type.long_name}}
-                </option>
-            </select>
-        </input-row>
-        <input-row :errors="errors.notes" label="Notes">
-            <textarea name="notes" v-model="docProxy.notes" cols="30" rows="10"></textarea>
-        </input-row>
-        <button-row>
-            <button class="btn" @click="cancel">Cancel</button>
-            <button class="btn blue" @click="save">Save</button>
-        </button-row>
-    </form-container>
-</template>
 <script>
 import { isValidationError } from '@/http';
 import {mapState} from 'vuex'
@@ -78,3 +57,24 @@ export default {
     }
 }
 </script>
+<template>
+    <form-container>        
+        <dictionary-row label="File">
+            {{document.filename}}
+        </dictionary-row>
+        <input-row label="Type" :errors="errors.document_type_id">
+            <select v-model="docProxy.document_type_id">
+                <option :value="type.id" v-for="type in documentTypes" :key="type.id">
+                    {{type.long_name}}
+                </option>
+            </select>
+        </input-row>
+        <input-row :errors="errors.notes" label="Notes">
+            <textarea name="notes" v-model="docProxy.notes" cols="30" rows="10"></textarea>
+        </input-row>
+        <button-row>
+            <button class="btn" @click="cancel">Cancel</button>
+            <button class="btn blue" @click="save">Save</button>
+        </button-row>
+    </form-container>
+</template>

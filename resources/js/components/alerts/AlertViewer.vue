@@ -1,3 +1,12 @@
+<script>
+import Alert from './Alert.vue'
+export default {
+    name: 'AlertViewer',
+    components: {
+      Alert
+    }
+}
+</script>
 <template>
     <div class="fixed right-4 top-8 w-64" style="z-index: 100">
       <ul>
@@ -8,12 +17,3 @@
     </div>
 
 </template>
-<script>
-import Alert from './Alert.vue'
-export default {
-    name: 'AlertViewer',
-    components: {
-      Alert
-    }
-}
-</script>

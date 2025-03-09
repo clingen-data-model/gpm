@@ -1,21 +1,3 @@
-<template>
-    <div>
-        <h1>Users</h1>
-        <data-table
-            :fields="fields"
-            :data="getUsers"
-            v-model:sort="sort"
-            @rowClick="goToUser"
-            row-class="cursor-pointer"
-            ref="dataTable"
-            paginated
-        >
-            <template v-slot:header>
-                <div>Filter: &nbsp;<input type="text" v-model="filter" placeholder="name, email"></div>
-            </template>
-        </data-table>
-    </div>
-</template>
 <script>
 import {api} from '@/http'
 import {debounce} from 'lodash-es'
@@ -141,3 +123,21 @@ export default {
     }
 }
 </script>
+<template>
+    <div>
+        <h1>Users</h1>
+        <data-table
+            :fields="fields"
+            :data="getUsers"
+            v-model:sort="sort"
+            @rowClick="goToUser"
+            row-class="cursor-pointer"
+            ref="dataTable"
+            paginated
+        >
+            <template v-slot:header>
+                <div>Filter: &nbsp;<input type="text" v-model="filter" placeholder="name, email"></div>
+            </template>
+        </data-table>
+    </div>
+</template>

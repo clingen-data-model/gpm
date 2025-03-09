@@ -1,3 +1,20 @@
+<script>
+export default {
+  name: "OnboardingSteps",
+  props: {
+      invite: {
+          type: Object,
+          required: true
+      }
+  },
+  emits: ['ok'],
+  data() {
+    return {};
+  },
+  computed: {},
+  methods: {},
+};
+</script>
 <template>
   <div>
     <p class="text-lg text-center font-bold">
@@ -25,20 +42,3 @@
     </p>
   </div>
 </template>
-<script>
-export default {
-  name: "OnboardingSteps",
-  props: {
-      invite: {
-          type: Object,
-          required: true
-      }
-  },
-  emits: ['ok'],
-  data() {
-    return {};
-  },
-  computed: {},
-  methods: {},
-};
-</script>

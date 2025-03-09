@@ -1,6 +1,3 @@
-<template>
-    <div>User ADMIN</div>
-</template>
 <script>
 export default {
     name: 'UserAdmin',
@@ -20,3 +17,6 @@ export default {
     }
 }
 </script>
+<template>
+    <div>User ADMIN</div>
+</template>

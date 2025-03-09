@@ -1,3 +1,25 @@
+<script>
+export default {
+    name: 'MailDetail',
+    props: {
+        mail: {
+            type: Object,
+            required: true
+        }
+    },
+    data() {
+        return {
+            
+        }
+    },
+    computed: {
+
+    },
+    methods: {
+
+    }
+}
+</script>
 <template>
     <div>
         <dictionary-row label="To" label-class="font-bold w-36" class="mb-1 border-b">
@@ -39,25 +61,3 @@
         </div>
     </div>
 </template>
-<script>
-export default {
-    name: 'MailDetail',
-    props: {
-        mail: {
-            type: Object,
-            required: true
-        }
-    },
-    data() {
-        return {
-            
-        }
-    },
-    computed: {
-
-    },
-    methods: {
-
-    }
-}
-</script>

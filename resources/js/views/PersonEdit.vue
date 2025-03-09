@@ -1,12 +1,3 @@
-<template>
-    <div>
-        <ProfileForm :person="person"
-            v-model="person"
-            @saved="goBack()"
-            @canceled="goBack()"
-        ></ProfileForm>
-    </div>
-</template>
 <script>
 import ProfileForm from '@/components/people/ProfileForm.vue'
 
@@ -41,3 +32,12 @@ export default {
     }
 }
 </script>
+<template>
+    <div>
+        <ProfileForm :person="person"
+            v-model="person"
+            @saved="goBack()"
+            @canceled="goBack()"
+        ></ProfileForm>
+    </div>
+</template>

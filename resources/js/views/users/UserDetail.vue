@@ -1,60 +1,3 @@
-<template>
-    <div>
-        <h1>{{user.person.name || 'loading...'}}</h1>
-
-        <object-dictionary :obj="userInfo"></object-dictionary>
-        <button class="btn btn-xs" @click="initEdit" v-if="canEditUser">Edit system roles &amp; permissions</button>
-
-        <h2 class="mt-8 mb-2">Memberships</h2>
-        <data-table :fields="membershipFields" :data="membershipInfo"></data-table>
-
-        <teleport to="body">
-            <modal-dialog
-                v-model="showEditForm"
-                title="Edit System Roles & Permissions"
-            >
-                <h3 class="border-b mb-1">Roles</h3>
-                <ul class="flex flex-wrap">
-                    <li v-for="role in availableSystemRoles" :key="role.id" class="w-1/3 h-12">
-                        <checkbox v-model="checkedRoles" :label="titleCase(role.display_name)" :value="role.id" />
-                    </li>
-                </ul>
-
-                <h3 class="border-b mb-1">Permissions</h3>
-                <ul class="flex flex-wrap">
-                    <li v-for="permission in availableSystemPermissions" :key="permission.id" class="w-1/3 h-12">
-                        <checkbox
-                            v-if="checkedRolePermissionIds.includes(permission.id)"
-                            :modelValue="true" :disabled="true" :label="permission.display_name"
-                        />
-                        <checkbox
-                            v-else
-                            v-model="checkedPermissions"
-                            :label="titleCase(permission.display_name)"
-                            :value="permission.id"
-                        />
-                    </li>
-                </ul>
-
-                <div class="px-2 py-1 mb-2 mt-4 bg-gray-100 border relative text-xs">
-                    <div class="flex space-x-2">
-                    <strong>Legend: </strong>
-                        <checkbox label="Not granted" />
-                        <checkbox :value="1" :modelValue="true" label="Granted" />
-                        <checkbox :value="2" :modelValue="true"  disabled label="Granted w/ role" />
-                    </div>
-                    <div class="absolute top-0 left-0 w-full h-full bg-pink-500 opacity-0">&nbsp;</div>
-                </div>
-
-                <button-row
-                    submit-text="Save"
-                    @submitted="saveRolesAndPermissions"
-                    @canceled="closeEditForm"
-                ></button-row>
-            </modal-dialog>
-        </teleport>
-    </div>
-</template>
 <script>
 import User from '@/domain/user'
 import {api} from '@/http'
@@ -208,3 +151,60 @@ export default {
     }
 }
 </script>
+<template>
+    <div>
+        <h1>{{user.person.name || 'loading...'}}</h1>
+
+        <object-dictionary :obj="userInfo"></object-dictionary>
+        <button class="btn btn-xs" @click="initEdit" v-if="canEditUser">Edit system roles &amp; permissions</button>
+
+        <h2 class="mt-8 mb-2">Memberships</h2>
+        <data-table :fields="membershipFields" :data="membershipInfo"></data-table>
+
+        <teleport to="body">
+            <modal-dialog
+                v-model="showEditForm"
+                title="Edit System Roles & Permissions"
+            >
+                <h3 class="border-b mb-1">Roles</h3>
+                <ul class="flex flex-wrap">
+                    <li v-for="role in availableSystemRoles" :key="role.id" class="w-1/3 h-12">
+                        <checkbox v-model="checkedRoles" :label="titleCase(role.display_name)" :value="role.id" />
+                    </li>
+                </ul>
+
+                <h3 class="border-b mb-1">Permissions</h3>
+                <ul class="flex flex-wrap">
+                    <li v-for="permission in availableSystemPermissions" :key="permission.id" class="w-1/3 h-12">
+                        <checkbox
+                            v-if="checkedRolePermissionIds.includes(permission.id)"
+                            :modelValue="true" :disabled="true" :label="permission.display_name"
+                        />
+                        <checkbox
+                            v-else
+                            v-model="checkedPermissions"
+                            :label="titleCase(permission.display_name)"
+                            :value="permission.id"
+                        />
+                    </li>
+                </ul>
+
+                <div class="px-2 py-1 mb-2 mt-4 bg-gray-100 border relative text-xs">
+                    <div class="flex space-x-2">
+                    <strong>Legend: </strong>
+                        <checkbox label="Not granted" />
+                        <checkbox :value="1" :modelValue="true" label="Granted" />
+                        <checkbox :value="2" :modelValue="true"  disabled label="Granted w/ role" />
+                    </div>
+                    <div class="absolute top-0 left-0 w-full h-full bg-pink-500 opacity-0">&nbsp;</div>
+                </div>
+
+                <button-row
+                    submit-text="Save"
+                    @submitted="saveRolesAndPermissions"
+                    @canceled="closeEditForm"
+                ></button-row>
+            </modal-dialog>
+        </teleport>
+    </div>
+</template>

@@ -1,3 +1,29 @@
+<script>
+import GroupForm from '@/components/groups/GroupForm.vue';
+
+export default {
+    name: 'BasicInfoData',
+    components: {
+        GroupForm,
+    },
+    data () {
+        return {
+            showInfoEdit: false,
+        }
+    },
+    computed: {
+        group () {
+            return this.$store.getters['groups/currentItemOrNew']
+        },
+        application () {
+            return this.group.expert_panel;
+        },
+    },
+    methods: {
+
+    }
+}
+</script>
 <template>
     <div>
         <div class="flex justify-between border-b pb-2 min-w-fit">
@@ -46,29 +72,3 @@
     </div>
 
 </template>
-<script>
-import GroupForm from '@/components/groups/GroupForm.vue';
-
-export default {
-    name: 'BasicInfoData',
-    components: {
-        GroupForm,
-    },
-    data () {
-        return {
-            showInfoEdit: false,
-        }
-    },
-    computed: {
-        group () {
-            return this.$store.getters['groups/currentItemOrNew']
-        },
-        application () {
-            return this.group.expert_panel;
-        },
-    },
-    methods: {
-
-    }
-}
-</script>

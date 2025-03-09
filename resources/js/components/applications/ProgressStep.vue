@@ -1,23 +1,3 @@
-<style lang="postcss">
-    .progress-step {
-        @apply h-4 bg-green-100 border border-green-200 flex-1;
-    }
-    .progress-step.approved {
-        @apply bg-green-500 border-green-600;
-    }
-    .progress-step.active {
-        @apply ring-green-400 ring-2 border-green-400 border-2;
-    }
-</style>
-<template>
-    <div class="flex-1">
-        <div class="progress-step" :class="displayClass"></div>
-        <div class="flex flex-row-reverse justify-between bg-transparent mt-1">
-            <div :class="{'-mr-10': !isLastStep}">{{approvalDate}}</div>
-            <div v-if="isFirstStep">{{dateInitiated}}</div>
-        </div>
-    </div>
-</template>
 <script>
 import { formatDate } from '@/date_utils'
 
@@ -81,3 +61,23 @@ export default {
     }
 }
 </script>
+<template>
+    <div class="flex-1">
+        <div class="progress-step" :class="displayClass"></div>
+        <div class="flex flex-row-reverse justify-between bg-transparent mt-1">
+            <div :class="{'-mr-10': !isLastStep}">{{approvalDate}}</div>
+            <div v-if="isFirstStep">{{dateInitiated}}</div>
+        </div>
+    </div>
+</template>
+<style lang="postcss">
+    .progress-step {
+        @apply h-4 bg-green-100 border border-green-200 flex-1;
+    }
+    .progress-step.approved {
+        @apply bg-green-500 border-green-600;
+    }
+    .progress-step.active {
+        @apply ring-green-400 ring-2 border-green-400 border-2;
+    }
+</style>

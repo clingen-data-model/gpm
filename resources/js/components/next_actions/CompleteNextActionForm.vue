@@ -1,22 +1,3 @@
-<template>
-    <div>
-        <dictionary-row label="Action">
-            <div v-html="nextAction.entry"></div>
-        </dictionary-row>
-        <object-dictionary 
-            :obj="nextAction"
-            :show="['date_created', 'step', 'target_date']"
-            :dates="['target_date', 'date_created']"
-        ></object-dictionary>
-
-        <input-row  label="Date Completed" v-model="dateCompleted" type="date" :errors="errors.date_completed"></input-row>
-        
-        <button-row>
-            <button class="btn white" @click="cancel">Cancel</button
-            ><button class="btn blue" @click="markComplete">Mark Complete</button>
-        </button-row>
-    </div>
-</template>
 <script>
 import is_validation_error from '@/http/is_validation_error'
 import {mapGetters} from 'vuex'
@@ -71,3 +52,22 @@ export default {
     }
 }
 </script>
+<template>
+    <div>
+        <dictionary-row label="Action">
+            <div v-html="nextAction.entry"></div>
+        </dictionary-row>
+        <object-dictionary 
+            :obj="nextAction"
+            :show="['date_created', 'step', 'target_date']"
+            :dates="['target_date', 'date_created']"
+        ></object-dictionary>
+
+        <input-row  label="Date Completed" v-model="dateCompleted" type="date" :errors="errors.date_completed"></input-row>
+        
+        <button-row>
+            <button class="btn white" @click="cancel">Cancel</button
+            ><button class="btn blue" @click="markComplete">Mark Complete</button>
+        </button-row>
+    </div>
+</template>

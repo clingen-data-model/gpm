@@ -24,7 +24,7 @@ const emit = defineEmits(['update:modelValue'])
 
 const extension = defineExtension()
 
-// eslint-disable-next-line vue/no-setup-props-destructure
+ 
 const initialContent = props.markdownFormat ? htmlFromMarkdown(props.modelValue || '') : props.modelValue
 const editor = createEditor({ extension, defaultContent: initialContent })
 
