@@ -343,7 +343,6 @@ export default {
             <div class="flex space-x-2 items-center">
                 <h2>Members</h2>
                 <button
-                    ref="filterToggleButton"
                     class="px-3 py-2 rounded-t transition-color"
                     :class="{'rounded-b': !showFilter, 'bg-blue-200': showFilter}"
                     @click="toggleFilter"

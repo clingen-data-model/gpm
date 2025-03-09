@@ -112,13 +112,13 @@ export default {
         <input-row label="Subject" :errors="errors.subject">
             <input type="text" v-model="workingCopy.subject" class="w-full">
         </input-row>
-        
+
         <input-row label="Body" :errors="errors.body">
             <rich-text-editor v-model="workingCopy.body"></rich-text-editor>
         </input-row>
 
         <input-row label="Attachments" :errors="errors.attachments">
-            <input type="file" multiple ref="attachmentsField">
+            <input type="file" multiple>
             <note class="mt-2">Please note that if you are "Resending" an email, any attachments on the original email must be re-added.</note>
         </input-row>
 

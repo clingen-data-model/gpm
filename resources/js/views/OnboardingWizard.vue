@@ -111,7 +111,6 @@ export default {
                             :invite="invite"
                             :person="invite.person"
                             :code="invite.coi_code"
-                            ref="stepForm"
                             @codeverified="handleCodeVerified"
                             @ok="goForward"
                             @saved="goForward"

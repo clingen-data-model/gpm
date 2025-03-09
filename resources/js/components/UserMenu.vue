@@ -46,7 +46,6 @@ export default {
         <div v-show="isAuthed">
             <div class="flex flex-row-reverse align-middle -mb-7 pt-3 pb-3 pr-2 relative z-20 cursor-pointer w-48"
                 :class="{'w-48': menuOpen, 'bg-yellow-300': user.is_impersonating}"
-                ref="menuButton"
                 @click.stop="toggleMenu"
             >
                 <icon-cheveron-down></icon-cheveron-down>

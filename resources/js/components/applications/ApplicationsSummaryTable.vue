@@ -123,7 +123,7 @@ export default {
             set(value) {
                 const currentQuery = this.$route.query;
                 const currentPath = this.$route.path;
-                
+
                 let updatedQuery = {...currentQuery};
 
                 if (!value) {
@@ -156,7 +156,7 @@ export default {
                     newQuery.showAllInfo = newValue
 
                     this.$router.replace({path: this.$route.path, query: newQuery})
-                }            
+                }
         },
         remainingHeight () {
             return {height: 'calc(100vh - 220px)'}
@@ -209,22 +209,21 @@ export default {
         <div class="flex justify-between">
             <div class="mb-1 flex space-x-2">
                 <label>Filter: <input type="text" class="sm" v-model="filter" placeholder="filter"></label>
-                <checkbox 
+                <checkbox
                     v-model="showCompleted"
                     label="Show completed"
                 />
             </div>
         </div>
-        <data-table 
-            :data="filteredData" 
-            :fields="selectedFields" 
-            :filter-term="filter" 
+        <data-table
+            :data="filteredData"
+            :fields="selectedFields"
+            :filter-term="filter"
             :row-click-handler="goToApplication"
             row-class="cursor-pointer"
             v-model:sort="sort"
             :style="remainingHeight"
             class="overflow-auto text-xs"
-            ref="table"
         >
             <template #cell-contacts="{item}">
                 <ul>
