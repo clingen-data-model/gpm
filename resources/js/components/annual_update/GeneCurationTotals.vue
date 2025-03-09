@@ -42,7 +42,7 @@ export default {
 " 
       type="number"
       :errors="errors.published_count" 
-      labelWidthClass="w-80"
+      label-width-class="w-80"
       input-class="w-16"
     />
     <input-row
@@ -52,7 +52,7 @@ export default {
 " 
       type="number"
       :errors="errors.approved_unpublished_count" 
-      labelWidthClass="w-80"
+      label-width-class="w-80"
       input-class="w-16"
     />
     <input-row
@@ -62,7 +62,7 @@ export default {
 " 
       type="number"
       :errors="errors.in_progress_count" 
-      labelWidthClass="w-80"
+      label-width-class="w-80"
       input-class="w-16"
     />
 
@@ -73,7 +73,7 @@ export default {
       label="Please describe if there are any issues with the publishing of curations." 
       type="large-text"
       :errors="errors.publishing_issues" 
-      labelWidthClass="w-80"
+      label-width-class="w-80"
       input-class="w-120"
     />
   </div>

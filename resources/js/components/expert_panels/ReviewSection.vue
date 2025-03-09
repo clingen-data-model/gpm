@@ -78,14 +78,14 @@
       </div>
       <ul>
         <li v-for="comment in sectionComments" :key="comment.id" class="bg-white p-2">
-          <ReviewComment :comment="comment" :commentManager="commentManager" />
+          <ReviewComment :comment="comment" :comment-manager="commentManager" />
         </li>
       </ul>
       <div class="bg-white mt-2 p-2">
         <ReviewCommentForm
           v-if="showCommentForm"
           :section="name"
-          :commentManager="commentManager"
+          :comment-manager="commentManager"
           @saved="showCommentForm = false"
           @canceled="showCommentForm = false"
         />
