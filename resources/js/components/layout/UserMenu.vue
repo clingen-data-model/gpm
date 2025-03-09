@@ -55,7 +55,7 @@ export default {
                 @click.stop="toggleMenu"
             >
                 <ChevronDown></ChevronDown>
-                {{user.name}}
+                {{ user.name }}
             </div>
             <transition name="slide-fade-down">            
                 <div 

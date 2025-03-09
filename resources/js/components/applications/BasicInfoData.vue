@@ -30,19 +30,19 @@ export default {
             <h3>Base Information</h3>
             <button class="btn btn-xs" @click="showInfoEdit = true">Edit</button>
         </div>
-        <dictionary-row label-class="font-bold w-40" label="Long Base Name">{{application.long_base_name || '--'}}</dictionary-row>
-        <dictionary-row label-class="font-bold w-40" label="Short Base Name">{{application.short_base_name || '--'}}</dictionary-row>
-        <dictionary-row label-class="font-bold w-40" label="Affiliation ID">{{application.affiliation_id || '--'}}</dictionary-row>
-        <dictionary-row label-class="font-bold w-40" label="CDWG">{{group.parent ? group.parent.name : null || '--'}}</dictionary-row>
+        <dictionary-row label-class="font-bold w-40" label="Long Base Name">{{ application.long_base_name || '--' }}</dictionary-row>
+        <dictionary-row label-class="font-bold w-40" label="Short Base Name">{{ application.short_base_name || '--' }}</dictionary-row>
+        <dictionary-row label-class="font-bold w-40" label="Affiliation ID">{{ application.affiliation_id || '--' }}</dictionary-row>
+        <dictionary-row label-class="font-bold w-40" label="CDWG">{{ group.parent ? group.parent.name : null || '--' }}</dictionary-row>
         <dictionary-row label-class="font-bold w-40" label="Chair(s)">
             <span v-for="c,idx in group.chairs" :key="c.id">
-                <router-link :to="{name: 'PersonDetail', params: {id: c.id}}">{{c.person.name}}</router-link>
+                <router-link :to="{name: 'PersonDetail', params: {id: c.id}}">{{ c.person.name }}</router-link>
                 <span v-if="idx < group.chairs.length-1">, </span>
             </span>
         </dictionary-row>
         <dictionary-row label-class="font-bold w-40" label="Coordinator(s)">
             <span v-for="c,idx in group.coordinators" :key="c.id">
-                <router-link :to="{name: 'PersonDetail', params: {id: c.id}}">{{c.person.name}}</router-link>
+                <router-link :to="{name: 'PersonDetail', params: {id: c.id}}">{{ c.person.name }}</router-link>
                 <span v-if="idx < group.coordinators.length-1">, </span>
             </span>
         </dictionary-row>
@@ -52,9 +52,9 @@ export default {
                 target="ep-website"
                 v-if="application.stepIsApproved(1)"
             >
-            https://clinicalgenome.org/affiliation/{{application.affiliation_id}}
+            https://clinicalgenome.org/affiliation/{{ application.affiliation_id }}
             </a>
-            <span v-else>https://clinicalgenome.org/affiliation/{{application.affiliation_id || '--'}}</span>
+            <span v-else>https://clinicalgenome.org/affiliation/{{ application.affiliation_id || '--' }}</span>
         </dictionary-row>
 
         <teleport to="body">

@@ -29,7 +29,7 @@
         <ReviewSection title="Basic Information" name="basic-info">
             <object-dictionary :obj="basicInfo" label-class="w-40 font-bold" />
             <dictionary-row label="CDWG" label-class="w-40 font-bold">
-                {{group.parent ?  group.parent.name : '--'}}
+                {{ group.parent ? group.parent.name : '--' }}
             </dictionary-row>
         </ReviewSection>
 
@@ -47,7 +47,7 @@
         <ReviewSection title="Scope" name="scope">
             <h3>Genes</h3>
             <div class="mb-6">
-                <p v-if="group.is_gcep">{{expertPanel.genes.map(g => g.gene_symbol).join(', ')}}</p>
+                <p v-if="group.is_gcep">{{ expertPanel.genes.map(g => g.gene_symbol).join(', ') }}</p>
                 <simple-table
                     v-if="group.is_vcep_or_scvcep"
                     :data="
@@ -57,7 +57,7 @@
                             disease: g.disease_name,
                         }))
                     "
-                    :key-by="'id'"
+                    key-by="id"
                     :hide-columns="['id']"
                 />
             </div>
@@ -69,9 +69,9 @@
         <ReviewSection v-if="group.is_gcep" title="Plans" name="plans">
             <dictionary-row label="Selected protocol" label-class="w-48 font-bold">
                 <div class="flex-none">
-                    {{expertPanel.curation_review_protocol ? titleCase(expertPanel.curation_review_protocol.full_name) : null}}
+                    {{ expertPanel.curation_review_protocol ? titleCase(expertPanel.curation_review_protocol.full_name) : null }}
                     <p v-if="expertPanel.curation_review_protocol_id == 100" class="mt-1">
-                        <em>Details:</em> {{expertPanel.curation_review_protocol_other}}
+                        <em>Details:</em> {{ expertPanel.curation_review_protocol_other }}
                     </p>
                 </div>
             </dictionary-row>
@@ -79,13 +79,13 @@
 
         <ReviewSection v-if="group.is_gcep" title="Attestations" name="attestations">
             <dictionary-row label="GCEP Attestation Signed" label-class="w-52 font-bold">
-                {{formatDate(expertPanel.gcep_attestation_date)}}
+                {{ formatDate(expertPanel.gcep_attestation_date) }}
             </dictionary-row>
             <dictionary-row label="GCI Training Date" label-class="w-52 font-bold">
-                {{formatDate(expertPanel.gci_training_date)}}
+                {{ formatDate(expertPanel.gci_training_date) }}
             </dictionary-row>
             <dictionary-row label="NHGRI Attestation Signed" label-class="w-52 font-bold">
-                {{formatDate(expertPanel.nhgri_attestation_date)}}
+                {{ formatDate(expertPanel.nhgri_attestation_date) }}
             </dictionary-row>
         </ReviewSection>
 
@@ -98,10 +98,10 @@
                 label="Reanalysis and Discrepancy Resolution Attestation Signed"
                 label-class="w-52 font-bold"
             >
-                {{formatDate(expertPanel.reanalysis_attestation_date)}}
+                {{ formatDate(expertPanel.reanalysis_attestation_date) }}
             </dictionary-row>
             <dictionary-row label="NHGRI Attestation Signed" label-class="w-60 font-bold">
-                {{formatDate(expertPanel.nhgri_attestation_date)}}
+                {{ formatDate(expertPanel.nhgri_attestation_date) }}
             </dictionary-row>
         </ReviewSection>
     </div>

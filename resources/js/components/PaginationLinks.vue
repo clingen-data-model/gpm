@@ -84,7 +84,7 @@ export default {
                     class="link px-2" :class="{active: page.page === currentPage}"
                     @click="$emit('update:currentPage', page.page)"
                 >
-                    {{page.label}}
+                    {{ page.label }}
                 </button>
                 <span v-else>&hellip;</span>
             </li>

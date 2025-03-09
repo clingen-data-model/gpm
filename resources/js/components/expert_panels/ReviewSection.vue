@@ -50,12 +50,12 @@
     <section class="lg:flex lg:space-x-4 screen-block">
         <div class="overflow-x-auto flex-grow" :class="{'lg:w-3/5': showComments}">
             <header class="flex justify-between items-start space-x-4">
-                <h2 class="flex-grow" :class="{'lg:w-3/5': !showComments}">{{title}}</h2>
-                <div class="flex justify-between items-center lg:w-2/5 px-2 py-1 pb-0 bg-gray-100 rounded-lg" v-show="!showComments"  v-if="commentManager">
+                <h2 class="flex-grow" :class="{'lg:w-3/5': !showComments}">{{ title }}</h2>
+                <div class="flex justify-between items-center lg:w-2/5 px-2 py-1 pb-0 bg-gray-100 rounded-lg" v-show="!showComments" v-if="commentManager">
                     <h3>
                         <icon-cheveron-right class="inline cursor-pointer" @click="showComments = true"/>
                         Comments
-                        <badge :color="countColor">{{sectionComments.length}}</badge>
+                        <badge :color="countColor">{{ sectionComments.length }}</badge>
                     </h3>
                 </div>
 

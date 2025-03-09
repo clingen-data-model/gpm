@@ -62,7 +62,7 @@ export default {
                         class="text-blue-600 hover:underline"
                         target="person"
                     >
-                        {{contact.name}} &lt;{{contact.email}}&gt;</router-link>
+                        {{ contact.name }} &lt;{{ contact.email }}&gt;</router-link>
                 </li>
             </ul>
         </dictionary-row>
@@ -76,7 +76,7 @@ export default {
             <input type="text" v-model="workingEmail.subject" class="w-full">
         </input-row>
         <input-row label="Body">
-            <rich-text-editor  v-model="workingEmail.body"></rich-text-editor>
+            <rich-text-editor v-model="workingEmail.body"></rich-text-editor>
         </input-row>
         <input-row label="Attachments">
             <input type="file" multiple ref="attachmentsField" @change="handleAttachments">

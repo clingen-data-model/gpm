@@ -18,7 +18,7 @@
             <div class="flex justify-between items-end border-b pb-2 px-4">
                 <slot name="header">
                     <div>
-                        <h1>{{title}}</h1>
+                        <h1>{{ title }}</h1>
                         <slot name="header-dev"></slot>
                     </div>
                 </slot>

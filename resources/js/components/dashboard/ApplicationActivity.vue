@@ -102,18 +102,18 @@
                                 <div>
                                     <h3 class="mb-2">Your Decision</h3>
                                     <badge class="inline-block" :color="judgementColor(judgementFor(item))" size="xs">
-                                        {{judgementFor(item).decision}}
+                                        {{ judgementFor(item).decision }}
                                     </badge>
                                 </div>
                                 <div v-if="judgementFor(item).notes" class="mt-2" style="max-width: 300px">
-                                    <strong>Notes:</strong> {{judgementFor(item).notes}}
+                                    <strong>Notes:</strong> {{ judgementFor(item).notes }}
                                 </div>
                                 <hr>
                                 <router-link
                                     :to="{name: 'ApplicationDetail', params: {uuid: item.uuid}}"
                                     :class="{'btn btn-xs': hasPermission('ep-applications-approve')}"
                                 >
-                                    {{'Review'}}
+                                    {{ 'Review' }}
                                 </router-link>
 
                             </template>
@@ -124,22 +124,22 @@
                         :to="{name: 'ApplicationDetail', params: {uuid: item.uuid}}"
                         class="btn btn-xs"
                     >
-                        {{hasPermission('ep-applications-manage') ? 'View' : 'Review'}}
+                        {{ hasPermission('ep-applications-manage') ? 'View' : 'Review' }}
                     </router-link>
 
                     <div>
                         <popper hover arrow v-if="featureIsEnabled('chair-review')">
                             <badge v-if="hasPermission('ep-applications-manage') && item.submission.status.name == 'Under Chair Review'" :color="item.submission.judgements.length == 3 ? 'green' : 'gray' ">
-                                {{item.submission.judgements.length}}/3
+                                {{ item.submission.judgements.length }}/3
                             </badge>
 
                             <template #content>
                                 <h3>Decisions:</h3>
                                 <table style="max-width: 350px" class="text-sm">
                                     <tr v-for="j in item.submission.judgements" :key="j.id">
-                                        <th>{{j.person.name}}:</th>
+                                        <th>{{ j.person.name }}:</th>
                                         <td>
-                                            <badge class="inline-block" :color="judgementColor(j)">{{j.decision}}</badge>
+                                            <badge class="inline-block" :color="judgementColor(j)">{{ j.decision }}</badge>
                                         </td>
                                     </tr>
                                 </table>

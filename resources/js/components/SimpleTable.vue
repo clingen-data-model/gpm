@@ -37,13 +37,13 @@ export default {
     <table>
         <thead>
             <tr>
-                <th v-for="heading in headings" :key="heading">{{titleCase(heading)}}</th>
+                <th v-for="heading in headings" :key="heading">{{ titleCase(heading) }}</th>
             </tr>
         </thead>
         <tbody>
             <tr v-for="item in data" :key="item[keyBy]">
                 <td v-for="heading in headings" :key="`${item[keyBy]}-${heading}`">
-                    {{item[heading]}}
+                    {{ item[heading] }}
                 </td>
             </tr>
         </tbody>

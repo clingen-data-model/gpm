@@ -351,10 +351,10 @@ export default {
                 </div>
                 <div v-if="newMember.id || newMember.person_id">
                     <dictionary-row label="Name">
-                        {{newMember.person.name}}
+                        {{ newMember.person.name }}
                     </dictionary-row>
-                    <dictionary-row label="Email">{{newMember.person.email}}</dictionary-row>
-                    <dictionary-row label="Institution">{{newMember.person.institution ? newMember.person.institution.name : '--'}}</dictionary-row>
+                    <dictionary-row label="Email">{{ newMember.person.email }}</dictionary-row>
+                    <dictionary-row label="Institution">{{ newMember.person.institution ? newMember.person.institution.name : '--' }}</dictionary-row>
                     <dictionary-row label="Credentials">
                         <CredentialsView :person="newMember.person" />
                     </dictionary-row>
@@ -362,9 +362,9 @@ export default {
                         <ExpertisesView :person="newMember.person" :legacy-expertise="newMember.legacy_expertise" />
                     </dictionary-row>
                     <static-alert v-if="!newMember.id">
-                        Adding existing person, {{newMember.person.name}}, as a group member.
+                        Adding existing person, {{ newMember.person.name }}, as a group member.
                     </static-alert>
-                    <dictionary-row label="" class="text-sm"  v-if="newMember.id">
+                    <dictionary-row label="" class="text-sm" v-if="newMember.id">
                         <popover content="As a coordinator you can edit some attributes of a group member's profile including name, email, institution, and credentials." hover arrow>
                             <button @click="showProfileForm=true" class="link text-sm">
                                 Edit profile attributes
@@ -415,7 +415,7 @@ export default {
                             <badge
                                 v-if="newMember.permissions.length > 0"
                                 color="gray"
-                            >{{newMember.permissions.length}}</badge>
+                            >{{ newMember.permissions.length }}</badge>
                         </h3>
                     </template>
                     <div class="flex flex-col h-24 flex-wrap">
@@ -485,10 +485,10 @@ export default {
                 <span v-if="needsExpertise && needsCredentials">and</span>
                 <strong v-if="needsExpertise">expertise</strong> information for this member.
                 <div v-if="needsCredentials && newMember.person.legacy_credentials">
-                    <strong>Legacy Credentials Data:</strong> {{newMember.person.legacy_credentials}}
+                    <strong>Legacy Credentials Data:</strong> {{ newMember.person.legacy_credentials }}
                 </div>
                 <div v-if="needsExpertise && newMember.legacy_expertise">
-                    <strong>Legacy Expertise Data:</strong> {{newMember.legacy_expertise}}
+                    <strong>Legacy Expertise Data:</strong> {{ newMember.legacy_expertise }}
                 </div>
             </div>
             <ProfileForm v-if="newMember.person" :person="newMember.person"

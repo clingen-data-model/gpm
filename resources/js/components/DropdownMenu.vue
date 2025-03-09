@@ -125,7 +125,7 @@ export default {
                 <span v-show="!hideCheveron">
                     <icon-cheveron-down />
                 </span>
-                <slot name="label">{{label}}</slot>
+                <slot name="label">{{ label }}</slot>
             </div>
             <Teleport to="body">
                 <Transition name="slide-fade-down">

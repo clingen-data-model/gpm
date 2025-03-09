@@ -107,7 +107,7 @@ export default {
             :label="titleCase(key)"
             :label-class="labelClass"
         >
-            {{value}}
+            {{ value }}
         </dictionary-row>
     </div>
 </template>

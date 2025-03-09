@@ -229,7 +229,7 @@ export default {
             <template #cell-contacts="{item}">
                 <ul>
                     <li v-for="member in item.group.contacts" :key="member.id">
-                        <small><a :href="`mailto:${member.person.email}`" class="text-blue-500">{{member.person.name}}</a></small>
+                        <small><a :href="`mailto:${member.person.email}`" class="text-blue-500">{{ member.person.name }}</a></small>
                     </li>
                 </ul>
             </template>

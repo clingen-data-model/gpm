@@ -59,7 +59,7 @@ export default {
             class="flex-shrink-0" 
         >
             <slot name="label" v-if="label">
-                <label :class="fullLabelClass">{{label}}{{colon}}</label>
+                <label :class="fullLabelClass">{{ label }}{{ colon }}</label>
             </slot>
         </div>
         <div>
