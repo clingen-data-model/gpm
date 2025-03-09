@@ -70,7 +70,7 @@ export default {
           <RichTextEditor
             v-model="group.description"
             :markdownFormat="true"
-            @update:modelValue="$emit('update')"
+            @update:model-value="$emit('update')"
           />
         </div>
         <div v-else class="border-2 mt-8 p-2">

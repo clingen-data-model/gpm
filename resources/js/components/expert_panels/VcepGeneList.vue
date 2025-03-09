@@ -307,12 +307,12 @@ export default {
           <tr>
             <td>
               <input-row label="" :errors="errors[`genes.0.hgnc_id`]" :vertical="true">
-                <GeneSearchSelect v-model="newGene.gene" @update:modelValue="debounceSave" />
+                <GeneSearchSelect v-model="newGene.gene" @update:model-value="debounceSave" />
               </input-row>
             </td>
             <td colspan="4">
               <input-row label="" :errors="errors[`diseases.0.hgnc_id`]" :vertical="true">
-                <DiseaseSearchSelect v-model="newGene.disease" @update:modelValue="debounceSave" />
+                <DiseaseSearchSelect v-model="newGene.disease" @update:model-value="debounceSave" />
               </input-row>
             </td>
           </tr>

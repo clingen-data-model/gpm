@@ -76,7 +76,7 @@ export default {
       <input-row v-model="email" type="text" label="Email" :errors="errors.email" />
       <input-row v-if="hasToken" v-model="password" type="password" label="New password" :errors="errors.password" />
       <input-row v-if="hasToken" v-model="password_confirmation" type="password" label="Confirm password" :errors="errors.password_confirmation" />
-      <button-row :show-cancel="false" :submit-text="submitText" @submitClicked="submitReset" />
+      <button-row :show-cancel="false" :submit-text="submitText" @submit-clicked="submitReset" />
     </div>
   </card>
 </template>

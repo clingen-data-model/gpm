@@ -75,28 +75,28 @@ export default {
     <ul class="ml-4 mt-2">
       <li>
         <input-row :errors="errors.reanalysis_conflicting" :hide-label="true">
-          <checkbox v-model="group.expert_panel.reanalysis_conflicting" :disabled="disabled" @update:modelValue="$emit('update'), checkCompleteness()">
+          <checkbox v-model="group.expert_panel.reanalysis_conflicting" :disabled="disabled" @update:model-value="$emit('update'), checkCompleteness()">
             VCEPs are expected to reassess any newly submitted conflicting assertion in ClinVar from a one star submitter or above and attempt to resolve or address the conflict within 6 months of being notified about the conflict from ClinGen. Please reach out to the submitter if you need additional information about the conflicting assertion.
           </checkbox>
         </input-row>
       </li>
       <li>
         <input-row :errors="errors.reanalysis_review_lp" :hide-label="true">
-          <checkbox v-model="group.expert_panel.reanalysis_review_lp" :disabled="disabled" @update:modelValue="$emit('update'), checkCompleteness()">
+          <checkbox v-model="group.expert_panel.reanalysis_review_lp" :disabled="disabled" @update:model-value="$emit('update'), checkCompleteness()">
             VCEPs are expected to re-review all LP and VUS classifications made by the EP at least every 2 years to see if new evidence has emerged to re-classify the variants
           </checkbox>
         </input-row>
       </li>
       <li>
         <input-row :errors="errors.reanalysis_review_lb" :hide-label="true">
-          <checkbox v-model="group.expert_panel.reanalysis_review_lb" :disabled="disabled" @update:modelValue="$emit('update'), checkCompleteness()">
+          <checkbox v-model="group.expert_panel.reanalysis_review_lb" :disabled="disabled" @update:model-value="$emit('update'), checkCompleteness()">
             VCEPs are expected to re-review any LB classifications when new evidence is available or when requested by the public via the ClinGen website.
           </checkbox>
         </input-row>
       </li>
       <li>
         <input-row :errors="errors.reanalysis_other" :hide-label="true">
-          <checkbox v-model="otherCheckbox" :disabled="disabled" @update:modelValue="$emit('update'), checkCompleteness()">
+          <checkbox v-model="otherCheckbox" :disabled="disabled" @update:model-value="$emit('update'), checkCompleteness()">
             Plans differ from the expectations above.
           </checkbox>
           <transition name="slide-fade-down">

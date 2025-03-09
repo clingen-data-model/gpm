@@ -159,7 +159,7 @@ export default {
         Create a group
       </button>
     </h1>
-    <tabs-container @tabChanged="getGroupsForType">
+    <tabs-container @tab-changed="getGroupsForType">
       <tab-item v-for="def in tabDefinitions" :key="def.label" :label="def.label">
         <div v-if="loading" class="text-center w-full">
           Loading...
