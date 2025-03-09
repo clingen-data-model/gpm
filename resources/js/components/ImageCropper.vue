@@ -113,7 +113,7 @@ onUnmounted(() => {
             <div>
                 <h4>Preview</h4>
                 <img class="border border-gray-700 overflow-hidden drop-shadow" style="width: 100px; height: 100px"
-                    ref="previewEl" :src="previewUrl">
+                    :src="previewUrl">
             </div>
         </div>
     </div>
