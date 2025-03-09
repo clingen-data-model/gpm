@@ -1,93 +1,3 @@
-<template>
-    <div
-        :class="{'border-l border-red-800 px-2': hasErrors}"
-        class="input-row my-3"
-    >
-        <div :class="{'sm:flex': !vertical}">
-            <div class="flex-none label-container flex-shrink" :class="labelContainerClass" v-show="showLabel">
-                <slot name="label" v-if="hasLabel" :class="resolvedLabelClass">
-                    <label>{{label}}{{colon}}</label>
-                </slot>
-            </div>
-            <div class="flex-grow flex flex-col space-y-3">
-                <slot>
-                    <date-input
-                        v-if="type == 'date'"
-                        :modelValue="modelValue"
-                        @update:modelValue="emitValue"
-                        :disabled="disabled"
-                        :readonly="$attrs.readonly"
-                        @change="$emit('change', modelValue)"
-                        ref="input"
-                        :name="name"
-                        :class="inputClass"
-                    ></date-input>
-                    <textarea
-                        v-else-if="type == 'large-text'"
-                        :value="modelValue"
-                        @input="$emit('update:modelValue', $event.target.value)"
-                        :disabled="disabled"
-                        :readonly="$attrs.readonly"
-                        @change="$emit('change', modelValue)"
-                        ref="input"
-                        :name="name"
-                        :class="inputClass"
-                        class="w-full"
-                        rows="5"
-                        :placeholder="placeholder"
-                    ></textarea>
-                    <div
-                        v-else-if="type == 'radio-group'"
-                        class="radio-group"
-                        :class="{'ml-4': vertical}"
-                    >
-                        <radio-button
-                            v-for="option in options"
-                            :key="option.value"
-                            :modelValue="modelValue"
-                            @update:modelValue="emitValue"
-                            :label="option.label || sentenceCase(option.value)"
-                            :value="option.value"
-                            :disabled="disabled"
-                            :readonly="$attrs.readonly"
-                        />
-                    </div>
-                    <select v-else-if="type=='select'"
-                        :value="modelValue"
-                        @input="$emit('update:modelValue', $event.target.value)"
-                        v-bind="$attrs.disabled"
-                        :disabled="disabled"
-                        :readonly="$attrs.readonly"
-                    >
-                        <option value="">Select&hellip;</option>
-                        <template v-for="option in options" :key="option.value">
-                            <slot name="option-label" v-bind="option">
-                                <option :value="option.value">
-                                    {{option.label || sentenceCase(option.value)}}
-                                </option>
-                            </slot>
-                        </template>
-                    </select>
-                    <input
-                        v-else
-                        :type="type"
-                        :value="modelValue"
-                        @input="$emit('update:modelValue', $event.target.value)"
-                        :placeholder="placeholder"
-                        :disabled="disabled"
-                        :readonly="$attrs.readonly"
-                        @change="$emit('change', $event.target.value)"
-                        ref="input"
-                        :class="inputClass"
-                        :name="name"
-                    >
-                </slot>
-                <slot name="after-input"></slot>
-                <input-errors class="text-xs" :errors="errors || []"></input-errors>
-            </div>
-        </div>
-    </div>
-</template>
 <script>
 
 export default {
@@ -213,3 +123,93 @@ export default {
     }
 }
 </script>
+<template>
+    <div
+        :class="{'border-l border-red-800 px-2': hasErrors}"
+        class="input-row my-3"
+    >
+        <div :class="{'sm:flex': !vertical}">
+            <div class="flex-none label-container flex-shrink" :class="labelContainerClass" v-show="showLabel">
+                <slot name="label" v-if="hasLabel" :class="resolvedLabelClass">
+                    <label>{{label}}{{colon}}</label>
+                </slot>
+            </div>
+            <div class="flex-grow flex flex-col space-y-3">
+                <slot>
+                    <date-input
+                        v-if="type == 'date'"
+                        :modelValue="modelValue"
+                        @update:modelValue="emitValue"
+                        :disabled="disabled"
+                        :readonly="$attrs.readonly"
+                        @change="$emit('change', modelValue)"
+                        ref="input"
+                        :name="name"
+                        :class="inputClass"
+                    ></date-input>
+                    <textarea
+                        v-else-if="type == 'large-text'"
+                        :value="modelValue"
+                        @input="$emit('update:modelValue', $event.target.value)"
+                        :disabled="disabled"
+                        :readonly="$attrs.readonly"
+                        @change="$emit('change', modelValue)"
+                        ref="input"
+                        :name="name"
+                        :class="inputClass"
+                        class="w-full"
+                        rows="5"
+                        :placeholder="placeholder"
+                    ></textarea>
+                    <div
+                        v-else-if="type == 'radio-group'"
+                        class="radio-group"
+                        :class="{'ml-4': vertical}"
+                    >
+                        <radio-button
+                            v-for="option in options"
+                            :key="option.value"
+                            :modelValue="modelValue"
+                            @update:modelValue="emitValue"
+                            :label="option.label || sentenceCase(option.value)"
+                            :value="option.value"
+                            :disabled="disabled"
+                            :readonly="$attrs.readonly"
+                        />
+                    </div>
+                    <select v-else-if="type=='select'"
+                        :value="modelValue"
+                        @input="$emit('update:modelValue', $event.target.value)"
+                        v-bind="$attrs.disabled"
+                        :disabled="disabled"
+                        :readonly="$attrs.readonly"
+                    >
+                        <option value="">Select&hellip;</option>
+                        <template v-for="option in options" :key="option.value">
+                            <slot name="option-label" v-bind="option">
+                                <option :value="option.value">
+                                    {{option.label || sentenceCase(option.value)}}
+                                </option>
+                            </slot>
+                        </template>
+                    </select>
+                    <input
+                        v-else
+                        :type="type"
+                        :value="modelValue"
+                        @input="$emit('update:modelValue', $event.target.value)"
+                        :placeholder="placeholder"
+                        :disabled="disabled"
+                        :readonly="$attrs.readonly"
+                        @change="$emit('change', $event.target.value)"
+                        ref="input"
+                        :class="inputClass"
+                        :name="name"
+                    >
+                </slot>
+                <slot name="after-input"></slot>
+                <input-errors class="text-xs" :errors="errors || []"></input-errors>
+            </div>
+        </div>
+    </div>
+</template>

@@ -1,32 +1,3 @@
-<template>
-    <div class="flex space-x-1 items-start">
-        <div>
-            <label for="region-select" class="block text-xs">Region:</label>
-            <select id="region-select" v-model="region" class="input-cl">
-                <option :value="region" v-for="region in regions" :key="region">
-                    {{region}}
-                </option>
-            </select>
-        </div>
-        <div>
-            <label for="city-search-select" class="block text-xs">City:</label>
-            <select id="city-search-select" v-model="city" :disabled="!region">
-                <option value="null">Select...</option>
-                <option  v-for="{name} in regionCities" :key="name" :value="name">{{name}}</option>
-            </select>
-            &nbsp;
-            <popover arrow trigger="hover">
-                <template v-slot:content>
-                    <div class="w-80">
-                        <p>The best way to get your timezone right is to tell us which city has the same “timezone” you do.  For example, if you’re located in Atlanta, Georgia, USA you should choose, North America/New York as your “Timezone”.</p>
-                        <p>See the <faq-link hash="#heading=h.9kox4w1eoeul" /> for more details.</p>
-                    </div>
-                </template>
-                <icon-question class="text-gray-500 cursor-pointer" />
-            </popover>
-        </div>
-    </div>
-</template>
 <script>
 import api from '@/http/api'
 
@@ -147,3 +118,32 @@ export default {
     }
 }
 </script>
+<template>
+    <div class="flex space-x-1 items-start">
+        <div>
+            <label for="region-select" class="block text-xs">Region:</label>
+            <select id="region-select" v-model="region" class="input-cl">
+                <option :value="region" v-for="region in regions" :key="region">
+                    {{region}}
+                </option>
+            </select>
+        </div>
+        <div>
+            <label for="city-search-select" class="block text-xs">City:</label>
+            <select id="city-search-select" v-model="city" :disabled="!region">
+                <option value="null">Select...</option>
+                <option  v-for="{name} in regionCities" :key="name" :value="name">{{name}}</option>
+            </select>
+            &nbsp;
+            <popover arrow trigger="hover">
+                <template v-slot:content>
+                    <div class="w-80">
+                        <p>The best way to get your timezone right is to tell us which city has the same “timezone” you do.  For example, if you’re located in Atlanta, Georgia, USA you should choose, North America/New York as your “Timezone”.</p>
+                        <p>See the <faq-link hash="#heading=h.9kox4w1eoeul" /> for more details.</p>
+                    </div>
+                </template>
+                <icon-question class="text-gray-500 cursor-pointer" />
+            </popover>
+        </div>
+    </div>
+</template>

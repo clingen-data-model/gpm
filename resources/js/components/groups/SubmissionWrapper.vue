@@ -1,16 +1,3 @@
-<template>
-    <div>
-        <slot></slot>
-        <transition name="fade-slide-down">
-            <button-row 
-                v-show="showControls"
-                @submitted="$emit('submitted')" 
-                @canceled="$emit('canceled')"
-                submit-text="Save"
-            />
-        </transition>
-    </div>
-</template>
 <script>
 export default {
     name: 'SubmissionWrapper',
@@ -38,3 +25,16 @@ export default {
     }
 }
 </script>
+<template>
+    <div>
+        <slot></slot>
+        <transition name="fade-slide-down">
+            <button-row 
+                v-show="showControls"
+                @submitted="$emit('submitted')" 
+                @canceled="$emit('canceled')"
+                submit-text="Save"
+            />
+        </transition>
+    </div>
+</template>

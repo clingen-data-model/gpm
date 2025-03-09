@@ -1,3 +1,15 @@
+<script>
+
+export default {
+    name: 'SustainedCurationReviewAlert',
+    props: {
+        group: {
+            type: Object,
+            required: true
+        }
+    },
+}
+</script>
 <template>
     <static-alert vartiant="info" class="flex space-x-2 items-center">
         <icon-review width="30" height="30"></icon-review>
@@ -12,15 +24,3 @@
         </div>
     </static-alert>
 </template>
-<script>
-
-export default {
-    name: 'SustainedCurationReviewAlert',
-    props: {
-        group: {
-            type: Object,
-            required: true
-        }
-    },
-}
-</script>

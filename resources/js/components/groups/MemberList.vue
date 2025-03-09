@@ -430,7 +430,7 @@ export default {
                 :data="filteredMembers"
                 v-model:sort="sort"
                 :detailRows="true"
-                :row-class="(item) => 'cursor-pointer'+ (item.isRetired ? ' retired-member' : '')"
+                :row-class="(item) => `cursor-pointer${ item.isRetired ? ' retired-member' : ''}`"
                 @rowClick="goToMember"
                 v-if="group.members.length > 0"
             >

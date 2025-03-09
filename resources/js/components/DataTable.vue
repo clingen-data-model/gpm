@@ -1,99 +1,3 @@
-<style scoped>
-    table {
-        @apply w-full;
-    }
-    tbody{
-        @apply bg-white odd:bg-gray-100 border-0 hover:border-blue-300 hover:bg-blue-100;
-    }
-    tr > th {
-        @apply text-left border border-gray-300 px-3;
-    }
-    tr:not(.details) > td {
-        @apply text-left p-1 px-3 border align-top;
-    }
-    tr.details > td {
-        @apply border-none p-0;
-    }
-    th.sorted, td.sorted  {
-        @apply bg-blue-100 hover:bg-blue-100;
-    }
-</style>
-
-<template>
-    <div>
-<!-- <pre>{ currentPage: {{currentPage}} }</pre> -->
-        <header class="flex justify-between mb-2 items-center">
-            <slot name="header"></slot>
-            <pagination-links
-                :current-page="currentPage"
-                :total-items="totalItems"
-                :page-size="pageSize"
-                @update:currentPage="updateCurrentPage"
-                v-if="shouldPaginate"
-            />
-        </header>
-
-        <div class="shadow-inner bg-gray-50">
-            <table class="border-none">
-                <thead>
-                    <slot name="thead">
-                    <tr class="bg-gray-200">
-                        <th v-for="field in fields.filter(f => !f.hideHeader)" :key="field.name"
-                            :title="field.sortable ? `Click to sort` : ``"
-                            :class="getHeaderClass(field)"
-                            @click="field.sortable && updateSort(field)"
-                            :colspan="(field.colspan ? field.colspan : 1)"
-                        >
-                            <div class="py-1 flex justify-between place-items-center">
-                                <div>
-                                    <slot :name="`header-${field.name}`" :item="{field}">
-                                        {{getFieldLabel(field)}}
-                                    </slot>
-                                </div>
-                                <div>
-                                    <div v-if="field.sortable">
-                                        <icon-cheveron-up icon-color="#ccc"
-                                            v-if="realSort.field.name != field.name"
-                                        ></icon-cheveron-up>
-                                        <icon-cheveron-up icon-color="#333"
-                                            v-if="realSort.field.name == field.name && !realSort.desc"
-                                        ></icon-cheveron-up>
-                                        <icon-cheveron-down icon-color="#333"
-                                            v-if="realSort.field.name == field.name && realSort.desc"
-                                        ></icon-cheveron-down>
-                                    </div>
-                                </div>
-                            </div>
-                        </th>
-                    </tr>
-                    </slot>
-                </thead>
-                <tbody v-for="item in resolvedItems" :key="item.uuid">
-                    <tr :class="resolveRowClass(item)" @click="handleRowClick(item)">
-                        <td
-                            v-for="field in fields"
-                            :key="field.name"
-                            :class="getCellClass(field)"
-                        >
-                            <slot :name="getSlotName(field)" :item="item" :field="field" :value="resolveDisplayAttribute(item, field)">
-                                {{resolveDisplayAttribute(item, field)}}
-                            </slot>
-                        </td>
-                    </tr>
-                    <transition name="fade-slide-down">
-                        <tr class="details" :class="resolveRowClass(item)" v-if="detailRows && item.showDetails">
-                            <td :colspan="fields.length">
-                                <slot name="detail" :item="item">
-                                    <object-dictionary :obj="item"></object-dictionary>
-                                </slot>
-                            </td>
-                        </tr>
-                    </transition>
-                </tbody>
-            </table>
-        </div>
-    </div>
-</template>
 <script>
 import { formatDate } from '@/date_utils'
 import {titleCase} from '@/string_utils'
@@ -484,3 +388,99 @@ export default {
     }
 }
 </script>
+
+<template>
+    <div>
+<!-- <pre>{ currentPage: {{currentPage}} }</pre> -->
+        <header class="flex justify-between mb-2 items-center">
+            <slot name="header"></slot>
+            <pagination-links
+                :current-page="currentPage"
+                :total-items="totalItems"
+                :page-size="pageSize"
+                @update:currentPage="updateCurrentPage"
+                v-if="shouldPaginate"
+            />
+        </header>
+
+        <div class="shadow-inner bg-gray-50">
+            <table class="border-none">
+                <thead>
+                    <slot name="thead">
+                    <tr class="bg-gray-200">
+                        <th v-for="field in fields.filter(f => !f.hideHeader)" :key="field.name"
+                            :title="field.sortable ? `Click to sort` : ``"
+                            :class="getHeaderClass(field)"
+                            @click="field.sortable && updateSort(field)"
+                            :colspan="(field.colspan ? field.colspan : 1)"
+                        >
+                            <div class="py-1 flex justify-between place-items-center">
+                                <div>
+                                    <slot :name="`header-${field.name}`" :item="{field}">
+                                        {{getFieldLabel(field)}}
+                                    </slot>
+                                </div>
+                                <div>
+                                    <div v-if="field.sortable">
+                                        <icon-cheveron-up icon-color="#ccc"
+                                            v-if="realSort.field.name != field.name"
+                                        ></icon-cheveron-up>
+                                        <icon-cheveron-up icon-color="#333"
+                                            v-if="realSort.field.name == field.name && !realSort.desc"
+                                        ></icon-cheveron-up>
+                                        <icon-cheveron-down icon-color="#333"
+                                            v-if="realSort.field.name == field.name && realSort.desc"
+                                        ></icon-cheveron-down>
+                                    </div>
+                                </div>
+                            </div>
+                        </th>
+                    </tr>
+                    </slot>
+                </thead>
+                <tbody v-for="item in resolvedItems" :key="item.uuid">
+                    <tr :class="resolveRowClass(item)" @click="handleRowClick(item)">
+                        <td
+                            v-for="field in fields"
+                            :key="field.name"
+                            :class="getCellClass(field)"
+                        >
+                            <slot :name="getSlotName(field)" :item="item" :field="field" :value="resolveDisplayAttribute(item, field)">
+                                {{resolveDisplayAttribute(item, field)}}
+                            </slot>
+                        </td>
+                    </tr>
+                    <transition name="fade-slide-down">
+                        <tr class="details" :class="resolveRowClass(item)" v-if="detailRows && item.showDetails">
+                            <td :colspan="fields.length">
+                                <slot name="detail" :item="item">
+                                    <object-dictionary :obj="item"></object-dictionary>
+                                </slot>
+                            </td>
+                        </tr>
+                    </transition>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</template>
+<style scoped>
+    table {
+        @apply w-full;
+    }
+    tbody{
+        @apply bg-white odd:bg-gray-100 border-0 hover:border-blue-300 hover:bg-blue-100;
+    }
+    tr > th {
+        @apply text-left border border-gray-300 px-3;
+    }
+    tr:not(.details) > td {
+        @apply text-left p-1 px-3 border align-top;
+    }
+    tr.details > td {
+        @apply border-none p-0;
+    }
+    th.sorted, td.sorted  {
+        @apply bg-blue-100 hover:bg-blue-100;
+    }
+</style>

@@ -1,3 +1,28 @@
+<script>
+// @ is an alias to /src
+import CreateApplicationForm from '@/components/applications/CreateApplicationForm.vue'
+
+export default {
+  name: 'ApplicationsIndex',
+  components: {
+    CreateApplicationForm
+  },
+  data() {
+    return {
+      showModal: false
+    }
+  },
+  computed: {
+  },
+  methods: {
+    handleApplicationInitiated(applicationData) {
+      this.showModal = false;
+      this.$router.push({name: 'AddMemberToApplication', params: {uuid: applicationData.uuid}})
+    }
+  }
+}
+</script>
+
 <template>
   <div class="home">
 
@@ -23,31 +48,6 @@
       </modal-dialog>
   </div>
 </template>
-
-<script>
-// @ is an alias to /src
-import CreateApplicationForm from '@/components/applications/CreateApplicationForm.vue'
-
-export default {
-  name: 'ApplicationsIndex',
-  components: {
-    CreateApplicationForm
-  },
-  data() {
-    return {
-      showModal: false
-    }
-  },
-  computed: {
-  },
-  methods: {
-    handleApplicationInitiated(applicationData) {
-      this.showModal = false;
-      this.$router.push({name: 'AddMemberToApplication', params: {uuid: applicationData.uuid}})
-    }
-  }
-}
-</script>
 
 <style lang="postcss" scoped>
 .tabs {

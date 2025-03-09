@@ -1,18 +1,3 @@
-<template>
-    <static-alert :variant="variant">
-        <div class="flex items-center justify-between px-4">
-            <div class="">
-                <markdown-block v-if="notification.data.markdown" :markdown="notification.data.message" />
-                <div class="font-bold" v-else>
-                    {{notification.data.message}}
-                </div>
-            </div>
-            <button @click="markRead" class="block">
-                <icon-close></icon-close>
-            </button>
-        </div>
-    </static-alert>
-</template>
 <script>
 import {api} from '@/http'
 
@@ -45,3 +30,18 @@ export default {
     }
 }
 </script>
+<template>
+    <static-alert :variant="variant">
+        <div class="flex items-center justify-between px-4">
+            <div class="">
+                <markdown-block v-if="notification.data.markdown" :markdown="notification.data.message" />
+                <div class="font-bold" v-else>
+                    {{notification.data.message}}
+                </div>
+            </div>
+            <button @click="markRead" class="block">
+                <icon-close></icon-close>
+            </button>
+        </div>
+    </static-alert>
+</template>

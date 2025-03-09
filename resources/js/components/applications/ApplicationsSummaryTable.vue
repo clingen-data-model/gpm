@@ -1,41 +1,3 @@
-<template>
-    <div>
-        <div class="flex justify-between">
-            <div class="mb-1 flex space-x-2">
-                <label>Filter: <input type="text" class="sm" v-model="filter" placeholder="filter"></label>
-                <checkbox 
-                    v-model="showCompleted"
-                    label="Show completed"
-                />
-            </div>
-        </div>
-        <data-table 
-            :data="filteredData" 
-            :fields="selectedFields" 
-            :filter-term="filter" 
-            :row-click-handler="goToApplication"
-            row-class="cursor-pointer"
-            v-model:sort="sort"
-            :style="remainingHeight"
-            class="overflow-auto text-xs"
-            ref="table"
-        >
-            <template v-slot:cell-contacts="{item}">
-                <ul>
-                    <li v-for="member in item.group.contacts" :key="member.id">
-                        <small><a :href="`mailto:${member.person.email}`" class="text-blue-500">{{member.person.name}}</a></small>
-                    </li>
-                </ul>
-            </template>
-            <template v-slot:cell-latest_log_entry_description="{value}">
-                <div v-html="value"></div>
-            </template>
-            <template v-slot:cell-latest_pending_next_action_entry="{value}">
-                <div v-html="value"></div>
-            </template>
-        </data-table>
-    </div>
-</template>
 <script>
 import { mapGetters } from 'vuex'
 import sortAndFilter from '@/composables/router_aware_sort_and_filter'
@@ -242,3 +204,41 @@ export default {
     }
 }
 </script>
+<template>
+    <div>
+        <div class="flex justify-between">
+            <div class="mb-1 flex space-x-2">
+                <label>Filter: <input type="text" class="sm" v-model="filter" placeholder="filter"></label>
+                <checkbox 
+                    v-model="showCompleted"
+                    label="Show completed"
+                />
+            </div>
+        </div>
+        <data-table 
+            :data="filteredData" 
+            :fields="selectedFields" 
+            :filter-term="filter" 
+            :row-click-handler="goToApplication"
+            row-class="cursor-pointer"
+            v-model:sort="sort"
+            :style="remainingHeight"
+            class="overflow-auto text-xs"
+            ref="table"
+        >
+            <template v-slot:cell-contacts="{item}">
+                <ul>
+                    <li v-for="member in item.group.contacts" :key="member.id">
+                        <small><a :href="`mailto:${member.person.email}`" class="text-blue-500">{{member.person.name}}</a></small>
+                    </li>
+                </ul>
+            </template>
+            <template v-slot:cell-latest_log_entry_description="{value}">
+                <div v-html="value"></div>
+            </template>
+            <template v-slot:cell-latest_pending_next_action_entry="{value}">
+                <div v-html="value"></div>
+            </template>
+        </data-table>
+    </div>
+</template>

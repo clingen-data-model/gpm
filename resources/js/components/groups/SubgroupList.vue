@@ -1,3 +1,27 @@
+<script>
+export default {
+    name: 'SubgroupList',
+    props: {
+
+    },
+    data() {
+        return {
+
+        }
+    },
+    computed: {
+        group () {
+            return this.$store.getters['groups/currentItemOrNew'];
+        },
+        showMemberReportButton () {
+            return this.hasAnyPermission([['members-invite', this.group], 'groups-manage', 'ep-applications-manage', 'annual-updates-manage'])
+        },
+        exportUrl () {
+            return `/api/report/groups/${this.group.uuid}/subgroup-member-export`;
+        },
+    }
+}
+</script>
 <template>
     <div>
         <div class="flex justify-between">
@@ -51,30 +75,6 @@
         </ul>
     </div>
 </template>
-<script>
-export default {
-    name: 'SubgroupList',
-    props: {
-
-    },
-    data() {
-        return {
-
-        }
-    },
-    computed: {
-        group () {
-            return this.$store.getters['groups/currentItemOrNew'];
-        },
-        showMemberReportButton () {
-            return this.hasAnyPermission([['members-invite', this.group], 'groups-manage', 'ep-applications-manage', 'annual-updates-manage'])
-        },
-        exportUrl () {
-            return `/api/report/groups/${this.group.uuid}/subgroup-member-export`;
-        },
-    }
-}
-</script>
 <style lang="postcss" scoped>
   .child-group {
     @apply px-2 border-t  border-l border-r hover:bg-blue-100 bg-white;

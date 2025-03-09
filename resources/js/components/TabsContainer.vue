@@ -1,39 +1,3 @@
-<style lang="postcss">
-.horizontal > .tabs {
-    @apply flex space-x-2;
-}
-
-.horizontal > .tabs > .tab {
-    @apply border border-b-0 px-4 py-1 rounded-t-lg bg-gray-200 -mb-px;
-}
-
-.horizontal>.tabs>.tab.router-link-active,
-.horizontal>.tabs>.tab.active {
-    @apply bg-white no-underline;
-}
-
-.horizontal > .tab-content {
-    @apply p-4 border rounded-tr-lg rounded-b-lg bg-white;
-}
-
-.vertical > .tabs {
-    @apply flex-none mr-4 space-y-2;
-}
-
-.vertical > .tabs > .tab {
-    @apply border rounded px-4 py-1 bg-gray-200;
-}
-
-.vertical>.tabs>.tab.router-link-active,
-.vertical>.tabs>.tab.active {
-    @apply bg-blue-500 text-white;
-}
-
-.vertical > .tab-content {
-    @apply w-full overflow-x-auto;
-}
-
-</style>
 <script>
 import {isEqual} from 'lodash-es'
 import { h } from 'vue';
@@ -178,3 +142,39 @@ export default {
     }
 }
 </script>
+<style lang="postcss">
+.horizontal > .tabs {
+    @apply flex space-x-2;
+}
+
+.horizontal > .tabs > .tab {
+    @apply border border-b-0 px-4 py-1 rounded-t-lg bg-gray-200 -mb-px;
+}
+
+.horizontal>.tabs>.tab.router-link-active,
+.horizontal>.tabs>.tab.active {
+    @apply bg-white no-underline;
+}
+
+.horizontal > .tab-content {
+    @apply p-4 border rounded-tr-lg rounded-b-lg bg-white;
+}
+
+.vertical > .tabs {
+    @apply flex-none mr-4 space-y-2;
+}
+
+.vertical > .tabs > .tab {
+    @apply border rounded px-4 py-1 bg-gray-200;
+}
+
+.vertical>.tabs>.tab.router-link-active,
+.vertical>.tabs>.tab.active {
+    @apply bg-blue-500 text-white;
+}
+
+.vertical > .tab-content {
+    @apply w-full overflow-x-auto;
+}
+
+</style>

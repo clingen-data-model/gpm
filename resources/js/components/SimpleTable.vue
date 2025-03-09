@@ -1,19 +1,3 @@
-<template>
-    <table>
-        <thead>
-            <tr>
-                <th v-for="heading in headings" :key="heading">{{titleCase(heading)}}</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr v-for="item in data" :key="item[keyBy]">
-                <td v-for="heading in headings" :key="`${item[keyBy]}-${heading}`">
-                    {{item[heading]}}
-                </td>
-            </tr>
-        </tbody>
-    </table>
-</template>
 <script>
 export default {
     name: 'SimpleTable',
@@ -49,3 +33,19 @@ export default {
     }
 }
 </script>
+<template>
+    <table>
+        <thead>
+            <tr>
+                <th v-for="heading in headings" :key="heading">{{titleCase(heading)}}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr v-for="item in data" :key="item[keyBy]">
+                <td v-for="heading in headings" :key="`${item[keyBy]}-${heading}`">
+                    {{item[heading]}}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</template>

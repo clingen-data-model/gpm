@@ -1,9 +1,3 @@
-<template>
-    <div>
-        <input-row label="Name" v-model="workingCopy.name" :errors="errors.name" />
-        <button-row submit-text="Save" @submitted="save" @cancel="cancel" />
-    </div>
-</template>
 <script>
 import {setupMirror} from '@/composables/setup_working_mirror'
 import {isValidationError} from '@/http'
@@ -58,3 +52,9 @@ export default {
     },
 }
 </script>
+<template>
+    <div>
+        <input-row label="Name" v-model="workingCopy.name" :errors="errors.name" />
+        <button-row submit-text="Save" @submitted="save" @cancel="cancel" />
+    </div>
+</template>

@@ -1,8 +1,3 @@
-<template>
-    <div class="border border-gray-300 bg-white overflow-hidden">
-        <img :src="photoUrl" class="w-full">
-    </div>
-</template>
 <script>
 import Person from '@/domain/person'
 
@@ -36,3 +31,8 @@ export default {
     }
 }
 </script>
+<template>
+    <div class="border border-gray-300 bg-white overflow-hidden">
+        <img :src="photoUrl" class="w-full">
+    </div>
+</template>

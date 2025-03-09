@@ -1,6 +1,3 @@
-<template>
-    <div class="note"><slot/></div>
-</template>
 <script>
 export default {
     props: {
@@ -19,3 +16,6 @@ export default {
     }
 }
 </script>
+<template>
+    <div class="note"><slot/></div>
+</template>

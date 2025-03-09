@@ -1,14 +1,3 @@
-<template>
-    <div>
-        <DocumentList :documents="displayDocuments"
-            :documentUpdater="updateDocument"
-            :documentCreator="createDocument"
-            :documentDeleter="deleteDocument"
-            :canManage="canManageDocuments"
-        >
-        </DocumentList>
-    </div>
-</template>
 <script>
 import DocumentList from '@/components/documents/DocumentList.vue';
 
@@ -72,3 +61,14 @@ export default {
     }
 }
 </script>
+<template>
+    <div>
+        <DocumentList :documents="displayDocuments"
+            :documentUpdater="updateDocument"
+            :documentCreator="createDocument"
+            :documentDeleter="deleteDocument"
+            :canManage="canManageDocuments"
+        >
+        </DocumentList>
+    </div>
+</template>

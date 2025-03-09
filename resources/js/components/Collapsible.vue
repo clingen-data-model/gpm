@@ -1,23 +1,3 @@
-<template>
-    <div class="collapsible-container">
-        <div class="collapsible-header" @click="expanded = !expanded">
-            <div class="flex items-start">
-                <div v-if="showCheveron">
-                    <icon-cheveron-right v-if="!expanded" class="-ml-1 mt-1" />
-                    <icon-cheveron-down v-if="expanded" class="-ml-1 mt-1" />
-                </div>
-                <slot name="title">
-                    <strong>{{title}}</strong>
-                </slot>
-            </div>
-        </div>
-        <transition name="slide-fade-down">
-            <div v-show="expanded">
-                <slot></slot>
-            </div>
-        </transition>
-    </div>
-</template>
 <script>
 export default {
     name: 'Collapsible',
@@ -72,3 +52,23 @@ export default {
     }
 }
 </script>
+<template>
+    <div class="collapsible-container">
+        <div class="collapsible-header" @click="expanded = !expanded">
+            <div class="flex items-start">
+                <div v-if="showCheveron">
+                    <icon-cheveron-right v-if="!expanded" class="-ml-1 mt-1" />
+                    <icon-cheveron-down v-if="expanded" class="-ml-1 mt-1" />
+                </div>
+                <slot name="title">
+                    <strong>{{title}}</strong>
+                </slot>
+            </div>
+        </div>
+        <transition name="slide-fade-down">
+            <div v-show="expanded">
+                <slot></slot>
+            </div>
+        </transition>
+    </div>
+</template>

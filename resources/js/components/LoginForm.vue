@@ -1,36 +1,3 @@
-<template>
-    <form-container @keyup.enter="authenticate">
-        <input-row
-            v-model="email"
-            label="Email"
-            type="text"
-            :errors="errors.email"
-            name="email"
-            required
-        />
-        <input-row
-            v-model="password"
-            label="Password"
-            type="password"
-            :errors="errors.password"
-            name="password"
-            required
-        />
-
-        <!-- Links Section aligned to the left under the input fields -->
-        <div class="mt-2">
-            <router-link class="text-blue-500 underline" :to="{name: 'reset-password'}">Forgot your password?</router-link>
-            <br>
-            <router-link class="text-blue-500 underline" :to="{name: 'RedeemInvite'}">Redeem your invite</router-link>
-        </div>
-
-        <!-- Left-align the Log In button -->
-        <button-row class="mt-4">
-            <button class="btn blue w-auto px-4" @click="authenticate" name="login-button">Log in</button>
-        </button-row>
-    </form-container>
-</template>
-
 <script>
 import is_validation_error from '@/http/is_validation_error'
 import isAuthError from '@/http/is_auth_error'
@@ -78,3 +45,36 @@ export default {
     }
 }
 </script>
+
+<template>
+    <form-container @keyup.enter="authenticate">
+        <input-row
+            v-model="email"
+            label="Email"
+            type="text"
+            :errors="errors.email"
+            name="email"
+            required
+        />
+        <input-row
+            v-model="password"
+            label="Password"
+            type="password"
+            :errors="errors.password"
+            name="password"
+            required
+        />
+
+        <!-- Links Section aligned to the left under the input fields -->
+        <div class="mt-2">
+            <router-link class="text-blue-500 underline" :to="{name: 'reset-password'}">Forgot your password?</router-link>
+            <br>
+            <router-link class="text-blue-500 underline" :to="{name: 'RedeemInvite'}">Redeem your invite</router-link>
+        </div>
+
+        <!-- Left-align the Log In button -->
+        <button-row class="mt-4">
+            <button class="btn blue w-auto px-4" @click="authenticate" name="login-button">Log in</button>
+        </button-row>
+    </form-container>
+</template>

@@ -1,6 +1,3 @@
-<template>
-    <stand-in>Conflict of Interest (COI) and Competing Activities Management</stand-in>
-</template>
 <script>
 export default {
     name: 'CoiSummary',
@@ -20,3 +17,6 @@ export default {
     }
 }
 </script>
+<template>
+    <stand-in>Conflict of Interest (COI) and Competing Activities Management</stand-in>
+</template>

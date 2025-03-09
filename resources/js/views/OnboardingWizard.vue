@@ -1,29 +1,3 @@
-<template>
-    <div>
-        <div class="flex justify-center">
-            <div class="onboarding-container" :style="`width: ${currentStepWidth}`">
-                <keep-alive>
-                    <transition :name="animationDirection" mode="out-in">
-                        <component
-                            :is="currentStepComponent"
-                            v-bind:invite="invite"
-                            v-bind:person="invite.person"
-                            v-bind:code="invite.coi_code"
-                            ref="stepForm"
-                            @codeverified="handleCodeVerified"
-                            @ok="goForward"
-                            @saved="goForward"
-                            @back="goBack"
-                        ></component>
-                    </transition>
-                </keep-alive>
-            </div>
-            <p>
-                <router-link class="block link pt-2" :to="{name: 'login'}" v-if="!$store.getters.isAuthed">&lt; Log In</router-link>
-            </p>
-        </div>
-    </div>
-</template>
 <script>
 import OnboardingSteps from '@/components/onboarding/OnboardingSteps.vue'
 import InviteRedemptionForm from '@/components/onboarding/InviteRedemptionForm.vue'
@@ -126,6 +100,32 @@ export default {
     }
 }
 </script>
+<template>
+    <div>
+        <div class="flex justify-center">
+            <div class="onboarding-container" :style="`width: ${currentStepWidth}`">
+                <keep-alive>
+                    <transition :name="animationDirection" mode="out-in">
+                        <component
+                            :is="currentStepComponent"
+                            v-bind:invite="invite"
+                            v-bind:person="invite.person"
+                            v-bind:code="invite.coi_code"
+                            ref="stepForm"
+                            @codeverified="handleCodeVerified"
+                            @ok="goForward"
+                            @saved="goForward"
+                            @back="goBack"
+                        ></component>
+                    </transition>
+                </keep-alive>
+            </div>
+            <p>
+                <router-link class="block link pt-2" :to="{name: 'login'}" v-if="!$store.getters.isAuthed">&lt; Log In</router-link>
+            </p>
+        </div>
+    </div>
+</template>
 <style scoped>
     .onboarding-container {
         @apply shadow-lg border px-4 py-8 mx-auto mt-12 border-gray-300;

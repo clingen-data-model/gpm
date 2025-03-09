@@ -1,16 +1,3 @@
-<template>
-    <card title="Reset Your Password" class="w-2/3 mx-auto">
-        <div class="p-2 rounded border border-green-300 bg-green-100 text-green-700" v-if="successMessage">
-            {{successMessage}}
-        </div>
-        <div v-else>
-            <input-row v-model="email" type="text" label="Email" :errors="errors.email"></input-row>
-            <input-row v-model="password" type="password" label="New password" :errors="errors.password" v-if="hasToken"></input-row>
-            <input-row v-model="password_confirmation" type="password" label="Confirm password" :errors="errors.password_confirmation" v-if="hasToken"></input-row>
-            <button-row :show-cancel="false" :submit-text="submitText" @submitClicked="submitReset"></button-row>
-        </div>
-    </card>
-</template>
 <script>
 import api from '../http/api'
 import is_validation_error from '../http/is_validation_error'
@@ -80,3 +67,16 @@ export default {
     }
 }
 </script>
+<template>
+    <card title="Reset Your Password" class="w-2/3 mx-auto">
+        <div class="p-2 rounded border border-green-300 bg-green-100 text-green-700" v-if="successMessage">
+            {{successMessage}}
+        </div>
+        <div v-else>
+            <input-row v-model="email" type="text" label="Email" :errors="errors.email"></input-row>
+            <input-row v-model="password" type="password" label="New password" :errors="errors.password" v-if="hasToken"></input-row>
+            <input-row v-model="password_confirmation" type="password" label="Confirm password" :errors="errors.password_confirmation" v-if="hasToken"></input-row>
+            <button-row :show-cancel="false" :submit-text="submitText" @submitClicked="submitReset"></button-row>
+        </div>
+    </card>
+</template>

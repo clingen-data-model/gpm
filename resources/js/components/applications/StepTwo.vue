@@ -1,21 +1,3 @@
-<template>
-    <BaseStep
-        :step="2"
-        :document-type="2"
-        document-name="Draft Specifications"
-        :document-gets-reviewed="false"
-        approve-button-label="Approve Draft Specifications"
-        title="Draft ACMG Guideline Specifications"
-        @updated="$emit('updated')"
-    >
-        <template v-slot:sections>
-            <div class="application-section screen-block">
-                <h2>Draft Specifications</h2>
-                <SpecificationsSection :doc-type-id="2" />
-            </div>
-        </template>
-    </BaseStep>
-</template>
 <script>
 import {mapGetters} from 'vuex'
 import BaseStep from '@/components/applications/BaseStep.vue'
@@ -49,3 +31,21 @@ export default {
     }
 }
 </script>
+<template>
+    <BaseStep
+        :step="2"
+        :document-type="2"
+        document-name="Draft Specifications"
+        :document-gets-reviewed="false"
+        approve-button-label="Approve Draft Specifications"
+        title="Draft ACMG Guideline Specifications"
+        @updated="$emit('updated')"
+    >
+        <template v-slot:sections>
+            <div class="application-section screen-block">
+                <h2>Draft Specifications</h2>
+                <SpecificationsSection :doc-type-id="2" />
+            </div>
+        </template>
+    </BaseStep>
+</template>

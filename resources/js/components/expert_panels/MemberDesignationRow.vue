@@ -1,32 +1,3 @@
-<style lang="postcss" scoped>
-    td[colgroup=biocurator] {
-        @apply bg-blue-50;
-    }
-    tr:nth-child(odd) > td[colgroup=biocurator] {
-        @apply bg-blue-100;
-    }
-</style>
-<template>
-    <tr>
-        <td>{{workingCopy.person.first_name}}</td>
-        <td>{{workingCopy.person.last_name}}</td>
-        <td colgroup="biocurator">
-            <input type="checkbox" v-model="biocurator" :disabled="!canEdit" @input="debounceSave">
-        </td>
-        <td colgroup="biocurator">
-            <input type="checkbox" v-model="workingCopy.training_level_1" :disabled="!canEdit" @input="debounceSave">
-        </td>
-        <td colgroup="biocurator">
-            <input type="checkbox" v-model="workingCopy.training_level_2" :disabled="!canEdit" @input="debounceSave">
-        </td>
-        <td>
-            <input type="checkbox" v-model="biocuratorTrainer" :disabled="!canEdit" @input="debounceSave">
-        </td>
-        <td>
-            <input type="checkbox" v-model="coreApprovalMember" :disabled="!canEdit" @input="debounceSave">
-        </td>
-    </tr>
-</template>
 <script>
 import GroupMember from '@/domain/group_member'
 import {debounce} from 'lodash-es'
@@ -163,3 +134,32 @@ export default {
     }
 }
 </script>
+<template>
+    <tr>
+        <td>{{workingCopy.person.first_name}}</td>
+        <td>{{workingCopy.person.last_name}}</td>
+        <td colgroup="biocurator">
+            <input type="checkbox" v-model="biocurator" :disabled="!canEdit" @input="debounceSave">
+        </td>
+        <td colgroup="biocurator">
+            <input type="checkbox" v-model="workingCopy.training_level_1" :disabled="!canEdit" @input="debounceSave">
+        </td>
+        <td colgroup="biocurator">
+            <input type="checkbox" v-model="workingCopy.training_level_2" :disabled="!canEdit" @input="debounceSave">
+        </td>
+        <td>
+            <input type="checkbox" v-model="biocuratorTrainer" :disabled="!canEdit" @input="debounceSave">
+        </td>
+        <td>
+            <input type="checkbox" v-model="coreApprovalMember" :disabled="!canEdit" @input="debounceSave">
+        </td>
+    </tr>
+</template>
+<style lang="postcss" scoped>
+    td[colgroup=biocurator] {
+        @apply bg-blue-50;
+    }
+    tr:nth-child(odd) > td[colgroup=biocurator] {
+        @apply bg-blue-100;
+    }
+</style>

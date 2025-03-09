@@ -1,21 +1,3 @@
-<template>
-    <div>
-        <div v-if="shouldBeTruncated" :class="{'xl:flex justify-between': !showComplete}">
-            <div>
-                {{truncatedValue}}<span v-show="!showComplete">...&nbsp;&nbsp;</span><span v-show="showComplete">{{restOfValue}}</span>
-            </div>
-            <button 
-                class="border-0 text-blue-500 underline text-xs" 
-                @click="showComplete=!showComplete"
-            >
-                {{buttonLabel}}
-            </button>
-        </div>
-        <div v-else>
-            {{value}}
-        </div>
-    </div>
-</template>
 <script>
 export default {
     name: 'TruncateExpander',
@@ -53,3 +35,21 @@ export default {
     }
 }
 </script>
+<template>
+    <div>
+        <div v-if="shouldBeTruncated" :class="{'xl:flex justify-between': !showComplete}">
+            <div>
+                {{truncatedValue}}<span v-show="!showComplete">...&nbsp;&nbsp;</span><span v-show="showComplete">{{restOfValue}}</span>
+            </div>
+            <button 
+                class="border-0 text-blue-500 underline text-xs" 
+                @click="showComplete=!showComplete"
+            >
+                {{buttonLabel}}
+            </button>
+        </div>
+        <div v-else>
+            {{value}}
+        </div>
+    </div>
+</template>
