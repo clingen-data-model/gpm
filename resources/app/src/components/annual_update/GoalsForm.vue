@@ -42,6 +42,7 @@
         </transition>
 
         <input-row
+            v-if="version < 2024"
             label="Please list any chairs that have led the EP for 3 or more years:"
             vertical
             :errors="errors.long_term_chairs"
@@ -66,6 +67,11 @@ export default {
         errors: {
             type: Object,
             required: true
+        },
+        version: {
+            type: Number,
+            required: false,
+            default: 0,
         },
     },
     emits: [ ...mirror.emits ],

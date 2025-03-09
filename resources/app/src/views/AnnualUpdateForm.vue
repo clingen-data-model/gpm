@@ -109,7 +109,7 @@ export default {
                     goals: null,
                     cochair_commitment: null,
                     cochair_commitment_details: null,
-                    long_term_chairs: null,
+                    long_term_chairs: null, // obsolete 2024
                     // FundingForm // obsolete 2024
                     applied_for_funding: null,
                     funding: null,
@@ -259,6 +259,7 @@ export default {
                         delete mergedData.funding_thoughts;
                         delete mergedData.published_count;
                         delete mergedData.approved_unpublished_count;
+                        delete mergedData.long_term_chairs;
                         mergedData.funding = mergedData.funding_other_details;
                     }
                     reviewData.data = mergedData;
@@ -358,7 +359,7 @@ export default {
                     </app-section>
 
                     <app-section title="Goals for next year">
-                        <goals-form v-model="annualUpdate" :errors="errors" />
+                        <goals-form :version="year" v-model="annualUpdate" :errors="errors" />
                     </app-section>
 
                     <app-section v-if="year < 2024" title="Additional Funding">

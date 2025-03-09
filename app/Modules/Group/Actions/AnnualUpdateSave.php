@@ -78,7 +78,7 @@ class AnnualUpdateSave
             'goals',
             'cochair_commitment',
             'cochair_commitment_details',
-            'long_term_chairs',
+            'long_term_chairs', // obsolete 2024
             // FundingForm
             'applied_for_funding', // obsolete 2024
             'funding', // obsolete 2024
