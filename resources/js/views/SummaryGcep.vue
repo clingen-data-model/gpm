@@ -10,6 +10,6 @@ export default {
 </script>
 <template>
   <div>
-    <ApplicationsSummaryTable :expertPanelTypeId="1" />
+    <ApplicationsSummaryTable :expert-panel-type-id="1" />
   </div>
 </template>

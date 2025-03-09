@@ -139,7 +139,7 @@ export default {
           <date-input
             v-if="type == 'date'"
             ref="input"
-            :modelValue="modelValue"
+            :model-value="modelValue"
             :disabled="disabled"
             :readonly="$attrs.readonly"
             :name="name"
@@ -169,7 +169,7 @@ export default {
             <radio-button
               v-for="option in options"
               :key="option.value"
-              :modelValue="modelValue"
+              :model-value="modelValue"
               :label="option.label || sentenceCase(option.value)"
               :value="option.value"
               :disabled="disabled"

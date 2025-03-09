@@ -77,7 +77,7 @@ export default {
       </ul> 
     </div>
         
-    <button-row submitText="Delete Log Entry" @canceled="$emit('canceled')" @submitted="deleteLogEntry" />
+    <button-row submit-text="Delete Log Entry" @canceled="$emit('canceled')" @submitted="deleteLogEntry" />
   </div>
 </template>
 <style lang="postcss" scope>

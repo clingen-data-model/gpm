@@ -14,7 +14,6 @@ export default antfu(
         rules: {
             'vue/require-explicit-emits': 'off',
             'vue/eqeqeq': 'off',
-            'vue/attribute-hyphenation': 'off',
             'vue/order-in-components': 'off',
             'jsonc/no-useless-escape': 'off',
             'perfectionist/sort-imports': 'off',

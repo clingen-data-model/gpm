@@ -107,7 +107,7 @@ export default {
                 entry: '',
                 assigned_to: null,
                 assigned_to_name: null,
-            };      
+            };
         },
         findAction () {
             if (this.id === null) {
@@ -137,9 +137,9 @@ export default {
             try {
                 if (this.newAction.id) {
                     await this.$store.dispatch(
-                        'applications/updateNextAction', 
+                        'applications/updateNextAction',
                         {
-                            application: this.application, 
+                            application: this.application,
                             updatedAction: this.newAction,
                         }
                     );
@@ -147,9 +147,9 @@ export default {
                     this.clearForm();
                 } else {
                     await this.$store.dispatch(
-                        'applications/addNextAction', 
+                        'applications/addNextAction',
                         {
-                            application: this.application, 
+                            application: this.application,
                             nextActionData: this.newAction
                         }
                     );
@@ -171,7 +171,7 @@ export default {
 
     <StepInput v-if="application.expert_panel_type_id == 2" v-model="newAction.step" :errors="errors.step" />
 
-    <input-row v-model="newAction.target_date" label="Target" Date="" :errors="errors.target_date" type="date" />
+    <input-row v-model="newAction.target_date" label="Target Date" :errors="errors.target_date" type="date" />
 
     <input-row label="Entry" :errors="errors.entry">
       <RichTextEditor v-model="newAction.entry" />
@@ -195,8 +195,8 @@ export default {
 
     <div class="ml-4" />
 
-    <checkbox  
-      v-model="completed" 
+    <checkbox
+      v-model="completed"
       label="This is already completed"
       class="ml-36"
     />

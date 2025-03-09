@@ -34,7 +34,7 @@ export default {
 <template>
   <input-row 
     label="Step" 
-    :modelValue="modelValue" 
+    :model-value="modelValue" 
     :errors="errors.step"
     type="select" 
     :options="stepOptions" 
