@@ -97,7 +97,7 @@ export default {
             <select v-model="newDocument.document_type_id">
                 <option :value="null">Select...</option>
                 <option :value="type.id" v-for="type in documentTypes" :key="type.id">
-                    {{type.long_name}}
+                    {{ type.long_name }}
                 </option>
             </select>
         </input-row>

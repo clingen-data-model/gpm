@@ -106,11 +106,11 @@ export default {
                 <group-breadcrumbs :group="group" />
                 <h1 class="border-b-0 flex justify-between items-start mb-0">
                     <div>
-                        {{group.displayName}} - Application
+                        {{ group.displayName }} - Application
                         <span v-if="hasPermission('groups-manage')">
-                            <note class="inline">group: {{group.id}}</note>
+                            <note class="inline">group: {{ group.id }}</note>
                             <span class="note">&nbsp;|&nbsp;</span>
-                            <note class="inline">expert_panel: {{group.expert_panel.id}}</note>
+                            <note class="inline">expert_panel: {{ group.expert_panel.id }}</note>
                         </span>
                     </div>
 
@@ -142,7 +142,7 @@ export default {
                     </div>
                     <div class="text-sm bottom-0">
                         <div v-if="saving">Saving...</div>
-                        <div v-else>Last saved at {{formatTime(lastSavedAt)}}</div>
+                        <div v-else>Last saved at {{ formatTime(lastSavedAt) }}</div>
                     </div>
                 </template>
             </ApplicationMenu>
@@ -153,7 +153,7 @@ export default {
                         class="relative mt-4 px-4 z-50"
                         variant="success"
                     >
-                        <p class="text-lg">Your application was submitted on {{formatDate(group.expert_panel.pendingSubmission.created_at)}}.</p>
+                        <p class="text-lg">Your application was submitted on {{ formatDate(group.expert_panel.pendingSubmission.created_at) }}.</p>
                         <p>You cannot update your application while waiting approval.</p>
                         <p>The approval committee will respond soon.</p>
                         <p>

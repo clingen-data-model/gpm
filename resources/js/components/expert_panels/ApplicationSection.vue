@@ -37,7 +37,7 @@ export default {
         <div class="application-section">
             <header class="mb-2 flex justify-between">
                 <slot name="title">
-                    <h2>{{title}}</h2>
+                    <h2>{{ title }}</h2>
                 </slot>
                 <RequirementsBadge v-if="id" :section="section" :group="group"></RequirementsBadge>
             </header>

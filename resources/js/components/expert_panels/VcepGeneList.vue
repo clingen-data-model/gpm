@@ -241,8 +241,8 @@ export default {
                         <!-- <transition-group name="slide-fade-down"> -->
                             <tr v-for="gene in orderedGenes" :key="gene.id">
                                 <template v-if="!gene.edit">
-                                    <td>{{gene.gene_symbol}}</td>
-                                    <td>{{gene.disease_name}}</td>
+                                    <td>{{ gene.gene_symbol }}</td>
+                                    <td>{{ gene.disease_name }}</td>
                                     <!-- <td>{{formatDate(gene.date_approved)}}</td> -->
                                     <td
                                         v-if="canEdit"
@@ -306,7 +306,7 @@ export default {
             </table>
         </div>
         <modal-dialog v-model="showConfirmRemove" title="Confirm gene/disease pair delete.">
-            <p>You are about to delete the gene/disease pair {{selectedGene.gene_symbol}}/{{selectedGene.disease_name}}.  Are you sure you want to continue?</p>
+            <p>You are about to delete the gene/disease pair {{ selectedGene.gene_symbol }}/{{ selectedGene.disease_name }}.  Are you sure you want to continue?</p>
             <button-row
                 submit-text="Yes, delete it."
                 cancel-text="No, cancel"

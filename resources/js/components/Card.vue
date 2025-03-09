@@ -24,7 +24,7 @@ export default {
         <slot name="header">
             <div class="bg-gray-200 px-4 py-2 sm:flex justify-between border border-gray-300 rounded-t" v-if="title || $slots.title">
                 <slot name="title">
-                     <h2>{{title}}</h2>
+                     <h2>{{ title }}</h2>
                 </slot>
                 <slot name="header-right"></slot>
             </div>

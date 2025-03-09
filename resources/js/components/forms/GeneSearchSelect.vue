@@ -42,16 +42,16 @@ export default {
     >
         <template #selection-label="{selection}">
             <div v-if="typeof selection == 'object'">
-                {{selection.gene_symbol}}
+                {{ selection.gene_symbol }}
             </div>
-            <div v-else>{{selection}}</div>
+            <div v-else>{{ selection }}</div>
         </template>
         <template #option="{option}">
             <div v-if="typeof option == 'object'">
-                {{option.gene_symbol}}
+                {{ option.gene_symbol }}
             </div>
             <div v-else>
-                {{option}}
+                {{ option }}
             </div>
         </template>
     </SearchSelect>

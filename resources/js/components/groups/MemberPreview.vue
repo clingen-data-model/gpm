@@ -45,13 +45,13 @@ export default {
         <div class="md:flex flex-wrap space-x-4 text-sm">
             <div>
                 <ProfilePicture :person="member.person" style="width: 100px; height: 100px;" class="rounded" />
-                <note>member id: {{member.id}}</note>
+                <note>member id: {{ member.id }}</note>
             </div>
             <div class="flex-1 md:flex flex-wrap">
                 <div class="flex-1 mr-8">
-                    <dictionary-row label="Email">{{member.person.email}}</dictionary-row>
+                    <dictionary-row label="Email">{{ member.person.email }}</dictionary-row>
                     <dictionary-row label="Institution">
-                        {{member.person.institution ? member.person.institution.name : '--'}}
+                        {{ member.person.institution ? member.person.institution.name : '--' }}
                     </dictionary-row>
                     <dictionary-row label="Credentials">
                         <CredentialsView :person="member.person" />
@@ -64,14 +64,14 @@ export default {
                         :only="['notes']"
                     ></object-dictionary>
                         <dictionary-row label="Start - End">
-                            {{formatDate(member.start_date)}} - {{formatDate(member.end_date) || 'present'}}
+                            {{ formatDate(member.start_date) }} - {{ formatDate(member.end_date) || 'present' }}
                         </dictionary-row>
                 </div>
                 <div class="flex-1 mr-4">
                     <div class="mt-2">
                         <h4>Roles:</h4>
                         <div class="ml-2">
-                            {{member.roles.length > 0 ? member.roles.map(i => titleCase(i.name)).join(', ') : '--'}}
+                            {{ member.roles.length > 0 ? member.roles.map(i => titleCase(i.name)).join(', ') : '--' }}
                         </div>
                     </div>
                     <div v-if="member.hasRole('biocurator')">
@@ -89,7 +89,7 @@ export default {
                     <div class="mt-2">
                         <h4>Extra Permissions:</h4>
                         <div class="ml-2">
-                            {{member.permissions.length > 0 ? member.permissions.map(i => i.name).join(', ') : '--'}}
+                            {{ member.permissions.length > 0 ? member.permissions.map(i => i.name).join(', ') : '--' }}
                         </div>
                     </div>
                 </div>

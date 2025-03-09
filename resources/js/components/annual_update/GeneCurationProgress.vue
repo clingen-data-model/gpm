@@ -32,7 +32,7 @@ export default {
 
         <p>
             We will obtain information from the GCI and GeneTracker regarding completed curations, but please provide the additional information below regarding
-            curation work in the last year ({{lastYear}}). Estimates are acceptable.
+            curation work in the last year ({{ lastYear }}). Estimates are acceptable.
         </p>
         <input-row
             :disabled="isComplete"

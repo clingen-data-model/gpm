@@ -86,7 +86,7 @@ export default {
                 @click="toggleContents"
             >
                 <div class="font-bold">
-                    {{item.title}}
+                    {{ item.title }}
                     <icon-cheveron-right class="cheveron inline -mt-1" v-if="hasManySections" />
                 </div>
                 <badge v-if="item.isComplete(group)" color="green">
@@ -105,7 +105,7 @@ export default {
             </transition>
         </div>
         <div v-else class="label" @click="goToItem()">
-            {{item.title}}
+            {{ item.title }}
         </div>
     </div>
 </template>

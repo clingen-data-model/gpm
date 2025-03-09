@@ -21,10 +21,10 @@
 <template>
     <span>
         <span v-if="hasExpertises">
-            {{props.person.expertises.map(c => c.name).join(', ')}}
+            {{ props.person.expertises.map(c => c.name).join(', ') }}
         </span>
         <span v-else-if="props.legacyExpertise">
-            {{props.legacyExpertise}}
+            {{ props.legacyExpertise }}
             <note class="inline">(Legacy data)</note>
         </span>
         <span v-else>

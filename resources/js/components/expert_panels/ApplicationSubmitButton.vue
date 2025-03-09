@@ -109,7 +109,7 @@ export default {
             <popover hover arrow>
                 <template #content>
                     <div>
-                        <RequirementsItem  v-for="(req, idx) in evaledRequirements" :key="idx" :requirement="req" />
+                        <RequirementsItem v-for="(req, idx) in evaledRequirements" :key="idx" :requirement="req" />
                     </div>
                 </template>
                 <div>
@@ -130,7 +130,7 @@ export default {
             <transition name="fade">
                 <modal-dialog v-model="showSubmissionConfirmation" title="Submit your application">
                     <p class="text-lg">
-                        You are about to submit your {{submissionName}} application.
+                        You are about to submit your {{ submissionName }} application.
                     </p>
                     <static-alert class="text-md" variant="info">
                         Before submitting, please note:

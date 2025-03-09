@@ -61,7 +61,7 @@ export default {
                     <icon-cheveron-down v-if="expanded" class="-ml-1 mt-1" />
                 </div>
                 <slot name="title">
-                    <strong>{{title}}</strong>
+                    <strong>{{ title }}</strong>
                 </slot>
             </div>
         </div>

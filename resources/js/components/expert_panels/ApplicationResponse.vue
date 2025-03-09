@@ -43,12 +43,12 @@ const print = () => {
             <router-link :to="{name: 'GroupList'}" class="note">Groups</router-link>
             <span class="note"> &gt; </span>
             <router-link v-if="group.uuid" :to="{name: 'GroupDetail', params: {uuid: group.uuid}}" class="note">
-                {{group.displayName}}
+                {{ group.displayName }}
             </router-link>
         </div>
         <div class="application-step">
             <h1 class="flex items-center justify-between">
-                {{group.displayName}} - Group Definition
+                {{ group.displayName }} - Group Definition
                 <button class="btn btn-sm print:hidden" @click="print">
                     <strong>Print</strong>
                     &nbsp;
@@ -63,7 +63,7 @@ const print = () => {
 
         <div class="application-step print:hidden">
             <h1 v-if="group.expert_panel.definition_is_approved" class="print:hidden" >
-                {{group.displayName}} - Specifications and Pilot
+                {{ group.displayName }} - Specifications and Pilot
             </h1>
             <section v-if="group.expert_panel.definition_is_approved" class="print:hidden" >
                 <SpecificationsSection :doc-type-id="[3,4,7]" :readonly="true" />
@@ -76,7 +76,7 @@ const print = () => {
 
         <div class="application-step  page-break">
             <h1 v-if="group.expert_panel.has_approved_pilot">
-                {{group.displayName}} - Sustained Curation
+                {{ group.displayName }} - Sustained Curation
             </h1>
 
             <SustainedCurationReview />

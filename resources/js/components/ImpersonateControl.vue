@@ -78,10 +78,10 @@ export default {
                         placeholder="search by name, email, or numeric id"
                     >
                         <template #selection-label="{selection}">
-                            {{selection.name}} ({{selection.email}})
+                            {{ selection.name }} ({{ selection.email }})
                         </template>
                         <template #option="{option}">
-                            {{option.name}} ({{option.email}})
+                            {{ option.name }} ({{ option.email }})
                         </template>
                     </SearchSelect>
 
@@ -103,7 +103,7 @@ export default {
                     v-model="showProgress" 
                 >
                     <h3 class="text-center" v-if="selectedUser">
-                        {{progressMessage}}
+                        {{ progressMessage }}
                     </h3>
                     <p class="text-center"> 
                         The page will reload in a moment...

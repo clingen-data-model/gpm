@@ -121,7 +121,7 @@ export default {
         <data-table :fields="fields" :data="logEntries" v-model:sort="sort" v-else>
             <template #cell-id="{item}">
                 <div class="flex space-x-1" v-if="hasPermission('groups-manage')">
-                    <button class="btn btn-xs inline-block"  @click="editLogEntry(item)">
+                    <button class="btn btn-xs inline-block" @click="editLogEntry(item)">
                         <icon-edit width="12"></icon-edit>
                     </button>
                     <button 

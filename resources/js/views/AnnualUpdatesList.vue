@@ -79,7 +79,7 @@ export default {
       <h1 class="border-0 mb-0">
         Annual Updates for {{ selectedYear }}
       </h1>
-      {{formatDate(selectedStartDate)}} - {{formatDate(selectedEndDate)}}
+      {{ formatDate(selectedStartDate) }} - {{ formatDate(selectedEndDate) }}
       <select
         v-model="selectedWindow"
         class="font-normal text-md"

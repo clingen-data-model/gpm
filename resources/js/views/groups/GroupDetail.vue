@@ -519,7 +519,7 @@ export default {
                   :href="`/annual-updates/${group.expert_panel.annualUpdate.id}`"
                   target="annual update"
                 >
-                  View Annual Update for {{group.expert_panel.annualUpdate.window.for_year}}
+                  View Annual Update for {{ group.expert_panel.annualUpdate.window.for_year }}
                 </a>
             </section>
             <section class="border my-4 p-4 bg-red-100 border-red-200 rounded">

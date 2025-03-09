@@ -180,7 +180,7 @@ export default {
                                 :key="type.id"
                                 :value="type.id"
                             >
-                                {{type.long_name}}
+                                {{ type.long_name }}
                             </option>
                         </select>
                     </label>
@@ -205,9 +205,9 @@ export default {
                 </button>
             </template>
             <template #cell-filename="{item}">
-                {{item.filename}}
+                {{ item.filename }}
                 <span class="note">
-                    <em v-if="item.type.is_versioned && item.version">(version {{item.version}})</em>
+                    <em v-if="item.type.is_versioned && item.version">(version {{ item.version }})</em>
                     <em v-if="item.is_final"> FINAL</em>
                 </span>
             </template>

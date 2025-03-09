@@ -207,7 +207,7 @@ export default {
                     <p>Either edit this this institution or merge it into another.</p>
                 </div>
                 <div v-else>
-                    You are about to delete the {{currentItem.name}}
+                    You are about to delete the {{ currentItem.name }}
                     <button-row
                         submit-text="Delete"
                         @submitted="deleteItem"

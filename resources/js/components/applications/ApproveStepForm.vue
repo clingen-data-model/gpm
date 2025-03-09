@@ -96,7 +96,7 @@ export default {
 </script>
 <template>
     <form-container>
-        <h2>Approve Step {{application.current_step}}</h2>
+        <h2>Approve Step {{ application.current_step }}</h2>
 
         <input-row v-model="dateApproved" type="date" :errors="errors.date_approved" label="Date Approved"></input-row>
 
@@ -124,7 +124,7 @@ export default {
         <button-row>
             <button class="btn" @click="cancel">Cancel</button>
             <button class="btn blue" @click="save">
-                Approve step {{application.current_step}}
+                Approve step {{ application.current_step }}
                 <span v-if="notifyContacts">
                     and notify
                 </span>

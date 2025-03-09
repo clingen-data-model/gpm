@@ -40,6 +40,6 @@ import {computed} from 'vue';
 
 <template>
     <span v-if="summary">
-        {{authorString}}{{titleString}}<em>{{sourceString}}</em>{{summary.pubdate}}
+        {{ authorString }}{{ titleString }}<em>{{ sourceString }}</em>{{ summary.pubdate }}
     </span>
 </template>

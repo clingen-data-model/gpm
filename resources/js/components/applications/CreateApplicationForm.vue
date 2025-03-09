@@ -104,7 +104,7 @@ export default {
         <input-row label="CDWG" :errors="errors.cdwg_id">
             <select v-model="app.cdwg_id">
                 <option :value="null">Select...</option>
-                <option v-for="cdwg in cdwgs" :key="cdwg.id" :value="cdwg.id">{{cdwg.name}}</option>
+                <option v-for="cdwg in cdwgs" :key="cdwg.id" :value="cdwg.id">{{ cdwg.name }}</option>
             </select>
         </input-row>
         
@@ -120,7 +120,7 @@ export default {
                         v-model="app.expert_panel_type_id"
                         :id="`ep-${epType.id}-radio`"
                     >
-                    <div>{{epType.name}}</div>
+                    <div>{{ epType.name }}</div>
                 </label>
             </div>
         </input-row>

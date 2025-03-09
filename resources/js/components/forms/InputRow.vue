@@ -131,7 +131,7 @@ export default {
         <div :class="{'sm:flex': !vertical}">
             <div class="flex-none label-container flex-shrink" :class="labelContainerClass" v-show="showLabel">
                 <slot name="label" v-if="hasLabel" :class="resolvedLabelClass">
-                    <label>{{label}}{{colon}}</label>
+                    <label>{{ label }}{{ colon }}</label>
                 </slot>
             </div>
             <div class="flex-grow flex flex-col space-y-3">
@@ -188,7 +188,7 @@ export default {
                         <template v-for="option in options" :key="option.value">
                             <slot name="option-label" v-bind="option">
                                 <option :value="option.value">
-                                    {{option.label || sentenceCase(option.value)}}
+                                    {{ option.label || sentenceCase(option.value) }}
                                 </option>
                             </slot>
                         </template>

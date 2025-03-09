@@ -87,7 +87,7 @@ export default {
             vertical
             :disabled="isComplete"
         >
-            <template v-slot:label>
+            <template #label>
                 If you are having any difficulty adhering to any policies of
                 the&nbsp;<VcepProtocolLink/>, please describe here:
             </template>

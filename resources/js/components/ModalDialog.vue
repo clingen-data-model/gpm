@@ -134,7 +134,7 @@ export default {
             <header class="flex border-b pt-2 pb-2 justify-between items-center" ref="header">
                 <div class="px-4 pt-2">
                     <slot name="header">
-                        <h2 class="" v-if="title">{{title}}</h2>
+                        <h2 class="" v-if="title">{{ title }}</h2>
                     </slot>
                 </div>
                 <button

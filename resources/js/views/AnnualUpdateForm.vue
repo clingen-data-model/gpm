@@ -302,28 +302,28 @@ export default {
 <template>
     <div class="annual-update relative">
         <static-alert :variant="dueDateAlertVariant" class="mb-4" v-if="!annualUpdate.completed_at">
-            This annual update for {{window.for_year}} is due on {{formatDate(window.end)}}
+            This annual update for {{ window.for_year }} is due on {{ formatDate(window.end) }}
         </static-alert>
-        <static-alert  v-if="showLastYearLink" class="mb-4">
-            Refer to <a :href="`/annual-updates/${expertPanel.previous_year_annual_update.id}`"  class="font-bold" target="ann-up-responses">your responses from last year</a>.
+        <static-alert v-if="showLastYearLink" class="mb-4">
+            Refer to <a :href="`/annual-updates/${expertPanel.previous_year_annual_update.id}`" class="font-bold" target="ann-up-responses">your responses from last year</a>.
         </static-alert>
         <group-breadcrumbs :group="group" />
 
         <h1>
-            {{group.displayName}} - Annual Update for {{year}}
+            {{ group.displayName }} - Annual Update for {{ year }}
             <note class="font-normal">
-                Group ID: {{group.id}}
+                Group ID: {{ group.id }}
                 |
-                ExpertPanel ID: {{group.expert_panel.id}}
+                ExpertPanel ID: {{ group.expert_panel.id }}
                 |
-                AnnualUpdate ID: {{annualUpdate.id}}
+                AnnualUpdate ID: {{ annualUpdate.id }}
                 |
-                Last Saved: {{formatDateTime(lastSaved)}}
+                Last Saved: {{ formatDateTime(lastSaved) }}
             </note>
         </h1>
 
         <static-alert v-if="annualUpdate.completed_at" variant="success" class="mb-4">
-            Your annual update was submitted on {{formatDate(annualUpdate.completed_at)}}
+            Your annual update was submitted on {{ formatDate(annualUpdate.completed_at) }}
         </static-alert>
 
             <SubmitterInformation v-model="annualUpdate" :errors="errors" />
@@ -389,7 +389,7 @@ export default {
 
                         <VariantReanalysis v-model="annualUpdate" :errors="errors" />
 
-                        <VcepOngoingPlansUpdateForm v-model="annualUpdate" :errors="errors"  @updated="saveOngoingPlans"/>
+                        <VcepOngoingPlansUpdateForm v-model="annualUpdate" :errors="errors" @updated="saveOngoingPlans"/>
 
                         <MemberDesignationUpdate
                             :version="year"

@@ -163,7 +163,7 @@ export default {
         <ApplicationStep
             id="draft-specifications"
             title="Draft Specifications"
-            :disabled="group.expert_panel.current_step < 2  || group.expert_panel.hasPendingSubmission"
+            :disabled="group.expert_panel.current_step < 2 || group.expert_panel.hasPendingSubmission"
             :no-submit="true"
         >
             <AppSection>
@@ -174,7 +174,7 @@ export default {
         <ApplicationStep
             id="pilot-specifications"
             title="Pilot Specifications"
-            :disabled="group.expert_panel.current_step < 3  || group.expert_panel.hasPendingSubmission"
+            :disabled="group.expert_panel.current_step < 3 || group.expert_panel.hasPendingSubmission"
             :no-submit="true"
         >
             <AppSection>

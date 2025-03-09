@@ -158,7 +158,7 @@ export default {
             We can't seem to find your membership for this group id.  Please try refreshing.
         </card>
 
-        <card :title="coiTitle"  class="mx-auto relative" style="max-width:800px" v-else-if="codeIsValid">
+        <card :title="coiTitle" class="mx-auto relative" style="max-width:800px" v-else-if="codeIsValid">
             <CoiPolicy />
             <hr>
             <h2>COI</h2>
@@ -182,7 +182,7 @@ export default {
                             v-show="showQuestion(question)"
                         >
 
-                            <textarea  v-if="question.type == 'text'"
+                            <textarea v-if="question.type == 'text'"
                                 class="w-full h-24"
                                 v-model="response[question.name]"
                                 :name="question.name"
@@ -195,7 +195,7 @@ export default {
                                         :name="question.name"
                                         v-model="response[question.name]"
                                     >
-                                    <div>{{option.label}}</div>
+                                    <div>{{ option.label }}</div>
                                 </label>
                             </div>
 
@@ -216,6 +216,6 @@ export default {
             </div>
         </card>
 
-        <note class="container">GroupMemberId: {{groupMemberId}}</note>
+        <note class="container">GroupMemberId: {{ groupMemberId }}</note>
     </div>
 </template>

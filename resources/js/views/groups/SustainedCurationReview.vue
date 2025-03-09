@@ -63,7 +63,7 @@ export default {
     <div class="mb-8">
         <group-breadcrumbs :group="group" />
 
-        <h1>Review Sustained Curation Details for {{group.displayName}}</h1>
+        <h1>Review Sustained Curation Details for {{ group.displayName }}</h1>
 
         <p class="text-md-lg">Each time a new ACMG Guidelines Specification is approved we ask that your review your sustained curation information and make sure it's up to date and accurate.</p>
 

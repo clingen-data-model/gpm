@@ -143,7 +143,7 @@ export default {
                             class="block my-0 font-bold p-2 border border-gray-300 first:rounded-t-lg last:rounded-b-lg cursor-pointer hover:bg-blue-50 link"
                             :to="getCoiRoute(membership)"
                         >
-                            {{membership.group.display_name}}
+                            {{ membership.group.display_name }}
                         </router-link>
                     </div>
                 </div>
@@ -155,7 +155,7 @@ export default {
                             v-for="membership in person.membershipsWithPendingCois"
                             :key="membership.id"
                         >
-                            {{membership.group.display_name}}
+                            {{ membership.group.display_name }}
                         </li>
                     </ul>
                 </div>

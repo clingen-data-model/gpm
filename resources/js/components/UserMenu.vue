@@ -50,7 +50,7 @@ export default {
                 @click.stop="toggleMenu"
             >
                 <icon-cheveron-down></icon-cheveron-down>
-                {{user.name}} <span v-if="user.is_impersonating">*</span>
+                {{ user.name }} <span v-if="user.is_impersonating">*</span>
             </div>
             <transition name="slide-fade-down">
                 <div

@@ -53,7 +53,7 @@ export default {
       <div class="container mx-auto py-3 flex">
         <div id="main-menu" class="flex-grow">
           <div class="inline-block pr-4">
-            <router-link to="/" class="text-black hover:text-black">{{appName}}</router-link>
+            <router-link to="/" class="text-black hover:text-black">{{ appName }}</router-link>
           </div>
           <span v-if="$store.getters.isAuthed">
               <router-link 
@@ -125,11 +125,11 @@ export default {
         </div>
       </footer> -->
       <div v-if="hasRole('super-user')" class="container mx-auto note border-t mt-4 pt-4">
-          Build: {{$store.state.systemInfo.build.name}}
+          Build: {{ $store.state.systemInfo.build.name }}
           |
-          Commit: {{$store.state.systemInfo.build.commit || '--'}}
+          Commit: {{ $store.state.systemInfo.build.commit || '--' }}
           |
-          Env: {{$store.state.systemInfo.env}}
+          Env: {{ $store.state.systemInfo.env }}
       </div>
  
     </teleport>

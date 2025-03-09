@@ -13,6 +13,6 @@ export default {
 </script>
 <template>
     <div>
-        <pre>{{currentUser}}</pre>
+        <pre>{{ currentUser }}</pre>
     </div>
 </template>

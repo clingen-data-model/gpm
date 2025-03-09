@@ -83,9 +83,9 @@ export default {
         <ScreenTemplate :title="group.displayName" :breadcrumbs="breadcrumbs">
             <template #header-dev>
                 <note>
-                    Group ID: {{group.id}}
+                    Group ID: {{ group.id }}
                     |
-                    Expert Panel ID: {{group.expert_panel.id}}
+                    Expert Panel ID: {{ group.expert_panel.id }}
                 </note>
             </template>
             <template #header-right>

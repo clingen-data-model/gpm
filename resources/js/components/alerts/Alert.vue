@@ -56,7 +56,7 @@ export default {
         class="flex justify-between rounded px-3 py-2 my-2 alert-item shadow-lg" 
         :class="`alert-${alert.type}`"
         >
-        {{alert.message}}
+        {{ alert.message }}
         <button @click="clearAlertAndTimer" class="hover:underline">x</button>
     </div>
 </template>

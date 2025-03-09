@@ -116,12 +116,12 @@ export default {
             v-if="filteredNextActions.length > 0"
         >
             <template #cell-entry="{item}">
-                <div  v-html="item.entry"></div>
+                <div v-html="item.entry"></div>
             </template>
             <template #cell-assigned_to="{item}">
                 <div class="flex">
-                    {{item.assignee ? item.assignee.name : '??'}}&nbsp;
-                    <span v-if="item.assigned_to_name"> - {{item.assigned_to_name}}</span> 
+                    {{ item.assignee ? item.assignee.name : '??' }}&nbsp;
+                    <span v-if="item.assigned_to_name"> - {{ item.assigned_to_name }}</span> 
                 </div>
             </template>
             <template #cell-action="{item}">

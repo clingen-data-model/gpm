@@ -21,7 +21,7 @@ export default {
     >
         <icon-coi height="30" width="30"></icon-coi>
         <div>
-            <p>You have a pending <strong>COI</strong> disclosure for <strong>{{groupName}}</strong>.</p>
+            <p>You have a pending <strong>COI</strong> disclosure for <strong>{{ groupName }}</strong>.</p>
             <router-link
                 :to="{
                     name: 'alt-coi',

@@ -36,7 +36,7 @@ export default {
             <div class="">
                 <markdown-block v-if="notification.data.markdown" :markdown="notification.data.message" />
                 <div class="font-bold" v-else>
-                    {{notification.data.message}}
+                    {{ notification.data.message }}
                 </div>
             </div>
             <button @click="markRead" class="block">

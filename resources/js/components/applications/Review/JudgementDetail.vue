@@ -42,10 +42,10 @@
     <div v-if="userJudgement">
         <h3>
             Your Decision:
-            <badge :color="badgeVariant" size="lg">{{titleCase(userJudgement.decision)}}</badge>
+            <badge :color="badgeVariant" size="lg">{{ titleCase(userJudgement.decision) }}</badge>
         </h3>
         <div class="mt-2" v-if="userJudgement.notes">
-            <p><strong>Notes: </strong>{{userJudgement.notes}}</p>
+            <p><strong>Notes: </strong>{{ userJudgement.notes }}</p>
         </div>
         <div class="flex space-x-2">
             <button class="btn btn-xs" @click="initUpdate">Change Decision</button>

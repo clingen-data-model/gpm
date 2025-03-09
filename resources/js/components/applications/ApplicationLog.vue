@@ -126,7 +126,7 @@ export default {
 <template>
     <div>
         <div class="px-3 py-2 rounded border border-gray-300 text-gray-500 bg-gray-200" v-if="!hasLogEntries">
-            {{noResultsMessage}}
+            {{ noResultsMessage }}
         </div>
         <data-table :fields="fields" :data="filteredLogEntries" v-model:sort="sort" v-else>
             <template #cell-id="{item}">

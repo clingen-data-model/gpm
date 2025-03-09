@@ -74,15 +74,15 @@ export default {
         >
             <template #selection-label="{selection}">
                 <div>
-                    {{selection.first_name}} {{selection.last_name}} &lt;{{selection.email}}&gt;
+                    {{ selection.first_name }} {{ selection.last_name }} &lt;{{ selection.email }}&gt;
                 </div>
             </template>
             <template #option="{option}">
                 <div v-if="typeof option == 'object'">
-                    {{option.name}} &lt;{{option.email}}&gt;
+                    {{ option.name }} &lt;{{ option.email }}&gt;
                 </div>
                 <div v-else>
-                    {{option}}
+                    {{ option }}
                 </div>
             </template>
         </SearchSelect>

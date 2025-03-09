@@ -43,7 +43,7 @@ const showSendToChairsControl = computed(() => {
                 :step="step"
                 @stepApproved="() => {$emit('stepApproved'); $emit('updated')}"
             >
-                {{approveLabel}}
+                {{ approveLabel }}
             </StepApproveControl>
 
             <StepSendToChairsControl

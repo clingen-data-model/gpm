@@ -80,7 +80,7 @@ export default {
             @update:modelValue="$emit('update')"
         />
         <blockquote v-else>
-            {{group.expert_panel.curation_review_process_notes}}
+            {{ group.expert_panel.curation_review_process_notes }}
         </blockquote>
     </div>
 </template>

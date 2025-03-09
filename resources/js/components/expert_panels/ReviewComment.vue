@@ -115,9 +115,9 @@
             <div v-if="!showEditForm" class="relative">
                 <div class="flex justify-between items-start mb-1 rounded">
                     <div class="flex space-x-2 items-end">
-                        <strong class="block">{{comment.creator && comment.creator.name}}</strong>
+                        <strong class="block">{{ comment.creator && comment.creator.name }}</strong>
                         <badge class="block" :color="getVariant(comment)" size="xxs">
-                            {{comment.type && titleCase(comment.type.name)}}
+                            {{ comment.type && titleCase(comment.type.name) }}
                         </badge>
                         <popper hover arrow content="Resolved" v-if="comment.is_resolved">
                             <icon-checkmark
@@ -129,7 +129,7 @@
                     <div class="flex space-x-2">
                         <dropdown-menu hideCheveron v-if="canEdit">
                             <DropdownItem @click="showEditForm = true">Edit</DropdownItem>
-                            <DropdownItem @click="toggleResolution">{{comment.is_resolved ? 'Mark unresolved' : 'Resolve'}}</DropdownItem>
+                            <DropdownItem @click="toggleResolution">{{ comment.is_resolved ? 'Mark unresolved' : 'Resolve' }}</DropdownItem>
                             <DropdownItem @click="initDelete">Delete</DropdownItem>
                         </dropdown-menu>
                     </div>
@@ -168,9 +168,9 @@
                 </li>
             </ul>
             <button class="link text-sm" v-if="comment.comments_count > 0" @click="toggleReplies">
-                {{showReplyList ? 'Hide' : 'Show'}}
-                {{comment.comments_count}}
-                {{comment.comments_count > 1 ? 'replies' : 'reply'}}
+                {{ showReplyList ? 'Hide' : 'Show' }}
+                {{ comment.comments_count }}
+                {{ comment.comments_count > 1 ? 'replies' : 'reply' }}
             </button>
             <div v-show="showReplyForm" class="border-l-2 mt-2 px-2 py-1 bg-gray-100/50">
                 <strong>Your Reply</strong>

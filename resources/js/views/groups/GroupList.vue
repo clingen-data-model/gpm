@@ -192,7 +192,7 @@ export default {
                                     class="link"
                                     @click.stop
                                 >
-                                    {{coordinator.person.name}}
+                                    {{ coordinator.person.name }}
                                 </router-link>
                             </span>
                         </template>

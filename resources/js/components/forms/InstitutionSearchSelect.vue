@@ -103,18 +103,18 @@ export default {
         >
             <template #selection-label="{selection}">
                 <div>
-                    {{selection.name}} <span v-if="selection.abbreviation">({{selection.abbreviation}})</span>
+                    {{ selection.name }} <span v-if="selection.abbreviation">({{ selection.abbreviation }})</span>
                 </div>
             </template>
             <template #option="{option}">
                 <div v-if="typeof option == 'object'">
-                    {{option.name}} <span v-if="option.abbreviation">({{option.abbreviation}})</span>
+                    {{ option.name }} <span v-if="option.abbreviation">({{ option.abbreviation }})</span>
                 </div>
                 <div v-else>
-                    {{option}}
+                    {{ option }}
                 </div>
             </template>
-            <template #fixedBottomOption  v-if="allowAdd">
+            <template #fixedBottomOption v-if="allowAdd">
                 <button class="font-bold link cursor-pointer" @click="initAddNew">Add your institution</button>
             </template>
         </SearchSelect>

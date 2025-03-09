@@ -72,54 +72,54 @@ export default {
                     :key="key"
                     :label="titleCase(key)"
                 >
-                    {{person[key]}}
+                    {{ person[key] }}
                 </dictionary-row>
 
                 <section class="mt-4 border-t pt-4">
                     <h3>Profile</h3>
                     <div>
-                        <dictionary-row class="pb-2" label-class="w-40" label="Institution">{{person.institutionName}}</dictionary-row>
+                        <dictionary-row class="pb-2" label-class="w-40" label="Institution">{{ person.institutionName }}</dictionary-row>
                         <dictionary-row class="pb-2" label-class="w-40" label="Credentials">
                             <CredentialsView :person="person"></CredentialsView>
                         </dictionary-row>
                         <dictionary-row class="pb-2" label-class="w-40" label="Expertise">
                             <ExpertisesView :person="person" />
                         </dictionary-row>
-                        <dictionary-row class="pb-2" label-class="w-40" label="Biography">{{person.biography}}</dictionary-row>
+                        <dictionary-row class="pb-2" label-class="w-40" label="Biography">{{ person.biography }}</dictionary-row>
                     </div>
                 </section>
 
                 <section class="mt-4 border-t pt-4">
                     <div v-if="userIsPerson(person) || hasRole('super-admin') || hasRole('admin')">
-                        <dictionary-row class="pb-2" label-class="w-40" label="Phone">{{person.phone}}</dictionary-row>
+                        <dictionary-row class="pb-2" label-class="w-40" label="Phone">{{ person.phone }}</dictionary-row>
                         <dictionary-row class="pb-2" label-class="w-40" label="Address">
                             <div>
-                                <div v-if="person.street1">{{person.street1}}</div>
-                                <div v-if="person.street2">{{person.street2}}</div>
+                                <div v-if="person.street1">{{ person.street1 }}</div>
+                                <div v-if="person.street2">{{ person.street2 }}</div>
                                 <div>
-                                    <span v-if="person.city">{{person.city}},</span> <span v-if="person.state">{{person.state}}</span> <span v-if="person.zip">{{person.zip}}</span>
+                                    <span v-if="person.city">{{ person.city }},</span> <span v-if="person.state">{{ person.state }}</span> <span v-if="person.zip">{{ person.zip }}</span>
                                 </div>
                             </div>
                         </dictionary-row>
                     </div>
                     <dictionary-row class="pb-2" label-class="w-40" label="Country">
-                        {{person.country ? person.country.name : ''}}
+                        {{ person.country ? person.country.name : '' }}
                     </dictionary-row>
                     <dictionary-row class="pb-2" label-class="w-40" label="Timezone">
-                        {{person.timezone}}
+                        {{ person.timezone }}
                     </dictionary-row>
                 </section>
 
                 <section class="mt-4 border-t pt-4" v-if="hasPermission('people-manage')">
                     <h3>Metadata</h3>
-                    <dictionary-row class="pb-2" label-class="w-40" label="Uuid">{{person.uuid}}</dictionary-row>
-                    <dictionary-row class="pb-2" label-class="w-40" label="Numeric ID">{{person.id}}</dictionary-row>
+                    <dictionary-row class="pb-2" label-class="w-40" label="Uuid">{{ person.uuid }}</dictionary-row>
+                    <dictionary-row class="pb-2" label-class="w-40" label="Numeric ID">{{ person.id }}</dictionary-row>
 
-                    <dictionary-row class="pb-2" label-class="w-40" label="User ID">{{person.user_id || 'Account not activated.'}}</dictionary-row>
+                    <dictionary-row class="pb-2" label-class="w-40" label="User ID">{{ person.user_id || 'Account not activated.' }}</dictionary-row>
                     <dictionary-row class="pb-2" label-class="w-40" v-if="person.invite" label="Invite Code">
-                        {{person.invite.code}}
+                        {{ person.invite.code }}
                         &nbsp;
-                        <span v-if="person.invite.redeemed_at"> redeemed on {{formatDate(person.invite.redeemed_at)}}</span>
+                        <span v-if="person.invite.redeemed_at"> redeemed on {{ formatDate(person.invite.redeemed_at) }}</span>
                     </dictionary-row>
 
                     <dictionary-row class="pb-2" label-class="w-40"
@@ -127,7 +127,7 @@ export default {
                         :key="key"
                         :label="key"
                     >
-                        {{formatDate(person[key])}}
+                        {{ formatDate(person[key]) }}
                     </dictionary-row>
 
                     <div v-if="hasPermission('people-manage') || userIsPerson(person)"

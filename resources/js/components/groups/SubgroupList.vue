@@ -35,7 +35,7 @@ export default {
                     <a :href="`/api/report/groups/${group.uuid}/subgroups-coi-report`">COI Report</a>
                     <note class="inline"> (PDF)</note>
                 </dropdown-item> -->
-                <dropdown-item  class="text-right" v-if="showMemberReportButton">
+                <dropdown-item class="text-right" v-if="showMemberReportButton">
                     <a :href="exportUrl">Member Export</a>
                     <note class="inline"> (CSV)</note>
                 </dropdown-item>
@@ -46,29 +46,29 @@ export default {
             <popover hover arrow placement="left" class="block w-full">
               <template #content>
                 <div class="text-xs">
-                  <dictionary-row label="Status" label-class="font-bold" label-width="8em">{{childGroup.status.name}}</dictionary-row>
+                  <dictionary-row label="Status" label-class="font-bold" label-width="8em">{{ childGroup.status.name }}</dictionary-row>
                   <dictionary-row v-if="childGroup.chairs.length > 0"
                       label="Chairs"
                       label-class="font-bold"
                       label-width="8em"
                       class="my-1"
                   >
-                    {{childGroup.coordinators.map(c => c.person.name).join(', ')}}
+                    {{ childGroup.coordinators.map(c => c.person.name).join(', ') }}
                   </dictionary-row>
                   <dictionary-row v-if="childGroup.coordinators.length > 0"
                       label="Coordinators"
                       label-class="font-bold"
                       label-width="8em"
                   >
-                    {{childGroup.coordinators.map(c => c.person.name).join(', ')}}
+                    {{ childGroup.coordinators.map(c => c.person.name).join(', ') }}
                   </dictionary-row>
                   <dictionary-row label="# Members" label-width="8em" label-class="font-bold">
-                    {{childGroup.members_count}}
+                    {{ childGroup.members_count }}
                   </dictionary-row>
                 </div>
               </template>
               <router-link :to="{name: 'GroupDetail', params: {uuid: childGroup.uuid}}" class="block w-full">
-                {{childGroup.name}}
+                {{ childGroup.name }}
               </router-link>
             </popover>
           </li>

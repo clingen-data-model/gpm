@@ -56,7 +56,7 @@
         <div class="flex space-x-4">
             <ul class="item-list space-y-2 bg-gray-100 p-4 w-1/4" v-remaining-height>
                 <li v-for="rpt in reports" :key="rpt.url">
-                    <download-link :url="rpt.url" :title="`Download ${rpt.name} Report`">{{rpt.name}}</download-link>
+                    <download-link :url="rpt.url" :title="`Download ${rpt.name} Report`">{{ rpt.name }}</download-link>
                 </li>
             </ul>
             <div class="border-left pl-4 flex-grow">
@@ -64,10 +64,10 @@
                 <table>
                     <tr v-for="row in summaryData" :key="row[0]">
                         <th>
-                            {{row[0]}}
+                            {{ row[0] }}
                         </th>
                         <td class="text-right">
-                            {{row[1]}}
+                            {{ row[1] }}
                         </td>
                     </tr>
                 </table>

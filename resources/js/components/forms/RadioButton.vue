@@ -46,7 +46,7 @@ export default {
         </slot>
         <div>
             <slot>
-                {{label}}
+                {{ label }}
             </slot>
         </div>
     </label>

@@ -288,8 +288,8 @@ export default {
                     </input-row>
                 </div>
                 <dictionary-row label="Affiliation ID" v-else>
-                    <span v-if="group.expert_panel.affiliation_id">{{group.expert_panel.affiliation_id}}</span>
-                    <span v-else class="text-gray-400">{{'Not yet assigend'}}</span>
+                    <span v-if="group.expert_panel.affiliation_id">{{ group.expert_panel.affiliation_id }}</span>
+                    <span v-else class="text-gray-400">{{ 'Not yet assigend' }}</span>
                 </dictionary-row>
             </div>
             <div v-else>

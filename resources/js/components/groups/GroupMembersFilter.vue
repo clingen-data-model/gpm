@@ -39,7 +39,7 @@ export default {
                         :key="role.id"
                         :value="role.id"
                     >
-                        {{role.name}}
+                        {{ role.name }}
                     </option>
                 </select>
             </input-row>

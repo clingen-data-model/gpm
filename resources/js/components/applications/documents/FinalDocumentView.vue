@@ -108,7 +108,7 @@ export default {
         <dictionary-row label="Final Document">
             <div>
                 <a :href="finalDocument.download_url" class="text-blue-500 underline" v-if="finalDocument.filename">
-                    {{finalDocument.filename}}
+                    {{ finalDocument.filename }}
                 </a>
                 <span v-else>none on file</span>
             </div>
@@ -116,7 +116,7 @@ export default {
         
         <dictionary-row label="Date Received">
             <div v-show="!editDateReceived">
-                {{firstDateReceived}}
+                {{ firstDateReceived }}
                 <edit-icon-button @click="initEditReceived"></edit-icon-button>
             </div>
             <div v-show="editDateReceived">

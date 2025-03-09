@@ -77,9 +77,9 @@ export default {
                 </thead>
                 <tbody>
                     <tr v-for="spec in specifications" :key="spec.id">
-                        <td>{{spec.name}}</td>
-                        <td>{{spec.status}}</td>
-                        <td>{{formatDate(spec.updated_at)}}</td>
+                        <td>{{ spec.name }}</td>
+                        <td>{{ spec.status }}</td>
+                        <td>{{ formatDate(spec.updated_at) }}</td>
                         <td>
                             <ul>
                                 <!-- <li>

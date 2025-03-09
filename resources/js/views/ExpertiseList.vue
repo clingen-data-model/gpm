@@ -162,7 +162,7 @@ export default {
                     <p>Either edit this this expertise or remove all people that have claimed it as an expertise.</p>
                 </div>
                 <div v-else>
-                    You are about to delete the {{currentItem.name}}
+                    You are about to delete the {{ currentItem.name }}
                     <button-row
                         submit-text="Delete"
                         @submitted="deleteItem"

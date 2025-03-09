@@ -59,9 +59,9 @@ export default {
 </script>
 <template>
     <form-container>
-        <h2 class="text-lg border-b pb-1 mb-3">Edit {{type}} version {{document.version}} Info</h2>
+        <h2 class="text-lg border-b pb-1 mb-3">Edit {{ type }} version {{ document.version }} Info</h2>
         <dictionary-row label="File">
-            {{document.filename}}
+            {{ document.filename }}
         </dictionary-row>
         <input-row v-model="docProxy.date_received" label="Date Received" type="date" :errors="errors.date_received"></input-row>
         <input-row :errors="errors.notes" label="Notes">

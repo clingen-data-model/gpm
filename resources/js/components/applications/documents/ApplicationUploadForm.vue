@@ -151,16 +151,16 @@ export default {
             <tbody>
                 <tr v-for="doc in documents" :key="doc.id" class="p-1 border">
                     <td>
-                        <a :href="doc.download_url">{{doc.filename}}</a>
-                        <span class="note"> (v. {{doc.version}})</span>
+                        <a :href="doc.download_url">{{ doc.filename }}</a>
+                        <span class="note"> (v. {{ doc.version }})</span>
                     </td>
-                    <td v-if="docTypeIsArray">{{doc.type.long_name}}</td>
-                    <td>{{formatDate(doc.created_at)}}</td>
+                    <td v-if="docTypeIsArray">{{ doc.type.long_name }}</td>
+                    <td>{{ formatDate(doc.created_at) }}</td>
                     <td>
                         <dropdown-menu hideCheveron>
                             <template #label> <button class="btn btn-xs">&hellip;</button></template>
                             <dropdown-item @click="initDownload(doc)">Download</dropdown-item>
-                            <dropdown-item @click="initDelete(doc)"  v-if="hasAnyPermission(['ep-applications-manage', ['application-edit', group]])">Delete</dropdown-item>
+                            <dropdown-item @click="initDelete(doc)" v-if="hasAnyPermission(['ep-applications-manage', ['application-edit', group]])">Delete</dropdown-item>
                         </dropdown-menu>
                     </td>
                 </tr>

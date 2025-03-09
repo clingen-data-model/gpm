@@ -38,7 +38,7 @@ export default {
     <div>
         <h2 class="block-title">Are you sure you want to delete this application?</h2>
         <p>
-            You are about to delete the application for <strong class="underline">{{application.name}}</strong>.
+            You are about to delete the application for <strong class="underline">{{ application.name }}</strong>.
         </p>
         <p>This action cannot be undone.</p> 
         <p>Are you sure you want to continue?</p>

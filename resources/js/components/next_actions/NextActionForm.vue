@@ -183,7 +183,7 @@ export default {
                 <option v-for="i in assignees" :key="i.id"
                     :value="i.id"
                 >
-                    {{i.name}}
+                    {{ i.name }}
                 </option>
             </select>
             &nbsp;&nbsp;

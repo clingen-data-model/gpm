@@ -153,7 +153,7 @@ export default {
 </script>
 <template>
     <div>
-        <h1>{{user.person.name || 'loading...'}}</h1>
+        <h1>{{ user.person.name || 'loading...' }}</h1>
 
         <object-dictionary :obj="userInfo"></object-dictionary>
         <button class="btn btn-xs" @click="initEdit" v-if="canEditUser">Edit system roles &amp; permissions</button>
@@ -194,7 +194,7 @@ export default {
                     <strong>Legend: </strong>
                         <checkbox label="Not granted" />
                         <checkbox :value="1" :modelValue="true" label="Granted" />
-                        <checkbox :value="2" :modelValue="true"  disabled label="Granted w/ role" />
+                        <checkbox :value="2" :modelValue="true" disabled label="Granted w/ role" />
                     </div>
                     <div class="absolute top-0 left-0 w-full h-full bg-pink-500 opacity-0">&nbsp;</div>
                 </div>

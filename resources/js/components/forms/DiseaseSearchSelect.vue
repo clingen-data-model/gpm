@@ -46,16 +46,16 @@ export default {
     >
         <template #selection-label="{selection}">
             <div v-if="typeof selection == 'object'">
-                {{selection.mondo_id}} - {{selection.name}}
+                {{ selection.mondo_id }} - {{ selection.name }}
             </div>
-            <div v-else>{{selection}}</div>
+            <div v-else>{{ selection }}</div>
         </template>
         <template #option="{option}">
             <div v-if="typeof option == 'object'">
-                {{option.mondo_id}} - {{option.name}}
+                {{ option.mondo_id }} - {{ option.name }}
             </div>
             <div v-else>
-                {{option}}
+                {{ option }}
             </div>
         </template>
     </SearchSelect>

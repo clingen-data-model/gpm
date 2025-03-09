@@ -60,12 +60,12 @@ export default {
 <template>
     <form-container>        
         <dictionary-row label="File">
-            {{document.filename}}
+            {{ document.filename }}
         </dictionary-row>
         <input-row label="Type" :errors="errors.document_type_id">
             <select v-model="docProxy.document_type_id">
                 <option :value="type.id" v-for="type in documentTypes" :key="type.id">
-                    {{type.long_name}}
+                    {{ type.long_name }}
                 </option>
             </select>
         </input-row>
