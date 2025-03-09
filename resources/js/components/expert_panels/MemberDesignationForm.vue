@@ -77,10 +77,10 @@ export default {
             </thead>
             <tbody>
                 <MemberDesignationRow
-                    :member="member"
                     v-for="member in group.activeMembers"
                     :key="member.id"
                     :ref="`memberRow${member.id}`"
+                    :member="member"
                     :readonly="readonly"
                     @updated="handleMemberUpdate"
                 />

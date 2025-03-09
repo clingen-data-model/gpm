@@ -23,6 +23,10 @@ export default {
     computed: {
 
     },
+    mounted() {
+        this.startTimer();
+        this.countdown = this.timeout;
+    },
     methods: {
         startTimer () {
             this.interval = setInterval( () => this.countdown -= 1, 1000)
@@ -44,10 +48,6 @@ export default {
             this.clearTimer();
             this.clearAlert();
         }
-    },
-    mounted() {
-        this.startTimer();
-        this.countdown = this.timeout;
     }
 }
 </script>
@@ -57,7 +57,7 @@ export default {
         :class="`alert-${alert.type}`"
         >
         {{ alert.message }}
-        <button @click="clearAlertAndTimer" class="hover:underline">x</button>
+        <button class="hover:underline" @click="clearAlertAndTimer">x</button>
     </div>
 </template>
 <style lang="postcss">

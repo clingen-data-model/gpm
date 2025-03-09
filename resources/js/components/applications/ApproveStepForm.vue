@@ -59,6 +59,8 @@ export default {
             }
         }
     },
+    mounted() {
+    },
     methods: {
         clearForm() {
             this.dateApproved = null;
@@ -88,8 +90,6 @@ export default {
                 }
             }
         }
-    },
-    mounted() {
     }
 
 }
@@ -103,7 +103,7 @@ export default {
         <dictionary-row label="">
             <div>
                 <label class="text-sm">
-                    <input type="checkbox" v-model="notifyContacts" :value="true"> 
+                    <input v-model="notifyContacts" type="checkbox" :value="true"> 
                     <div>Send notification email to contacts</div>
                 </label>
             </div>
@@ -118,7 +118,7 @@ export default {
         </static-alert>
         
         <transition name="slide-fade-down">
-            <UserDefinedMailForm v-model="email" v-show="notifyContacts"/>
+            <UserDefinedMailForm v-show="notifyContacts" v-model="email"/>
         </transition>
 
         <button-row>

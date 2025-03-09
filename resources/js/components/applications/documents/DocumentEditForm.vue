@@ -65,7 +65,7 @@ export default {
         </dictionary-row>
         <input-row v-model="docProxy.date_received" label="Date Received" type="date" :errors="errors.date_received"></input-row>
         <input-row :errors="errors.notes" label="Notes">
-            <textarea name="notes" v-model="docProxy.notes" cols="30" rows="10"></textarea>
+            <textarea v-model="docProxy.notes" name="notes" cols="30" rows="10"></textarea>
         </input-row>
         <button-row>
             <button class="btn" @click="cancel">Cancel</button>

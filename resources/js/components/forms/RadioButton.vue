@@ -36,9 +36,9 @@ export default {
     <label class="mb-2">
         <slot name="input">
             <input 
-                type="radio"
+                :id="radioId"
                 v-model="val" 
-                :id="radioId" 
+                type="radio" 
                 class="mt-1" 
                 :disabled="$attrs.disabled" 
                 :value="value"

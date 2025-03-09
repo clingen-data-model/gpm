@@ -3,19 +3,17 @@
     import {useStore} from 'vuex';
     import {isValidationError} from '@/http';
 
-    const store = useStore();
     const props = defineProps({
         starterString: {
             type: String,
             required: false,
         }
     });
-
     const emits = defineEmits([
         'saved',
         'canceled'
     ]);
-
+    const store = useStore();
     const errors = ref({});
     const newCredentialName = ref(null);
 
@@ -48,7 +46,7 @@
 
 <template>
     <div>
-        <input-row label="Name" v-model="newCredentialName" :errors="errors.name" />
-        <button-row @submitted="saveNewCredential" @cancel="cancelNewCredential" submit-text="Create Credential" />
+        <input-row v-model="newCredentialName" label="Name" :errors="errors.name" />
+        <button-row submit-text="Create Credential" @submitted="saveNewCredential" @cancel="cancelNewCredential" />
     </div>
 </template>

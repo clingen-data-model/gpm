@@ -107,7 +107,7 @@ export default {
     <div>
         <dictionary-row label="Final Document">
             <div>
-                <a :href="finalDocument.download_url" class="text-blue-500 underline" v-if="finalDocument.filename">
+                <a v-if="finalDocument.filename" :href="finalDocument.download_url" class="text-blue-500 underline">
                     {{ finalDocument.filename }}
                 </a>
                 <span v-else>none on file</span>

@@ -9,7 +9,6 @@ export default {
         DocumentUploadForm,
         DocumentEditForm
     },
-    emits: ['updated'],
     props: {
         documents: {
             type: Array,
@@ -32,6 +31,7 @@ export default {
             default: false
         }
     },
+    emits: ['updated'],
     data() {
         return {
             fields: [
@@ -98,6 +98,10 @@ export default {
             return documents
         },
     },
+    mounted () {
+        api.get('/api/document-types')
+            .then(response => this.documentTypes = response.data)
+    },
     methods: {
         toggleItemDetails(item) {
             item.showDetails = !item.showDetails;
@@ -156,10 +160,6 @@ export default {
         resetActiveDocument () {
             this.activeDocument = {type: {}}
         }
-    },
-    mounted () {
-        api.get('/api/document-types')
-            .then(response => this.documentTypes = response.data)
     }
 }
 </script>
@@ -169,7 +169,7 @@ export default {
             <div class="flex justify-between py-2">
                 <div class="flex space-x-2">
                     <label>
-                        Search:&nbsp;<input type="text" placeholder="Filter" v-model="keyword" class="sm">
+                        Search:&nbsp;<input v-model="keyword" type="text" placeholder="Filter" class="sm">
                     </label>
                     <label>
                         Type: &nbsp;
@@ -185,20 +185,20 @@ export default {
                         </select>
                     </label>
                 </div>
-                <button class="btn btn-xs" @click="initUpload" v-if="canManage">Upload</button>
+                <button v-if="canManage" class="btn btn-xs" @click="initUpload">Upload</button>
             </div>
         </slot>
         <data-table 
+            v-model:sort="sort" 
             :fields="fields" 
-            :data="filteredDocuments" 
-            v-model:sort="sort"
+            :data="filteredDocuments"
             :detailRows="true"
         >
             <template #cell-cheveron="{item}">
                 <button 
                     v-if="item.metadata"
-                    @click.stop="toggleItemDetails(item)" 
-                    class="w-9 align-center block -mx-3"
+                    class="w-9 align-center block -mx-3" 
+                    @click.stop="toggleItemDetails(item)"
                 >
                     <icon-cheveron-right v-if="!item.showDetails" class="m-auto cursor-pointer" />
                     <icon-cheveron-down v-if="item.showDetails" class="m-auto cursor-pointer" />
@@ -215,14 +215,14 @@ export default {
                 <dropdown-menu hideCheveron>
                     <template #label> <button class="btn btn-xs">&hellip;</button></template>
                     <dropdown-item @click="initDownload(item)">Download</dropdown-item>
-                    <dropdown-item @click="initUpdate(item)" v-if="canManage">Update</dropdown-item>
-                    <dropdown-item @click="initDelete(item)" v-if="canManage">Delete</dropdown-item>
+                    <dropdown-item v-if="canManage" @click="initUpdate(item)">Update</dropdown-item>
+                    <dropdown-item v-if="canManage" @click="initDelete(item)">Delete</dropdown-item>
                 </dropdown-menu>
             </template>
             <template #detail="{item}">
                 <div class="px-4 pb-4 border">
                     <object-dictionary :obj="item.metadata" />
-                    <div class="flex space-x-2 pt-2 border-t" v-if="canManage">                    
+                    <div v-if="canManage" class="flex space-x-2 pt-2 border-t">                    
                         <button class="btn btn-xs" @click="initDownload(item)">Download</button>
                         <button class="btn btn-xs" @click="initUpdate(item)">Update</button>
                         <button class="btn btn-xs red" @click="initDelete(item)">Delete</button>

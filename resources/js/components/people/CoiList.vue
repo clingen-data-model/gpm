@@ -151,9 +151,9 @@ export default {
                     <h3>Outstanding COI disclosures:</h3>
                     <ul>
                         <li
-                            class="list-disc ml-6"
                             v-for="membership in person.membershipsWithPendingCois"
                             :key="membership.id"
+                            class="list-disc ml-6"
                         >
                             {{ membership.group.display_name }}
                         </li>
@@ -163,9 +163,9 @@ export default {
             <section v-if="person.hasCompletedCois">
                 <h3>Completed &amp; Current COI Disclosures</h3>
                 <data-table
+                    v-model:sort="coiSort"
                     :fields="fields"
                     :data="person.membershipsWithCompletedCois"
-                    v-model:sort="coiSort"
                     class="my-2"
                 >
                     <template #cell-actions="{item}">
@@ -192,9 +192,9 @@ export default {
             <section v-if="person.hasOutdatedCois">
                 <h3>Past COI Disclosures</h3>
                 <data-table
+                    v-model:sort="coiSort"
                     :fields="fields"
                     :data="person.membershipsWithOutdatedCois"
-                    v-model:sort="coiSort"
                     class="my-2"
                 >
                     <template #cell-actions="{item}">
@@ -220,10 +220,10 @@ export default {
                 None of your memberships require a conflict of interest disclosure
             </div>
         </div>
-        <div class="well" v-else>You are not required to complete conflict of interest disclsoures.</div>
+        <div v-else class="well">You are not required to complete conflict of interest disclsoures.</div>
         <teleport to="body">
             <modal-dialog v-model="showResponseDialog" size="xl">
-                <CoiDetail :coi="currentCoi" :group="currentGroup" v-if="currentCoi"></CoiDetail>
+                <CoiDetail v-if="currentCoi" :coi="currentCoi" :group="currentGroup"></CoiDetail>
             </modal-dialog>
         </teleport>
     </div>

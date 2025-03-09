@@ -110,6 +110,9 @@ export default {
             }
         }
     },
+    mounted () {
+        this.getSystemRoles();
+    },
     methods: {
         async getUser () {
             this.user = await api.get(`/api/users/${this.id}`)
@@ -145,9 +148,6 @@ export default {
             this.resetCheckedRolesAndPermissions();
             this.showEditForm = false;
         }
-    },
-    mounted () {
-        this.getSystemRoles();
     }
 }
 </script>
@@ -156,7 +156,7 @@ export default {
         <h1>{{ user.person.name || 'loading...' }}</h1>
 
         <object-dictionary :obj="userInfo"></object-dictionary>
-        <button class="btn btn-xs" @click="initEdit" v-if="canEditUser">Edit system roles &amp; permissions</button>
+        <button v-if="canEditUser" class="btn btn-xs" @click="initEdit">Edit system roles &amp; permissions</button>
 
         <h2 class="mt-8 mb-2">Memberships</h2>
         <data-table :fields="membershipFields" :data="membershipInfo"></data-table>

@@ -143,8 +143,8 @@ export default {
                             {{ person.name }}
                             <note>ID: {{ person.id }}</note>
                         </div>
-                        <router-link :to="`/people/${uuid}/edit`" class="btn btn-xs flex-grow-0"
-                            v-if="(hasPermission('people-manage') || userIsPerson(person)) || coordinatesPerson(person)">
+                        <router-link v-if="(hasPermission('people-manage') || userIsPerson(person)) || coordinatesPerson(person)" :to="`/people/${uuid}/edit`"
+                            class="btn btn-xs flex-grow-0">
                             <icon-edit width="16" heigh="16" />
                         </router-link>
 
@@ -216,7 +216,7 @@ export default {
             <modal-dialog v-model="showModal" :title="$route.meta.title">
                 <router-view name="modal"></router-view>
             </modal-dialog>
-            <modal-dialog :title="`You are about to delete ${person.name}`" v-model="showDeleteConfirmation">
+            <modal-dialog v-model="showDeleteConfirmation" :title="`You are about to delete ${person.name}`">
                 <p>You are about to delete this person. All related data will also be deleted including:</p>
                 <ul class="list-disc pl-6">
                     <li>User record, system roles, and system permissions (if account is activated)</li>
@@ -226,10 +226,10 @@ export default {
                 <div class="border my-4 px-2 py-1 font-bold bg-red-100 border-red-200 rounded text-red-800">
                     This cannot be undone.
                 </div>
-                <button-row :submit-text="`Delete ${person.name}`" @submitted="commitDelete" @canceled="cancelDelete"
-                    submit-variant="red" />
+                <button-row :submit-text="`Delete ${person.name}`" submit-variant="red" @submitted="commitDelete"
+                    @canceled="cancelDelete" />
             </modal-dialog>
-            <modal-dialog :title="`Merge ${person.name} into another person`" v-model="showMergeForm">
+            <modal-dialog v-model="showMergeForm" :title="`Merge ${person.name} into another person`">
                 <PersonMergeForm :obsolete="person" @saved="handleMerged"
                     @canceled="handleMergeCanceled"></PersonMergeForm>
             </modal-dialog>

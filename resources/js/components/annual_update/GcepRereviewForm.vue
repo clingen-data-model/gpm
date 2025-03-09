@@ -10,16 +10,16 @@ export default {
             required: true
         },
     },
-    computed: {
-        isComplete () {
-            return Boolean(this.modelValue.completed_at)
-        }
-    },
     emits: [ ...mirror.emits ],
     setup(props, context) {
         const {workingCopy} = mirror.setup(props, context);
         return {
             workingCopy
+        }
+    },
+    computed: {
+        isComplete () {
+            return Boolean(this.modelValue.completed_at)
         }
     }
 }
@@ -29,9 +29,9 @@ export default {
         <p>Gene Curation Expert Panels are expected to review current clinical validity classifications for their approved genes based on the guidance provided in the <gcep-recuration-process-link />. Please indicate the following:</p>
 
         <input-row
+            v-model="workingCopy.data.recuration_begun"
             :disabled="isComplete"
             label="Have you begun recuration?"
-            v-model="workingCopy.data.recuration_begun"
             type="radio-group"
             :options="[{value:'yes'},{value:'no'}]"
             :errors="errors.recuration_begun"
@@ -39,8 +39,8 @@ export default {
         />
 
         <input-row
-            :disabled="isComplete"
             v-model="workingCopy.data.recuration_designees"
+            :disabled="isComplete"
             :errors="errors.recuration_designees"
             type="large-text"
             placeholder="First Last, Email"

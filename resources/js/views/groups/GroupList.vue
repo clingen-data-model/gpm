@@ -14,62 +14,6 @@ export default {
     props: {
 
     },
-    data() {
-        return {
-            loading: false,
-            showCreateForm: false,
-            loadedFor: {
-                'VCEPs': false,
-                'GCEPs': false,
-                'CDWGs': false,
-                'WGs': false,
-            },
-            sort: {
-                field: 'id',
-                desc: false
-            },
-            fields: [
-                {
-                    name: 'id',
-                    label: 'ID',
-                    sortable: true
-                },
-                {
-                    name: 'name',
-                    label: 'Name',
-                    sortable: true,
-                    resolveValue: (item) => {
-                        return item.displayName
-                    }
-                },
-                {
-                    name: 'coordinators',
-                    sortable: false
-                },
-                {
-                    name: 'displayStatus',
-                    sortable: true,
-                    label: 'status'
-                },
-            ]
-        }
-    },
-    methods: {
-        startCreateGroup () {
-            this.showCreateForm = true;
-        },
-        async getGroupsForType (tabLabel) {
-            const typeTab = this.tabDefinitions.find(t => t.label === tabLabel);
-            if (this.loadedFor[tabLabel]) {
-                return;
-            }
-            this.loading = true;
-            await this.$store.dispatch('groups/getItems', {where: {group_type_id: typeTab.typeId}});
-            this.loadedFor[tabLabel] = true;
-            this.loading = false;
-        }
-
-    },
     setup() {
         const store = useStore();
         const router = useRouter();
@@ -147,6 +91,62 @@ export default {
             goToItem,
             goToGroup: goToItem,
         }
+    },
+    data() {
+        return {
+            loading: false,
+            showCreateForm: false,
+            loadedFor: {
+                'VCEPs': false,
+                'GCEPs': false,
+                'CDWGs': false,
+                'WGs': false,
+            },
+            sort: {
+                field: 'id',
+                desc: false
+            },
+            fields: [
+                {
+                    name: 'id',
+                    label: 'ID',
+                    sortable: true
+                },
+                {
+                    name: 'name',
+                    label: 'Name',
+                    sortable: true,
+                    resolveValue: (item) => {
+                        return item.displayName
+                    }
+                },
+                {
+                    name: 'coordinators',
+                    sortable: false
+                },
+                {
+                    name: 'displayStatus',
+                    sortable: true,
+                    label: 'status'
+                },
+            ]
+        }
+    },
+    methods: {
+        startCreateGroup () {
+            this.showCreateForm = true;
+        },
+        async getGroupsForType (tabLabel) {
+            const typeTab = this.tabDefinitions.find(t => t.label === tabLabel);
+            if (this.loadedFor[tabLabel]) {
+                return;
+            }
+            this.loading = true;
+            await this.$store.dispatch('groups/getItems', {where: {group_type_id: typeTab.typeId}});
+            this.loadedFor[tabLabel] = true;
+            this.loading = false;
+        }
+
     }
 
 }
@@ -158,19 +158,19 @@ export default {
             <button v-if="hasPermission('groups-manage')" class="btn btn-xs" @click="startCreateGroup">Create a group</button>
         </h1>
         <tabs-container @tabChanged="getGroupsForType">
-            <tab-item v-for="def in tabDefinitions" :label="def.label" :key="def.label">
-                <div class="text-center w-full" v-if="loading">Loading...</div>
+            <tab-item v-for="def in tabDefinitions" :key="def.label" :label="def.label">
+                <div v-if="loading" class="text-center w-full">Loading...</div>
                 <div v-else>
                     <div class="mb-2">
-                        Filter: <input type="text" v-model="filterString" placeholder="name,id,status,coordinator name">
+                        Filter: <input v-model="filterString" type="text" placeholder="name,id,status,coordinator name">
                     </div>
                     <data-table
 
+                        v-model:sort="sort"
+                        v-remaining-height
                         :data="filteredGroups.filter(def.filter)"
                         :fields="fields"
-                        v-model:sort="sort"
                         :row-click-handler="goToGroup"
-                        v-remaining-height
                         row-class="cursor-pointer active:bg-blue-100"
                     >
                         <template #cell-displayStatus="{item}">

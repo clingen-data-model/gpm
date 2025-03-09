@@ -19,6 +19,12 @@ export default {
         },
     },
     emits: [ ...mirror.emits ],
+    setup (props, context) {
+        const { workingCopy } = mirror.setup(props, context);
+        return {
+            workingCopy
+        };
+    },
     data () {
         return {
             variantCounts: []
@@ -51,6 +57,12 @@ export default {
             }
         }
     },
+    created () {
+        this.debounceSyncModel = debounce(() => {
+            this.workingCopy.data.variant_counts = cloneDeep(this.variantCounts);
+            this.$emit('update:modelValue', this.workingCopy);
+        }, 1500);
+    },
     methods: {
         addGene () {
             if (!this.workingCopy.data.variant_counts) {
@@ -65,18 +77,6 @@ export default {
         hasErrorFor (key) {
             return this.errors[key] && this.errors[key].length > 0;
         }
-    },
-    created () {
-        this.debounceSyncModel = debounce(() => {
-            this.workingCopy.data.variant_counts = cloneDeep(this.variantCounts);
-            this.$emit('update:modelValue', this.workingCopy);
-        }, 1500);
-    },
-    setup (props, context) {
-        const { workingCopy } = mirror.setup(props, context);
-        return {
-            workingCopy
-        };
     },
 }
 </script>
@@ -96,9 +96,9 @@ export default {
                 <tr v-for="(variant, idx) in variantCounts" :key="variant.gene">
                     <td>
                         <input
+                            v-model="variant.gene_symbol"
                             :disabled="isComplete"
                             type="text"
-                            v-model="variant.gene_symbol"
                             placeholder="HGNC gene symbol"
                             :class="{'border-red-800': hasErrorFor(`variant_counts.${idx}.gene_symbol`)}"
                         >
@@ -106,27 +106,27 @@ export default {
                     </td>
                     <td>
                         <input
+                            v-model="variant.in_clinvar"
                             :disabled="isComplete"
                             type="number"
-                            v-model="variant.in_clinvar"
                             :class="{'border-red-800': hasErrorFor(`variant_counts.${idx}.in_clinvar`)}"
                         >
                         <input-errors :errors="errors[`variant_counts.${idx}.in_clinvar`] || []"></input-errors>
                     </td>
                     <td>
                         <input
+                            v-model="variant.gci_approved"
                             :disabled="isComplete"
                             type="number"
-                            v-model="variant.gci_approved"
                             :class="{'border-red-800': hasErrorFor(`variant_counts.${idx}.gci_approved`)}"
                         >
                         <input-errors :errors="errors[`variant_counts.${idx}.gci_approved`] || []"></input-errors>
                     </td>
                     <td>
                         <input
+                            v-model="variant.provisionally_approved"
                             :disabled="isComplete"
                             type="number"
-                            v-model="variant.provisionally_approved"
                             :class="{'border-red-800': hasErrorFor(`variant_counts.${idx}.provisionally_approved`)}"
                         >
                         <input-errors :errors="errors[`variant_counts.${idx}.provisionally_approved`] || []"></input-errors>
@@ -137,6 +137,6 @@ export default {
                 </tr>
             </tbody>
         </table>
-        <button class="btn btn-xs" @click="addGene" v-if="!isComplete">AddGene</button>
+        <button v-if="!isComplete" class="btn btn-xs" @click="addGene">AddGene</button>
     </input-row>
 </template>

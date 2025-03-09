@@ -53,8 +53,8 @@ export default {
             </div>
             <button 
                 v-if="hasAnyPermission(['groups-manage', ['info-edit', group]])" 
-                @click="$emit('showEdit')"
-                class="btn btn-xs" 
+                class="btn btn-xs"
+                @click="$emit('showEdit')" 
             >
                 Edit Group Info
             </button>
@@ -64,7 +64,7 @@ export default {
             <div v-if="group.chairs.length > 0">
                 {{ group.chairs.map(c => c.person.name).join(', ') }}
             </div>
-            <div class="text-gray-500" v-else>
+            <div v-else class="text-gray-500">
                 None assigned
             </div>
         </dictionary-row>
@@ -73,7 +73,7 @@ export default {
             <div v-if="group.coordinators.length > 0">
                 {{ group.coordinators.map(c => c.person.name).join(', ') }}
             </div>
-            <div class="text-gray-500" v-else>
+            <div v-else class="text-gray-500">
                 None assigned
             </div>
         </dictionary-row>

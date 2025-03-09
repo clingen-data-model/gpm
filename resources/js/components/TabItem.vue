@@ -22,16 +22,16 @@ export default {
             return this.$parent.$options.name === 'TabsContainer'
         }
     },
-    methods: {
-        isActive() {
-            return this.active;
-        }
-    },
     mounted() {
         this.$parent.addTab(this)
     },
     unmounted () {
         this.$parent.removeTab(this);
+    },
+    methods: {
+        isActive() {
+            return this.active;
+        }
     }
 }
 </script>

@@ -14,7 +14,7 @@
 <template>
     <div class="screen -mt-6">
         <header class="screen-header bg-white pt-6">
-            <breadcrumbs class="mx-4" :items="breadcrumbs" v-if="breadcrumbs.length > 0"/>
+            <breadcrumbs v-if="breadcrumbs.length > 0" class="mx-4" :items="breadcrumbs"/>
             <div class="flex justify-between items-end border-b pb-2 px-4">
                 <slot name="header">
                     <div>

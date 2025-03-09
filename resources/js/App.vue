@@ -32,6 +32,10 @@ export default {
       }
     }
   },
+  mounted() {
+    this.getLookupResources()
+    this.$store.dispatch('getCurrentUser');
+  },
   methods: {
     getLookupResources() {
       this.$store.dispatch('cdwgs/getAll');
@@ -39,10 +43,6 @@ export default {
     refreshCurrentRoute() {
       this.$router.push(this.$route)
     },
-  },
-  mounted() {
-    this.getLookupResources()
-    this.$store.dispatch('getCurrentUser');
   }
 }
 </script>
@@ -57,14 +57,14 @@ export default {
           </div>
           <span v-if="$store.getters.isAuthed">
               <router-link 
+                v-if="hasPermission('ep-applications-manage')" 
                 to="/applications" 
-                class="link nav-item" 
-                v-if="hasPermission('ep-applications-manage')"
+                class="link nav-item"
               >Applications</router-link> 
               <router-link 
+                v-if="hasPermission('annual-updates-manage')" 
                 to="/annual-updates" 
-                class="link nav-item" 
-                v-if="hasPermission('annual-updates-manage')"
+                class="link nav-item"
               >Annual Updates</router-link> 
               <router-link 
                 to="/people" 
@@ -75,14 +75,14 @@ export default {
                 class="link nav-item"
               >Groups</router-link>
               <router-link 
-                :to="{name: 'UserList'}" 
+                v-if="hasPermission('users-manage')" 
+                :to="{name: 'UserList'}"
                 class="link nav-item"
-                v-if="hasPermission('users-manage')"
               >Users</router-link>
               <router-link 
-                to="/reports" 
+                v-if="hasPermission('reports-pull')" 
+                to="/reports"
                 class="link nav-item"
-                v-if="hasPermission('reports-pull')"
               >Reports
               </router-link>
               <!-- <router-link 

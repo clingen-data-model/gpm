@@ -9,6 +9,14 @@ export default {
     ExpertiseUpdateForm,
     ExpertiseCreateForm
 },
+    setup() {
+        const {sort, filter} = sortAndFilter({field: 'name', desc: false});
+
+        return {
+            sort,
+            filter
+        }
+    },
     data() {
         return {
             fields: [
@@ -60,6 +68,9 @@ export default {
             return this.items.findIndex(i => i.id === this.currentItem.id);
         }
     },
+    mounted () {
+        this.$store.dispatch('expertises/getItems');
+    },
     methods: {
         edit (item) {
             this.showEditDialog = true;
@@ -110,17 +121,6 @@ export default {
             }
         },
     },
-    setup() {
-        const {sort, filter} = sortAndFilter({field: 'name', desc: false});
-
-        return {
-            sort,
-            filter
-        }
-    },
-    mounted () {
-        this.$store.dispatch('expertises/getItems');
-    },
 }
 </script>
 <template>
@@ -130,16 +130,16 @@ export default {
             <button class="btn btn-sm" @click="showCreateDialog = true">Add Expertise</button>
         </div>
         <data-table
+            v-model:sort="sort"
             paginated
             :data="filteredItems"
             :fields="fields"
-            v-model:sort="sort"
             :reset-page-on-data-change="false"
         >
             <template #header>
                 <label>
                     Filter:
-                    <input type="text" v-model="filter">
+                    <input v-model="filter" type="text">
                 </label>
             </template>
             <template #cell-actions="{item}">

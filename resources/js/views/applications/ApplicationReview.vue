@@ -7,9 +7,8 @@
     import ChairApproverControls from '@/components/applications/Review/ChairApproverControls.vue';
     import SustainedCurationReview from '@/components/expert_panels/SustainedCurationReview.vue';
 
-    const store = useStore();
     const emits = defineEmits(['deleted', 'saved']);
-
+    const store = useStore();
     const group = computed(() => store.getters['groups/currentItemOrNew'])
     const expertPanel = computed(() => group.value.expert_panel);
 

@@ -8,6 +8,17 @@ export default {
     props: {
 
     },
+    setup() {
+        const {sort, filter} = sortAndFilterSetup({
+            field: 'person.name',
+            desc: false
+        });
+
+        return {
+            sort,
+            filter,
+        }
+    },
     data() {
         return {
             users: [],
@@ -87,6 +98,9 @@ export default {
             }
         }
     },
+    created () {
+        this.triggerSearch = debounce(() => this.$refs.dataTable.getItems(), 500)
+    },
     methods: {
         async getUsers (currentPage, pageSize, sort, setTotalItems) {
             const params = {
@@ -106,20 +120,6 @@ export default {
         goToUser (user) {
             this.$router.push({name: 'UserDetail', params: {id: user.id}})
         }
-    },
-    setup() {
-        const {sort, filter} = sortAndFilterSetup({
-            field: 'person.name',
-            desc: false
-        });
-
-        return {
-            sort,
-            filter,
-        }
-    },
-    created () {
-        this.triggerSearch = debounce(() => this.$refs.dataTable.getItems(), 500)
     }
 }
 </script>
@@ -127,16 +127,16 @@ export default {
     <div>
         <h1>Users</h1>
         <data-table
+            ref="dataTable"
+            v-model:sort="sort"
             :fields="fields"
             :data="getUsers"
-            v-model:sort="sort"
-            @rowClick="goToUser"
             row-class="cursor-pointer"
-            ref="dataTable"
             paginated
+            @rowClick="goToUser"
         >
             <template #header>
-                <div>Filter: &nbsp;<input type="text" v-model="filter" placeholder="name, email"></div>
+                <div>Filter: &nbsp;<input v-model="filter" type="text" placeholder="name, email"></div>
             </template>
         </data-table>
     </div>

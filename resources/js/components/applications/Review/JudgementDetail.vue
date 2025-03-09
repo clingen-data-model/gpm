@@ -44,7 +44,7 @@
             Your Decision:
             <badge :color="badgeVariant" size="lg">{{ titleCase(userJudgement.decision) }}</badge>
         </h3>
-        <div class="mt-2" v-if="userJudgement.notes">
+        <div v-if="userJudgement.notes" class="mt-2">
             <p><strong>Notes: </strong>{{ userJudgement.notes }}</p>
         </div>
         <div class="flex space-x-2">

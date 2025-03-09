@@ -116,9 +116,9 @@
             <span>{{ role }}: {{ count }}</span>
         </div>
         <data-table
+            v-model:sort="tableSort"
             :fields="fields"
             :data="tableRows"
-            v-model:sort="tableSort"
             class="text-xs"
         >
             <template #cell-roles="{item}">

@@ -43,6 +43,29 @@ export default {
             type: Number,
         }
     },
+    setup () {
+        const store  = useStore();
+        const group = computed(() => {
+            return store.getters['groups/currentItemOrNew']
+        })
+
+        const application = computed(() => {
+            return group.value.expert_panel;
+        })
+
+        watch(group, () => {
+            if (group.value.uuid) {
+                fetchEntries(`/api/groups/${group.value.uuid}/activity-logs`)
+            }
+        }, {
+            immediate: true
+        })
+        return {
+            group,
+            application,
+            logEntries
+        }
+    },
     data() {
         return {
             sort: {
@@ -86,6 +109,9 @@ export default {
             return 'There are no log entries for this application';
         }
     },
+    mounted() {
+        // this.getLogEntries()
+    },
     methods: {
         async getLogEntries() {
             await fetchEntries();
@@ -94,49 +120,23 @@ export default {
             this.editingEntry = true;
             this.selectedLogEntry = entry;
         }
-    },
-    mounted() {
-        // this.getLogEntries()
-    },
-    setup () {
-        const store  = useStore();
-        const group = computed(() => {
-            return store.getters['groups/currentItemOrNew']
-        })
-
-        const application = computed(() => {
-            return group.value.expert_panel;
-        })
-
-        watch(group, () => {
-            if (group.value.uuid) {
-                fetchEntries(`/api/groups/${group.value.uuid}/activity-logs`)
-            }
-        }, {
-            immediate: true
-        })
-        return {
-            group,
-            application,
-            logEntries
-        }
     }
 }
 </script>
 <template>
     <div>
-        <div class="px-3 py-2 rounded border border-gray-300 text-gray-500 bg-gray-200" v-if="!hasLogEntries">
+        <div v-if="!hasLogEntries" class="px-3 py-2 rounded border border-gray-300 text-gray-500 bg-gray-200">
             {{ noResultsMessage }}
         </div>
-        <data-table :fields="fields" :data="filteredLogEntries" v-model:sort="sort" v-else>
+        <data-table v-else v-model:sort="sort" :fields="fields" :data="filteredLogEntries">
             <template #cell-id="{item}">
                 <div class="flex space-x-1">
                     <router-link :to="{name: 'EditLogEntry', params:{id: item.id}}" class="btn btn-xs inline-block">
                         <icon-edit width="12"></icon-edit>
                     </router-link>
                     <router-link 
-                        :to="{name: 'ConfirmDeleteLogEntry', params:{id: item.id}}" 
-                        v-if="item.activity_type === null"
+                        v-if="item.activity_type === null" 
+                        :to="{name: 'ConfirmDeleteLogEntry', params:{id: item.id}}"
                         class="btn btn-xs inline-block"
                     >
                         <icon-trash width="12"></icon-trash>
@@ -144,7 +144,7 @@ export default {
                 </div>
             </template>
             <template #cell-description="{item}">
-                <div v-html="item.description" class="links-blue"></div>
+                <div class="links-blue" v-html="item.description"></div>
             </template>
             <!-- <template v-slot:cell-step="{item}">
                 <pre>

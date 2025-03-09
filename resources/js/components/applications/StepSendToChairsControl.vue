@@ -3,7 +3,6 @@
     import CommentSummary from './CommentSummary.vue';
     import {api} from '@/http';
 
-    const attrs = useAttrs();
     const props = defineProps({
         group: {
             type: Object,
@@ -11,7 +10,7 @@
         }
     })
     const emits = defineEmits(['sentToChairs'])
-    
+    const attrs = useAttrs();
     const commentManager = inject('commentManager');
     const additionalComments = ref();
     
@@ -41,8 +40,8 @@
     <div>
         <button 
             class="btn btn-lg w-full" 
-            @click="initSendToChairs"
             v-bind="attrs"
+            @click="initSendToChairs"
         >
             Send to Chairs for Review
         </button>
@@ -70,7 +69,7 @@
 
                 
                 <template #footer>
-                    <button-row @submitted="sendToChairs" @canceled="cancel" submit-text="Send to Chairs"></button-row>
+                    <button-row submit-text="Send to Chairs" @submitted="sendToChairs" @canceled="cancel"></button-row>
                 </template>
             </modal-dialog>
         </teleport>

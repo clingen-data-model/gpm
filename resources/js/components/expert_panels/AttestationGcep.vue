@@ -156,13 +156,13 @@ export default {
                     Biocurators are trained on the use of the Gene Curation Interface (GCI) and/or there is a plan in place to train any biocurators who are not yet trained on the use of the GCI”
                 </checkbox>
                 <input-row
-                    v-model="group.expert_panel.gci_training_date"
-                    @update:modelValue="emitUpdate(), checkCompleteness()"
                     v-show="gci_training"
+                    v-model="group.expert_panel.gci_training_date"
                     :errors="gciTrainingErrors"
                     label="Date Trained"
                     type="date"
                     class="ml-6"
+                    @update:modelValue="emitUpdate(), checkCompleteness()"
                 />
             </li>
             <li>

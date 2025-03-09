@@ -38,7 +38,7 @@ export default {
 <template>
     <div class="px-8 py-4 inset">
 
-        <static-alert variant="warning" v-if="member.isRetired" class="mb-3 float-right">
+        <static-alert v-if="member.isRetired" variant="warning" class="mb-3 float-right">
             RETIRED
         </static-alert>
 
@@ -78,10 +78,10 @@ export default {
                         <h4>Biocurator Training:</h4>
                         <div class="ml-2">
                             <dictionary-row label="Level 1 training">
-                                <icon-checkmark class="text-green-700" v-if="member.training_level_1"/>
+                                <icon-checkmark v-if="member.training_level_1" class="text-green-700"/>
                             </dictionary-row>
                             <dictionary-row label="Level 2 training">
-                                <icon-checkmark class="text-green-700" v-if="member.training_level_2"/>
+                                <icon-checkmark v-if="member.training_level_2" class="text-green-700"/>
                             </dictionary-row>
                         </div>
                     </div>

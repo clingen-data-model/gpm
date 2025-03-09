@@ -64,7 +64,7 @@ export default {
                 {{ coi.data.email }}
             </dictionary-row>
 
-            <dictionary-row label="COI File" v-if="response.document_uuid" label-class="font-bold">
+            <dictionary-row v-if="response.document_uuid" label="COI File" label-class="font-bold">
                 <div class="flex-0">
                     <p class="mb-2">This is a legacy response.</p>
                     <button class="btn btn-xs" @click="downloadDocument(response.download_url.response)">
@@ -87,8 +87,8 @@ export default {
                     label-class="font-bold"
                 >
                     {{ getQuestionValue(response.contributions_to_gd_in_ep.response) }}
-                    <dictionary-row :label="response.contributions_to_genes.question" :vertical="true"
-                        v-if="response.contributions_to_gd_in_ep.response == 1"
+                    <dictionary-row v-if="response.contributions_to_gd_in_ep.response == 1" :label="response.contributions_to_genes.question"
+                        :vertical="true"
                         class="pb-1 mb-1 ml-4"
                         label-class="font-bold"
                     >
@@ -102,8 +102,8 @@ export default {
                     label-class="font-bold"
                 >
                     {{ getQuestionValue(response.contributions_to_gd_in_group.response) }}
-                    <dictionary-row :label="response.contributions_to_genes.question" :vertical="true"
-                        v-if="response.contributions_to_gd_in_group.response == 1"
+                    <dictionary-row v-if="response.contributions_to_gd_in_group.response == 1" :label="response.contributions_to_genes.question"
+                        :vertical="true"
                         class="pb-1 mb-1 ml-4"
                         label-class="font-bold"
                     >
@@ -119,8 +119,8 @@ export default {
                 >
                     {{ getQuestionValue(response.independent_efforts.response) }}
 
-                    <dictionary-row :label="response.independent_efforts_details.question" :vertical="true"
-                        v-if="[1,2].includes(response.independent_efforts.response)"
+                    <dictionary-row v-if="[1,2].includes(response.independent_efforts.response)" :label="response.independent_efforts_details.question"
+                        :vertical="true"
                         class="pb-1 mb-1 ml-4 border-none"
                         label-class="font-bold"
                     >
@@ -135,8 +135,8 @@ export default {
                 >
                     {{ getQuestionValue(response.coi.response) }}
 
-                    <dictionary-row :label="response.coi_details.question" :vertical="true"
-                        v-if="[1,2].includes(response.coi.response)"
+                    <dictionary-row v-if="[1,2].includes(response.coi.response)" :label="response.coi_details.question"
+                        :vertical="true"
                         class="pb-1 mb-1 ml-4"
                         label-class="font-bold"
                     >

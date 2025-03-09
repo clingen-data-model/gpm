@@ -100,12 +100,12 @@ export default {
                         Plans differ from the expectations above.
                     </checkbox>
                     <transition name="slide-fade-down">
-                        <div class="ml-4" v-if="otherCheckbox">
+                        <div v-if="otherCheckbox" class="ml-4">
                             <label for="reanalysis-other-textarea">Explain differences:</label>
                             <textarea 
-                                v-model="group.expert_panel.reanalysis_other" 
+                                id="reanalysis-other-textarea" 
+                                v-model="group.expert_panel.reanalysis_other"
                                 class="w-full"
-                                id="reanalysis-other-textarea"
                                 :disabled="disabled"
                                 @update:modelValue="$emit('update'), checkCompleteness()"
                             ></textarea>

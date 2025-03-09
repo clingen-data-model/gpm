@@ -3,7 +3,6 @@
 
     import RejectStepForm from '@/components/applications/RejectStepForm.vue'
 
-    const attrs = useAttrs();
     // eslint-disable-next-line unused-imports/no-unused-vars
     const props = defineProps({
         group: {
@@ -12,7 +11,7 @@
         }
     })
     const emits = defineEmits(['revisionsRequested'])
-
+    const attrs = useAttrs();
     const rejectsubmissionform = ref(null);
     const showRejectForm = ref(false);
     const startRejectSubmission = () => {
@@ -33,15 +32,15 @@
         <button
             v-if="group.expert_panel.hasPendingSubmissionForCurrentStep"
             class="btn btn-lg w-full"
-            @click="startRejectSubmission"
             v-bind="attrs"
+            @click="startRejectSubmission"
         >
             Request revisions
         </button>
         <teleport to="body">
             <modal-dialog
-                title="Request Revisions to Application"
                 v-model="showRejectForm"
+                title="Request Revisions to Application"
                 size="xl"
                 @closed="$refs.rejectsubmissionform.clearForm()"
             >

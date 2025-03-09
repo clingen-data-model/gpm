@@ -120,7 +120,7 @@ export default {
                 </keep-alive>
             </div>
             <p>
-                <router-link class="block link pt-2" :to="{name: 'login'}" v-if="!$store.getters.isAuthed">&lt; Log In</router-link>
+                <router-link v-if="!$store.getters.isAuthed" class="block link pt-2" :to="{name: 'login'}">&lt; Log In</router-link>
             </p>
         </div>
     </div>

@@ -12,6 +12,14 @@ export default {
         InstitutionApprovalForm,
         InstitutionMergeForm,
     },
+    setup() {
+        const {sort, filter} = sortAndFilter({field: 'name', desc: false});
+
+        return {
+            sort,
+            filter
+        }
+    },
     data() {
         return {
             items: [],
@@ -85,6 +93,9 @@ export default {
             return this.items.findIndex(i => i.id === this.currentItem.id);
         }
     },
+    mounted () {
+        this.getInstitutions();
+    },
     methods: {
         edit (item) {
             this.showEditDialog = true;
@@ -147,17 +158,6 @@ export default {
             this.showDeleteConfirmation = false;
             this.$store.commit("pushSuccess", `${this.currentItem.name} deleted.`);
         }
-    },
-    setup() {
-        const {sort, filter} = sortAndFilter({field: 'name', desc: false});
-
-        return {
-            sort,
-            filter
-        }
-    },
-    mounted () {
-        this.getInstitutions();
     }
 }
 </script>
@@ -165,16 +165,16 @@ export default {
     <div>
         <h1>Institutions</h1>
         <data-table
+            v-model:sort="sort"
             paginated
             :data="filteredItems"
             :fields="fields"
-            v-model:sort="sort"
             :reset-page-on-data-change="false"
         >
             <template #header>
                 <label>
                     Filter:
-                    <input type="text" v-model="filter">
+                    <input v-model="filter" type="text">
                 </label>
             </template>
             <template #cell-actions="{item}">

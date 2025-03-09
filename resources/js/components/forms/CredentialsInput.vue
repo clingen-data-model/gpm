@@ -5,7 +5,6 @@
     import SearchSelect from '../forms/SearchSelect.vue';
     import CredentialCreateForm from '../credentials/CredentialCreateForm.vue'
 
-    const store = useStore();
     const props = defineProps({
         ...mirrorProps,
         multiple: {
@@ -13,9 +12,8 @@
             default: true
         }
     });
-
     const emit = defineEmits([...mirrorEmits]);
-
+    const store = useStore();
     const {workingCopy} = setupMirror(props, {emit})
 
     const credentials = computed(() => {

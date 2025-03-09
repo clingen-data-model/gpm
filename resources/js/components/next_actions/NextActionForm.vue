@@ -84,6 +84,11 @@ export default {
             }
         }
     },
+    unmounted() {
+        this.initNewAction()
+    },
+    mounted() {
+    },
     methods: {
         cancel () {
             this.clearForm();
@@ -157,21 +162,16 @@ export default {
                 }
             }
         },
-    },
-    unmounted() {
-        this.initNewAction()
-    },
-    mounted() {
     }
 }
 </script>
 <template>
     <form-container>
-        <input-row label="Creation Date" :errors="errors.date_created" type="date" v-model="newAction.date_created"></input-row>
+        <input-row v-model="newAction.date_created" label="Creation Date" :errors="errors.date_created" type="date"></input-row>
 
-        <StepInput v-model="newAction.step" :errors="errors.step" v-if="application.expert_panel_type_id == 2"></StepInput>
+        <StepInput v-if="application.expert_panel_type_id == 2" v-model="newAction.step" :errors="errors.step"></StepInput>
 
-        <input-row label="Target" Date="" :errors="errors.target_date" type="date" v-model="newAction.target_date"></input-row>
+        <input-row v-model="newAction.target_date" label="Target" Date="" :errors="errors.target_date" type="date"></input-row>
 
         <input-row label="Entry" :errors="errors.entry">
             <RichTextEditor v-model="newAction.entry" />
@@ -187,7 +187,7 @@ export default {
                 </option>
             </select>
             &nbsp;&nbsp;
-            <input type="text" label="Name" v-model="newAction.assigned_to_name" placeholder="Name (optional)">
+            <input v-model="newAction.assigned_to_name" type="text" label="Name" placeholder="Name (optional)">
         </input-row>
 
         <div class="ml-4">
@@ -199,8 +199,8 @@ export default {
             class="ml-36"
         />
 
-        <input-row label="Date Completed" :errors="errors.date_completed" class="ml-36" v-if="completed">
-            <input type="date" v-model="newAction.date_completed">
+        <input-row v-if="completed" label="Date Completed" :errors="errors.date_completed" class="ml-36">
+            <input v-model="newAction.date_completed" type="date">
         </input-row>
 
         <button-row>

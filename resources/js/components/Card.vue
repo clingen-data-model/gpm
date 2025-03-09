@@ -22,7 +22,7 @@ export default {
 <template>
     <div>
         <slot name="header">
-            <div class="bg-gray-200 px-4 py-2 sm:flex justify-between border border-gray-300 rounded-t" v-if="title || $slots.title">
+            <div v-if="title || $slots.title" class="bg-gray-200 px-4 py-2 sm:flex justify-between border border-gray-300 rounded-t">
                 <slot name="title">
                      <h2>{{ title }}</h2>
                 </slot>

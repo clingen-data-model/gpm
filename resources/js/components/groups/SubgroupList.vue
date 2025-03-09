@@ -35,14 +35,14 @@ export default {
                     <a :href="`/api/report/groups/${group.uuid}/subgroups-coi-report`">COI Report</a>
                     <note class="inline"> (PDF)</note>
                 </dropdown-item> -->
-                <dropdown-item class="text-right" v-if="showMemberReportButton">
+                <dropdown-item v-if="showMemberReportButton" class="text-right">
                     <a :href="exportUrl">Member Export</a>
                     <note class="inline"> (CSV)</note>
                 </dropdown-item>
             </dropdown-menu>
         </div>
         <ul>
-          <li class="child-group" v-for="childGroup in group.children" :key="childGroup.id">
+          <li v-for="childGroup in group.children" :key="childGroup.id" class="child-group">
             <popover hover arrow placement="left" class="block w-full">
               <template #content>
                 <div class="text-xs">

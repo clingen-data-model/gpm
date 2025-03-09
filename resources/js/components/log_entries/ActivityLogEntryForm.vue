@@ -90,12 +90,12 @@
 </script>
 <template>
     <form-container class="log-entry-form">
-        <input-row label="Log Date"
-            v-model="newEntry.log_date"
+        <input-row v-model="newEntry.log_date"
+            label="Log Date"
             :errors="errors.log_date"
             type="date"
         ></input-row>
-        <StepInput :errors="errors.step" v-if="group.isVcep()" v-model="newEntry.step"/>
+        <StepInput v-if="group.isVcep()" v-model="newEntry.step" :errors="errors.step"/>
         <input-row label="Entry" :errors="errors.entry">
             <RichTextEditor v-model="newEntry.entry" />
         </input-row>

@@ -118,13 +118,13 @@ export default {
                         {{ title }}
                     </h2>
                     <div v-if="dateApproved">
-                        <div class="flex space-x-1" v-if="!editApprovalDate">
+                        <div v-if="!editApprovalDate" class="flex space-x-1">
                             <div class="text-white bg-green-600 rounded-xl px-2">
                                 Approved: {{ dateApproved }}
                             </div>
                             <edit-icon-button class="text-black" @click="initEditApprovalDate"></edit-icon-button>
                         </div>
-                        <div class="flex space-x-1" v-else>
+                        <div v-else class="flex space-x-1">
                             <date-input v-model="newApprovalDate"></date-input>
                             <button class="btn blue" @click="updateApprovalDate">Save</button>
                             <RemoveButton @click="editApprovalDate = false"></RemoveButton>

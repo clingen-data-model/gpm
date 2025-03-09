@@ -42,6 +42,12 @@ export default {
             }
         }
     },
+    created () {
+        this.saveOngoingPlans = debounce(() => {
+            const {uuid, expert_panel: expertPanel} = this.group;
+            return this.$store.dispatch('groups/curationReviewProtocolUpdate', {uuid, expertPanel});
+        }, 2000);
+    },
     methods: {
         getGroup () {
             this.$store.dispatch('groups/findAndSetCurrent', this.uuid);
@@ -50,12 +56,6 @@ export default {
             await this.$store.dispatch('groups/completeSustainedCurationReview', this.group);
             this.$router.go(-1);
         }
-    },
-    created () {
-        this.saveOngoingPlans = debounce(() => {
-            const {uuid, expert_panel: expertPanel} = this.group;
-            return this.$store.dispatch('groups/curationReviewProtocolUpdate', {uuid, expertPanel});
-        }, 2000);
     }
 }
 </script>
@@ -72,8 +72,8 @@ export default {
                 <h3>Plans for Ongoing Review and Reanalysis and Discrepancy Resolution</h3>
             </header>
             <VcepOngoingPlansForm
-                @update="saveOngoingPlans"
                 :errors="errors"
+                @update="saveOngoingPlans"
             />
         </section>
 
@@ -101,14 +101,14 @@ export default {
                 <h3>Attestion of Accuracy</h3>
             </header>
             <checkbox
-                label="I confirm that all of the information is is accurate and up to date."
                 v-model="attestation"
+                label="I confirm that all of the information is is accurate and up to date."
                 class="text-md-lg"
             />
             <button
-                @click="submitReview"
                 :disabled="canSubmit"
                 class="btn btn-lg blue"
+                @click="submitReview"
             >
                 Submit
             </button>

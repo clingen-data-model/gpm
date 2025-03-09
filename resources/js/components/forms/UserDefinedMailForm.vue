@@ -70,16 +70,16 @@ export default {
             <div v-if="workingEmail.cc.length > 0">
                 <truncate-expander :value="ccAddresses" :truncate-length="100" />
             </div>
-            <div class="text-gray-500" v-else>None</div>
+            <div v-else class="text-gray-500">None</div>
         </dictionary-row>
         <input-row label="Subject">
-            <input type="text" v-model="workingEmail.subject" class="w-full">
+            <input v-model="workingEmail.subject" type="text" class="w-full">
         </input-row>
         <input-row label="Body">
             <rich-text-editor v-model="workingEmail.body"></rich-text-editor>
         </input-row>
         <input-row label="Attachments">
-            <input type="file" multiple ref="attachmentsField" @change="handleAttachments">
+            <input ref="attachmentsField" type="file" multiple @change="handleAttachments">
         </input-row>
         <note v-if="emailCced">ClinGen Services will be carbon copied on this email.</note>
     </div>

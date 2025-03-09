@@ -31,9 +31,9 @@ export default {
         <transition name="fade-slide-down">
             <button-row 
                 v-show="showControls"
-                @submitted="$emit('submitted')" 
+                submit-text="Save" 
+                @submitted="$emit('submitted')"
                 @canceled="$emit('canceled')"
-                submit-text="Save"
             />
         </transition>
     </div>

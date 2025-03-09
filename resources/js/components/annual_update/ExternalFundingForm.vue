@@ -11,6 +11,13 @@ export default {
             required: true
         },
     },
+    emits: [ ...mirror.emits ],
+    setup(props, context) {
+        const {workingCopy} = mirror.setup(props, context);
+        return {
+            workingCopy
+        }
+    },
     data() {
         return {
             fundingOptions: [
@@ -23,16 +30,9 @@ export default {
             ]
         }
     },
-    emits: [ ...mirror.emits ],
     computed: {
         isComplete () {
             return Boolean(this.modelValue.completed_at)
-        }
-    },
-    setup(props, context) {
-        const {workingCopy} = mirror.setup(props, context);
-        return {
-            workingCopy
         }
     }
 }
@@ -41,8 +41,8 @@ export default {
 <template>
     <div>
         <input-row
-            :disabled="isComplete"
             v-model="workingCopy.data.external_funding"
+            :disabled="isComplete"
             type="radio-group"
             :options="[{value: 'yes'}, {value: 'no'}]"
             label="Does this expert panel currently have external funding to directly support curation activities (e.g. NIH U24, industry, etc.)?"
@@ -51,20 +51,20 @@ export default {
         />
 
         <input-row
-            :disabled="isComplete"
             v-if="workingCopy.data.external_funding == 'yes'"
-            label="Funding Type" :errors="errors.external_funding_type"
+            v-model="workingCopy.data.external_funding_type"
+            :disabled="isComplete" label="Funding Type"
+            :errors="errors.external_funding_type"
             class="ml-4"
             type="select"
-            v-model="workingCopy.data.external_funding_type"
             :options="fundingOptions"
         />
 
         <input-row
-            :disabled="isComplete"
             v-if="workingCopy.data.external_funding_type == 'Other'"
-            type="large-text"
             v-model="workingCopy.data.external_funding_other_details"
+            :disabled="isComplete"
+            type="large-text"
             :errors="errors.external_funding_other_details"
             placeholder="details"
             class="ml-8"
@@ -72,8 +72,8 @@ export default {
         />
 
         <input-row
-            :disabled="isComplete"
             v-model="workingCopy.data.funding_plans"
+            :disabled="isComplete"
             type="radio-group"
             :options="[{value: 'yes'}, {value: 'no'}]"
             :errors="errors.funding_plans"
@@ -89,10 +89,10 @@ export default {
         </input-row>
 
         <input-row
-            :disabled="isComplete"
-            v-model="workingCopy.data.funding_plans_details"
-            type="large-text"
             v-if="workingCopy.data.funding_plans == 'yes'"
+            v-model="workingCopy.data.funding_plans_details"
+            :disabled="isComplete"
+            type="large-text"
             label="Please describe pending applications or plans for future funding."
             :errors="errors.funding_plans_details"
             vertical

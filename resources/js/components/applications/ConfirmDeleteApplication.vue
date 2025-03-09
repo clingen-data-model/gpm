@@ -44,10 +44,10 @@ export default {
         <p>Are you sure you want to continue?</p>
 
         <button-row 
-            @submitted="commitDelete" 
-            @canceled="cancelDelete" 
             submit-text="Delete Application" 
-            submit-variant="red"
+            submit-variant="red" 
+            @submitted="commitDelete" 
+            @canceled="cancelDelete"
         ></button-row>
     </div>
 </template>

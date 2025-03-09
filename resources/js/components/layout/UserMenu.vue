@@ -59,8 +59,8 @@ export default {
             <transition name="slide-fade-down">
                 <div
                     v-show="menuOpen"
-                    v-click-outside="{exclude: ['menuButton'], handler: handleOutsideClick}"
                     ref="dropdownMenu"
+                    v-click-outside="{exclude: ['menuButton'], handler: handleOutsideClick}"
                     class="absolute right-0 -top-3 pt-11 bg-white border w-48 z-10 shadow"
                 >
                     <ul>

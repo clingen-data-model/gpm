@@ -35,9 +35,9 @@ export default {
     <input-row 
         label="Step" 
         :modelValue="modelValue" 
-        @input="$emit('update:modelValue', $event.target.value)"
-        :errors="errors.step" 
+        :errors="errors.step"
         type="select" 
-        :options="stepOptions"
+        :options="stepOptions" 
+        @input="$emit('update:modelValue', $event.target.value)"
     />
 </template>

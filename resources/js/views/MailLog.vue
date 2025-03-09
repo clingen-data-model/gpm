@@ -82,6 +82,9 @@ export default {
             }
         }
     },
+    created() {
+        this.triggerSearch = debounce(() => this.$refs.dataTable.getItems(), 500)
+    },
     methods: {
         async getPage (currentPage, pageSize, sort, setTotalItems) {
             try {
@@ -116,26 +119,23 @@ export default {
             this.$refs.dataTable.getItems()
         }
     },
-    created() {
-        this.triggerSearch = debounce(() => this.$refs.dataTable.getItems(), 500)
-    },
 }
 </script>
 <template>
     <div>
         <h1>Mail Log</h1>
         <data-table
+            ref="dataTable"
+            v-model:sort="sort"
             :fields="fields"
             :data="getPage"
             row-class="cursor-pointer"
             :row-click-handler="showMailDetail"
-            v-model:sort="sort"
             :page-size="20"
             paginated
-            ref="dataTable"
         >
             <template #header>
-                <div class="mb-2">Filter: <input type="text" v-model="filter"></div>
+                <div class="mb-2">Filter: <input v-model="filter" type="text"></div>
             </template>
             <template #cell-to="{item}">
                 <ul>
@@ -149,16 +149,16 @@ export default {
             </template>
             <template #cell-actions="{item}">
                 <div>
-                    <button class="btn btn-xs" @click.stop="initResend(item)" v-if="hasPermission('people-manage')">Resend</button>
+                    <button v-if="hasPermission('people-manage')" class="btn btn-xs" @click.stop="initResend(item)">Resend</button>
                 </div>
             </template>
         </data-table>
 
         <teleport to="body">
             <modal-dialog v-model="showDetail">
-                <mail-detail :mail="currentEmail" @resend="initResend(currentEmail)" v-if="hasPermission('people-manage')"/>
+                <mail-detail v-if="hasPermission('people-manage')" :mail="currentEmail" @resend="initResend(currentEmail)"/>
             </modal-dialog>
-            <modal-dialog title="Resend Email" v-model="showResendDialog">
+            <modal-dialog v-model="showResendDialog" title="Resend Email">
                 <custom-email-form :mail-data="currentEmail" @sent="cleanupResend" @canceled="cleanupResend"></custom-email-form>
             </modal-dialog>
         </teleport>

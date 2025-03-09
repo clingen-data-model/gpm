@@ -62,11 +62,11 @@ export default {
 }
 </script>
 <template>
-    <div class="application-step" :id="id">
-        <div class="header flex justify-between items-center" v-if="title">
+    <div :id="id" class="application-step">
+        <div v-if="title" class="header flex justify-between items-center">
             <h2 :class="{ 'text-gray-400': disabled }">
                 {{ title }}
-                <div class="inline" v-if="disabled">
+                <div v-if="disabled" class="inline">
                     <popover arrow hover>
                         <template #content>
                             <small
@@ -78,7 +78,7 @@ export default {
                     </popover>
                 </div>
             </h2>
-            <div class="inline" v-if="approved">
+            <div v-if="approved" class="inline">
                 <popover hover arrow>
                     <template #content>
                         Make changes from the
@@ -107,8 +107,8 @@ export default {
                 :step="step"
             />
             <div
-                class="z-20 absolute top-0 bottom-0 left-0 right-0 bg-white/50"
                 v-if="disabled || approved"
+                class="z-20 absolute top-0 bottom-0 left-0 right-0 bg-white/50"
             />
         </div>
     </div>

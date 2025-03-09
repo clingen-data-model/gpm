@@ -56,7 +56,7 @@ export default {
         </faq-link>
     </popover>
     <teleport to="body">
-      <modal-dialog title="ClinGen GPM Frequently Asked Questions" v-model="showFaq">
+      <modal-dialog v-model="showFaq" title="ClinGen GPM Frequently Asked Questions">
         <div v-if="!faqMarkdown">Loading FAQ...</div>
         <markdown-block :markdown="faqMarkdown" class="faq" />
       </modal-dialog>

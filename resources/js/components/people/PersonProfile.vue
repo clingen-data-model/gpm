@@ -55,9 +55,9 @@ export default {
     <div>
 
         <edit-icon-button
+            v-if="userIsPerson(person) || hasPermission('people-manage')"
             class="btn btn-sm float-right"
             @click="editPerson"
-            v-if="userIsPerson(person) || hasPermission('people-manage')"
         >
             Edit Info
         </edit-icon-button>
@@ -67,9 +67,9 @@ export default {
                 <component :is="profilePhotoComponent" :person="person" style="width: 120px"/>
             </div>
             <div>
-                <dictionary-row class="pb-2" label-class="w-40"
-                    v-for="key in ['name', 'email']"
-                    :key="key"
+                <dictionary-row v-for="key in ['name', 'email']" :key="key"
+                    class="pb-2"
+                    label-class="w-40"
                     :label="titleCase(key)"
                 >
                     {{ person[key] }}
@@ -110,21 +110,21 @@ export default {
                     </dictionary-row>
                 </section>
 
-                <section class="mt-4 border-t pt-4" v-if="hasPermission('people-manage')">
+                <section v-if="hasPermission('people-manage')" class="mt-4 border-t pt-4">
                     <h3>Metadata</h3>
                     <dictionary-row class="pb-2" label-class="w-40" label="Uuid">{{ person.uuid }}</dictionary-row>
                     <dictionary-row class="pb-2" label-class="w-40" label="Numeric ID">{{ person.id }}</dictionary-row>
 
                     <dictionary-row class="pb-2" label-class="w-40" label="User ID">{{ person.user_id || 'Account not activated.' }}</dictionary-row>
-                    <dictionary-row class="pb-2" label-class="w-40" v-if="person.invite" label="Invite Code">
+                    <dictionary-row v-if="person.invite" class="pb-2" label-class="w-40" label="Invite Code">
                         {{ person.invite.code }}
                         &nbsp;
                         <span v-if="person.invite.redeemed_at"> redeemed on {{ formatDate(person.invite.redeemed_at) }}</span>
                     </dictionary-row>
 
-                    <dictionary-row class="pb-2" label-class="w-40"
-                        v-for="key in ['created_at', 'updated_at']"
-                        :key="key"
+                    <dictionary-row v-for="key in ['created_at', 'updated_at']" :key="key"
+                        class="pb-2"
+                        label-class="w-40"
                         :label="key"
                     >
                         {{ formatDate(person[key]) }}

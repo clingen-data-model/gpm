@@ -85,8 +85,8 @@ export default {
     <div>
         <div class="flex justify-between">
             <h2>Conflict of Interest</h2>
-            <CoiLegacyUpload :application="application"
-                v-if="$store.state.features.legacyCoi"
+            <CoiLegacyUpload v-if="$store.state.features.legacyCoi"
+                :application="application"
             ></CoiLegacyUpload>
         </div>
         <div class="my-2 flex justify-between">
@@ -109,7 +109,7 @@ export default {
                 </template>
             </data-table>
             <modal-dialog v-model="showResponseDialog" size="xl">
-                <CoiDetail :coi="currentCoi" v-if="currentCoi"></CoiDetail>
+                <CoiDetail v-if="currentCoi" :coi="currentCoi"></CoiDetail>
             </modal-dialog>
         </div>
     </div>

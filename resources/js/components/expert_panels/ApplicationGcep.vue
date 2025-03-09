@@ -32,6 +32,11 @@ export default {
         'saved',
         'saving',
     ],
+    setup () {
+        return {
+            errors
+        }
+    },
     data () {
         return {
             genesChanged: false,
@@ -47,6 +52,9 @@ export default {
                 this.$store.commit('groups/addItem', value);
             }
         },
+    },
+    created() {
+        this.debounceAutoSave = debounce(this.autosave, 2000)
     },
     methods: {
         async save() {
@@ -97,32 +105,24 @@ export default {
         }
 
     },
-    setup () {
-        return {
-            errors
-        }
-    },
-    created() {
-        this.debounceAutoSave = debounce(this.autosave, 2000)
-    },
 }
 </script>
 <template>
     <div class="relative">
         <ApplicationStep id="definition" :disabled="group.expert_panel.hasPendingSubmission">
-            <AppSection title="Basic Information" id="basicInfo">
+            <AppSection id="basicInfo" title="Basic Information">
                 <GroupForm
-                    :group="group" ref="groupForm"
+                    ref="groupForm" :group="group"
                     @update="handleUpdate"
                 />
             </AppSection>
-            <AppSection v-if="group" title="Membership" id="membership">
+            <AppSection v-if="group" id="membership" title="Membership">
                 <p>
                     Expert Panels are expected to have broad representation of expertise in the field, including all major areas of expertise (clinical, diagnostic laboratory, and basic research).  Membership should include representation from three or more institutions and will encompass disease/gene expert members as well as biocurators. Biocurators do not have to be gene/disease experts and will be primarily responsible for assembling the available evidence for subsequent expert member review. For role, suggested examples include: primary biocurator, expert reviewer, etc.
                 </p>
                 <MemberList :group="group" />
             </AppSection>
-            <AppSection title="Scope of Work" id="scope">
+            <AppSection id="scope" title="Scope of Work">
                 <p>
                     It is expected that the expert panel will utilize
                     <lumping-and-splitting-link />
@@ -133,8 +133,8 @@ export default {
                 </p>
 
                 <GcepGeneList
-                    :group="group"
                     ref="geneList"
+                    :group="group"
                     @geneschanged="genesChanged = true"
                     @update="handleUpdate"
                 />
@@ -144,7 +144,7 @@ export default {
                 <ScopeDescriptionForm @update="handleUpdate" />
             </AppSection>
 
-            <AppSection title="Attestations" id="attestations">
+            <AppSection id="attestations" title="Attestations">
                 <AttestationGcep @update="handleUpdate" />
             </AppSection>
 
@@ -152,7 +152,7 @@ export default {
                 <GcepOngoingPlansForm @update="handleUpdate" />
             </AppSection>
 
-            <AppSection title="NHGRI Data Availability" id="nhgri">
+            <AppSection id="nhgri" title="NHGRI Data Availability">
                 <AttestationNhgri @update="handleUpdate" />
             </AppSection>
         </ApplicationStep>

@@ -57,6 +57,9 @@ export default {
             return Object.values(this.docTypes).find(dt => dt.id = this.documentTypeId)
         }
     },
+    mounted() {
+        this.$store.dispatch('doctypes/getItems');
+    },
     methods: {
         async save() {
             try {
@@ -103,9 +106,6 @@ export default {
         clearErrors () {
             this.errors = {}
         }
-    },
-    mounted() {
-        this.$store.dispatch('doctypes/getItems');
     }
 }
 </script>
@@ -114,19 +114,19 @@ export default {
         <h2 class="pb-2 border-b mb-4">Upload {{ titleCase(documentType.long_name) }}</h2>
 
         <input-row label="Document" :errors="errors.file">
-            <input type="file" ref="fileInput">
+            <input ref="fileInput" type="file">
         </input-row>
         
         <input-row 
-            label="Date Received" 
-            type="date" 
+            v-if="showNotes" 
             v-model="newDocument.date_received" 
+            label="Date Received" 
+            type="date"
             :errors="errors.date_received"
-            v-if="showNotes"
         ></input-row>
 
-        <input-row :errors="errors.notes" label="Notes" v-if="showNotes">
-            <textarea name="notes" v-model="newDocument.notes" cols="30" rows="5"></textarea>
+        <input-row v-if="showNotes" :errors="errors.notes" label="Notes">
+            <textarea v-model="newDocument.notes" name="notes" cols="30" rows="5"></textarea>
         </input-row>
         
         <button-row>

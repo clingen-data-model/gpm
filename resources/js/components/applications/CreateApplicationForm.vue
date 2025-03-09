@@ -94,10 +94,10 @@ export default {
     <form-container @keydown.enter="save">
         <h2 class="pb-2 border-b mb-4">Initiate Application</h2>
         <input-row
+            v-model="app.working_name"
             label="Working Name"
             :errors="errors.working_name"
             type="text"
-            v-model="app.working_name"
             placeholder="A recognizable name"
         ></input-row>
         
@@ -110,15 +110,15 @@ export default {
         
         <input-row label="EP Type" :errors="errors.expert_panel_type_id">
             <div>
-                <label :for="`ep-${epType.id}-radio`"
-                    v-for="epType in epTypes" 
+                <label v-for="epType in epTypes"
                     :key="epType.id" 
+                    :for="`ep-${epType.id}-radio`" 
                 >
                     <input 
-                        type="radio" 
-                        :value="epType.id" 
-                        v-model="app.expert_panel_type_id"
-                        :id="`ep-${epType.id}-radio`"
+                        :id="`ep-${epType.id}-radio`" 
+                        v-model="app.expert_panel_type_id" 
+                        type="radio"
+                        :value="epType.id"
                     >
                     <div>{{ epType.name }}</div>
                 </label>
@@ -128,16 +128,16 @@ export default {
             <div>
                 <div>
                     <checkbox 
-                        v-model="showInitiationDate" 
-                        id="show-initiation-checkbox"
+                        id="show-initiation-checkbox" 
+                        v-model="showInitiationDate"
                         label="Backdate this initiation"
                     />
                 </div>
                 <input-row 
-                    type="date" 
-                    label="Initiation Date" 
                     v-show="showInitiationDate" 
-                    v-model="app.date_initiated"
+                    v-model="app.date_initiated" 
+                    type="date" 
+                    label="Initiation Date"
                 >
                 </input-row>
             </div>

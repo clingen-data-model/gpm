@@ -39,6 +39,11 @@ export default {
         'saved',
         'saving',
     ],
+    setup () {
+        return {
+            errors
+        }
+    },
     data () {
         return {
             genesChanged: false,
@@ -54,6 +59,9 @@ export default {
                 this.$store.commit('groups/addItem', value);
             }
         },
+    },
+    created() {
+        this.debounceAutoSave = debounce(this.autosave, 2000)
     },
     methods: {
         async save() {
@@ -104,14 +112,6 @@ export default {
         }
 
     },
-    setup () {
-        return {
-            errors
-        }
-    },
-    created() {
-        this.debounceAutoSave = debounce(this.autosave, 2000)
-    },
 }
 </script>
 <template>
@@ -121,13 +121,13 @@ export default {
             title="Group Definition"
             :disabled="group.expert_panel.hasPendingSubmission"
         >
-            <AppSection title="Basic Information" id="basicInfo">
+            <AppSection id="basicInfo" title="Basic Information">
                 <GroupForm
-                    :group="group" ref="groupForm"
+                    ref="groupForm" :group="group"
                     @update="handleUpdate"
                 />
             </AppSection>
-            <AppSection v-if="group" title="Membership" id="membership">
+            <AppSection v-if="group" id="membership" title="Membership">
                 <p>
                     Expert Panels are expected to broad representation of expertise and backgrounds in the field.
                 </p>
@@ -135,15 +135,15 @@ export default {
                 <hr>
                 <MembershipDescriptionForm :editing="true" @update="handleUpdate"/>
             </AppSection>
-            <AppSection title="Scope of Work" id="scope">
-                <VcepGeneList :group="group" ref="geneList" @update="handleUpdate"/>
+            <AppSection id="scope" title="Scope of Work">
+                <VcepGeneList ref="geneList" :group="group" @update="handleUpdate"/>
                 <hr>
                 <ScopeDescriptionForm @update="handleUpdate"/>
             </AppSection>
-            <AppSection title="Reanalysis & Discrepancy Resolution" id="reanalysis">
+            <AppSection id="reanalysis" title="Reanalysis & Discrepancy Resolution">
                 <AttestationReanalysis @update="handleUpdate"></AttestationReanalysis>
             </AppSection>
-            <AppSection title="NHGRI Data Availability" id="nhgri">
+            <AppSection id="nhgri" title="NHGRI Data Availability">
                 <AttestationNhgri @update="handleUpdate"></AttestationNhgri>
             </AppSection>
         </ApplicationStep>
@@ -187,15 +187,15 @@ export default {
             title="Sustained Curation"
             :disabled="group.expert_panel.current_step < 4 || group.expert_panel.hasPendingSubmission"
         >
-            <AppSection title="Plans for Ongoing Review and Reanalysis and Discrepancy Resolution" id="curationReviewProcess">
+            <AppSection id="curationReviewProcess" title="Plans for Ongoing Review and Reanalysis and Discrepancy Resolution">
                 <VcepOngoingPlansForm @update="handleUpdate"/>
             </AppSection>
 
-            <AppSection title="Example Evidence Summaries" id="evidenceSummaries">
+            <AppSection id="evidenceSummaries" title="Example Evidence Summaries">
                 <EvidenceSummaryList />
             </AppSection>
 
-            <AppSection title="Member Designation" id="designations">
+            <AppSection id="designations" title="Member Designation">
                 <MemberDesignationForm ref="designationForm" />
             </AppSection>
         </ApplicationStep>
