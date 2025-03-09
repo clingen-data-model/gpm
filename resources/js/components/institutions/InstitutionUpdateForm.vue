@@ -16,10 +16,24 @@ export default {
         'saved',
         'canceled'
     ],
+    setup(props, context) {
+        const {workingCopy} = setupMirror(props, context)
+        
+        return {
+            fields,
+            getCountries,
+            countries,
+            updateInstitution,
+            workingCopy
+        }
+    },
     data() {
         return {
             errors: {}
         }
+    },
+    mounted () {
+        this.getCountries();
     },
     methods: {
         async save () {
@@ -41,26 +55,12 @@ export default {
         initErrors () {
             this.errors = {};
         }
-    },
-    setup(props, context) {
-        const {workingCopy} = setupMirror(props, context)
-        
-        return {
-            fields,
-            getCountries,
-            countries,
-            updateInstitution,
-            workingCopy
-        }
-    },
-    mounted () {
-        this.getCountries();
     }
 }
 </script>
 <template>
     <div>
-        <data-form :fields="fields" :errors="errors" v-model="workingCopy" />
+        <data-form v-model="workingCopy" :fields="fields" :errors="errors" />
         <button-row submit-text="Save" @submitted="save" @cancel="cancel" />
     </div>
 </template>

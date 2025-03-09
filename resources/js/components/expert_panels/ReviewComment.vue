@@ -8,9 +8,6 @@
     import commentManagerFactory from '@/composables/comment_manager.js'
     import {hasPermission} from '../../auth_utils';
 
-    const store = useStore();
-
-    const formDef = commentFormFactory();
     const props = defineProps({
         comment: {
             type: Object,
@@ -21,8 +18,12 @@
             required: true
         }
     });
+
     const emits = defineEmits(['created', 'updated', 'resolved', 'unresolved', 'deleted']);
 
+    const store = useStore();
+
+    const formDef = commentFormFactory();
     const replyManager = ref(commentManagerFactory('App\\Models\\Comment', props.comment.id))
 
     const showEditForm = ref(false);
@@ -119,7 +120,7 @@
                         <badge class="block" :color="getVariant(comment)" size="xxs">
                             {{ comment.type && titleCase(comment.type.name) }}
                         </badge>
-                        <popper hover arrow content="Resolved" v-if="comment.is_resolved">
+                        <popper v-if="comment.is_resolved" hover arrow content="Resolved">
                             <icon-checkmark
                                 class="text-green-500"
                                 title="Resolved"
@@ -127,7 +128,7 @@
                         </popper>
                     </div>
                     <div class="flex space-x-2">
-                        <dropdown-menu hideCheveron v-if="canEdit">
+                        <dropdown-menu v-if="canEdit" hideCheveron>
                             <DropdownItem @click="showEditForm = true">Edit</DropdownItem>
                             <DropdownItem @click="toggleResolution">{{ comment.is_resolved ? 'Mark unresolved' : 'Resolve' }}</DropdownItem>
                             <DropdownItem @click="initDelete">Delete</DropdownItem>
@@ -139,22 +140,22 @@
                 <button class="link" @click="initReply"><icon-reply class="inline-block" />Reply</button>
 
 
-                <static-alert variant="danger" v-show="showConfirmDelete" class="">
+                <static-alert v-show="showConfirmDelete" variant="danger" class="">
                     Continue with delete?
                     <button-row
                         size="xs"
                         submit-text="Yes, delete"
+                        submitVariant="red"
                         @submitted="deleteComment"
                         @canceled="showConfirmDelete=false"
-                        submitVariant="red"
                     ></button-row>
                 </static-alert>
             </div>
             <ReviewCommentForm v-else
-                @canceled="showEditForm = false"
-                @saved="showEditForm = false"
                 :comment="comment"
                 :commentManager="commentManager"
+                @canceled="showEditForm = false"
+                @saved="showEditForm = false"
             />
         </div>
 
@@ -167,7 +168,7 @@
                     <ReviewComment :comment="reply" :commentManager="replyManager" @deleted="handleReplyRemoved" />
                 </li>
             </ul>
-            <button class="link text-sm" v-if="comment.comments_count > 0" @click="toggleReplies">
+            <button v-if="comment.comments_count > 0" class="link text-sm" @click="toggleReplies">
                 {{ showReplyList ? 'Hide' : 'Show' }}
                 {{ comment.comments_count }}
                 {{ comment.comments_count > 1 ? 'replies' : 'reply' }}

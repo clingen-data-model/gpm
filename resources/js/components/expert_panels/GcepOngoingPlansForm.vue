@@ -40,8 +40,8 @@ export default {
             <input-row label="" :errors="errors.curation_review_protocol_id" vertical>
                 <div>
                     <label class="mt-2">
-                        <input type="radio" 
-                            v-model="group.expert_panel.curation_review_protocol_id" 
+                        <input v-model="group.expert_panel.curation_review_protocol_id" 
+                            type="radio" 
                             value="1" 
                             :disabled="!canEdit"
                             @input="$emit('update')"
@@ -49,8 +49,8 @@ export default {
                         <div>Single biocurator curation with comprehensive GCEP review (presentation of all data on calls with GCEP votes). Note: definitive genes may be expedited with brief summaries.</div>
                     </label>
                     <label class="mt-2 items-top">
-                        <input type="radio" 
-                            v-model="group.expert_panel.curation_review_protocol_id" 
+                        <input v-model="group.expert_panel.curation_review_protocol_id" 
+                            type="radio" 
                             value="2" 
                             :disabled="!canEdit"
                             @input="$emit('update')"
@@ -58,8 +58,8 @@ export default {
                         <p>Paired review (biocurator &amp; domain expert) with expedited GCEP review. Expert works closely with a curator on the initial summation of the information for expedited GCEP review (brief summary on a call with GCEP voting and/or electronic voting by GCEP). Definitive genes can move directly from biocurator to expedited GCEP review.</p>
                     </label>
                     <label class="mt-2">
-                        <input type="radio" 
-                            v-model="group.expert_panel.curation_review_protocol_id" 
+                        <input v-model="group.expert_panel.curation_review_protocol_id" 
+                            type="radio" 
                             value="3" 
                             :disabled="!canEdit"
                             @input="$emit('update')"
@@ -68,8 +68,8 @@ export default {
                     </label>
                     <div class="flex space-x-2 items-start mt-3">
                         <label>
-                            <input type="radio" 
-                                v-model="group.expert_panel.curation_review_protocol_id" 
+                            <input v-model="group.expert_panel.curation_review_protocol_id" 
+                                type="radio" 
                                 value="100" 
                                 :disabled="!canEdit"
                                 @input="$emit('update')"
@@ -78,10 +78,10 @@ export default {
                         </label>
                         <transition name="slide-fade-down">
                             <input-row 
-                                class="flex-1 mt-0"
                                 v-if="group.expert_panel.curation_review_protocol_id == 100"
-                                label-width-class="w-0"
                                 v-model="group.expert_panel.curation_review_protocol_other"
+                                class="flex-1 mt-0"
+                                label-width-class="w-0"
                                 :errors="errors.curation_review_protocol_other"
                                 type="large-text"
                                 @update:modelValue="$emit('update')"

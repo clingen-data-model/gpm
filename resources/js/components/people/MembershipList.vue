@@ -88,9 +88,9 @@ export default {
 <template>
     <div>
         <data-table 
+            v-model:sort="sort" 
             :fields="fields" 
-            :data="memberships" 
-            v-model:sort="sort"
+            :data="memberships"
             :rowClickHandler="goToGroup"
             :row-class="() => 'cursor-pointer'"
         ></data-table>

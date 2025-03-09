@@ -43,10 +43,10 @@ export default {
         <div class="mt-1">
             <slot name="input">
                 <input 
-                    type="checkbox" 
+                    :id="checkboxId" 
                     v-model="val" 
+                    type="checkbox"
                     :value="value"
-                    :id="checkboxId"
                     v-bind="$attrs"
                     @change="propagateChange"
                 >

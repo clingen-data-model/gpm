@@ -59,7 +59,7 @@ export default {
 }
 </script>
 <template>
-    <div class="p-4 my-4 mb-8 border rounded-xl bg-white" v-if="group.is_ep">
+    <div v-if="group.is_ep" class="p-4 my-4 mb-8 border rounded-xl bg-white">
         <h2 class="mb-2">
             Application Summary
             <span v-if="applicationStarted && group.is_vcep_or_scvcep">
@@ -74,7 +74,7 @@ export default {
                         {{ item.title }}
                     </div>
                     <div>
-                        <RequirementsBadge :section="item" v-if="!isStep(item)" />
+                        <RequirementsBadge v-if="!isStep(item)" :section="item" />
                         <icon-lock v-if="(isStep(item) && item.isDisabled(group))" class="inline text-gray-400" :height="14" :width="14"/>
 
                         <div v-if="isStep(item) && item.isComplete(group)">
@@ -92,7 +92,7 @@ export default {
                 </div>
             </li>
         </ul>
-        <div class="mt-4" v-if="hasAnyPermission(['ep-applications-manage', ['application-edit', group]])">
+        <div v-if="hasAnyPermission(['ep-applications-manage', ['application-edit', group]])" class="mt-4">
             <router-link v-if="group.uuid" :to="applicationRoute">
                 <button class="btn blue btn-lg">Go to application</button>
             </router-link>

@@ -2,8 +2,8 @@
 import api from '@/http/api';
 import EvidenceSummaryForm from '@/components/expert_panels/EvidenceSummaryForm.vue';
 export default {
-  components: { EvidenceSummaryForm },
     name: 'EvidenceSummary',
+  components: { EvidenceSummaryForm },
     props: {
         summary: {
             required: true,
@@ -73,7 +73,7 @@ export default {
             >
                 <header class="flex justify-between">
                     <h4>{{ summary.gene.gene_symbol }} - {{ summary.variant }}</h4>
-                    <dropdown-menu :hide-cheveron="true" class="relative" v-if="canEdit">
+                    <dropdown-menu v-if="canEdit" :hide-cheveron="true" class="relative">
                         <template #label>
                             <button class="btn btn-xs">&hellip;</button>
                         </template>
@@ -82,7 +82,7 @@ export default {
                     </dropdown-menu>
                 </header>
                 <p>{{ summary.summary }}</p>
-                <a class="link" :href="summary.vci_url" v-if="summary.vci_url" target="_blank">
+                <a v-if="summary.vci_url" class="link" :href="summary.vci_url" target="_blank">
                     View in the VCI
                 </a>
             </div>
@@ -97,7 +97,7 @@ export default {
         <teleport to="body">
             <modal-dialog v-model="showDeleteConfirm" title="You are about to delete an example evidence summary.">
                 You are about to delete an evidence summary for {{ summary.gene.gene_symbol }} - {{ summary.variant }}.  Are you sure you want to continue?
-                <button-row @submit="deleteSummary" @cancel="cancelDelete" submit-text="Delete Summary"></button-row>
+                <button-row submit-text="Delete Summary" @submit="deleteSummary" @cancel="cancelDelete"></button-row>
             </modal-dialog>
         </teleport>
     </div>

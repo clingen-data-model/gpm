@@ -64,6 +64,9 @@ export default {
             this.triggerSearch()
         }
     },
+    mounted () {
+        this.triggerSearch = debounce(() => this.$refs.dataTable.getItems(), 500)
+    },
     methods: {
 
         async itemProvider (currentPage, pageSize, sort, setTotalItems) {
@@ -101,9 +104,6 @@ export default {
             this.resettingInvite = invite;
             this.showConfirmation = true;
         },
-    },
-    mounted () {
-        this.triggerSearch = debounce(() => this.$refs.dataTable.getItems(), 500)
     }
 }
 </script>
@@ -112,26 +112,26 @@ export default {
         <note>Admin</note>
         <h1>Invites</h1>
         <data-table
+            ref="dataTable"
+            v-model:sort="tableSort"
+            v-remaining-height
             :data="itemProvider"
             :fields="fields"
-            v-model:sort="tableSort"
             class="text-sm"
-            v-remaining-height
             paginated
-            ref="dataTable"
         >
             <template #header>
-                <input type="text" v-model="searchTerm" placeholder="filter by name or email" class="mb-2">
+                <input v-model="searchTerm" type="text" placeholder="filter by name or email" class="mb-2">
             </template>
             <template #cell-reset="{item}">
-                <button class="btn btn-xs" @click="confirmReset(item)" v-if="item.redeemed_at">
+                <button v-if="item.redeemed_at" class="btn btn-xs" @click="confirmReset(item)">
                     Reset
                 </button>
             </template>
         </data-table>
 
         <teleport to="body">
-            <modal-dialog title="Reset Invite" v-model="showConfirmation">
+            <modal-dialog v-model="showConfirmation" title="Reset Invite">
                 <p>You are about to reset the invite for {{ resettingInvite.first_name }} {{ resettingInvite.last_name }}.</p>
                 <p>This cannot be undone.</p>
                 <p>Do you want to reset the invite?</p>

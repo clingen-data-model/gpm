@@ -10,7 +10,6 @@ export default {
         FinalDocumentView,
         DocumentList
     },
-    emits: ['updated'],
     props: {
         application: {
             type: Object,
@@ -39,6 +38,7 @@ export default {
             required: false
         }
     },
+    emits: ['updated'],
     data() {
         return {
             showUploadForm: false,
@@ -82,12 +82,12 @@ export default {
         </div>
         <modal-dialog v-model="showUploadForm" @closed="$refs.uploadform.clearForm()">
             <DocumentUploadForm 
+                ref="uploadform" 
                 :application="application" 
-                :document-type-id="documentTypeId" 
-                :step="step"
+                :document-type-id="documentTypeId"
+                :step="step" 
                 @canceled="showUploadForm = false" 
-                @saved="handleSaved" 
-                ref="uploadform"
+                @saved="handleSaved"
             >
             </DocumentUploadForm>
         </modal-dialog>

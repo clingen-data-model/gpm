@@ -40,6 +40,9 @@ export default {
             return this.$store.getters['doctypes/getItemById'](this.documentTypeId)
         }
     },
+    mounted() {
+        this.$store.dispatch('doctypes/getItems');
+    },
     methods: {
         async save() {
             try {
@@ -81,29 +84,26 @@ export default {
         clearErrors () {
             this.errors = {}
         }
-    },
-    mounted() {
-        this.$store.dispatch('doctypes/getItems');
     }
 }
 </script>
 <template>
     <form-container>
         <input-row label="Document" :errors="errors.file">
-            <input type="file" ref="fileInput">
+            <input ref="fileInput" type="file">
         </input-row>
 
         <input-row label="Type" :errors="errors.document_type_id">
             <select v-model="newDocument.document_type_id">
                 <option :value="null">Select...</option>
-                <option :value="type.id" v-for="type in documentTypes" :key="type.id">
+                <option v-for="type in documentTypes" :key="type.id" :value="type.id">
                     {{ type.long_name }}
                 </option>
             </select>
         </input-row>
 
         <input-row :errors="errors.notes" label="Notes">
-            <textarea name="notes" v-model="newDocument.notes" cols="30" rows="10"></textarea>
+            <textarea v-model="newDocument.notes" name="notes" cols="30" rows="10"></textarea>
         </input-row>
         
         <button-row>

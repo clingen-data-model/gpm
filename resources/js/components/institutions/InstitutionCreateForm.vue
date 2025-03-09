@@ -14,11 +14,24 @@ export default {
         'saved',
         'canceled'
     ],
+    setup() {
+        return {
+            fields,
+            getCountries,
+            countries,
+            createInstitution
+        }
+    },
     data() {
         return {
             inst: {
             },
             errors: {}
+        }
+    },
+    computed: {
+        filteredFields () {
+            return this.fields.filter(f => f.name !== 'reportable');
         }
     },
     watch: {
@@ -29,10 +42,8 @@ export default {
             }
         }
     },
-    computed: {
-        filteredFields () {
-            return this.fields.filter(f => f.name !== 'reportable');
-        }
+    mounted () {
+        this.getCountries();
     },
     methods: {
         async save () {
@@ -58,23 +69,12 @@ export default {
         initErrors () {
             this.errors = {};
         }
-    },
-    setup() {
-        return {
-            fields,
-            getCountries,
-            countries,
-            createInstitution
-        }
-    },
-    mounted () {
-        this.getCountries();
     }
 }
 </script>
 <template>
     <div>
-        <data-form :fields="filteredFields" :errors="errors" v-model="inst" />
+        <data-form v-model="inst" :fields="filteredFields" :errors="errors" />
         <button-row submit-text="Save" @submitted="save" @cancel="cancel" />
     </div>
 </template>

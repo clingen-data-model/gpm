@@ -21,11 +21,6 @@ export default {
             default: false
         }
     },
-    computed: {
-        canEdit () {
-            return this.hasAnyPermission(['groups-manage', ['application-edit', this.group]]);
-        }
-    },
     emits: [
         'saved',
         'canceled',
@@ -33,15 +28,6 @@ export default {
         'geneschanged',
         'update'
     ],
-    methods: {
-        showForm () {
-            if (this.canEdit) {
-                this.resetErrors();
-                this.$emit('update:editing', true);
-            }
-        }
-
-    },
     setup(props, context) {
         const store = useStore();
 
@@ -157,6 +143,20 @@ export default {
             syncGenesAsText,
             save,
         }
+    },
+    computed: {
+        canEdit () {
+            return this.hasAnyPermission(['groups-manage', ['application-edit', this.group]]);
+        }
+    },
+    methods: {
+        showForm () {
+            if (this.canEdit) {
+                this.resetErrors();
+                this.$emit('update:editing', true);
+            }
+        }
+
     }
 }
 </script>
@@ -175,14 +175,14 @@ export default {
                 type="large-text"
                 label="List the gene symbols for the genes the Expert Panel plans to curate.  Separate genes by commas, spaces, or new lines."
                 :errors="errors.genes"
-                @update:modelValue="$emit('geneschanged'); $emit('update')"
                 placeholder="ABC, DEF1, BEAN"
                 vertical
+                @update:modelValue="$emit('geneschanged'); $emit('update')"
             />
         </div>
         <div v-else>
             <p v-if="genesAsText" style="text-indent: 1rem;">{{ genesAsText }}</p>
-            <div class="well cursor-pointer" v-else @click="showForm">
+            <div v-else class="well cursor-pointer" @click="showForm">
                 {{ loading ? `Loading...` : `No genes have been added to the gene list.` }}
             </div>
         </div>

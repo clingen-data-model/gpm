@@ -17,15 +17,15 @@ export default {
     emits: [
         ...mirror.emits
     ],
-    computed: {
-        isComplete () {
-            return Boolean(this.modelValue.completed_at);
-        }
-    },
     setup(props, context) {
         const {workingCopy} = mirror.setup(props, context);
         return {
             workingCopy
+        }
+    },
+    computed: {
+        isComplete () {
+            return Boolean(this.modelValue.completed_at);
         }
     }
 }
@@ -34,8 +34,8 @@ export default {
 <template>
     <ApplicationSection title="Plans for rule specification of additional genes">
         <input-row
-            :disabled="isComplete"
             v-model="workingCopy.data.specification_plans"
+            :disabled="isComplete"
             :errors="errors.specification_plans"
             label="Are you planning to start the rule specification process for a new gene in the coming year?"
             type="radio-group"
@@ -43,9 +43,9 @@ export default {
             vertical
         />
         <input-row
-            :disabled="isComplete"
             v-if="workingCopy.data.specification_plans == 'yes'"
-            v-model="workingCopy.data.specification_plans_details" 
+            v-model="workingCopy.data.specification_plans_details"
+            :disabled="isComplete" 
             :errors="errors.specification_plans_details" 
             type="large-text" 
             label="What are your plans?" 

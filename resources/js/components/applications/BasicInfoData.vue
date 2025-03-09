@@ -48,9 +48,9 @@ export default {
         </dictionary-row>
         <dictionary-row label-class="font-bold w-40" label="Website URL">
             <a 
-                :href="`https://clinicalgenome.org/affiliation/${application.affiliation_id}`" 
+                v-if="application.stepIsApproved(1)" 
+                :href="`https://clinicalgenome.org/affiliation/${application.affiliation_id}`"
                 target="ep-website"
-                v-if="application.stepIsApproved(1)"
             >
             https://clinicalgenome.org/affiliation/{{ application.affiliation_id }}
             </a>
@@ -58,7 +58,7 @@ export default {
         </dictionary-row>
 
         <teleport to="body">
-            <modal-dialog v-model="showInfoEdit" @closed="showInfoEdit = false" title="Edit Group Info" size="md">
+            <modal-dialog v-model="showInfoEdit" title="Edit Group Info" size="md" @closed="showInfoEdit = false">
                 <submission-wrapper @submitted="$refs.infoForm.save()" @canceled="$refs.infoForm.cancel()">
                     <GroupForm 
                         ref="infoForm"

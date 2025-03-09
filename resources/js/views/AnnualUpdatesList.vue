@@ -47,6 +47,10 @@ export default {
         }
     }
   },
+  mounted() {
+    this.getWindows();
+    this.getItems();
+  },
   methods: {
     async getWindows() {
         this.windows = await api
@@ -67,10 +71,6 @@ export default {
         this.loading = false;
     },
   },
-  mounted() {
-    this.getWindows();
-    this.getItems();
-  },
 };
 </script>
 <template>
@@ -81,14 +81,14 @@ export default {
       </h1>
       {{ formatDate(selectedStartDate) }} - {{ formatDate(selectedEndDate) }}
       <select
+        v-if="windows.length > 1"
         v-model="selectedWindow"
         class="font-normal text-md"
-        v-if="windows.length > 1"
       >
         <option
-          :value="window"
           v-for="window in sortedWindows"
           :key="window.id"
+          :value="window"
         >
           {{ window.for_year }}
         </option>

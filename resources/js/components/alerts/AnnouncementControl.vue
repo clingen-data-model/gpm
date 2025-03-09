@@ -2,6 +2,15 @@
 import {announcement, validationErrors, saveAnnouncement, cancelAnnouncement, fields} from '@/forms/announcement_form'
 export default {
     name: 'AnnouncementControl',
+    setup () {
+        return {
+            announcement,
+            errors: validationErrors,
+            saveAnnouncement,
+            cancelAnnouncement,
+            formFields: fields
+        }
+    },
     data() {
         return {
             showConfirmation: false,
@@ -36,37 +45,28 @@ export default {
                 alert(error.message)
             }
         }
-    },
-    setup () {
-        return {
-            announcement,
-            errors: validationErrors,
-            saveAnnouncement,
-            cancelAnnouncement,
-            formFields: fields
-        }
     }
 }
 </script>
 <template>
     <div>
-        <button @click="initAnnouncement" class="link">Make an announcement</button>
+        <button class="link" @click="initAnnouncement">Make an announcement</button>
         <teleport to='body'>
-            <modal-dialog title="Make an announcement" v-model="showForm">
+            <modal-dialog v-model="showForm" title="Make an announcement">
                 <data-form
-                    :fields="formFields"
                     v-model="announcement"
+                    :fields="formFields"
                     :errors="errors"
                 ></data-form>
                 <h4>Preview:</h4>
                 <notification-item :notification="notification" />
 
-                <button-row @submitted="confirmSubmission" submit-text="Save"></button-row>
+                <button-row submit-text="Save" @submitted="confirmSubmission"></button-row>
             </modal-dialog>
-            <modal-dialog title="Confirm Announcement" v-model="showConfirmation">
+            <modal-dialog v-model="showConfirmation" title="Confirm Announcement">
                 You are about to make the following announcement:
                 <notification-item :notification="notification" />
-                <button-row @submitted="saveConfirmed" submit-text="Confirm"></button-row>
+                <button-row submit-text="Confirm" @submitted="saveConfirmed"></button-row>
             </modal-dialog>
         </teleport>
     </div>

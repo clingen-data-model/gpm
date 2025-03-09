@@ -50,19 +50,19 @@ export default {
             this.$store.dispatch('groups/getSpecifications', to)
         }
     },
+    mounted() {
+        this.$store.dispatch('groups/getSpecifications', this.group)
+    },
     methods: {
         goToCspec () {
             window.location = 'https://cspec.genome.network/'
         }
-    },
-    mounted() {
-        this.$store.dispatch('groups/getSpecifications', this.group)
     }
 }
 </script>
 <template>
     <div>
-        <div class="well mb-2" v-if="!hasSpecifications">
+        <div v-if="!hasSpecifications" class="well mb-2">
             No specifications on record in the CSPEC Registry.
         </div>
         <div v-else>

@@ -162,6 +162,9 @@ export default {
             return {height: 'calc(100vh - 220px)'}
         }
     },
+    mounted () {
+        this.getApplications()
+    },
     methods: {
 
         getApplications () {
@@ -189,9 +192,6 @@ export default {
             this.$router.push({name: 'ApplicationDetail', params: {uuid: item.uuid}})
         },
     },
-    mounted () {
-        this.getApplications()
-    },
     setup() {
         const {sort, filter} = sortAndFilter();
         // const showAllInfo = computedQueryParam('showAllInfo');
@@ -208,7 +208,7 @@ export default {
     <div>
         <div class="flex justify-between">
             <div class="mb-1 flex space-x-2">
-                <label>Filter: <input type="text" class="sm" v-model="filter" placeholder="filter"></label>
+                <label>Filter: <input v-model="filter" type="text" class="sm" placeholder="filter"></label>
                 <checkbox
                     v-model="showCompleted"
                     label="Show completed"
@@ -216,12 +216,12 @@ export default {
             </div>
         </div>
         <data-table
+            v-model:sort="sort"
             :data="filteredData"
             :fields="selectedFields"
             :filter-term="filter"
             :row-click-handler="goToApplication"
             row-class="cursor-pointer"
-            v-model:sort="sort"
             :style="remainingHeight"
             class="overflow-auto text-xs"
         >

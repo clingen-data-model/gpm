@@ -13,6 +13,13 @@ export default {
             required: true
         },
     },
+    emits: [ ...mirror.emits ],
+    setup(props, context) {
+        const {workingCopy} = mirror.setup(props, context);
+        return {
+            workingCopy
+        }
+    },
     data() {
         return {
             fundingOptions: [
@@ -25,16 +32,9 @@ export default {
             ]
         }
     },
-    emits: [ ...mirror.emits ],
     computed: {
         isComplete () {
             return Boolean(this.modelValue.completed_at)
-        }
-    },
-    setup(props, context) {
-        const {workingCopy} = mirror.setup(props, context);
-        return {
-            workingCopy
         }
     }
 }
@@ -43,8 +43,8 @@ export default {
 <template>
     <div>
         <input-row
-            :disabled="isComplete"
             v-model="workingCopy.data.applied_for_funding"
+            :disabled="isComplete"
             type="radio-group"
             :options="[{value: 'yes'}, {value: 'no'}]"
             label="Have you applied for external funding to directly support the work of your EP (e.g. NIH U24, industry, etc.)?"
@@ -53,20 +53,20 @@ export default {
         />
 
         <input-row
-            :disabled="isComplete"
             v-if="workingCopy.data.applied_for_funding == 'yes'"
-            label="Funding Type" :errors="errors.funding"
+            v-model="workingCopy.data.funding"
+            :disabled="isComplete" label="Funding Type"
+            :errors="errors.funding"
             class="ml-4"
             type="select"
-            v-model="workingCopy.data.funding"
             :options="fundingOptions"
         />
 
         <input-row
-            :disabled="isComplete"
             v-if="workingCopy.data.funding == 'Other'"
-            type="large-text"
             v-model="workingCopy.data.funding_other_details"
+            :disabled="isComplete"
+            type="large-text"
             :errors="errors.funding_other_details"
             placeholder="details"
             class="ml-8"
@@ -74,10 +74,10 @@ export default {
         />
 
         <input-row
-            :disabled="isComplete"
-            v-model="workingCopy.data.funding_thoughts"
-            type="large-text"
             v-if="workingCopy.data.applied_for_funding == 'no'"
+            v-model="workingCopy.data.funding_thoughts"
+            :disabled="isComplete"
+            type="large-text"
             label="Please describe any thoughts, ideas, or plans for soliciting funding or personnel (in addition to any existing funding/support you may have)."
             :errors="errors.funding_thoughts"
             vertical

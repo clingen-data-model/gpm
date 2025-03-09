@@ -115,26 +115,26 @@ export default {
 </script>
 <template>
     <div>
-        <div class="px-3 py-2 rounded border border-gray-300 text-gray-500 bg-gray-200" v-if="!hasLogEntries">
+        <div v-if="!hasLogEntries" class="px-3 py-2 rounded border border-gray-300 text-gray-500 bg-gray-200">
             No log entries to display
         </div>
-        <data-table :fields="fields" :data="logEntries" v-model:sort="sort" v-else>
+        <data-table v-else v-model:sort="sort" :fields="fields" :data="logEntries">
             <template #cell-id="{item}">
-                <div class="flex space-x-1" v-if="hasPermission('groups-manage')">
+                <div v-if="hasPermission('groups-manage')" class="flex space-x-1">
                     <button class="btn btn-xs inline-block" @click="editLogEntry(item)">
                         <icon-edit width="12"></icon-edit>
                     </button>
                     <button 
-                        @click="confirmDelete(item)"
                         v-if="item.activity_type === null"
                         class="btn btn-xs inline-block"
+                        @click="confirmDelete(item)"
                     >
                         <icon-trash width="12"></icon-trash>
                     </button>
                 </div>
             </template>
             <template #cell-description="{item}">
-                <div v-html="item.description" class="links-blue"></div>
+                <div class="links-blue" v-html="item.description"></div>
             </template>
         </data-table>
         <modal-dialog v-model="editingEntry" title="Edit log entry">

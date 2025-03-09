@@ -158,6 +158,24 @@ export default {
             immediate: true
         }
     },
+    created() {
+        this.search = debounce( async (searchText, options) => {
+            if (searchText === '' || searchText === null || typeof searchText == 'undefined') {
+                if (this.showOptionsOnFocus) {
+                    this.filteredOptions = [...options];
+                    return;
+                }
+                return [];
+            }
+
+            if (!this.searchFunction)  {
+                this.filteredOptions = this.defaultSearchFunction(searchText, options);
+                return;
+            }
+
+            this.filteredOptions = await this.searchFunction(searchText, options);
+        }, this.throttle);
+    },
     methods: {
         handleInputFocus () {
             this.hasFocus = true;
@@ -340,24 +358,6 @@ export default {
             }
         }
     },
-    created() {
-        this.search = debounce( async (searchText, options) => {
-            if (searchText === '' || searchText === null || typeof searchText == 'undefined') {
-                if (this.showOptionsOnFocus) {
-                    this.filteredOptions = [...options];
-                    return;
-                }
-                return [];
-            }
-
-            if (!this.searchFunction)  {
-                this.filteredOptions = this.defaultSearchFunction(searchText, options);
-                return;
-            }
-
-            this.filteredOptions = await this.searchFunction(searchText, options);
-        }, this.throttle);
-    },
 }
 </script>
 <template>
@@ -374,35 +374,35 @@ export default {
                         </slot>
                     </label>
                     <div
-                        @click="removeSelection(idx)"
                         :disabled="disabled"
                         class="remove-btn"
+                        @click="removeSelection(idx)"
                     >x</div>
                 </div>
             </div>
             <input
                 v-show="showInput"
-                type="text"
-                v-model="searchText"
+                id="search-select-input"
                 ref="input"
+                v-model="searchText"
+                type="text"
                 class="input"
+                :placeholder="placeholder"
+                :disabled="disabled"
                 @keydown="handleKeyDown"
                 @keyup="handleKeyEvent"
                 @focus="handleInputFocus"
                 @blur="handleInputBlur"
-                :placeholder="placeholder"
-                :disabled="disabled"
-                id="search-select-input"
             >
         </div>
         <div v-show="showingOptions" class="result-container">
             <div>
                 <ul class="option-list" :style="`max-height: ${optionsListHeight}px`">
                     <li v-for="(opt, idx) in filteredUniqueOptions"
+                        :id="`option-${idx}`"
                         :key="idx"
                         class="filtered-option"
                         :class="{highlighted: (idx === cursorPosition)}"
-                        :id="`option-${idx}`"
                         @click="setSelection(opt)"
                     >
                         <slot :option="opt" :index="idx" name="option">{{ resolveDefaultOptionLabel(opt) }}</slot>

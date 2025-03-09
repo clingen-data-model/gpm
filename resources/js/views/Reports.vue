@@ -54,7 +54,7 @@
     <div>
         <h1>Reports</h1>
         <div class="flex space-x-4">
-            <ul class="item-list space-y-2 bg-gray-100 p-4 w-1/4" v-remaining-height>
+            <ul v-remaining-height class="item-list space-y-2 bg-gray-100 p-4 w-1/4">
                 <li v-for="rpt in reports" :key="rpt.url">
                     <download-link :url="rpt.url" :title="`Download ${rpt.name} Report`">{{ rpt.name }}</download-link>
                 </li>

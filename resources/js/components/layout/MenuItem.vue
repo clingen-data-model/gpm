@@ -87,7 +87,7 @@ export default {
             >
                 <div class="font-bold">
                     {{ item.title }}
-                    <icon-cheveron-right class="cheveron inline -mt-1" v-if="hasManySections" />
+                    <icon-cheveron-right v-if="hasManySections" class="cheveron inline -mt-1" />
                 </div>
                 <badge v-if="item.isComplete(group)" color="green">
                     <icon-checkmark width="12" height="12"></icon-checkmark>
@@ -96,7 +96,7 @@ export default {
             <transition name="slide-fade-down">
                 <ul 
                     v-if="item.sections && hasManySections" 
-                    :class="{'ml-4 text-smaller': item.title}" v-show="!collapsed"
+                    v-show="!collapsed" :class="{'ml-4 text-smaller': item.title}"
                 >
                     <li v-for="(section, idx) in item.sections" :key="idx">
                         <menu-item :item="section"></menu-item>

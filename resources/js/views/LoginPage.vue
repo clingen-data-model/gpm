@@ -15,6 +15,9 @@ export default {
             this.redirectIfAuthed();
         }
     },
+    mounted() {
+        this.redirectIfAuthed();
+    },
     methods: {
         redirect() {
             let route = { name: 'Dashboard' };
@@ -31,9 +34,6 @@ export default {
                 this.redirect();
             }
         }
-    },
-    mounted() {
-        this.redirectIfAuthed();
     }
 };
 </script>

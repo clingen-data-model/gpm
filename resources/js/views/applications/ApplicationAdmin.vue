@@ -55,6 +55,9 @@ export default {
             return [{label: this.group.displayName, route: {name: 'GroupDetail', params: {uuid: this.group.uuid}}}];
         }
     },
+    mounted() {
+        this.showModal = Boolean(this.$route.meta.showModal)
+    },
     methods: {
         hideModal () {
             this.$router.replace({name: 'ApplicationDetail', params: {uuid: this.group.uuid}});
@@ -68,16 +71,13 @@ export default {
                 this.$refs.modalView.clearForm();
             }
         },
-    },
-    mounted() {
-        this.showModal = Boolean(this.$route.meta.showModal)
     }
 }
 </script>
 
 <template>
     <div>
-        <static-alert variant="danger" v-if="!loading && !group.hasContacts" class="mb-4">
+        <static-alert v-if="!loading && !group.hasContacts" variant="danger" class="mb-4">
             <strong>Warning!!</strong> There are currently no contacts connected to this application!
         </static-alert >
         <ScreenTemplate :title="group.displayName" :breadcrumbs="breadcrumbs">
@@ -131,8 +131,8 @@ export default {
         <teleport to="body">
             <modal-dialog
                 v-model="showModal"
-                @closed="handleModalClosed"
                 :title="$route.meta.title"
+                @closed="handleModalClosed"
             >
                 <router-view ref="modalView" @saved="hideModal" @canceled="hideModal"></router-view>
             </modal-dialog>

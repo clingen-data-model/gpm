@@ -77,9 +77,9 @@ export default {
         <p class="my-4">
             <input-row label="" :vertical="true">
                 <checkbox 
-                    :disabled="disabled" 
-                    v-model="attestation" 
                     id="nhgri-checkbox" 
+                    v-model="attestation" 
+                    :disabled="disabled" 
                     :label="checkboxLabel"
                 />
             </input-row>

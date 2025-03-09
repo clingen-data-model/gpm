@@ -54,7 +54,7 @@ export default {
             {{ mail.subject }}
         </dictionary-row>
         <dictionary-row label="Body" label-class="font-bold w-36" class="mb-1">
-            <div v-html="mail.body" class="email-body w-3/4"></div>
+            <div class="email-body w-3/4" v-html="mail.body"></div>
         </dictionary-row>
         <div class="mt-2 border-t pt-2 text-right">
             <button class="btn " @click="$emit('resend')">Resend</button>

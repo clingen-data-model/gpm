@@ -11,7 +11,6 @@
     import CredentialsInput from '../forms/CredentialsInput.vue';
     import ExpertisesInput from '../forms/ExpertisesInput.vue';
 
-    const store = useStore();
     const props = defineProps({
                     person: {
                         type: Object,
@@ -30,12 +29,11 @@
                         default: 'Save'
                     }
                 });
-
     const emits = defineEmits([
                         'saved',
                         'canceled'
                     ]);
-
+    const store = useStore();
     const errors = ref({});
     const profile = ref({});
     const saving = ref(false);
@@ -102,22 +100,22 @@
 <template>
     <div>
         <h3 v-if="showTitle">Profile</h3>
-        <div class="float-right" v-if="(hasPermission('people-manage') || userIsPerson(person))"
+        <div v-if="(hasPermission('people-manage') || userIsPerson(person))" class="float-right"
         >
             <ProfilePhotoForm :person="person" style="width: 100px; height: 100px;" />
         </div>
 
-        <input-row label="First Name"
-            v-model="profile.first_name"
+        <input-row v-model="profile.first_name"
+            label="First Name"
             :errors="errors.first_name"
         />
 
-        <input-row label="Last Name"
-            v-model="profile.last_name"
+        <input-row v-model="profile.last_name"
+            label="Last Name"
             :errors="errors.last_name"
         />
-        <input-row label="Email"
-            v-model="profile.email"
+        <input-row v-model="profile.email"
+            label="Email"
             :errors="errors.email"
         />
 
@@ -178,25 +176,25 @@
         </input-row>
 
 
-        <input-row v-if="canEditAllFields" label="Biography"
-            v-model="profile.biography"
+        <input-row v-if="canEditAllFields" v-model="profile.biography"
+            label="Biography"
             :errors="errors.biography"
             type="large-text"
         />
 
-        <input-row label="Address" v-if="canEditAllFields">
+        <input-row v-if="canEditAllFields" label="Address">
             <AddressInput v-model="profile" :errors="errors" />
         </input-row>
 
-        <input-row v-if="canEditAllFields" label="Country"
-            v-model="profile.country_id"
+        <input-row v-if="canEditAllFields" v-model="profile.country_id"
+            label="Country"
             type="select"
             :options="countries"
             :errors="errors.country_id"
         />
 
-        <input-row v-if="canEditAllFields" label="Phone"
-            v-model="profile.phone"
+        <input-row v-if="canEditAllFields" v-model="profile.phone"
+            label="Phone"
             :errors="errors.phone"
         />
 
@@ -208,10 +206,10 @@
 
         <div v-if="saving" class="mb-2">Saving...</div>
         <button-row v-if="!saving"
-            @submitted="save"
-            @canceled="cancel()"
             :submit-text="saveButtonText"
             :show-cancel="allowCancel"
+            @submitted="save"
+            @canceled="cancel()"
         />
     </div>
 </template>

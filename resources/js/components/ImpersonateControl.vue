@@ -54,8 +54,8 @@ export default {
     <div>
         <div v-if="canImpersonate || user.is_impersonating">
             <button v-if="!user.is_impersonating"
-                @click="showSelector = !showSelector"
-                class="btn btn-xs border" 
+                class="btn btn-xs border"
+                @click="showSelector = !showSelector" 
             >
                 Impersonate a user
             </button>
@@ -68,8 +68,8 @@ export default {
             </a>
             <teleport to='body'>
                 <modal-dialog
-                    title="Impersonate another user" 
-                    v-model="showSelector"
+                    v-model="showSelector" 
+                    title="Impersonate another user"
                     @ok="impersonateSelected"
                 >
                     <SearchSelect 
@@ -102,7 +102,7 @@ export default {
                 <modal-dialog
                     v-model="showProgress" 
                 >
-                    <h3 class="text-center" v-if="selectedUser">
+                    <h3 v-if="selectedUser" class="text-center">
                         {{ progressMessage }}
                     </h3>
                     <p class="text-center"> 

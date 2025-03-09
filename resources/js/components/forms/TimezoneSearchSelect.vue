@@ -68,6 +68,13 @@ export default {
             }
         }
     },
+    mounted () {
+        api.get('/api/people/lookups/timezones')
+            .then(response => {
+                this.timezones = response.data.data.filter(tz => tz !== 'UTC')
+                this.setRegionsAndCities(this.timezones);
+            })
+    },
     methods: {
         search (searchText) {
             if (!searchText || searchText.length < 2) {
@@ -108,13 +115,6 @@ export default {
             }
             this.$emit('update:modelValue', newValue);
         }
-    },
-    mounted () {
-        api.get('/api/people/lookups/timezones')
-            .then(response => {
-                this.timezones = response.data.data.filter(tz => tz !== 'UTC')
-                this.setRegionsAndCities(this.timezones);
-            })
     }
 }
 </script>
@@ -123,7 +123,7 @@ export default {
         <div>
             <label for="region-select" class="block text-xs">Region:</label>
             <select id="region-select" v-model="region" class="input-cl">
-                <option :value="region" v-for="r in regions" :key="r">
+                <option v-for="r in regions" :key="r" :value="region">
                     {{ r }}
                 </option>
             </select>
