@@ -83,35 +83,41 @@ export default {
 }
 </script>
 <template>
-    <div>
-        <p class="mb-8">
-            Merging credentials will do the following:
-            <ol class="list-decimal ml-6">
-                <li>Transfer all people with the obsolete credential to the authoritiative credential.</li>
-                <li>Delete the obsolete credential.</li>
-            </ol>
-        </p>
-        <input-row label="Merge" vertical>
-            <template #label>
-                Merge <note class="inline-block">(Obsolete credential that will be deleted)</note>
-            </template>
+  <div>
+    <p class="mb-8">
+      Merging credentials will do the following:
+      <ol class="list-decimal ml-6">
+        <li>Transfer all people with the obsolete credential to the authoritiative credential.</li>
+        <li>Delete the obsolete credential.</li>
+      </ol>
+    </p>
+    <input-row label="Merge" vertical>
+      <template #label>
+        Merge <note class="inline-block">
+          (Obsolete credential that will be deleted)
+        </note>
+      </template>
 
-            <SearchSelect
-                v-model="selectedObsolete"
-                :options="credentials"
-                :showOptionsOnFocus="true"
-                keyBy="id"
-            />
-        </input-row>
-        <input-row label="Into" :errors="errors.authority_id" vertical>
-            <template #label>Into <note class="inline">(Authoritative credential)</note></template>
-            <SearchSelect
-                v-model="selectedAuthority"
-                :options="credentials"
-                :showOptionsOnFocus="true"
-                keyBy="id"
-            />
-        </input-row>
-        <button-row submit-text="Merge" @submitted="commitMerge" @canceled="cancelMerge" />
-    </div>
+      <SearchSelect
+        v-model="selectedObsolete"
+        :options="credentials"
+        :showOptionsOnFocus="true"
+        keyBy="id"
+      />
+    </input-row>
+    <input-row label="Into" :errors="errors.authority_id" vertical>
+      <template #label>
+        Into <note class="inline">
+          (Authoritative credential)
+        </note>
+      </template>
+      <SearchSelect
+        v-model="selectedAuthority"
+        :options="credentials"
+        :showOptionsOnFocus="true"
+        keyBy="id"
+      />
+    </input-row>
+    <button-row submit-text="Merge" @submitted="commitMerge" @canceled="cancelMerge" />
+  </div>
 </template>

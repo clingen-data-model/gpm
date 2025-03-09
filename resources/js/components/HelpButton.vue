@@ -34,11 +34,13 @@ export default {
 <template>
   <div v-if="$store.getters.isAuthed">
     <popover hover arrow placement="left">
-        <template #content>
-            <div class="whitespace-no-wrap w-28 text-xs">Read the GPM FAQ</div>
-        </template>
-        <faq-link
-            class="
+      <template #content>
+        <div class="whitespace-no-wrap w-28 text-xs">
+          Read the GPM FAQ
+        </div>
+      </template>
+      <faq-link
+        class="
                 block
                 custom-text
                 text-white
@@ -51,13 +53,15 @@ export default {
                 shadow-lg
                 print:hidden
             "
-        >
-            <icon-question />
-        </faq-link>
+      >
+        <icon-question />
+      </faq-link>
     </popover>
     <teleport to="body">
       <modal-dialog v-model="showFaq" title="ClinGen GPM Frequently Asked Questions">
-        <div v-if="!faqMarkdown">Loading FAQ...</div>
+        <div v-if="!faqMarkdown">
+          Loading FAQ...
+        </div>
         <markdown-block :markdown="faqMarkdown" class="faq" />
       </modal-dialog>
     </teleport>

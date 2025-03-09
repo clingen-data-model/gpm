@@ -15,7 +15,7 @@ export default {
 }
 </script>
 <template>
-    <div>
-        <ApplicationsTable :ep-type-id="1"></ApplicationsTable>
-    </div>
+  <div>
+    <ApplicationsTable :ep-type-id="1" />
+  </div>
 </template>

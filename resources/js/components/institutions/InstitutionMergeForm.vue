@@ -73,25 +73,30 @@ export default {
 }
 </script>
 <template>
-    <div>
-        <p class="mb-8">
-            Merging institutions will do the following:
-            <ol class="list-decimal ml-6">
-                <li>Transfer all people with the obsolete institution to the authoritiative institution.</li>
-                <li>Delete the obsolete institution.</li>
-            </ol>
-        </p>
-        <input-row label="Merge" vertical>
-            <template #label>
-                Merge <note class="inline-block">(Obsolete institution that will be deleted)</note>
-            </template>
-            <institution-search-select :model-value="obsoleteIds" :allow-add="false" @update:modelValue="handleObsoleteUpdate"></institution-search-select>
-            
-        </input-row>
-        <input-row label="Into" :errors="errors.authority_id" vertical>
-            <template #label>Into <note class="inline">(Authoritative institution)</note></template>
-            <institution-search-select v-model="authorityId" :allow-add="false"></institution-search-select>
-        </input-row>
-        <button-row submit-text="Merge" @submitted="commitMerge" @canceled="cancelMerge" />
-    </div>
+  <div>
+    <p class="mb-8">
+      Merging institutions will do the following:
+      <ol class="list-decimal ml-6">
+        <li>Transfer all people with the obsolete institution to the authoritiative institution.</li>
+        <li>Delete the obsolete institution.</li>
+      </ol>
+    </p>
+    <input-row label="Merge" vertical>
+      <template #label>
+        Merge <note class="inline-block">
+          (Obsolete institution that will be deleted)
+        </note>
+      </template>
+      <institution-search-select :model-value="obsoleteIds" :allow-add="false" @update:modelValue="handleObsoleteUpdate" />
+    </input-row>
+    <input-row label="Into" :errors="errors.authority_id" vertical>
+      <template #label>
+        Into <note class="inline">
+          (Authoritative institution)
+        </note>
+      </template>
+      <institution-search-select v-model="authorityId" :allow-add="false" />
+    </input-row>
+    <button-row submit-text="Merge" @submitted="commitMerge" @canceled="cancelMerge" />
+  </div>
 </template>

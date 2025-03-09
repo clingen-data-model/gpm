@@ -89,43 +89,45 @@ export default {
 }
 </script>
 <template>
-    <div>
-        <SearchSelect
-            v-model="selectedInstitution"
-            :search-function="search"
-            style="z-index: 2"
-            placeholder="Institution name or abbreviation"
-            keyOptionsBy="id"
-            showOptionsOnFocus
-            :options="institutions"
-            showOptionsWhenEmpty
-            @update:modelValue="searchText = null"
-        >
-            <template #selection-label="{selection}">
-                <div>
-                    {{ selection.name }} <span v-if="selection.abbreviation">({{ selection.abbreviation }})</span>
-                </div>
-            </template>
-            <template #option="{option}">
-                <div v-if="typeof option == 'object'">
-                    {{ option.name }} <span v-if="option.abbreviation">({{ option.abbreviation }})</span>
-                </div>
-                <div v-else>
-                    {{ option }}
-                </div>
-            </template>
-            <template v-if="allowAdd" #fixedBottomOption>
-                <button class="font-bold link cursor-pointer" @click="initAddNew">Add your institution</button>
-            </template>
-        </SearchSelect>
-        <teleport to='body'>
-            <modal-dialog v-model="showAddForm" title="Add an institution">
-                <InstitutionForm
-                    :name="formName"
-                    @saved="useNewInstitution"
-                    @canceled="cancelNewInstitution"
-                />
-            </modal-dialog>
-        </teleport>
-    </div>
+  <div>
+    <SearchSelect
+      v-model="selectedInstitution"
+      :search-function="search"
+      style="z-index: 2"
+      placeholder="Institution name or abbreviation"
+      keyOptionsBy="id"
+      showOptionsOnFocus
+      :options="institutions"
+      showOptionsWhenEmpty
+      @update:modelValue="searchText = null"
+    >
+      <template #selection-label="{selection}">
+        <div>
+          {{ selection.name }} <span v-if="selection.abbreviation">({{ selection.abbreviation }})</span>
+        </div>
+      </template>
+      <template #option="{option}">
+        <div v-if="typeof option == 'object'">
+          {{ option.name }} <span v-if="option.abbreviation">({{ option.abbreviation }})</span>
+        </div>
+        <div v-else>
+          {{ option }}
+        </div>
+      </template>
+      <template v-if="allowAdd" #fixedBottomOption>
+        <button class="font-bold link cursor-pointer" @click="initAddNew">
+          Add your institution
+        </button>
+      </template>
+    </SearchSelect>
+    <teleport to="body">
+      <modal-dialog v-model="showAddForm" title="Add an institution">
+        <InstitutionForm
+          :name="formName"
+          @saved="useNewInstitution"
+          @canceled="cancelNewInstitution"
+        />
+      </modal-dialog>
+    </teleport>
+  </div>
 </template>

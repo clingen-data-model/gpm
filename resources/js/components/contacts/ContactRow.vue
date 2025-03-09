@@ -62,35 +62,39 @@ export default {
 }
 </script>
 <template>
-    <div>
-        {{ contact.name }}
-        -
-        <a class="text-blue-500 underline" :href="`mailto:${contact.email}`">{{ contact.email }}</a>
-        <span v-if="contact.phone">
-            - {{ contact.phone }}
-        </span>
+  <div>
+    {{ contact.name }}
+    -
+    <a class="text-blue-500 underline" :href="`mailto:${contact.email}`">{{ contact.email }}</a>
+    <span v-if="contact.phone">
+      - {{ contact.phone }}
+    </span>
         &nbsp;
-        <RemoveButton size="xs" @click="confirmRemove"></RemoveButton>
+    <RemoveButton size="xs" @click="confirmRemove" />
 
-        <modal-dialog v-model="showRemoveConfirmation" title="Confirm Contact Removal">
-            <p class="mb-2">
-                You are about to remove <strong>{{ contact.name }}</strong> as a contact for this application.
-                Do you want to continue?
-            </p>
+    <modal-dialog v-model="showRemoveConfirmation" title="Confirm Contact Removal">
+      <p class="mb-2">
+        You are about to remove <strong>{{ contact.name }}</strong> as a contact for this application.
+        Do you want to continue?
+      </p>
 
-            <small class="text-gray-500">NOTE: This will not delete the person's record in this system.</small>
+      <small class="text-gray-500">NOTE: This will not delete the person's record in this system.</small>
 
 
-            <ul v-if="errors" class="bg-red-200 bg-text-900 border-red-900 p-2">
-                <li v-for="(fieldErrors, field) in errors" :key="field">
-                    {{ field }}: {{ fieldErrors.join(', ') }}
-                </li>
-            </ul>
+      <ul v-if="errors" class="bg-red-200 bg-text-900 border-red-900 p-2">
+        <li v-for="(fieldErrors, field) in errors" :key="field">
+          {{ field }}: {{ fieldErrors.join(', ') }}
+        </li>
+      </ul>
 
-            <button-row>
-                <div class="btn" @click="cancel">Cancel</div>
-                <div class="btn blue" @click="save">Yes, remove contact</div>
-            </button-row>
-        </modal-dialog>
-    </div>
+      <button-row>
+        <div class="btn" @click="cancel">
+          Cancel
+        </div>
+        <div class="btn blue" @click="save">
+          Yes, remove contact
+        </div>
+      </button-row>
+    </modal-dialog>
+  </div>
 </template>

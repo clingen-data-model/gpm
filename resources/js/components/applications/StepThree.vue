@@ -35,17 +35,17 @@ export default {
 }
 </script>
 <template>
-    <BaseStep
-        :step="3"
-        approve-button-label="Approve Pilot and Specifications"
-        title="Pilot ACMG Guideline Specificiations"
-        @updated="$emit('updated')"
-    >
-        <template #sections>
-            <div class="application-section screen-block">
-                <h2>Pilot Specifications</h2>
-                <SpecificationsSection :doc-type-id="[3,4,7]" />
-            </div>
-        </template>
-    </BaseStep>
+  <BaseStep
+    :step="3"
+    approve-button-label="Approve Pilot and Specifications"
+    title="Pilot ACMG Guideline Specificiations"
+    @updated="$emit('updated')"
+  >
+    <template #sections>
+      <div class="application-section screen-block">
+        <h2>Pilot Specifications</h2>
+        <SpecificationsSection :doc-type-id="[3,4,7]" />
+      </div>
+    </template>
+  </BaseStep>
 </template>

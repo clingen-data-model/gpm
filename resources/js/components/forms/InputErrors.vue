@@ -9,7 +9,9 @@ export default {
 }
 </script>
 <template>
-    <ul class="text-red-800 m-0 p-0">
-        <li v-for="error in errors" :key="error">{{ error }}</li>
-    </ul>
+  <ul class="text-red-800 m-0 p-0">
+    <li v-for="error in errors" :key="error">
+      {{ error }}
+    </li>
+  </ul>
 </template>

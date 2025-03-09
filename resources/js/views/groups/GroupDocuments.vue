@@ -62,13 +62,13 @@ export default {
 }
 </script>
 <template>
-    <div>
-        <DocumentList :documents="displayDocuments"
-            :documentUpdater="updateDocument"
-            :documentCreator="createDocument"
-            :documentDeleter="deleteDocument"
-            :canManage="canManageDocuments"
-        >
-        </DocumentList>
-    </div>
+  <div>
+    <DocumentList
+      :documents="displayDocuments"
+      :documentUpdater="updateDocument"
+      :documentCreator="createDocument"
+      :documentDeleter="deleteDocument"
+      :canManage="canManageDocuments"
+    />
+  </div>
 </template>

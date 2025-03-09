@@ -76,31 +76,31 @@ export default {
 }
 </script>
 <template>
-    <div>            
-        <h2>You are about to delete the following next action:</h2>
-        <div v-if="nextAction" class="border-y py-2">
-            <div class="ml-4 my-3 text-sm">
-                Created on: <strong>{{ formatDate(nextAction.created_at) }}</strong>
-            </div>
-            <blockquote class="mb-4">
-                <div v-html="nextAction.entry"></div>
-            </blockquote>
-            <div v-if="nextAction.assignee" class="ml-4 my-1 text-sm">
-                Assigned to: 
-                <strong>
-                    <span v-if="nextAction.assigned_to_name">{{ nextAction.assigned_to_name }} in </span> 
-                    {{ nextAction.assignee.name }}
-                </strong>
-            </div>
-            <div v-if="nextAction.target_date" class="ml-4 mt-1 mb-4 text-sm">
-                Target Date: <strong>{{ formatDate(nextAction.target_date) }}</strong>
-            </div>
-        </div>
+  <div>            
+    <h2>You are about to delete the following next action:</h2>
+    <div v-if="nextAction" class="border-y py-2">
+      <div class="ml-4 my-3 text-sm">
+        Created on: <strong>{{ formatDate(nextAction.created_at) }}</strong>
+      </div>
+      <blockquote class="mb-4">
+        <div v-html="nextAction.entry" />
+      </blockquote>
+      <div v-if="nextAction.assignee" class="ml-4 my-1 text-sm">
+        Assigned to: 
+        <strong>
+          <span v-if="nextAction.assigned_to_name">{{ nextAction.assigned_to_name }} in </span> 
+          {{ nextAction.assignee.name }}
+        </strong>
+      </div>
+      <div v-if="nextAction.target_date" class="ml-4 mt-1 mb-4 text-sm">
+        Target Date: <strong>{{ formatDate(nextAction.target_date) }}</strong>
+      </div>
+    </div>
 
     <div>This can not be undone. Are you sure you want to continue?</div>
         
-    <button-row submitText="Delete Log Entry" @canceled="$router.go(-1)" @submitted="commitDelete"></button-row>
-    </div>
+    <button-row submitText="Delete Log Entry" @canceled="$router.go(-1)" @submitted="commitDelete" />
+  </div>
 </template>
 <style lang="postcss" scope>
     blockquote {

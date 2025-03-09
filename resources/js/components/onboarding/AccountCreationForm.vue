@@ -64,34 +64,41 @@ export default {
 }
 </script>
 <template>
-    <div>
-        <pre></pre>
-        <div v-if="invite.person.user_id">
-            <static-alert>
-                It looks like you've already activated you account.  Please login to continue.
-            </static-alert>
-            <LoginForm @authenticated="redeemForExistingUser"></LoginForm>
-        </div>
-        <div v-else>
-            <p class="text-lg">Create your account</p>
-            <input-row v-model="email" 
-                label="Email" 
-                :errors="errors.email" 
-                label-width-class="w-24"
-            ></input-row>
-            <input-row v-model="password" 
-                label="Password" type="password" 
-                :errors="errors.password" 
-                label-width-class="w-24"
-            ></input-row>
-            <input-row v-model="password_confirmation" 
-                label="Confirm Password" type="password" 
-                :errors="errors.password" 
-                label-width-class="w-24"
-            ></input-row>
-            <div class="flex flex-row-reverse">
-                <button class="btn blue" @click="createAccount">Next</button>
-            </div>
-        </div>
+  <div>
+    <pre />
+    <div v-if="invite.person.user_id">
+      <static-alert>
+        It looks like you've already activated you account.  Please login to continue.
+      </static-alert>
+      <LoginForm @authenticated="redeemForExistingUser" />
     </div>
+    <div v-else>
+      <p class="text-lg">
+        Create your account
+      </p>
+      <input-row
+        v-model="email" 
+        label="Email" 
+        :errors="errors.email" 
+        label-width-class="w-24"
+      />
+      <input-row
+        v-model="password" 
+        label="Password" type="password" 
+        :errors="errors.password" 
+        label-width-class="w-24"
+      />
+      <input-row
+        v-model="password_confirmation" 
+        label="Confirm Password" type="password" 
+        :errors="errors.password" 
+        label-width-class="w-24"
+      />
+      <div class="flex flex-row-reverse">
+        <button class="btn blue" @click="createAccount">
+          Next
+        </button>
+      </div>
+    </div>
+  </div>
 </template>

@@ -166,46 +166,52 @@ export default {
 }
 </script>
 <template>
-    <form-container>
-        <input-row v-model="newAction.date_created" label="Creation Date" :errors="errors.date_created" type="date"></input-row>
+  <form-container>
+    <input-row v-model="newAction.date_created" label="Creation Date" :errors="errors.date_created" type="date" />
 
-        <StepInput v-if="application.expert_panel_type_id == 2" v-model="newAction.step" :errors="errors.step"></StepInput>
+    <StepInput v-if="application.expert_panel_type_id == 2" v-model="newAction.step" :errors="errors.step" />
 
-        <input-row v-model="newAction.target_date" label="Target" Date="" :errors="errors.target_date" type="date"></input-row>
+    <input-row v-model="newAction.target_date" label="Target" Date="" :errors="errors.target_date" type="date" />
 
-        <input-row label="Entry" :errors="errors.entry">
-            <RichTextEditor v-model="newAction.entry" />
-        </input-row>
+    <input-row label="Entry" :errors="errors.entry">
+      <RichTextEditor v-model="newAction.entry" />
+    </input-row>
 
-        <input-row label="Assigned To" :errors="assignmentErrors">
-            <select id="" v-model="newAction.assigned_to">
-                <option :value="null">Select...</option>
-                <option v-for="i in assignees" :key="i.id"
-                    :value="i.id"
-                >
-                    {{ i.name }}
-                </option>
-            </select>
+    <input-row label="Assigned To" :errors="assignmentErrors">
+      <select id="" v-model="newAction.assigned_to">
+        <option :value="null">
+          Select...
+        </option>
+        <option
+          v-for="i in assignees" :key="i.id"
+          :value="i.id"
+        >
+          {{ i.name }}
+        </option>
+      </select>
             &nbsp;&nbsp;
-            <input v-model="newAction.assigned_to_name" type="text" label="Name" placeholder="Name (optional)">
-        </input-row>
+      <input v-model="newAction.assigned_to_name" type="text" label="Name" placeholder="Name (optional)">
+    </input-row>
 
-        <div class="ml-4">
-        </div>
+    <div class="ml-4" />
 
-        <checkbox  
-            v-model="completed" 
-            label="This is already completed"
-            class="ml-36"
-        />
+    <checkbox  
+      v-model="completed" 
+      label="This is already completed"
+      class="ml-36"
+    />
 
-        <input-row v-if="completed" label="Date Completed" :errors="errors.date_completed" class="ml-36">
-            <input v-model="newAction.date_completed" type="date">
-        </input-row>
+    <input-row v-if="completed" label="Date Completed" :errors="errors.date_completed" class="ml-36">
+      <input v-model="newAction.date_completed" type="date">
+    </input-row>
 
-        <button-row>
-            <button class="btn" @click="cancel">Cancel</button>
-            <button class="btn blue" @click="save">Save</button>
-        </button-row>
-    </form-container>
+    <button-row>
+      <button class="btn" @click="cancel">
+        Cancel
+      </button>
+      <button class="btn blue" @click="save">
+        Save
+      </button>
+    </button-row>
+  </form-container>
 </template>

@@ -90,38 +90,38 @@
 </script>
 
 <template>
-    <div>
-        <div v-if="commentManager.commentsForEp.length > 0" class="mt-2">
-            <h3>The following comments will be sent to the expert panel:</h3>
-            <CommentSummary :comments="commentManager.commentsForEp" />
-        </div>
-        <hr>
-        <input-row :errors="errors.decision" vertical>
-            <template #label>
-                <h3>How should we proceed?</h3>
-            </template>
-            <radio-button-group
-                v-model="judgement.decision"
-                :options="judgementOptions"
-                labelAttribute="label"
-                size="lg"
-                vertical
-            />
-        </input-row>
-
-        <input-row
-            v-model="judgement.notes"
-            label="Other notes for the expert panel"
-            type="large-text"
-            :errors="errors.notes"
-            vertical
-        />
-        <div class="flex px-4 space-x-4 items-center p-2 bg-gray-100 rounded-lg">
-            <icon-exclamation class="text-blue-600 flex-shrink-0" width="30" height="30" />
-            <div>
-                Reply to or create comments, suggestions, and required revisions in the comments section on the main screen.
-            </div>
-        </div>
-        <button-row @submitted="commitJudgement" @canceled="cancelJudgement"></button-row>
+  <div>
+    <div v-if="commentManager.commentsForEp.length > 0" class="mt-2">
+      <h3>The following comments will be sent to the expert panel:</h3>
+      <CommentSummary :comments="commentManager.commentsForEp" />
     </div>
+    <hr>
+    <input-row :errors="errors.decision" vertical>
+      <template #label>
+        <h3>How should we proceed?</h3>
+      </template>
+      <radio-button-group
+        v-model="judgement.decision"
+        :options="judgementOptions"
+        labelAttribute="label"
+        size="lg"
+        vertical
+      />
+    </input-row>
+
+    <input-row
+      v-model="judgement.notes"
+      label="Other notes for the expert panel"
+      type="large-text"
+      :errors="errors.notes"
+      vertical
+    />
+    <div class="flex px-4 space-x-4 items-center p-2 bg-gray-100 rounded-lg">
+      <icon-exclamation class="text-blue-600 flex-shrink-0" width="30" height="30" />
+      <div>
+        Reply to or create comments, suggestions, and required revisions in the comments section on the main screen.
+      </div>
+    </div>
+    <button-row @submitted="commitJudgement" @canceled="cancelJudgement" />
+  </div>
 </template>

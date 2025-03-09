@@ -28,30 +28,29 @@ export default {
 }
 </script>
 <template>
-    <div>
+  <div>
+    <p>
+      We will obtain information from the GCI and GeneTracker regarding completed curations, but please provide the additional information below regarding
+      curation work in the last year ({{ lastYear }}). Estimates are acceptable.
+    </p>
+    <input-row
+      v-model="workingCopy.data.in_progress_count"
+      :disabled="isComplete"
+      label="Curations not entered in the GCI (e.g., reviewed on calls but data not entered in the ClinGen systems)"
+      type="number"
+      :errors="errors.in_progress_count"
+      labelWidthClass="w-80"
+      input-class="w-16"
+    />
 
-        <p>
-            We will obtain information from the GCI and GeneTracker regarding completed curations, but please provide the additional information below regarding
-            curation work in the last year ({{ lastYear }}). Estimates are acceptable.
-        </p>
-        <input-row
-            v-model="workingCopy.data.in_progress_count"
-            :disabled="isComplete"
-            label="Curations not entered in the GCI (e.g., reviewed on calls but data not entered in the ClinGen systems)"
-            type="number"
-            :errors="errors.in_progress_count"
-            labelWidthClass="w-80"
-            input-class="w-16"
-        />
-
-        <input-row
-            v-model="workingCopy.data.publishing_issues"
-            :disabled="isComplete"
-            label="Please describe if there are any issues with the publishing of curations."
-            type="large-text"
-            :errors="errors.publishing_issues"
-            labelWidthClass="w-80"
-            input-class="w-120"
-        />
-    </div>
+    <input-row
+      v-model="workingCopy.data.publishing_issues"
+      :disabled="isComplete"
+      label="Please describe if there are any issues with the publishing of curations."
+      type="large-text"
+      :errors="errors.publishing_issues"
+      labelWidthClass="w-80"
+      input-class="w-120"
+    />
+  </div>
 </template>

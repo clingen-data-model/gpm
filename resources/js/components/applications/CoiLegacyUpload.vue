@@ -87,14 +87,16 @@ export default {
 }
 </script>
 <template>
-    <div>
-        <button class="btn btn-xs" @click="showModal = true">Upload COI file</button>
-        <modal-dialog v-model="showModal">
-            <h2>Upload a legacy COI file</h2>
-            <input-row label="COI File" :errors="errors.file">
-                <input ref="fileInput" type="file">
-            </input-row>
-            <button-row submit-text="Save" @submitClicked="save" @cancelClicked="cancel"></button-row>
-        </modal-dialog>
-    </div>
+  <div>
+    <button class="btn btn-xs" @click="showModal = true">
+      Upload COI file
+    </button>
+    <modal-dialog v-model="showModal">
+      <h2>Upload a legacy COI file</h2>
+      <input-row label="COI File" :errors="errors.file">
+        <input ref="fileInput" type="file">
+      </input-row>
+      <button-row submit-text="Save" @submitClicked="save" @cancelClicked="cancel" />
+    </modal-dialog>
+  </div>
 </template>

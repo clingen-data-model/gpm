@@ -25,19 +25,16 @@ export default {
 }
 </script>
 <template>
-    <div>
-        <pre>{{ isComplete }}</pre>
-        <p>
-            Variant Curation Expert Panels are expected to keep their variant interpretations up-to-date and to expedite the re-review of variants that have a conflicting assertion submitted to ClinVar after the Expert Panel submission (guidelines for recuration timeline provide in the VCEP protocol: https://clinicalgenome.org/docs/clingen-variant-curation-expert-panel-vcep-protocol/). . Please answer the following question concerning recuration:
-
-        </p>
-        <input-row 
-            v-model="workingCopy.data.rereview_discrepencies"
-            type="large-text"
-            :disabled="isComplete"
-            label="Are you receiving and/or using the VCEP Variant Tracker reports to aid in the recuration work? Please describe below  ">
-        </input-row>
-
-    
-    </div>
+  <div>
+    <pre>{{ isComplete }}</pre>
+    <p>
+      Variant Curation Expert Panels are expected to keep their variant interpretations up-to-date and to expedite the re-review of variants that have a conflicting assertion submitted to ClinVar after the Expert Panel submission (guidelines for recuration timeline provide in the VCEP protocol: https://clinicalgenome.org/docs/clingen-variant-curation-expert-panel-vcep-protocol/). . Please answer the following question concerning recuration:
+    </p>
+    <input-row 
+      v-model="workingCopy.data.rereview_discrepencies"
+      type="large-text"
+      :disabled="isComplete"
+      label="Are you receiving and/or using the VCEP Variant Tracker reports to aid in the recuration work? Please describe below  "
+    />
+  </div>
 </template>

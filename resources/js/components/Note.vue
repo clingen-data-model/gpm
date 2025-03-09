@@ -17,5 +17,7 @@ export default {
 }
 </script>
 <template>
-    <div class="note"><slot/></div>
+  <div class="note">
+    <slot />
+  </div>
 </template>

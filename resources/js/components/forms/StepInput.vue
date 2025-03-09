@@ -32,12 +32,12 @@ export default {
 }
 </script>
 <template>
-    <input-row 
-        label="Step" 
-        :modelValue="modelValue" 
-        :errors="errors.step"
-        type="select" 
-        :options="stepOptions" 
-        @input="$emit('update:modelValue', $event.target.value)"
-    />
+  <input-row 
+    label="Step" 
+    :modelValue="modelValue" 
+    :errors="errors.step"
+    type="select" 
+    :options="stepOptions" 
+    @input="$emit('update:modelValue', $event.target.value)"
+  />
 </template>

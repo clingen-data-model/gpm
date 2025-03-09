@@ -12,11 +12,11 @@
 </script>
 
 <template>
-    <a 
-        :href="url"
-        :title="title"
-    >
-        <icon-download class="inline" />&nbsp;
-        <slot></slot>
-    </a>
+  <a 
+    :href="url"
+    :title="title"
+  >
+    <icon-download class="inline" />&nbsp;
+    <slot />
+  </a>
 </template>

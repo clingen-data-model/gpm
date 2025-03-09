@@ -36,25 +36,25 @@
 </script>
 
 <template>
-    <div>
-        <button
-            :disabled="!isCurrentStep"
-            :title="buttonTitle"
-            class="btn btn-lg w-full"
-            v-bind="attrs"
-            @click="startApproveStep"
-        >
-            <slot></slot>
-        </button>
+  <div>
+    <button
+      :disabled="!isCurrentStep"
+      :title="buttonTitle"
+      class="btn btn-lg w-full"
+      v-bind="attrs"
+      @click="startApproveStep"
+    >
+      <slot />
+    </button>
 
-        <teleport to="body">
-            <modal-dialog v-model="showApproveForm" size="xl" @closed="$refs.approvestepform.clearForm()">
-                <ApproveStepForm
-                    ref="approvestepform"
-                    @saved="handleApproved"
-                    @canceled="hideApproveForm"
-                />
-            </modal-dialog>
-        </teleport>
-    </div>
+    <teleport to="body">
+      <modal-dialog v-model="showApproveForm" size="xl" @closed="$refs.approvestepform.clearForm()">
+        <ApproveStepForm
+          ref="approvestepform"
+          @saved="handleApproved"
+          @canceled="hideApproveForm"
+        />
+      </modal-dialog>
+    </teleport>
+  </div>
 </template>

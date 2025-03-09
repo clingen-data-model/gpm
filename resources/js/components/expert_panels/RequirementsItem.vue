@@ -10,9 +10,9 @@ export default {
 }
 </script>
 <template>
-    <div class="flex space-x-2">
-        <icon-checkmark v-if="requirement.isMet" class="text-green-600"></icon-checkmark>
-        <icon-exclamation v-else class="text-yellow-400"></icon-exclamation>
-        <div>{{ requirement.label }}</div>
-    </div>
+  <div class="flex space-x-2">
+    <icon-checkmark v-if="requirement.isMet" class="text-green-600" />
+    <icon-exclamation v-else class="text-yellow-400" />
+    <div>{{ requirement.label }}</div>
+  </div>
 </template>

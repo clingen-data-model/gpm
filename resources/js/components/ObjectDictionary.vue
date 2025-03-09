@@ -100,14 +100,14 @@ export default {
 }
 </script>
 <template>
-    <div v-if="filteredObj">
-        <dictionary-row 
-            v-for="(value, key) in filteredObj" 
-            :key="key" 
-            :label="titleCase(key)"
-            :label-class="labelClass"
-        >
-            {{ value }}
-        </dictionary-row>
-    </div>
+  <div v-if="filteredObj">
+    <dictionary-row 
+      v-for="(value, key) in filteredObj" 
+      :key="key" 
+      :label="titleCase(key)"
+      :label-class="labelClass"
+    >
+      {{ value }}
+    </dictionary-row>
+  </div>
 </template>

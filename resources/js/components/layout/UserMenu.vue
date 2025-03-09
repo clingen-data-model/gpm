@@ -47,24 +47,25 @@ export default {
 }
 </script>
 <template>
-    <div class="relative top-0 right-0 text-right">
-        <div v-show="isAuthed">
-            <div class="flex flex-row-reverse align-middle -mb-3 pb-3 pr-2 relative z-20 cursor-pointer"
-                :class="{'w-48': menuOpen}"
-                @click.stop="toggleMenu"
-            >
-                <ChevronDown></ChevronDown>
-                {{ user.name }}
-            </div>
-            <transition name="slide-fade-down">
-                <div
-                    v-show="menuOpen"
-                    ref="dropdownMenu"
-                    v-click-outside="{exclude: ['menuButton'], handler: handleOutsideClick}"
-                    class="absolute right-0 -top-3 pt-11 bg-white border w-48 z-10 shadow"
-                >
-                    <ul>
-                        <!-- <li class="hover:bg-blue-100 cursor-pointer border-b border-t">
+  <div class="relative top-0 right-0 text-right">
+    <div v-show="isAuthed">
+      <div
+        class="flex flex-row-reverse align-middle -mb-3 pb-3 pr-2 relative z-20 cursor-pointer"
+        :class="{'w-48': menuOpen}"
+        @click.stop="toggleMenu"
+      >
+        <ChevronDown />
+        {{ user.name }}
+      </div>
+      <transition name="slide-fade-down">
+        <div
+          v-show="menuOpen"
+          ref="dropdownMenu"
+          v-click-outside="{exclude: ['menuButton'], handler: handleOutsideClick}"
+          class="absolute right-0 -top-3 pt-11 bg-white border w-48 z-10 shadow"
+        >
+          <ul>
+            <!-- <li class="hover:bg-blue-100 cursor-pointer border-b border-t">
                             <router-link :to="{name: 'me'}" @click="showMenu = false" class="p-3 block">My info</router-link>
                         </li>
                         <li class="hover:bg-blue-100 cursor-pointer border-t border-gray-300">
@@ -78,9 +79,9 @@ export default {
                         <li class="hover:bg-blue-100 cursor-pointer border-t border-gray-300">
                             <a href="/admin/logs" class="p-3 block">System Log</a>
                         </li> -->
-                    </ul>
-                </div>
-            </transition>
+          </ul>
         </div>
+      </transition>
     </div>
+  </div>
 </template>

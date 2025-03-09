@@ -62,13 +62,17 @@ export default {
 }
 </script>
 <template>
-    <div class="flex-1">
-        <div class="progress-step" :class="displayClass"></div>
-        <div class="flex flex-row-reverse justify-between bg-transparent mt-1">
-            <div :class="{'-mr-10': !isLastStep}">{{ approvalDate }}</div>
-            <div v-if="isFirstStep">{{ dateInitiated }}</div>
-        </div>
+  <div class="flex-1">
+    <div class="progress-step" :class="displayClass" />
+    <div class="flex flex-row-reverse justify-between bg-transparent mt-1">
+      <div :class="{'-mr-10': !isLastStep}">
+        {{ approvalDate }}
+      </div>
+      <div v-if="isFirstStep">
+        {{ dateInitiated }}
+      </div>
     </div>
+  </div>
 </template>
 <style lang="postcss">
     .progress-step {

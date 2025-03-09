@@ -33,19 +33,19 @@ export default {
 }
 </script>
 <template>
-    <div :id="id" class="section-wrapper">
-        <div class="application-section">
-            <header class="mb-2 flex justify-between">
-                <slot name="title">
-                    <h2>{{ title }}</h2>
-                </slot>
-                <RequirementsBadge v-if="id" :section="section" :group="group"></RequirementsBadge>
-            </header>
-            <div>
-                <slot></slot>
-            </div>
-        </div>
+  <div :id="id" class="section-wrapper">
+    <div class="application-section">
+      <header class="mb-2 flex justify-between">
+        <slot name="title">
+          <h2>{{ title }}</h2>
+        </slot>
+        <RequirementsBadge v-if="id" :section="section" :group="group" />
+      </header>
+      <div>
+        <slot />
+      </div>
     </div>
+  </div>
 </template>
 
 <style lang="postcss" scoped>

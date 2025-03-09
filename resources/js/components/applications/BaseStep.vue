@@ -106,53 +106,59 @@ export default {
 </script>
 
 <template>
-    <div class="overflow-x-auto">
-        <div class="mb-6">
-            <StepControls v-if="!application.stepIsApproved(step)"
-                :step="step"
-                @updated="handleUpdated"
-            />
-            <div class="flex justify-between text-lg font-bold pb-2 mb-2 border-b">
-                <div class="flex space-x-2">
-                    <h2>
-                        {{ title }}
-                    </h2>
-                    <div v-if="dateApproved">
-                        <div v-if="!editApprovalDate" class="flex space-x-1">
-                            <div class="text-white bg-green-600 rounded-xl px-2">
-                                Approved: {{ dateApproved }}
-                            </div>
-                            <edit-icon-button class="text-black" @click="initEditApprovalDate"></edit-icon-button>
-                        </div>
-                        <div v-else class="flex space-x-1">
-                            <date-input v-model="newApprovalDate"></date-input>
-                            <button class="btn blue" @click="updateApprovalDate">Save</button>
-                            <RemoveButton @click="editApprovalDate = false"></RemoveButton>
-                        </div>
-                    </div>
-                </div>
-                <div>
-                    <button class="btn btn-xs" @click="goToPrintable">Printable Application</button>
-
-                </div>
+  <div class="overflow-x-auto">
+    <div class="mb-6">
+      <StepControls
+        v-if="!application.stepIsApproved(step)"
+        :step="step"
+        @updated="handleUpdated"
+      />
+      <div class="flex justify-between text-lg font-bold pb-2 mb-2 border-b">
+        <div class="flex space-x-2">
+          <h2>
+            {{ title }}
+          </h2>
+          <div v-if="dateApproved">
+            <div v-if="!editApprovalDate" class="flex space-x-1">
+              <div class="text-white bg-green-600 rounded-xl px-2">
+                Approved: {{ dateApproved }}
+              </div>
+              <edit-icon-button class="text-black" @click="initEditApprovalDate" />
             </div>
-
-            <div class="screen-block-container">
-                <slot name="sections">
-                    Step sections here!
-                </slot>
+            <div v-else class="flex space-x-1">
+              <date-input v-model="newApprovalDate" />
+              <button class="btn blue" @click="updateApprovalDate">
+                Save
+              </button>
+              <RemoveButton @click="editApprovalDate = false" />
             </div>
+          </div>
         </div>
-
         <div>
-            <slot></slot>
+          <button class="btn btn-xs" @click="goToPrintable">
+            Printable Application
+          </button>
         </div>
+      </div>
 
-        <slot name="log">
-            <div class="mb-6 mt-4 border-t pt-4">
-                <h3 class="mb-2">Step {{ step }} Progress Log</h3>
-                <ApplicationLog :step="step"></ApplicationLog>
-            </div>
+      <div class="screen-block-container">
+        <slot name="sections">
+          Step sections here!
         </slot>
+      </div>
     </div>
+
+    <div>
+      <slot />
+    </div>
+
+    <slot name="log">
+      <div class="mb-6 mt-4 border-t pt-4">
+        <h3 class="mb-2">
+          Step {{ step }} Progress Log
+        </h3>
+        <ApplicationLog :step="step" />
+      </div>
+    </slot>
+  </div>
 </template>

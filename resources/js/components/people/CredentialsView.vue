@@ -30,9 +30,9 @@
 </script>
 
 <template>
-    <span>
-        {{ displayCredentials }}
-        <note v-if="!hasCredentials && hasLegacyCredentials">(Legacy data)</note>
-    </span>
+  <span>
+    {{ displayCredentials }}
+    <note v-if="!hasCredentials && hasLegacyCredentials">(Legacy data)</note>
+  </span>
 </template>
 

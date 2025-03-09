@@ -28,28 +28,28 @@
 
 </script>
 <template>
-    <div>
-        <button
-            v-if="group.expert_panel.hasPendingSubmissionForCurrentStep"
-            class="btn btn-lg w-full"
-            v-bind="attrs"
-            @click="startRejectSubmission"
-        >
-            Request revisions
-        </button>
-        <teleport to="body">
-            <modal-dialog
-                v-model="showRejectForm"
-                title="Request Revisions to Application"
-                size="xl"
-                @closed="$refs.rejectsubmissionform.clearForm()"
-            >
-                <RejectStepForm
-                    ref="rejectsubmissionform"
-                    @saved="handleRejected"
-                    @canceled="hideRejectForm"
-                />
-            </modal-dialog>
-        </teleport>
-    </div>
+  <div>
+    <button
+      v-if="group.expert_panel.hasPendingSubmissionForCurrentStep"
+      class="btn btn-lg w-full"
+      v-bind="attrs"
+      @click="startRejectSubmission"
+    >
+      Request revisions
+    </button>
+    <teleport to="body">
+      <modal-dialog
+        v-model="showRejectForm"
+        title="Request Revisions to Application"
+        size="xl"
+        @closed="$refs.rejectsubmissionform.clearForm()"
+      >
+        <RejectStepForm
+          ref="rejectsubmissionform"
+          @saved="handleRejected"
+          @canceled="hideRejectForm"
+        />
+      </modal-dialog>
+    </teleport>
+  </div>
 </template>

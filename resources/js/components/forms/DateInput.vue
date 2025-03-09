@@ -81,15 +81,15 @@ export default {
 }
 </script>
 <template>
-    <div>
-        <input 
-            ref="input"
-            type="date"
-            class="date-input"
-            :value="date" 
-            :disabled="disabled"
-            @input="handleInput"
-            @change="$emit('change')"
-        >
-    </div>
+  <div>
+    <input 
+      ref="input"
+      type="date"
+      class="date-input"
+      :value="date" 
+      :disabled="disabled"
+      @input="handleInput"
+      @change="$emit('change')"
+    >
+  </div>
 </template>

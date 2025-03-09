@@ -116,38 +116,40 @@ export default {
 </script>
 
 <template>
-    <div>
-        <div class="dropdown" :class="orientation">
-            <div ref="menuButton"
-                class="dropdown-label"
-                @click.stop="toggleMenu"
+  <div>
+    <div class="dropdown" :class="orientation">
+      <div
+        ref="menuButton"
+        class="dropdown-label"
+        @click.stop="toggleMenu"
+      >
+        <span v-show="!hideCheveron">
+          <icon-cheveron-down />
+        </span>
+        <slot name="label">
+          {{ label }}
+        </slot>
+      </div>
+      <Teleport to="body">
+        <Transition name="slide-fade-down">
+          <div
+            v-show="menuOpen"
+            ref="dropdownMenu"
+            v-click-outside="{exclude: ['menuButton'], handler: handleOutsideClick}"
+            class="dropdown-items-container z-50"
+            :style="{top: `${menuY}px`, left: `${menuX}px`}"
+          >
+            <ul
+              class="dropdown-items"
+              @click="toggleMenu"
             >
-                <span v-show="!hideCheveron">
-                    <icon-cheveron-down />
-                </span>
-                <slot name="label">{{ label }}</slot>
-            </div>
-            <Teleport to="body">
-                <Transition name="slide-fade-down">
-                    <div
-                        v-show="menuOpen"
-                        ref="dropdownMenu"
-                        v-click-outside="{exclude: ['menuButton'], handler: handleOutsideClick}"
-                        class="dropdown-items-container z-50"
-                        :style="{top: `${menuY}px`, left: `${menuX}px`}"
-                    >
-                        <ul
-                            class="dropdown-items"
-                            @click="toggleMenu"
-                        >
-                            <slot></slot>
-                        </ul>
-                    </div>
-                </Transition>
-            </Teleport>
-        </div>
+              <slot />
+            </ul>
+          </div>
+        </Transition>
+      </Teleport>
     </div>
-
+  </div>
 </template>
 
 <style>

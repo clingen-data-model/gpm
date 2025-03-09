@@ -110,28 +110,34 @@ export default {
 }
 </script>
 <template>
-    <form-container>
-        <h2 class="pb-2 border-b mb-4">Upload {{ titleCase(documentType.long_name) }}</h2>
+  <form-container>
+    <h2 class="pb-2 border-b mb-4">
+      Upload {{ titleCase(documentType.long_name) }}
+    </h2>
 
-        <input-row label="Document" :errors="errors.file">
-            <input ref="fileInput" type="file">
-        </input-row>
+    <input-row label="Document" :errors="errors.file">
+      <input ref="fileInput" type="file">
+    </input-row>
         
-        <input-row 
-            v-if="showNotes" 
-            v-model="newDocument.date_received" 
-            label="Date Received" 
-            type="date"
-            :errors="errors.date_received"
-        ></input-row>
+    <input-row 
+      v-if="showNotes" 
+      v-model="newDocument.date_received" 
+      label="Date Received" 
+      type="date"
+      :errors="errors.date_received"
+    />
 
-        <input-row v-if="showNotes" :errors="errors.notes" label="Notes">
-            <textarea v-model="newDocument.notes" name="notes" cols="30" rows="5"></textarea>
-        </input-row>
+    <input-row v-if="showNotes" :errors="errors.notes" label="Notes">
+      <textarea v-model="newDocument.notes" name="notes" cols="30" rows="5" />
+    </input-row>
         
-        <button-row>
-            <button class="btn white" @click="cancel">Cancel</button>
-            <button class="btn blue" @click="save">Save</button>
-        </button-row>
-    </form-container>
+    <button-row>
+      <button class="btn white" @click="cancel">
+        Cancel
+      </button>
+      <button class="btn blue" @click="save">
+        Save
+      </button>
+    </button-row>
+  </form-container>
 </template>

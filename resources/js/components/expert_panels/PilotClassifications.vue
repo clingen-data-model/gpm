@@ -18,7 +18,7 @@ export default {
 }
 </script>
 <template>
-    <div>
-        <stand-in>Pilot Curations</stand-in>
-    </div>
+  <div>
+    <stand-in>Pilot Curations</stand-in>
+  </div>
 </template>

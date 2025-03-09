@@ -60,60 +60,62 @@ export default {
 }
 </script>
 <template>
-    <div class="mb-8">
-        <group-breadcrumbs :group="group" />
+  <div class="mb-8">
+    <group-breadcrumbs :group="group" />
 
-        <h1>Review Sustained Curation Details for {{ group.displayName }}</h1>
+    <h1>Review Sustained Curation Details for {{ group.displayName }}</h1>
 
-        <p class="text-md-lg">Each time a new ACMG Guidelines Specification is approved we ask that your review your sustained curation information and make sure it's up to date and accurate.</p>
+    <p class="text-md-lg">
+      Each time a new ACMG Guidelines Specification is approved we ask that your review your sustained curation information and make sure it's up to date and accurate.
+    </p>
 
-        <section>
-            <header>
-                <h3>Plans for Ongoing Review and Reanalysis and Discrepancy Resolution</h3>
-            </header>
-            <VcepOngoingPlansForm
-                :errors="errors"
-                @update="saveOngoingPlans"
-            />
-        </section>
+    <section>
+      <header>
+        <h3>Plans for Ongoing Review and Reanalysis and Discrepancy Resolution</h3>
+      </header>
+      <VcepOngoingPlansForm
+        :errors="errors"
+        @update="saveOngoingPlans"
+      />
+    </section>
 
-        <section>
-            <header>
-                <h3>Example Evidence Summaries</h3>
-            </header>
-            <EvidenceSummaries
-                :group="group"
-                class="pb-2 mb-4 border-b"
-            />
-        </section>
+    <section>
+      <header>
+        <h3>Example Evidence Summaries</h3>
+      </header>
+      <EvidenceSummaries
+        :group="group"
+        class="pb-2 mb-4 border-b"
+      />
+    </section>
 
-        <section>
-            <header>
-                <h3>Example Evidence Summaries</h3>
-            </header>
-            <MemberDesignationForm
-                class="pb-2 mb-4 border-b"
-            />
-        </section>
+    <section>
+      <header>
+        <h3>Example Evidence Summaries</h3>
+      </header>
+      <MemberDesignationForm
+        class="pb-2 mb-4 border-b"
+      />
+    </section>
 
-        <section>
-            <header>
-                <h3>Attestion of Accuracy</h3>
-            </header>
-            <checkbox
-                v-model="attestation"
-                label="I confirm that all of the information is is accurate and up to date."
-                class="text-md-lg"
-            />
-            <button
-                :disabled="canSubmit"
-                class="btn btn-lg blue"
-                @click="submitReview"
-            >
-                Submit
-            </button>
-        </section>
-    </div>
+    <section>
+      <header>
+        <h3>Attestion of Accuracy</h3>
+      </header>
+      <checkbox
+        v-model="attestation"
+        label="I confirm that all of the information is is accurate and up to date."
+        class="text-md-lg"
+      />
+      <button
+        :disabled="canSubmit"
+        class="btn btn-lg blue"
+        @click="submitReview"
+      >
+        Submit
+      </button>
+    </section>
+  </div>
 </template>
 <style lang="postcss" scoped>
     section {

@@ -17,5 +17,5 @@ export default {
 }
 </script>
 <template>
-    <div>404 - Not found!</div>
+  <div>404 - Not found!</div>
 </template>

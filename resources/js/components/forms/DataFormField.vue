@@ -119,5 +119,5 @@
 </script>
 
 <template>
-    <render />
+  <render />
 </template>

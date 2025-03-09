@@ -33,12 +33,12 @@
     });
 </script>
 <template>
-    <transition-group tag="div" name="slide-fade-down">
-        <NotificationItem
-            v-for="notification in notifications" :key="notification.id"
-            :notification="notification"
-            class="mb-2"
-            @removed="removeNotification(notification)"
-        ></NotificationItem>
-    </transition-group>
+  <transition-group tag="div" name="slide-fade-down">
+    <NotificationItem
+      v-for="notification in notifications" :key="notification.id"
+      :notification="notification"
+      class="mb-2"
+      @removed="removeNotification(notification)"
+    />
+  </transition-group>
 </template>

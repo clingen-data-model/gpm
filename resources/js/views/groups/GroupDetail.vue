@@ -302,10 +302,10 @@ export default {
     <SustainedCurationReviewAlert
       v-if="
         needsToReviewSustainedCuration &&
-        hasAnyPermission([
-          'ep-applications-manage',
-          ['application-edit', group],
-        ])
+          hasAnyPermission([
+            'ep-applications-manage',
+            ['application-edit', group],
+          ])
       "
       :group="group"
       class="mb-2"
@@ -314,7 +314,7 @@ export default {
     <GroupDetailHeader
       :group="group"
       @showEdit="showEdit"
-    ></GroupDetailHeader>
+    />
 
 
     <div class="flex space-x-4">
@@ -337,10 +337,10 @@ export default {
             </submission-wrapper>
           </tab-item>
           <tab-item label="Members">
-            <MemberList :group="group"></MemberList>
+            <MemberList :group="group" />
             <submission-wrapper
-                            v-if="group.is_vcep_or_scvcep"
-                            :show-controls="editingExpertise"
+              v-if="group.is_vcep_or_scvcep"
+              :show-controls="editingExpertise"
               @submitted="submitForm('saveMembershipDescription', 'editingExpertise')"
               @canceled="cancelForm('editingExpertise')"
             >
@@ -369,7 +369,7 @@ export default {
                 v-model:editing="editingGenes"
               />
             </submission-wrapper>
-            <br />
+            <br>
             <submission-wrapper
               :visible="group.is_ep"
               :show-controls="editingScopeDescription"
@@ -385,13 +385,14 @@ export default {
             </submission-wrapper>
           </tab-item>
 
-          <tab-item label="Sustained Curation" :visible="group.is_ep"
+          <tab-item
+            label="Sustained Curation" :visible="group.is_ep"
             class="relative"
           >
             <div
               v-if="!group.expert_panel.pilotSpecificationsIsApproved && group.is_vcep_or_scvcep"
               class="bg-white/50 absolute top-0 left-0 right-0 bottom-0"
-            ></div>
+            />
             <static-alert
               v-if="!group.expert_panel.pilotSpecificationsIsApproved && group.is_vcep_or_scvcep"
               variant="info"
@@ -433,7 +434,7 @@ export default {
               <div
                 v-if="!group.expert_panel.defIsApproved && group.is_vcep_or_scvcep"
                 class="bg-white/50 absolute top-0 left-0 right-0 bottom-0"
-              ></div>
+              />
               <static-alert
                 v-if="!group.expert_panel.defIsApproved && group.is_vcep_or_scvcep"
                 variant="info"
@@ -446,21 +447,20 @@ export default {
                   :doc-type-id="group.expert_panel.draftSpecApproved ? [2,3,4,7] : 2"
                   :step="group.expert_panel.draftSpecApproved ? 3 : 2"
                 />
-            </div>
-
+              </div>
             </div>
           </tab-item>
 
           <tab-item v-if="userInGroup(group) || hasPermission('groups-manage')" label="Documents">
-            <GroupDocuments></GroupDocuments>
+            <GroupDocuments />
             <note>Documents are only available to members of this group.</note>
           </tab-item>
 
           <tab-item label="Attestations" :visible="group.is_ep">
-            <note
-              >The attestations below are read only. Attestations can only be
-              completed during the application process.</note
-            >
+            <note>
+              The attestations below are read only. Attestations can only be
+              completed during the application process.
+            </note>
             <AttestationGcep
               v-if="group.is_gcep"
               class="pb-2 mb-4 border-b"
@@ -482,47 +482,56 @@ export default {
               :log-entries="logEntries"
               :api-url="`/api/groups/${group.uuid}/activity-logs`"
               :log-updated="getLogEntries"
-            ></ActivityLog>
-            <button class="btn btn-xs mt-1" @click="getLogEntries">Refresh</button>
+            />
+            <button class="btn btn-xs mt-1" @click="getLogEntries">
+              Refresh
+            </button>
           </tab-item>
 
           <tab-item label="Admin" :visible="hasPermission('groups-manage')">
             <div v-if="group.isApplying && group.is_ep">
-              <h2 class="pb-2 border-b mb-4">Application</h2>
+              <h2 class="pb-2 border-b mb-4">
+                Application
+              </h2>
               <ProgressChart
                 :application="group.expert_panel"
                 class="pb-4 border-b border-gray-300 mb-6"
-              ></ProgressChart>
+              />
               <StepTabs
                 v-if="group.is_ep"
                 :application="group.expert_panel"
                 @stepApproved="getGroup"
               />
-              <hr />
+              <hr>
             </div>
             <section
               v-if="group.is_ep"
               class="border my-4 p-4 rounded"
             >
-              <h2 class="mb-4">Annual Update</h2>
-                <button v-if="showCreateAnnualUpdateButton"
-                  class="btn" @click="createAnnualUpdateForLatestWindow"
-                >
-                  Create Annual Update for latest window.
-                </button>
-                <a
-                  v-else-if="group.expert_panel.annualUpdate"
-                  :href="`/annual-updates/${group.expert_panel.annualUpdate.id}`"
-                  target="annual update"
-                >
-                  View Annual Update for {{ group.expert_panel.annualUpdate.window.for_year }}
-                </a>
+              <h2 class="mb-4">
+                Annual Update
+              </h2>
+              <button
+                v-if="showCreateAnnualUpdateButton"
+                class="btn" @click="createAnnualUpdateForLatestWindow"
+              >
+                Create Annual Update for latest window.
+              </button>
+              <a
+                v-else-if="group.expert_panel.annualUpdate"
+                :href="`/annual-updates/${group.expert_panel.annualUpdate.id}`"
+                target="annual update"
+              >
+                View Annual Update for {{ group.expert_panel.annualUpdate.window.for_year }}
+              </a>
             </section>
             <section class="border my-4 p-4 bg-red-100 border-red-200 rounded">
               <h2 class="mb-4 text-red-800">
                 Here be dragons. Proceed with caution.
               </h2>
-              <button class="btn btn red" @click="initDelete">Delete Group</button>
+              <button class="btn btn red" @click="initDelete">
+                Delete Group
+              </button>
             </section>
             <section
               v-if="$store.state.systemInfo.env !== 'production'"
@@ -546,7 +555,6 @@ export default {
       <div v-if="group.hasChildren" class="md:w-1/5 lg:w-1/4">
         <SubgroupList />
       </div>
-
     </div>
 
     <teleport to="body">
@@ -559,7 +567,7 @@ export default {
           ref="modalView"
           @saved="hideModal"
           @canceled="hideModal"
-        ></router-view>
+        />
       </modal-dialog>
       <modal-dialog
         v-model="showInfoEdit"
@@ -590,7 +598,7 @@ export default {
           submit-text="Delete this group."
           @submitted="deleteGroup"
           @canceled="showConfirmDelete = false"
-        ></button-row>
+        />
       </modal-dialog>
     </teleport>
   </div>

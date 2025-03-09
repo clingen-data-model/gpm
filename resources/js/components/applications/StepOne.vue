@@ -27,19 +27,19 @@ export default {
 }
 </script>
 <template>
-    <div class="application-review">
-        <BaseStep 
-            :step="1" 
-            document-name="Scope and Membership Application" 
-            title="Scope and Membership" 
-            :document-type="1" 
-            :document-gets-reviewed="true"
-            approve-button-label="Approve Scope and Membership"
-            @updated="$emit('updated')"
-        >
-            <template #sections>
-                <DefinitionReview />
-            </template>
-        </BaseStep>
-    </div>
+  <div class="application-review">
+    <BaseStep 
+      :step="1" 
+      document-name="Scope and Membership Application" 
+      title="Scope and Membership" 
+      :document-type="1" 
+      :document-gets-reviewed="true"
+      approve-button-label="Approve Scope and Membership"
+      @updated="$emit('updated')"
+    >
+      <template #sections>
+        <DefinitionReview />
+      </template>
+    </BaseStep>
+  </div>
 </template>

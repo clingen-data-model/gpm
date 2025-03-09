@@ -57,11 +57,11 @@ export default {
 }
 </script>
 <template>
-    <div>
-        <AnnualUpdateForm
-            v-if="annualReview.expert_panel.group.uuid"
-            :id="id"
-            :uuid="annualReview.expert_panel.group.uuid"
-        />
-    </div>
+  <div>
+    <AnnualUpdateForm
+      v-if="annualReview.expert_panel.group.uuid"
+      :id="id"
+      :uuid="annualReview.expert_panel.group.uuid"
+    />
+  </div>
 </template>

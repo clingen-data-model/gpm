@@ -31,5 +31,5 @@ export default {
 }
 </script>
 <template>
-    <breadcrumbs :items="items"></breadcrumbs>
+  <breadcrumbs :items="items" />
 </template>

@@ -135,25 +135,25 @@ export default {
 }
 </script>
 <template>
-    <tr>
-        <td>{{ workingCopy.person.first_name }}</td>
-        <td>{{ workingCopy.person.last_name }}</td>
-        <td colgroup="biocurator">
-            <input v-model="biocurator" type="checkbox" :disabled="!canEdit" @input="debounceSave">
-        </td>
-        <td colgroup="biocurator">
-            <input v-model="workingCopy.training_level_1" type="checkbox" :disabled="!canEdit" @input="debounceSave">
-        </td>
-        <td colgroup="biocurator">
-            <input v-model="workingCopy.training_level_2" type="checkbox" :disabled="!canEdit" @input="debounceSave">
-        </td>
-        <td>
-            <input v-model="biocuratorTrainer" type="checkbox" :disabled="!canEdit" @input="debounceSave">
-        </td>
-        <td>
-            <input v-model="coreApprovalMember" type="checkbox" :disabled="!canEdit" @input="debounceSave">
-        </td>
-    </tr>
+  <tr>
+    <td>{{ workingCopy.person.first_name }}</td>
+    <td>{{ workingCopy.person.last_name }}</td>
+    <td colgroup="biocurator">
+      <input v-model="biocurator" type="checkbox" :disabled="!canEdit" @input="debounceSave">
+    </td>
+    <td colgroup="biocurator">
+      <input v-model="workingCopy.training_level_1" type="checkbox" :disabled="!canEdit" @input="debounceSave">
+    </td>
+    <td colgroup="biocurator">
+      <input v-model="workingCopy.training_level_2" type="checkbox" :disabled="!canEdit" @input="debounceSave">
+    </td>
+    <td>
+      <input v-model="biocuratorTrainer" type="checkbox" :disabled="!canEdit" @input="debounceSave">
+    </td>
+    <td>
+      <input v-model="coreApprovalMember" type="checkbox" :disabled="!canEdit" @input="debounceSave">
+    </td>
+  </tr>
 </template>
 <style lang="postcss" scoped>
     td[colgroup=biocurator] {

@@ -59,8 +59,8 @@ export default {
 }
 </script>
 <template>
-    <div>
-        <data-form v-model="workingCopy" :fields="fields" :errors="errors" />
-        <button-row submit-text="Save" @submitted="save" @cancel="cancel" />
-    </div>
+  <div>
+    <data-form v-model="workingCopy" :fields="fields" :errors="errors" />
+    <button-row submit-text="Save" @submitted="save" @cancel="cancel" />
+  </div>
 </template>

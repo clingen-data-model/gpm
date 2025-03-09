@@ -38,50 +38,52 @@ const print = () => {
 }
 </script>
 <template>
-    <div class="application-review">
-        <div class="print:hidden">
-            <router-link :to="{name: 'GroupList'}" class="note">Groups</router-link>
-            <span class="note"> &gt; </span>
-            <router-link v-if="group.uuid" :to="{name: 'GroupDetail', params: {uuid: group.uuid}}" class="note">
-                {{ group.displayName }}
-            </router-link>
-        </div>
-        <div class="application-step">
-            <h1 class="flex items-center justify-between">
-                {{ group.displayName }} - Group Definition
-                <button class="btn btn-sm print:hidden" @click="print">
-                    <strong>Print</strong>
-                    &nbsp;
-                    <icon-printer class="inline-block"></icon-printer>
-                </button>
-            </h1>
-            <DefinitionReview></DefinitionReview>
-        </div>
-        <div class="step-break">
-            End of Group Definition Application.
-        </div>
-
-        <div class="application-step print:hidden">
-            <h1 v-if="group.expert_panel.definition_is_approved" class="print:hidden" >
-                {{ group.displayName }} - Specifications and Pilot
-            </h1>
-            <section v-if="group.expert_panel.definition_is_approved" class="print:hidden" >
-                <SpecificationsSection :doc-type-id="[3,4,7]" :readonly="true" />
-            </section>
-        </div>
-
-        <div class="step-break">
-            End of Specification Draft and Pilot.
-        </div>
-
-        <div class="application-step  page-break">
-            <h1 v-if="group.expert_panel.has_approved_pilot">
-                {{ group.displayName }} - Sustained Curation
-            </h1>
-
-            <SustainedCurationReview />
-        </div>
+  <div class="application-review">
+    <div class="print:hidden">
+      <router-link :to="{name: 'GroupList'}" class="note">
+        Groups
+      </router-link>
+      <span class="note"> &gt; </span>
+      <router-link v-if="group.uuid" :to="{name: 'GroupDetail', params: {uuid: group.uuid}}" class="note">
+        {{ group.displayName }}
+      </router-link>
     </div>
+    <div class="application-step">
+      <h1 class="flex items-center justify-between">
+        {{ group.displayName }} - Group Definition
+        <button class="btn btn-sm print:hidden" @click="print">
+          <strong>Print</strong>
+                    &nbsp;
+          <icon-printer class="inline-block" />
+        </button>
+      </h1>
+      <DefinitionReview />
+    </div>
+    <div class="step-break">
+      End of Group Definition Application.
+    </div>
+
+    <div class="application-step print:hidden">
+      <h1 v-if="group.expert_panel.definition_is_approved" class="print:hidden">
+        {{ group.displayName }} - Specifications and Pilot
+      </h1>
+      <section v-if="group.expert_panel.definition_is_approved" class="print:hidden">
+        <SpecificationsSection :doc-type-id="[3,4,7]" :readonly="true" />
+      </section>
+    </div>
+
+    <div class="step-break">
+      End of Specification Draft and Pilot.
+    </div>
+
+    <div class="application-step  page-break">
+      <h1 v-if="group.expert_panel.has_approved_pilot">
+        {{ group.displayName }} - Sustained Curation
+      </h1>
+
+      <SustainedCurationReview />
+    </div>
+  </div>
 </template>
 <style>
     .application-review {

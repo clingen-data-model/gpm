@@ -111,38 +111,48 @@ export default {
 }
 </script>
 <template>
-    <div>
-        <ul v-if="summaries.length > 0">
-            <transition-group name="slide-fade-down">
-                <li v-for="(summary, idx) in group.expert_panel.evidence_summaries" :key="idx" class="my-4 flex">
-                    <div class="text-lg pr-4">{{ idx+1 }}</div>
-                    <EvidenceSummary
-                        :summary="summary"
-                        :group="group"
-                        class="flex-1"
-                        :readonly="readonly"
-                        @saved="handleSavedSummary"
-                        @deleted="handleDeleted"
-                    ></EvidenceSummary>
-                </li>
-            </transition-group>
-        </ul>
-        <div v-else-if="loading" class="well text-center">Loading...</div>
-        <div v-else class="well text-center" :class="{'cursor-pointer': !readonly}" @click="startNewSummary">No example evidence summaries have been added.</div>
-        <ul v-show="adding">
-            <li v-for="(newSummary, idx) in newSummaries" :key="idx" class="my-4 flex">
-                <div class="text-lg pr-4">{{ (idx+1+summaries.length) }}</div>
-                <EvidenceSummaryForm
-                    class="flex-1"
-                    :group="group"
-                    :summary="newSummary"
-                    @saved="handleSavedSummary"
-                    @canceled="cancelAdd"
-                ></EvidenceSummaryForm>
-            </li>
-        </ul>
-        <div v-show="!adding && canEdit">
-            <button v-show="!adding" class="btn btn-xs" @click="startNewSummary">Add Summary</button>
-        </div>
+  <div>
+    <ul v-if="summaries.length > 0">
+      <transition-group name="slide-fade-down">
+        <li v-for="(summary, idx) in group.expert_panel.evidence_summaries" :key="idx" class="my-4 flex">
+          <div class="text-lg pr-4">
+            {{ idx + 1 }}
+          </div>
+          <EvidenceSummary
+            :summary="summary"
+            :group="group"
+            class="flex-1"
+            :readonly="readonly"
+            @saved="handleSavedSummary"
+            @deleted="handleDeleted"
+          />
+        </li>
+      </transition-group>
+    </ul>
+    <div v-else-if="loading" class="well text-center">
+      Loading...
     </div>
+    <div v-else class="well text-center" :class="{'cursor-pointer': !readonly}" @click="startNewSummary">
+      No example evidence summaries have been added.
+    </div>
+    <ul v-show="adding">
+      <li v-for="(newSummary, idx) in newSummaries" :key="idx" class="my-4 flex">
+        <div class="text-lg pr-4">
+          {{ (idx + 1 + summaries.length) }}
+        </div>
+        <EvidenceSummaryForm
+          class="flex-1"
+          :group="group"
+          :summary="newSummary"
+          @saved="handleSavedSummary"
+          @canceled="cancelAdd"
+        />
+      </li>
+    </ul>
+    <div v-show="!adding && canEdit">
+      <button v-show="!adding" class="btn btn-xs" @click="startNewSummary">
+        Add Summary
+      </button>
+    </div>
+  </div>
 </template>

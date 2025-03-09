@@ -36,19 +36,19 @@ export default {
 }
 </script>
 <template>
-    <div>
-        <CspecSummary v-if="cspecSummaryEnabled" :readonly="readonly" />
+  <div>
+    <CspecSummary v-if="cspecSummaryEnabled" :readonly="readonly" />
 
-        <collapsible class="mt-4">
-            <template #title>
-                <h3>Legacy document-based specifications</h3>
-            </template>
-            <ApplicationUploadForm
-                v-if="specificationUpload"
-                :document-type-id="docTypeId"
-                :show-notes="false"
-                :readonly="readonly"
-            />
-        </collapsible>
-    </div>
+    <collapsible class="mt-4">
+      <template #title>
+        <h3>Legacy document-based specifications</h3>
+      </template>
+      <ApplicationUploadForm
+        v-if="specificationUpload"
+        :document-type-id="docTypeId"
+        :show-notes="false"
+        :readonly="readonly"
+      />
+    </collapsible>
+  </div>
 </template>

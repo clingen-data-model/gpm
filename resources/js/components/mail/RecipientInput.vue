@@ -44,7 +44,7 @@ export default {
 }
 </script>
 <template>
-    <div>
-        <textarea v-model="recipientsString" rows="5" class="w-full"></textarea>
-    </div>
+  <div>
+    <textarea v-model="recipientsString" rows="5" class="w-full" />
+  </div>
 </template>

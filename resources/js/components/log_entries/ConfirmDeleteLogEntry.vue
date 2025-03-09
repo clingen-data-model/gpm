@@ -68,27 +68,29 @@ export default {
 }
 </script>
 <template>
-    <div>
-        <h2>You are about to delete the following log entry:</h2>
-        <div class="border-y py-2">
-        <blockquote>
-            <div v-html="logEntry.description"></div>
-        </blockquote>
-        <div v-if="logEntry.causer" class="ml-4 mt-2 mb-4 text-gray-700 text-sm">Logged by {{ logEntry.causer.name }}, {{ logDate }}</div>
-        </div>
-
-        <div>This can not be undone. Are you sure you want to continue?</div>
-
-        <div v-if="flattenedErrors.length > 0" class="bg-red-200 text-red-900 rounded p-2 my-2">
-            <ul>
-                <li v-for="(err,idx) in flattenedErrors" :key="idx">
-                    {{ err }}
-                </li>
-            </ul> 
-        </div>
-        
-        <button-row submitText="Delete Log Entry" @canceled="$router.go(-1)" @submitted="deleteEntry"></button-row>
+  <div>
+    <h2>You are about to delete the following log entry:</h2>
+    <div class="border-y py-2">
+      <blockquote>
+        <div v-html="logEntry.description" />
+      </blockquote>
+      <div v-if="logEntry.causer" class="ml-4 mt-2 mb-4 text-gray-700 text-sm">
+        Logged by {{ logEntry.causer.name }}, {{ logDate }}
+      </div>
     </div>
+
+    <div>This can not be undone. Are you sure you want to continue?</div>
+
+    <div v-if="flattenedErrors.length > 0" class="bg-red-200 text-red-900 rounded p-2 my-2">
+      <ul>
+        <li v-for="(err,idx) in flattenedErrors" :key="idx">
+          {{ err }}
+        </li>
+      </ul> 
+    </div>
+        
+    <button-row submitText="Delete Log Entry" @canceled="$router.go(-1)" @submitted="deleteEntry" />
+  </div>
 </template>
 <style lang="postcss" scope>
     blockquote {

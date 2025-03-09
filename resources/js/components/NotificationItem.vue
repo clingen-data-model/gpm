@@ -31,17 +31,17 @@ export default {
 }
 </script>
 <template>
-    <static-alert :variant="variant">
-        <div class="flex items-center justify-between px-4">
-            <div class="">
-                <markdown-block v-if="notification.data.markdown" :markdown="notification.data.message" />
-                <div v-else class="font-bold">
-                    {{ notification.data.message }}
-                </div>
-            </div>
-            <button class="block" @click="markRead">
-                <icon-close></icon-close>
-            </button>
+  <static-alert :variant="variant">
+    <div class="flex items-center justify-between px-4">
+      <div class="">
+        <markdown-block v-if="notification.data.markdown" :markdown="notification.data.message" />
+        <div v-else class="font-bold">
+          {{ notification.data.message }}
         </div>
-    </static-alert>
+      </div>
+      <button class="block" @click="markRead">
+        <icon-close />
+      </button>
+    </div>
+  </static-alert>
 </template>

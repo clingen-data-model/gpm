@@ -53,39 +53,41 @@ export default {
       <div class="container mx-auto py-3 flex">
         <div id="main-menu" class="flex-grow">
           <div class="inline-block pr-4">
-            <router-link to="/" class="text-black hover:text-black">{{ appName }}</router-link>
+            <router-link to="/" class="text-black hover:text-black">
+              {{ appName }}
+            </router-link>
           </div>
           <span v-if="$store.getters.isAuthed">
-              <router-link 
-                v-if="hasPermission('ep-applications-manage')" 
-                to="/applications" 
-                class="link nav-item"
-              >Applications</router-link> 
-              <router-link 
-                v-if="hasPermission('annual-updates-manage')" 
-                to="/annual-updates" 
-                class="link nav-item"
-              >Annual Updates</router-link> 
-              <router-link 
-                to="/people" 
-                class="link nav-item"
-              >People</router-link>
-              <router-link 
-                :to="{name: 'GroupList'}" 
-                class="link nav-item"
-              >Groups</router-link>
-              <router-link 
-                v-if="hasPermission('users-manage')" 
-                :to="{name: 'UserList'}"
-                class="link nav-item"
-              >Users</router-link>
-              <router-link 
-                v-if="hasPermission('reports-pull')" 
-                to="/reports"
-                class="link nav-item"
-              >Reports
-              </router-link>
-              <!-- <router-link 
+            <router-link 
+              v-if="hasPermission('ep-applications-manage')" 
+              to="/applications" 
+              class="link nav-item"
+            >Applications</router-link> 
+            <router-link 
+              v-if="hasPermission('annual-updates-manage')" 
+              to="/annual-updates" 
+              class="link nav-item"
+            >Annual Updates</router-link> 
+            <router-link 
+              to="/people" 
+              class="link nav-item"
+            >People</router-link>
+            <router-link 
+              :to="{name: 'GroupList'}" 
+              class="link nav-item"
+            >Groups</router-link>
+            <router-link 
+              v-if="hasPermission('users-manage')" 
+              :to="{name: 'UserList'}"
+              class="link nav-item"
+            >Users</router-link>
+            <router-link 
+              v-if="hasPermission('reports-pull')" 
+              to="/reports"
+              class="link nav-item"
+            >Reports
+            </router-link>
+            <!-- <router-link 
                 to="/guides-and-documentation" 
                 class="link nav-item"
               >
@@ -95,7 +97,7 @@ export default {
           </span>
         </div>
         <a href="mailto:gpm_support@clinicalgenome.org?subject=New ExpertPanel Request" class="btn btn-xs mr-4">Request a new group</a>
-        <UserMenu></UserMenu>
+        <UserMenu />
       </div>
     </header>
 
@@ -109,7 +111,7 @@ export default {
     </div>
 
 
-    <AlertViewer></AlertViewer>
+    <AlertViewer />
 
     <div class="fixed right-0 top-20 space-y-2">
       <help-button />
@@ -125,13 +127,12 @@ export default {
         </div>
       </footer> -->
       <div v-if="hasRole('super-user')" class="container mx-auto note border-t mt-4 pt-4">
-          Build: {{ $store.state.systemInfo.build.name }}
-          |
-          Commit: {{ $store.state.systemInfo.build.commit || '--' }}
-          |
-          Env: {{ $store.state.systemInfo.env }}
+        Build: {{ $store.state.systemInfo.build.name }}
+        |
+        Commit: {{ $store.state.systemInfo.build.commit || '--' }}
+        |
+        Env: {{ $store.state.systemInfo.env }}
       </div>
- 
     </teleport>
     <!-- This is a comment test -->
   </div>

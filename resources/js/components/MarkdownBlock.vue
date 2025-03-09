@@ -17,5 +17,5 @@ const rendered = computed(() => {
 });
 </script>
 <template>
-    <div class="markdown" v-html="rendered"></div>
+  <div class="markdown" v-html="rendered" />
 </template>

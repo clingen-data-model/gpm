@@ -28,11 +28,11 @@ export default {
 }
 </script>
 <template>
-    <a
-        v-bind="$attrs"
-        :href="url" 
-        target="FAQ"
-    >
-        <slot>FAQ</slot>  
-    </a>
+  <a
+    v-bind="$attrs"
+    :href="url" 
+    target="FAQ"
+  >
+    <slot>FAQ</slot>  
+  </a>
 </template>

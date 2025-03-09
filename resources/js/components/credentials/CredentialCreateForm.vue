@@ -45,8 +45,8 @@
 </script>
 
 <template>
-    <div>
-        <input-row v-model="newCredentialName" label="Name" :errors="errors.name" />
-        <button-row submit-text="Create Credential" @submitted="saveNewCredential" @cancel="cancelNewCredential" />
-    </div>
+  <div>
+    <input-row v-model="newCredentialName" label="Name" :errors="errors.name" />
+    <button-row submit-text="Create Credential" @submitted="saveNewCredential" @cancel="cancelNewCredential" />
+  </div>
 </template>

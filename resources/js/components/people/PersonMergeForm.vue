@@ -73,25 +73,30 @@ export default {
 }
 </script>
 <template>
-    <div>
-        <p class="mb-8">
-            Merging peple will do the following:
-            <ol class="list-decimal ml-6">
-                <li>Add the authoritative person to all groups of which the obsolete person is a member.</li>
-                <li>Delete the obsolete person, their memberships, their invite, and their user account (if activated).</li>
-            </ol>
-        </p>
-        <input-row label="Merge" vertical>
-            <template #label>
-                Merge <note class="inline-block">(Obsolete person that will be deleted)</note>
-            </template>
-            <person-search-select v-model="obsoleteCopy" :allow-add="false"></person-search-select>
-            
-        </input-row>
-        <input-row label="Into" :errors="errors.authority_id" vertical>
-            <template #label>Into <note class="inline">(Authoritative person)</note></template>
-            <person-search-select v-model="authorityCopy" :allow-add="false"></person-search-select>
-        </input-row>
-        <button-row submit-text="Merge" @submitted="commitMerge" @canceled="cancelMerge" />
-    </div>
+  <div>
+    <p class="mb-8">
+      Merging peple will do the following:
+      <ol class="list-decimal ml-6">
+        <li>Add the authoritative person to all groups of which the obsolete person is a member.</li>
+        <li>Delete the obsolete person, their memberships, their invite, and their user account (if activated).</li>
+      </ol>
+    </p>
+    <input-row label="Merge" vertical>
+      <template #label>
+        Merge <note class="inline-block">
+          (Obsolete person that will be deleted)
+        </note>
+      </template>
+      <person-search-select v-model="obsoleteCopy" :allow-add="false" />
+    </input-row>
+    <input-row label="Into" :errors="errors.authority_id" vertical>
+      <template #label>
+        Into <note class="inline">
+          (Authoritative person)
+        </note>
+      </template>
+      <person-search-select v-model="authorityCopy" :allow-add="false" />
+    </input-row>
+    <button-row submit-text="Merge" @submitted="commitMerge" @canceled="cancelMerge" />
+  </div>
 </template>

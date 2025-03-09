@@ -20,14 +20,14 @@
 
 </script>
 <template>
-    <div>
-        <card title="Please fill out your profile">
-            <ProfileForm
-                :person="store.getters.currentUser.person"
-                :allowCancel="false"
-                :showTitle="false"
-                @saved="handleSave"
-            />
-        </card>
-    </div>
+  <div>
+    <card title="Please fill out your profile">
+      <ProfileForm
+        :person="store.getters.currentUser.person"
+        :allowCancel="false"
+        :showTitle="false"
+        @saved="handleSave"
+      />
+    </card>
+  </div>
 </template>

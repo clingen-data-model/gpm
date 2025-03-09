@@ -104,29 +104,31 @@ export default {
 }
 </script>
 <template>
-    <div>
-        <dictionary-row label="Final Document">
-            <div>
-                <a v-if="finalDocument.filename" :href="finalDocument.download_url" class="text-blue-500 underline">
-                    {{ finalDocument.filename }}
-                </a>
-                <span v-else>none on file</span>
-            </div>
-        </dictionary-row>
+  <div>
+    <dictionary-row label="Final Document">
+      <div>
+        <a v-if="finalDocument.filename" :href="finalDocument.download_url" class="text-blue-500 underline">
+          {{ finalDocument.filename }}
+        </a>
+        <span v-else>none on file</span>
+      </div>
+    </dictionary-row>
         
-        <dictionary-row label="Date Received">
-            <div v-show="!editDateReceived">
-                {{ firstDateReceived }}
-                <edit-icon-button @click="initEditReceived"></edit-icon-button>
-            </div>
-            <div v-show="editDateReceived">
-                <date-input v-model="newDateReceived" class="inline-block"></date-input>
-                <button class="btn btn-sm blue" @click="saveDateReceived">Save</button>
-                <RemoveButton class="ml-1" @click="editDateReceived = false"></RemoveButton>
-            </div>
-        </dictionary-row>
+    <dictionary-row label="Date Received">
+      <div v-show="!editDateReceived">
+        {{ firstDateReceived }}
+        <edit-icon-button @click="initEditReceived" />
+      </div>
+      <div v-show="editDateReceived">
+        <date-input v-model="newDateReceived" class="inline-block" />
+        <button class="btn btn-sm blue" @click="saveDateReceived">
+          Save
+        </button>
+        <RemoveButton class="ml-1" @click="editDateReceived = false" />
+      </div>
+    </dictionary-row>
 
-        <!-- <dictionary-row label="Date Reviewed">
+    <!-- <dictionary-row label="Date Reviewed">
             <div v-show="!editDateReviewed">
                 {{finalDateReviewed}}
                 <edit-icon-button @click="initEditReviewed"></edit-icon-button>
@@ -138,14 +140,13 @@ export default {
             </div>
         </dictionary-row> -->
 
-        <modal-dialog v-model="showEditForm">
-            <DocumentEditForm
-                :document="finalDocument"
-                :application="application"
-                @canceled="showEditForm = false"
-                @saved="showEditForm = false"
-            ></DocumentEditForm>
-        </modal-dialog>
-
-    </div>
+    <modal-dialog v-model="showEditForm">
+      <DocumentEditForm
+        :document="finalDocument"
+        :application="application"
+        @canceled="showEditForm = false"
+        @saved="showEditForm = false"
+      />
+    </modal-dialog>
+  </div>
 </template>

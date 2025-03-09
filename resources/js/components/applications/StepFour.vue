@@ -38,17 +38,17 @@ export default {
 }
 </script>
 <template>
-    <BaseStep
-        :step="4"
-        :document-type="5"
-        document-name="Sustained Curation"
-        :document-gets-reviewed="true"
-        approve-button-label="Approve Sustained Curation"
-        title="Sustained Curation"
-        @updated="$emit('updated')"
-    >
-        <template #sections>
-            <SustainedCurationReview />
-        </template>
-    </BaseStep>
+  <BaseStep
+    :step="4"
+    :document-type="5"
+    document-name="Sustained Curation"
+    :document-gets-reviewed="true"
+    approve-button-label="Approve Sustained Curation"
+    title="Sustained Curation"
+    @updated="$emit('updated')"
+  >
+    <template #sections>
+      <SustainedCurationReview />
+    </template>
+  </BaseStep>
 </template>

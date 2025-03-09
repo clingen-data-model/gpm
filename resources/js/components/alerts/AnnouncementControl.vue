@@ -49,25 +49,27 @@ export default {
 }
 </script>
 <template>
-    <div>
-        <button class="link" @click="initAnnouncement">Make an announcement</button>
-        <teleport to='body'>
-            <modal-dialog v-model="showForm" title="Make an announcement">
-                <data-form
-                    v-model="announcement"
-                    :fields="formFields"
-                    :errors="errors"
-                ></data-form>
-                <h4>Preview:</h4>
-                <notification-item :notification="notification" />
+  <div>
+    <button class="link" @click="initAnnouncement">
+      Make an announcement
+    </button>
+    <teleport to="body">
+      <modal-dialog v-model="showForm" title="Make an announcement">
+        <data-form
+          v-model="announcement"
+          :fields="formFields"
+          :errors="errors"
+        />
+        <h4>Preview:</h4>
+        <notification-item :notification="notification" />
 
-                <button-row submit-text="Save" @submitted="confirmSubmission"></button-row>
-            </modal-dialog>
-            <modal-dialog v-model="showConfirmation" title="Confirm Announcement">
-                You are about to make the following announcement:
-                <notification-item :notification="notification" />
-                <button-row submit-text="Confirm" @submitted="saveConfirmed"></button-row>
-            </modal-dialog>
-        </teleport>
-    </div>
+        <button-row submit-text="Save" @submitted="confirmSubmission" />
+      </modal-dialog>
+      <modal-dialog v-model="showConfirmation" title="Confirm Announcement">
+        You are about to make the following announcement:
+        <notification-item :notification="notification" />
+        <button-row submit-text="Confirm" @submitted="saveConfirmed" />
+      </modal-dialog>
+    </teleport>
+  </div>
 </template>

@@ -25,30 +25,30 @@ export default {
 }
 </script>
 <template>
-    <div>
-        <p>Gene Curation Expert Panels are expected to review current clinical validity classifications for their approved genes based on the guidance provided in the <gcep-recuration-process-link />. Please indicate the following:</p>
+  <div>
+    <p>Gene Curation Expert Panels are expected to review current clinical validity classifications for their approved genes based on the guidance provided in the <gcep-recuration-process-link />. Please indicate the following:</p>
 
-        <input-row
-            v-model="workingCopy.data.recuration_begun"
-            :disabled="isComplete"
-            label="Have you begun recuration?"
-            type="radio-group"
-            :options="[{value:'yes'},{value:'no'}]"
-            :errors="errors.recuration_begun"
-            vertical
-        />
+    <input-row
+      v-model="workingCopy.data.recuration_begun"
+      :disabled="isComplete"
+      label="Have you begun recuration?"
+      type="radio-group"
+      :options="[{value:'yes'},{value:'no'}]"
+      :errors="errors.recuration_begun"
+      vertical
+    />
 
-        <input-row
-            v-model="workingCopy.data.recuration_designees"
-            :disabled="isComplete"
-            :errors="errors.recuration_designees"
-            type="large-text"
-            placeholder="First Last, Email"
-            vertical
-        >
-            <template #label>
-                The GCEP recuration designee(s) is designated to monitor for recuration updates, on a yearly basis, according to the <gcep-recuration-process-link />. Please list the name(s) of your GCEP recuration designee(s).
-            </template>
-        </input-row>
-    </div>
+    <input-row
+      v-model="workingCopy.data.recuration_designees"
+      :disabled="isComplete"
+      :errors="errors.recuration_designees"
+      type="large-text"
+      placeholder="First Last, Email"
+      vertical
+    >
+      <template #label>
+        The GCEP recuration designee(s) is designated to monitor for recuration updates, on a yearly basis, according to the <gcep-recuration-process-link />. Please list the name(s) of your GCEP recuration designee(s).
+      </template>
+    </input-row>
+  </div>
 </template>

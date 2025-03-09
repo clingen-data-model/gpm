@@ -48,13 +48,13 @@ export default {
 }
 </script>
 <template>
-    <div>
-        <input-row label="HGNC Symbol" :errors="errors.hgncId">
-            <input v-model="hgncId" type="text">
-        </input-row>
-        <input-row label="Disease" :errors="errors.mondo_id">
-            <input v-model="mondoId" type="text">
-        </input-row>
-        <button-row submit-text="Save" @submit="save" @cancel="cancel"></button-row>
-    </div>
+  <div>
+    <input-row label="HGNC Symbol" :errors="errors.hgncId">
+      <input v-model="hgncId" type="text">
+    </input-row>
+    <input-row label="Disease" :errors="errors.mondo_id">
+      <input v-model="mondoId" type="text">
+    </input-row>
+    <button-row submit-text="Save" @submit="save" @cancel="cancel" />
+  </div>
 </template>

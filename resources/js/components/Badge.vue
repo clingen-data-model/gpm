@@ -30,9 +30,9 @@ export default {
 }
 </script>
 <template>
-    <span class="rounded-xl text-white font-bold" :class="`${color} ${textSize} ${padding}`">
-        <slot></slot>
-    </span>
+  <span class="rounded-xl text-white font-bold" :class="`${color} ${textSize} ${padding}`">
+    <slot />
+  </span>
 </template>
 <style scoped>
     .green {

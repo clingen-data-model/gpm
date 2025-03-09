@@ -46,16 +46,16 @@ export default {
 }
 </script>
 <template>
-    <div v-if="hasRequirements">
-        <popover arrow hover>
-            <template #content>
-                <div>
-                    <RequirementsItem v-for="(req, idx) in evaledRequirements" :key="idx" :requirement="req" />
-                </div>
-            </template>
-            <badge :color="badgeColor" class="cursor-pointer">
-                {{ badgeText }}
-            </badge>
-        </popover>
-    </div>
+  <div v-if="hasRequirements">
+    <popover arrow hover>
+      <template #content>
+        <div>
+          <RequirementsItem v-for="(req, idx) in evaledRequirements" :key="idx" :requirement="req" />
+        </div>
+      </template>
+      <badge :color="badgeColor" class="cursor-pointer">
+        {{ badgeText }}
+      </badge>
+    </popover>
+  </div>
 </template>

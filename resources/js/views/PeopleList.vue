@@ -104,22 +104,22 @@ export default {
 }
 </script>
 <template>
-    <div>
-        <h1>People</h1>
-        <data-table
-            ref="dataTable"
-            v-model:sort="sort"
-            :data="itemProvider"
-            :fields="fields"
-            class="width-full"
-            :row-click-handler="goToPerson"
-            row-class="cursor-pointer"
-            :page-size="20"
-            paginated
-        >
-            <template #header>
-                <label class="block mb-2" for="filter-input">Filter:&nbsp;<input v-model="filter" type="text" placeholder="filter"></label>
-            </template>
-        </data-table>
-    </div>
+  <div>
+    <h1>People</h1>
+    <data-table
+      ref="dataTable"
+      v-model:sort="sort"
+      :data="itemProvider"
+      :fields="fields"
+      class="width-full"
+      :row-click-handler="goToPerson"
+      row-class="cursor-pointer"
+      :page-size="20"
+      paginated
+    >
+      <template #header>
+        <label class="block mb-2" for="filter-input">Filter:&nbsp;<input v-model="filter" type="text" placeholder="filter"></label>
+      </template>
+    </data-table>
+  </div>
 </template>

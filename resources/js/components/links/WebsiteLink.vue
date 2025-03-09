@@ -4,9 +4,10 @@ export default {
 }
 </script>
 <template>
-    <a href="https://clinicalgenome.org"
-        target="clinicalgenome.org"
-    >
-        <slot>ClinicalGenome.org</slot>
-    </a>
+  <a
+    href="https://clinicalgenome.org"
+    target="clinicalgenome.org"
+  >
+    <slot>ClinicalGenome.org</slot>
+  </a>
 </template>

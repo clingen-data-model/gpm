@@ -111,25 +111,25 @@
 
 </script>
 <template>
-    <div>
-        <div v-for="(count, role) in counts" :key="role">
-            <span>{{ role }}: {{ count }}</span>
-        </div>
-        <data-table
-            v-model:sort="tableSort"
-            :fields="fields"
-            :data="tableRows"
-            class="text-xs"
-        >
-            <template #cell-roles="{item}">
-                <span>{{ item.roles.map(r => r.display_name).join(', ') }}</span>
-            </template>
-            <template #cell-legacy_credentials="{item}">
-                <CredentialsView :person="item.person" />
-            </template>
-            <template #cell-legacy_expertise="{item}">
-                <ExpertisesView :person="item.person" :legacyExpertise="item.legacy_expertise" />
-            </template>
-        </data-table>
+  <div>
+    <div v-for="(count, role) in counts" :key="role">
+      <span>{{ role }}: {{ count }}</span>
     </div>
+    <data-table
+      v-model:sort="tableSort"
+      :fields="fields"
+      :data="tableRows"
+      class="text-xs"
+    >
+      <template #cell-roles="{item}">
+        <span>{{ item.roles.map(r => r.display_name).join(', ') }}</span>
+      </template>
+      <template #cell-legacy_credentials="{item}">
+        <CredentialsView :person="item.person" />
+      </template>
+      <template #cell-legacy_expertise="{item}">
+        <ExpertisesView :person="item.person" :legacyExpertise="item.legacy_expertise" />
+      </template>
+    </data-table>
+  </div>
 </template>

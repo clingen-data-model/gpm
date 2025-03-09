@@ -11,9 +11,9 @@ export default {
 }
 </script>
 <template>
-    <button class="btn btn-icon-sm" @click="$emit('click')" >
-        <icon-refresh :class="{rotate: loading}" width="16" height="16"/>
-    </button>
+  <button class="btn btn-icon-sm" @click="$emit('click')">
+    <icon-refresh :class="{rotate: loading}" width="16" height="16" />
+  </button>
 </template>
 <style>
     .rotate {

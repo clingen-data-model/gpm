@@ -122,47 +122,51 @@ export default {
 }
 </script>
 <template>
-    <div>
-        <h1>Mail Log</h1>
-        <data-table
-            ref="dataTable"
-            v-model:sort="sort"
-            :fields="fields"
-            :data="getPage"
-            row-class="cursor-pointer"
-            :row-click-handler="showMailDetail"
-            :page-size="20"
-            paginated
-        >
-            <template #header>
-                <div class="mb-2">Filter: <input v-model="filter" type="text"></div>
-            </template>
-            <template #cell-to="{item}">
-                <ul>
-                    <li v-for="recipient in item.to" :key="recipient.address">
-                        <span v-if="recipient.name">
-                            {{ recipient.name }} -
-                        </span>
-                        {{ recipient.address }}
-                    </li>
-                </ul>
-            </template>
-            <template #cell-actions="{item}">
-                <div>
-                    <button v-if="hasPermission('people-manage')" class="btn btn-xs" @click.stop="initResend(item)">Resend</button>
-                </div>
-            </template>
-        </data-table>
+  <div>
+    <h1>Mail Log</h1>
+    <data-table
+      ref="dataTable"
+      v-model:sort="sort"
+      :fields="fields"
+      :data="getPage"
+      row-class="cursor-pointer"
+      :row-click-handler="showMailDetail"
+      :page-size="20"
+      paginated
+    >
+      <template #header>
+        <div class="mb-2">
+          Filter: <input v-model="filter" type="text">
+        </div>
+      </template>
+      <template #cell-to="{item}">
+        <ul>
+          <li v-for="recipient in item.to" :key="recipient.address">
+            <span v-if="recipient.name">
+              {{ recipient.name }} -
+            </span>
+            {{ recipient.address }}
+          </li>
+        </ul>
+      </template>
+      <template #cell-actions="{item}">
+        <div>
+          <button v-if="hasPermission('people-manage')" class="btn btn-xs" @click.stop="initResend(item)">
+            Resend
+          </button>
+        </div>
+      </template>
+    </data-table>
 
-        <teleport to="body">
-            <modal-dialog v-model="showDetail">
-                <mail-detail v-if="hasPermission('people-manage')" :mail="currentEmail" @resend="initResend(currentEmail)"/>
-            </modal-dialog>
-            <modal-dialog v-model="showResendDialog" title="Resend Email">
-                <custom-email-form :mail-data="currentEmail" @sent="cleanupResend" @canceled="cleanupResend"></custom-email-form>
-            </modal-dialog>
-        </teleport>
-    </div>
+    <teleport to="body">
+      <modal-dialog v-model="showDetail">
+        <mail-detail v-if="hasPermission('people-manage')" :mail="currentEmail" @resend="initResend(currentEmail)" />
+      </modal-dialog>
+      <modal-dialog v-model="showResendDialog" title="Resend Email">
+        <custom-email-form :mail-data="currentEmail" @sent="cleanupResend" @canceled="cleanupResend" />
+      </modal-dialog>
+    </teleport>
+  </div>
 </template>
 <style lang="postcss">
 .email-body p{

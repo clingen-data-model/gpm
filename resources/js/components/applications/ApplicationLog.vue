@@ -124,38 +124,38 @@ export default {
 }
 </script>
 <template>
-    <div>
-        <div v-if="!hasLogEntries" class="px-3 py-2 rounded border border-gray-300 text-gray-500 bg-gray-200">
-            {{ noResultsMessage }}
+  <div>
+    <div v-if="!hasLogEntries" class="px-3 py-2 rounded border border-gray-300 text-gray-500 bg-gray-200">
+      {{ noResultsMessage }}
+    </div>
+    <data-table v-else v-model:sort="sort" :fields="fields" :data="filteredLogEntries">
+      <template #cell-id="{item}">
+        <div class="flex space-x-1">
+          <router-link :to="{name: 'EditLogEntry', params:{id: item.id}}" class="btn btn-xs inline-block">
+            <icon-edit width="12" />
+          </router-link>
+          <router-link 
+            v-if="item.activity_type === null" 
+            :to="{name: 'ConfirmDeleteLogEntry', params:{id: item.id}}"
+            class="btn btn-xs inline-block"
+          >
+            <icon-trash width="12" />
+          </router-link>
         </div>
-        <data-table v-else v-model:sort="sort" :fields="fields" :data="filteredLogEntries">
-            <template #cell-id="{item}">
-                <div class="flex space-x-1">
-                    <router-link :to="{name: 'EditLogEntry', params:{id: item.id}}" class="btn btn-xs inline-block">
-                        <icon-edit width="12"></icon-edit>
-                    </router-link>
-                    <router-link 
-                        v-if="item.activity_type === null" 
-                        :to="{name: 'ConfirmDeleteLogEntry', params:{id: item.id}}"
-                        class="btn btn-xs inline-block"
-                    >
-                        <icon-trash width="12"></icon-trash>
-                    </router-link>
-                </div>
-            </template>
-            <template #cell-description="{item}">
-                <div class="links-blue" v-html="item.description"></div>
-            </template>
-            <!-- <template v-slot:cell-step="{item}">
+      </template>
+      <template #cell-description="{item}">
+        <div class="links-blue" v-html="item.description" />
+      </template>
+      <!-- <template v-slot:cell-step="{item}">
                 <pre>
                     {{item}} 
                 </pre>
             </template> -->
-        </data-table>
-        <modal-dialog v-model="editingEntry" title="Edit log entry">
-            <LogEntryForm></LogEntryForm>
-        </modal-dialog>
-    </div>
+    </data-table>
+    <modal-dialog v-model="editingEntry" title="Edit log entry">
+      <LogEntryForm />
+    </modal-dialog>
+  </div>
 </template>
 <style lang="postcss">
     .links-blue a {

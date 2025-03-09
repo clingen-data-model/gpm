@@ -73,8 +73,8 @@ export default {
 }
 </script>
 <template>
-    <div>
-        <data-form v-model="inst" :fields="filteredFields" :errors="errors" />
-        <button-row submit-text="Save" @submitted="save" @cancel="cancel" />
-    </div>
+  <div>
+    <data-form v-model="inst" :fields="filteredFields" :errors="errors" />
+    <button-row submit-text="Save" @submitted="save" @cancel="cancel" />
+  </div>
 </template>
