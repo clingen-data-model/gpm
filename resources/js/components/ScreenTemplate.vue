@@ -1,4 +1,5 @@
 <script setup>
+    import Breadcrumbs from './Breadcrumbs.vue';
     // eslint-disable-next-line unused-imports/no-unused-vars
     const props = defineProps({
         breadcrumbs: {
@@ -14,7 +15,7 @@
 <template>
   <div class="screen -mt-6">
     <header class="screen-header bg-white pt-6">
-      <breadcrumbs v-if="breadcrumbs.length > 0" class="mx-4" :items="breadcrumbs" />
+      <Breadcrumbs v-if="breadcrumbs.length > 0" class="mx-4" :items="breadcrumbs" />
       <div class="flex justify-between items-end border-b pb-2 px-4">
         <slot name="header">
           <div>
