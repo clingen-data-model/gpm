@@ -10,7 +10,10 @@ use Illuminate\Support\Carbon;
  */
 trait PublishesEvent
 {
-    abstract public function getEventType(): string;
+    public function getEventType(): string
+    {
+        return Str::snake(self::class);
+    }
 
     public function getTopic(): string
     {

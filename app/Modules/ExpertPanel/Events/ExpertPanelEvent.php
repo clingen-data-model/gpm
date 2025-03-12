@@ -2,25 +2,21 @@
 
 namespace App\Modules\ExpertPanel\Events;
 
-use DateTime;
 use Illuminate\Queue\SerializesModels;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
-use App\Events\RecordableEvent;
+use App\Modules\Group\Events\GroupEvent;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
-use Ramsey\Uuid\Type\Integer;
 
-/**
- * @property App\Modules\Group\Models\Group $group
- */
-abstract class ExpertPanelEvent extends RecordableEvent
+abstract class ExpertPanelEvent extends GroupEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public function __construct(public ExpertPanel  $application)
     {
+        parent::__construct($application->group);
     }
 
     public function getLog():string
@@ -54,14 +50,6 @@ abstract class ExpertPanelEvent extends RecordableEvent
     public function getTopic(): string
     {
         return config('dx.topics.outgoing.gpm-general-events');
-    }
-
-    /**
-     * For PublishableEvent interface that is applied to many sub-classes
-     */
-    public function shouldPublish(): bool
-    {
-        return $this->group->isEp;
     }
 
     public function __get($key)

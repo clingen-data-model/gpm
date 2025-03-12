@@ -4,33 +4,21 @@ namespace App\Modules\ExpertPanel\Events;
 
 use Exception;
 use Illuminate\Support\Carbon;
-use Illuminate\Broadcasting\Channel;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Modules\Group\Events\PublishableApplicationEvent;
-use Illuminate\Support\Carbon as SupportCarbon;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use App\Modules\Group\Events\Traits\IsPublishableApplicationEvent;
 
 class StepApproved extends ExpertPanelEvent implements PublishableApplicationEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
-    use IsPublishableApplicationEvent {
-        getPublishableMessage as protected getBaseMessage;
-    }
+    use IsPublishableApplicationEvent;
 
-    /**
-     * Create a new event instance.
-     *
-     * @return void
-     */
     public function __construct(public ExpertPanel  $application, public int $step, public Carbon $dateApproved)
     {
-        //
+        parent::__construct($application);
     }
 
     public function getProperties():array
@@ -73,7 +61,7 @@ class StepApproved extends ExpertPanelEvent implements PublishableApplicationEve
 
     public function getPublishableMessage(): array
     {
-        $message = $this->getBaseMessage();
+        $message = parent::getPublishableMessage();
         if ($this->step == 1) {
             $message['members'] = $this->group->members
                                     ->map(function ($member) {
@@ -93,14 +81,4 @@ class StepApproved extends ExpertPanelEvent implements PublishableApplicationEve
 
     }
 
-
-    /**
-     * Get the channels the event should broadcast on.
-     *
-     * @return \Illuminate\Broadcasting\Channel|array
-     */
-    // public function broadcastOn()
-    // {
-    //     return new PrivateChannel('channel-name');
-    // }
 }

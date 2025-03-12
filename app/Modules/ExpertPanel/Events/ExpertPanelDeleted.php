@@ -15,6 +15,7 @@ class ExpertPanelDeleted extends ExpertPanelEvent
     public function __construct(
         public ExpertPanel  $application
     ) {
+        parent::__construct($application);
     }
 
     public function getProperties():array
@@ -26,14 +27,10 @@ class ExpertPanelDeleted extends ExpertPanelEvent
     {
         return 'Application deleted';
     }
-    
-    // public function getLogDate():Carbon
-    // {
-    //     return $this->application->date_initiated;
-    // }
 
-    // public function getStep()
-    // {
-    //     return 1;
-    // }
+    public function shouldPublish(): bool
+    {
+        // NOTE: have to special-case this because the group<->expertPanel relationship may be gone by the time this is fired
+        return $this->application->definitionIsApproved;
+    }
 }

@@ -9,11 +9,6 @@ use App\Modules\Group\Events\GroupEvent;
 class DocumentUpdated extends GroupEvent
 {
 
-    /**
-     * Create a new event instance.
-     *
-     * @return void
-     */
     public function __construct(public Group $group, public Document $document)
     {
     }
@@ -22,15 +17,10 @@ class DocumentUpdated extends GroupEvent
     {
         return 'Document '.$this->document->filename.' info updated';
     }
-    
 
-    /**
-     * Get the channels the event should broadcast on.
-     *
-     * @return \Illuminate\Broadcasting\Channel|array
-     */
-    public function broadcastOn()
+
+    public function shouldPublish(): bool
     {
-        return new PrivateChannel('channel-name');
+        return false;
     }
 }

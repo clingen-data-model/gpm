@@ -6,26 +6,21 @@ use Tests\TestCase;
 use App\Models\Role;
 use App\Models\Permission;
 use Illuminate\Support\Carbon;
-use App\Modules\Group\Models\Group;
-use App\Modules\Group\Actions\GenesAdd;
 use App\Modules\ExpertPanel\Models\Gene;
 use App\Modules\Group\Events\GenesAdded;
 use App\Modules\Group\Events\GeneRemoved;
 use App\Modules\Group\Events\MemberAdded;
 use App\Modules\Group\Models\GroupMember;
-use Database\Factories\GroupMemberFactory;
 use App\Modules\Group\Events\MemberRemoved;
 use App\Modules\Group\Events\MemberRetired;
 use App\Modules\Group\Events\MemberUnretired;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
-use App\Modules\Group\Events\GeneAddedApproved;
 use App\Modules\Group\Events\MemberRoleRemoved;
 use App\Modules\ExpertPanel\Events\StepApproved;
 use App\Modules\Group\Events\MemberRoleAssigned;
-use App\Modules\Group\Events\GeneRemovedApproved;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Modules\Group\Events\MemberPermissionRevoked;
-use App\Modules\Group\Events\MemberPermissionsGranted;
+use App\Modules\Group\Events\MemberPermissionGranted;
 use App\DataExchange\MessageFactories\DxMessageFactory;
 
 /**
@@ -35,12 +30,14 @@ class DxMessageFactoryTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setup():void
+    private ExpertPanel $expertPanel;
+
+    public function setup(): void
     {
         parent::setup();
         $this->setupForGroupTest();
         $this->setupPermission('application-edit');
-        $this->expertPanel = ExpertPanel::factory()->create(['long_base_name'=>'TEST GROUP', 'affiliation_id' => 50666]);
+        $this->expertPanel = ExpertPanel::factory()->create(['long_base_name' => 'TEST GROUP', 'affiliation_id' => 50666]);
         Gene::factory(2)->create(['expert_panel_id' => $this->expertPanel->id]);
         GroupMember::factory(2)->create(['group_id' => $this->expertPanel->group->id]);
 
@@ -110,7 +107,7 @@ class DxMessageFactoryTest extends TestCase
     public function it_creates_member_permission_granted_message()
     {
         $permissions = Permission::where('name', 'application-edit')->get();
-        $event = new MemberPermissionsGranted($this->expertPanel->group->members->first(), $permissions);
+        $event = new MemberPermissionGranted($this->expertPanel->group->members->first(), $permissions);
         $message = $this->factory->makeFromEvent($event);
 
         $this->assertEquals('member_permission_granted', $message['event_type']);
@@ -148,7 +145,7 @@ class DxMessageFactoryTest extends TestCase
     /**
      * @test
      */
-    public function it_creates_a_member_retireded_event()
+    public function it_creates_a_member_retired_event()
     {
         $event = new MemberRetired($this->expertPanel->group->members->first());
 
@@ -161,7 +158,7 @@ class DxMessageFactoryTest extends TestCase
     /**
      * @test
      */
-    public function it_creates_a_member_unretireded_event()
+    public function it_creates_a_member_unretired_event()
     {
         $event = new MemberUnretired($this->expertPanel->group->members->first());
 
@@ -178,7 +175,7 @@ class DxMessageFactoryTest extends TestCase
     {
         $event = new GenesAdded($this->expertPanel->group, collect([$this->expertPanel->genes->first()]));
         $message = $this->factory->makeFromEvent($event);
-        $this->assertEquals('gene_added', $message['event_type']);
+        $this->assertEquals('genes_added', $message['event_type']);
         $this->assertExpertPanelInMessage($message);
         $this->assertGenesInMessage([$this->expertPanel->genes->first()], $message);
     }
@@ -234,9 +231,14 @@ class DxMessageFactoryTest extends TestCase
     {
         $this->assertEquals([
             'id' => $this->expertPanel->group->uuid,
-            'name' => $this->expertPanel->group->displayName,
+            'name' => $this->expertPanel->group->name,
+            'description' => $this->expertPanel->group->description,
+            'status' => $this->expertPanel->group->groupStatus->name,
             'type' => $this->expertPanel->group->fullType->name,
-            'affiliation_id' => $this->expertPanel->affiliation_id
-         ], $message['data']['expert_panel']);
+            'ep_id' => $this->expertPanel->uuid,
+            'affiliation_id' => $this->expertPanel->affiliation_id,
+            'scope_description' => $this->expertPanel->scope_description,
+            'short_name' => $this->expertPanel->short_base_name,
+        ], $message['data']['group']);
     }
 }

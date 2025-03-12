@@ -85,7 +85,7 @@ class PersonPhotoStoreTest extends TestCase
 
         $this->assertEventPublished(
             'gpm-person-events',
-            'updated',
+            'person_updated',
             $this->person->fresh()
         );
     }

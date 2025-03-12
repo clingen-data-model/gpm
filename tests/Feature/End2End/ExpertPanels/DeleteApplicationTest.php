@@ -17,9 +17,10 @@ class DeleteApplicationTest extends TestCase
     {
         parent::setup();
         $this->setupForGroupTest();
-        
+
         $this->user = User::factory()->create();
-        $this->expertPanel = ExpertPanel::factory()->create();
+        $this->expertPanel = ExpertPanel::factory()->vcep()->create();
+        $this->expertPanel->push();
         $this->url = '/api/applications/'.$this->expertPanel->uuid;
     }
 
@@ -40,7 +41,7 @@ class DeleteApplicationTest extends TestCase
         Sanctum::actingAs($this->user);
         $response = $this->json('DELETE', $this->url)
             ->assertStatus(200);
-        
+
         $this->assertDatabaseMissing('applications', [
             'uuid' => $this->expertPanel->uuid,
             'deleted_at' => null
