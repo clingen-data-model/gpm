@@ -249,7 +249,7 @@ class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDoc
 
     public function getIsScvcepAttribute(): bool
     {
-        return $this->isVcep && $this->type->is_somatic_cancer;
+        return $this->type->curation_product === CurationProduct::Variant && $this->type->is_somatic_cancer  === true;
     }
 
     public function getIsVcepOrScvcepAttribute(): bool
