@@ -239,17 +239,17 @@ class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDoc
 
     public function getIsVcepAttribute(): bool
     {
-        return $this->group_type_id == config('groups.types.vcep.id');
+        return $this->type->curation_product === CurationProduct::Variant && $this->type->is_somatic_cancer === false;
     }
 
     public function getIsGcepAttribute(): bool
     {
-        return $this->group_type_id == config('groups.types.gcep.id');
+        return $this->type->curation_product === CurationProduct::Gene;
     }
 
     public function getIsScvcepAttribute(): bool
     {
-        return $this->group_type_id == config('groups.types.scvcep.id');
+        return $this->isVcep && $this->type->is_somatic_cancer;
     }
 
     public function getIsVcepOrScvcepAttribute(): bool

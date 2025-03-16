@@ -46,7 +46,7 @@ class GroupFactory extends Factory
                 'uuid' => $this->faker->uuid,
                 'name' => uniqid().' CDWG',
                 'group_type_id' => config('groups.types.vcep.id'),
-                'group_status_id' => config('groups.statuses.applying.id')
+                'group_status_id' => config('groups.statuses.applying.id'),
             ];
         });
     }
@@ -58,7 +58,7 @@ class GroupFactory extends Factory
                 'uuid' => $this->faker->uuid,
                 'name' => uniqid().' CDWG',
                 'group_type_id' => config('groups.types.gcep.id'),
-                'group_status_id' => config('groups.statuses.applying.id')
+                'group_status_id' => config('groups.statuses.applying.id'),
             ];
         });
     }
@@ -70,7 +70,7 @@ class GroupFactory extends Factory
                 'uuid' => $this->faker->uuid,
                 'name' => uniqid().' scvcep',
                 'group_type_id' => config('groups.types.scvcep.id'),
-                'group_status_id' => config('groups.statuses.applying.id')
+                'group_status_id' => config('groups.statuses.applying.id'),
             ];
         });
     }
