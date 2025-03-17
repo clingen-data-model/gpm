@@ -36,7 +36,7 @@
             </ReviewSection>
 
             <ReviewSection v-if="expertPanel.has_approved_pilot"
-                title="Evidence Summaries"
+                :title="group.type.is_somatic_cancer ? `Example CIViC Assertions` : `Evidence Summaries`"
                 name="evidence-summaries"
             >
                 <evidence-summary-list :readonly="true" />
@@ -56,9 +56,5 @@
                     {{group.trainedBiocurators.map(m => m.person.name).join(', ')}}
                 </dictionary-row>
             </ReviewSection>
-
-            <!-- <div v-if="!expertPanel.has_appoved_pilot" class="screen-block">
-                No approved pilot.
-            </div> -->
     </div>
 </template>

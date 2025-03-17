@@ -23,7 +23,15 @@
             <input type="checkbox" v-model="biocuratorTrainer" :disabled="!canEdit" @input="debounceSave">
         </td>
         <td>
-            <input type="checkbox" v-model="coreApprovalMember" :disabled="!canEdit" @input="debounceSave">
+            <input type="checkbox" v-model="coreApprovalMember" :disabled="!canEdit" @input="debounceSave" />
+        </td>
+        <td v-if="group.type.is_somatic_cancer">
+            <input
+                type="checkbox"
+                v-model="civicEditor"
+                :disabled="!canEdit"
+                @input="debounceSave"
+            />
         </td>
     </tr>
 </template>
@@ -80,13 +88,21 @@ export default {
                 this.toggleRole(value, 'core-approval-member')
             }
         },
+        civicEditor: {
+            get() {
+                return this.workingCopy.hasRole("civic-editor");
+            },
+            set(value) {
+                this.toggleRole(value, "civic-editor");
+            },
+        },
         canEdit () {
             return this.hasAnyPermission([
                         'ep-applications-manage',
                         ['application-edit', this.group]
                     ]) 
                     && !this.readonly;
-        }        
+        }
     },
     watch: {
         member: {

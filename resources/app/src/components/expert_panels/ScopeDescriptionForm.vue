@@ -21,7 +21,8 @@
                         Describe the scope of work of the Expert Panel including
                         the disease area(s), genes being addressed, and any
                         specific rational for choosing the condition(s). See the
-                        <vcep-protocol-link v-if="group.is_vcep_or_scvcep" />
+                        <vcep-protocol-link v-if="group.is_vcep" />
+                        <sc-vcep-protocol-link v-if="group.is_scvcep" />
                         <gcep-quick-guide-link v-if="group.is_gcep" /> for more
                         information.
                     </template>

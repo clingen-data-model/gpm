@@ -73,6 +73,7 @@ export default {
                             <icon-info class="inline-block cursor-pointer" :width="16" :height="16" />
                         </popover>
                     </th>
+                    <th>CIViC Editor</th>
                 </tr>
             </thead>
             <tbody>
@@ -86,11 +87,6 @@ export default {
                 />
             </tbody>
         </table>
-        <!-- <div class="flex items-center mt-2 pt-2 border-t">
-            <icon-info :width="14" :height="14" />
-            &nbsp;
-            <div>Core approval members are responsible for ongoing final approval of variant classifications.</div>
-        </div> -->
     </div>
 </template>
 <style scoped>

@@ -6,10 +6,13 @@
             that have a conflicting assertion submitted to ClinVar after the
             Expert Panel submission (guidelines for recuration timeline provided
             in the
-            <a
-                href="https://clinicalgenome.org/docs/clingen-variant-curation-expert-panel-vcep-protocol/"
-                >{{ group.type.name }} protocol</a
-            >). <br />
+            <sc-vcep-protocol-link v-show="group.type.is_somatic_cancer">
+                (protocol)
+            </sc-vcep-protocol-link>
+            <vcep-protocol-link v-show="!group.type.is_somatic_cancer">
+                (protocol) </vcep-protocol-link
+            >.
+            <br />
             <br />
             Please answer the following question concerning recuration:
         </p>
@@ -37,6 +40,7 @@
 <script>
 import mirror from "@/composables/setup_working_mirror";
 import ApplicationSection from "@/components/expert_panels/ApplicationSection.vue";
+import ScVcepProtocolLink from "../links/ScVcepProtocolLink.vue";
 
 export default {
     name: "VariantReanalysis",

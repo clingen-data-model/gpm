@@ -21,12 +21,12 @@
         <input-row class="mt-0 mb-0" label="Summary" :vertical="true" :errors="errors.summary">
             <textarea rows="5" class="w-full" v-model="summaryClone.summary"></textarea>
         </input-row>
-        <input-row 
-            class="mt-0" 
-            v-model="summaryClone.vci_url" 
-            label="VCI URL" 
-            :vertical="true" 
-            input-class="w-full" 
+        <input-row
+            class="mt-0"
+            v-model="summaryClone.vci_url"
+            :label="group.type.is_somatic_cancer ? `CIViC URL` : `VCI URL`"
+            :vertical="true"
+            input-class="w-full"
             :errors="errors.vci_url"
         />
         <button-row submit-text="save" @submit="save" @cancel="cancel"></button-row>

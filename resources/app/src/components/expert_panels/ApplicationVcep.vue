@@ -32,18 +32,6 @@
             </app-section>
         </application-step>
 
-        <!-- <application-step
-            id="specifications-development"
-            title="Specifications Development"
-            :disabled="group.expert_panel.current_step < 2 || group.expert_panel.hasPendingSubmission"
-            :no-submit="true"
-        >
-            <app-section>
-                <cspec-summary></cspec-summary>
-            </app-section>
-        </application-step>
-        -->
-
         <application-step
             id="draft-specifications"
             title="Draft Specifications"
@@ -75,7 +63,14 @@
                 <vcep-ongoing-plans-form @update="handleUpdate"/>
             </app-section>
 
-            <app-section title="Example Evidence Summaries" id="evidenceSummaries">
+            <app-section
+                :title="
+                    group.is_scvcep
+                        ? 'Example CIViC Assertions'
+                        : 'Example Evidence Summaries'
+                "
+                id="evidenceSummaries"
+            >
                 <evidence-summary-list />
             </app-section>
 

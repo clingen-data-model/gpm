@@ -14,9 +14,15 @@
                         <dropdown-item @click="confirmDelete()">Delete</dropdown-item>
                     </dropdown-menu>
                 </header>
-                <p>{{summary.summary}}</p>
-                <a class="link" :href="summary.vci_url" v-if="summary.vci_url" target="_blank">
-                    View in the VCI
+                <p>{{ summary.summary }}</p>
+                <a
+                    class="link"
+                    :href="summary.vci_url"
+                    v-if="summary.vci_url"
+                    target="_blank"
+                >
+                    View in
+                    {{ group.type.is_somatic_cancer ? "CIViC" : "the VCI" }}
                 </a>
             </div>
             <evidence-summary-form 
