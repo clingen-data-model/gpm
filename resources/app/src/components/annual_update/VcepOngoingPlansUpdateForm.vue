@@ -62,7 +62,7 @@
         >
             <template v-slot:label>
                 If you are having any difficulty adhering to any policies of
-                the&nbsp;<vcep-protocol-link />, please describe here:
+                the&nbsp;<variant-panel-protocol-link />, please describe here:
             </template>
         </input-row>
     </application-section>
@@ -72,6 +72,7 @@ import VcepOngoingPlansForm from "@/components/expert_panels/VcepOngoingPlansFor
 import ApplicationSection from "@/components/expert_panels/ApplicationSection.vue";
 import VcepProtocolLink from "@/components/links/VcepProtocolLink.vue";
 import mirror from "@/composables/setup_working_mirror";
+import VariantPanelProtocolLink from "../links/VariantPanelProtocolLink.vue";
 
 export default {
     name: "VcepOngoingPlansUpdateForm",

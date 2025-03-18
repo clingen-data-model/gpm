@@ -134,8 +134,8 @@ export default {
                             <h3 style="line-height: 1">Have Questions?</h3>
                             <div style="font-size: 1rem; line-height:2">
                                 Read the
-                                <gcep-quick-guide-link v-if="group.group_type_id == 3" />
-                                <vcep-protocol-link v-if="group.group_type_id == 4" />
+                                <gcep-quick-guide-link v-if="group.type.curation_product === 'gene_disease_validity'" />
+                                <variant-panel-protocol-link  v-if="group.type.curation_product === 'variant_pathogenicity'"/>
                             </div>
                         </div>
                     </div>

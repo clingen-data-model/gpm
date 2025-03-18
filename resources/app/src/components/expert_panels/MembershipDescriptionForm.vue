@@ -3,10 +3,7 @@
         <header class="flex justify-between items-center">
             <h4>Description of Expertise</h4>
             <edit-icon-button
-                v-if="
-                    hasAnyPermission(['groups-manage'], ['edit-info', group]) &&
-                    !editing
-                "
+                v-if="hasAnyPermission(['groups-manage'], ['edit-info', group]) && !editing"
                 @click="$emit('update:editing', true)"
             ></edit-icon-button>
         </header>
@@ -36,20 +33,25 @@
 </template>
 <script>
 export default {
-    name: "MembershipDescriptionForm",
+    name: 'MembershipDescriptionForm',
     props: {
         editing: {
             type: Boolean,
             required: false,
-            default: false,
+            default: false
         },
         errors: {
             type: Object,
             required: false,
-            default: () => ({}),
-        },
+            default: () => ({})
+        }
     },
-    emits: ["update:editing", "saved", "canceled", "update"],
+    emits: [
+        "update:editing",
+        "saved",
+        "canceled",
+        "update"
+    ],
     computed: {
         group: {
             get() {
@@ -57,7 +59,7 @@ export default {
             },
             set(value) {
                 this.$store.commit("groups/addItem", value);
-            },
+            }
         },
         guidelineBody() {
             return this.group.type.is_somatic_cancer
@@ -67,8 +69,8 @@ export default {
     },
     methods: {
         emitUpdate() {
-            this.$emit("update");
-        },
-    },
-};
+            this.$emit('update');
+        }
+    }
+}
 </script>

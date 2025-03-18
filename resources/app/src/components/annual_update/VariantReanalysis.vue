@@ -6,12 +6,7 @@
             that have a conflicting assertion submitted to ClinVar after the
             Expert Panel submission (guidelines for recuration timeline provided
             in the
-            <sc-vcep-protocol-link v-show="group.type.is_somatic_cancer">
-                (protocol)
-            </sc-vcep-protocol-link>
-            <vcep-protocol-link v-show="!group.type.is_somatic_cancer">
-                (protocol) </vcep-protocol-link
-            >.
+            <VariantPanelProtocolLink />).
             <br />
             <br />
             Please answer the following question concerning recuration:
@@ -19,18 +14,9 @@
 
         <ul class="px-6">
             <li>
-                <input-row
-                    :disabled="isComplete"
-                    vertical
-                    type="large-text"
-                    :errors="errors.rereview_discrepencies_progress"
-                    v-model="workingCopy.data.rereview_discrepencies_progress"
-                    placeholder="Progress..."
-                >
+                <input-row :disabled="isComplete" vertical type="large-text" :errors="errors.rereview_discrepencies_progress" v-model="workingCopy.data.rereview_discrepencies_progress" placeholder="Progress...">
                     <template v-slot:label>
-                        Are you receiving and/or using the VCEP Variant Tracker
-                        reports to aid in the recuration work? Please describe
-                        below.
+                        Are you receiving and/or using the VCEP Variant Tracker reports to aid in the recuration work? Please describe below.
                     </template>
                 </input-row>
             </li>
@@ -38,33 +24,34 @@
     </application-section>
 </template>
 <script>
-import mirror from "@/composables/setup_working_mirror";
-import ApplicationSection from "@/components/expert_panels/ApplicationSection.vue";
-import ScVcepProtocolLink from "../links/ScVcepProtocolLink.vue";
+import mirror from '@/composables/setup_working_mirror'
+import ApplicationSection from '@/components/expert_panels/ApplicationSection.vue'
+import VariantPanelProtocolLink from '@/components/links/VariantPanelProtocolLink.vue'
 
 export default {
-    name: "VariantReanalysis",
+    name: 'VariantReanalysis',
     components: {
         ApplicationSection,
+        VariantPanelProtocolLink,
     },
     props: {
         ...mirror.props,
         errors: {
             type: Object,
-            required: true,
+            required: true
         },
     },
-    emits: [...mirror.emits],
+    emits: [ ...mirror.emits ],
     computed: {
-        isComplete() {
-            return Boolean(this.modelValue.completed_at);
-        },
+        isComplete () {
+            return Boolean(this.modelValue.completed_at)
+        }
     },
     setup(props, context) {
-        const { workingCopy } = mirror.setup(props, context);
+        const {workingCopy} = mirror.setup(props, context);
         return {
-            workingCopy,
-        };
-    },
-};
+            workingCopy
+        }
+    }
+}
 </script>
