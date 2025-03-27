@@ -64,7 +64,7 @@ export default {
                 label-width="8em"
                 class="my-1"
               >
-                {{ g.coordinators.map(c => c.person.name).join(', ') }}
+                {{ g.chairs.map(c => c.person.name).join(', ') }}
               </dictionary-row>
               <dictionary-row
                 v-if="g.coordinators.length > 0"
