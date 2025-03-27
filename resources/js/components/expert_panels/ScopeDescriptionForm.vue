@@ -59,7 +59,7 @@ export default {
       <p class="text-sm">
         Describe the scope of work of the Expert Panel including
         the disease area(s), genes being addressed, and any
-        specific rational for choosing the condition(s). See the
+        specific rationale for choosing the condition(s). See the
         <VcepProtocolLink v-if="group.is_vcep_or_scvcep" />
         <GcepQuickGuideLink v-if="group.is_gcep" /> for more
         information.
