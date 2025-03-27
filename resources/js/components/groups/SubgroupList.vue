@@ -64,7 +64,7 @@ export default {
                 label-width="8em"
                 class="my-1"
               >
-                {{ childGroup.coordinators.map(c => c.person.name).join(', ') }}
+                {{ childGroup.chairs.map(c => c.person.name).join(', ') }}
               </dictionary-row>
               <dictionary-row
                 v-if="childGroup.coordinators.length > 0"
