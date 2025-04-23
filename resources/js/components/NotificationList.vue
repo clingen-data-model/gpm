@@ -22,7 +22,7 @@
         loadingNotifications.value = false;
     }
     const removeNotification = (notification) => {
-        const index = notifications.value.findIndex((item) => item.id === notification.id);
+        const index = notifications.value.findIndex((item) => Number.parseInt(item.id) === Number.parseInt(notification.id));
         if (index > -1) {
             notifications.value.splice(index, 1);
         }

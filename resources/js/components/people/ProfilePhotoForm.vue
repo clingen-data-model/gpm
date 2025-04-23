@@ -127,7 +127,7 @@ export default {
                     if (isValidationError(error)) {
                         this.errors = error.response.data.errors;
                         return;
-                    } else if (error.response.status === 413) {
+                    } else if (Number.parseInt(error.response.status) === 413) {
                         this.errors.profile_photo = ['The image is too large.'];
                         return;
                     }

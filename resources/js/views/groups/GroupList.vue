@@ -66,7 +66,7 @@ export default {
                     group.expert_panel.full_short_base_name &&
                     group.expert_panel.full_short_base_name.match(pattern)
                 )
-                || group.id === filterString.value
+                || Number.parseInt(group.id) === Number.parseInt(filterString.value)
                 || group.status.name.match(pattern)
                 || (
                     group.expert_panel &&

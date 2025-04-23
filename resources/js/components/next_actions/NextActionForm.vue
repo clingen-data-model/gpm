@@ -157,7 +157,7 @@ export default {
                     this.clearForm();
                 }
             } catch (error) {
-                if (error.response && error.response.status === 422 && error.response.data.errors) {
+                if (error.response && Number.parseInt(error.response.status) === 422 && error.response.data.errors) {
                     this.errors = error.response.data.errors
                 }
             }

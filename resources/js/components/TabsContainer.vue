@@ -27,7 +27,7 @@ export default {
     },
     computed: {
         activeTab() {
-            return this.tabs.find(t => t.active === true) || {};
+            return this.tabs.find(t => Boolean(t.active) === true) || {};
         }
     },
     watch: {

@@ -130,7 +130,7 @@ class Group extends Entity {
     }
 
     addMember(member) {
-        const idx = this.members.findIndex(m => m && m.id === member.id);
+        const idx = this.members.findIndex(m => m && Number.parseInt(m.id) === Number.parseInt(member.id));
         if (idx > -1) {
             this.members.splice(idx, 1, new GroupMember({...member}))
             return;
@@ -140,14 +140,14 @@ class Group extends Entity {
     }
 
     removeMember(member) {
-        const idx = this.members.findIndex(m => m.id === member.id);
+        const idx = this.members.findIndex(m => Number.parseInt(m.id) === Number.parseInt(member.id));
         if (idx > -1) {
             this.members.splice(idx, 1);
         }
     }
 
     findMember(memberId) {
-        const member = this.members.find(m => m.id === memberId);
+        const member = this.members.find(m => Number.parseInt(m.id) === Number.parseInt(memberId));
         if (member) {
             return member;
         }
@@ -174,12 +174,12 @@ class Group extends Entity {
     }
 
     isEp() {
-        return this.attributes.group_type_id === configs.groups.types.gcep.id
-            || this.attributes.group_type_id === configs.groups.types.vcep.id;
+        return Number.parseInt(this.attributes.group_type_id) === Number.parseInt(configs.groups.types.gcep.id)
+            || Number.parseInt(this.attributes.group_type_id) === Number.parseInt(configs.groups.types.vcep.id);
     }
 
     isWorkingGroup() {
-        return this.attributes.group_type_id === configs.groups.types.wg.id;
+        return Number.parseInt(this.attributes.group_type_id) === Number.parseInt(configs.groups.types.wg.id);
     }
 
     isWg() {
@@ -187,7 +187,7 @@ class Group extends Entity {
     }
 
     isCdwg() {
-        return this.attributes.group_type_id === configs.groups.types.cdwg.id;
+        return Number.parseInt(this.attributes.group_type_id) === Number.parseInt(configs.groups.types.cdwg.id);
     }
 
     documentsOfType(docTypeId) {

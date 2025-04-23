@@ -69,7 +69,7 @@
             initNewEntry();
             emits('saved', newEntry.value);
         } catch (error) {
-            if (error.response && error.response.status === 422 && error.response.data.errors) {
+            if (error.response && Number.parseInt(error.response.status) === 422 && error.response.data.errors) {
                 errors.value = error.response.data.errors
             }
         }

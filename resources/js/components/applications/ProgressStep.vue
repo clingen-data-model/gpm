@@ -14,7 +14,7 @@ export default {
     },
     data() {
         return {
-            
+
         }
     },
     computed: {
@@ -44,17 +44,17 @@ export default {
             return classes.join(' ');
         },
         isCurrentStep () {
-            return this.application.current_step === this.step
+            return Number.parseInt(this.application.current_step) === Number.parseInt(this.step)
         },
         isApproved () {
             return this.application.stepIsApproved(this.step);
         },
         isFirstStep () {
-            return this.step === 1;
+            return Number.parseInt(this.step) === 1;
         },
         isLastStep () {
             const lastStep = Math.max(...this.application.steps);
-            return this.step === lastStep;
+            return Number.parseInt(this.step) === Number.parseInt(lastStep);
         }
     },
     methods: {

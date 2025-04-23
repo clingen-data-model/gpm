@@ -29,13 +29,13 @@ export default {
     methods: {
         getQuestionValue(response) {
 
-            if (response === 1) {
+            if (Number.parseInt(response) === 1) {
                 return 'Yes';
             }
-            if (response === 0) {
+            if (Number.parseInt(response) === 0) {
                 return 'No';
             }
-            if (response === 2) {
+            if (Number.parseInt(response) === 2) {
                 return 'Unsure';
             }
 

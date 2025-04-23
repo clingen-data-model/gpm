@@ -99,7 +99,7 @@ export default {
 
         },
         currentUserIsUser () {
-            return this.$store.getters.currentUser.id === this.user.id;
+            return Number.parseInt(this.$store.getters.currentUser.id) === Number.parseInt(this.user.id);
         }
     },
     watch: {
