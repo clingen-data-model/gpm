@@ -20,14 +20,14 @@ export default {
   computed: {
     ...mapGetters(['isAuthed']),
     appName () {
-      return this.$store.state && this.$store.state.systemInfo && this.$store.state.systemInfo.app? 
+      return this.$store.state && this.$store.state.systemInfo && this.$store.state.systemInfo.app?
               this.$store.state.systemInfo.app.name
               : 'GPM'
     }
   },
   watch: {
     isAuthed () {
-      if (this.$route.meta && this.$route.meta.protected && this.isAuthed === false && this.$route.name !== 'login') {
+      if (this.$route.meta && this.$route.meta.protected && Boolean(this.isAuthed) === false && this.$route.name !== 'login') {
         this.$router.push({name: 'login'});
       }
     }
@@ -58,37 +58,37 @@ export default {
             </router-link>
           </div>
           <span v-if="$store.getters.isAuthed">
-            <router-link 
-              v-if="hasPermission('ep-applications-manage')" 
-              to="/applications" 
+            <router-link
+              v-if="hasPermission('ep-applications-manage')"
+              to="/applications"
               class="link nav-item"
-            >Applications</router-link> 
-            <router-link 
-              v-if="hasPermission('annual-updates-manage')" 
-              to="/annual-updates" 
+            >Applications</router-link>
+            <router-link
+              v-if="hasPermission('annual-updates-manage')"
+              to="/annual-updates"
               class="link nav-item"
-            >Annual Updates</router-link> 
-            <router-link 
-              to="/people" 
+            >Annual Updates</router-link>
+            <router-link
+              to="/people"
               class="link nav-item"
             >People</router-link>
-            <router-link 
-              :to="{name: 'GroupList'}" 
+            <router-link
+              :to="{name: 'GroupList'}"
               class="link nav-item"
             >Groups</router-link>
-            <router-link 
-              v-if="hasPermission('users-manage')" 
+            <router-link
+              v-if="hasPermission('users-manage')"
               :to="{name: 'UserList'}"
               class="link nav-item"
             >Users</router-link>
-            <router-link 
-              v-if="hasPermission('reports-pull')" 
+            <router-link
+              v-if="hasPermission('reports-pull')"
               to="/reports"
               class="link nav-item"
             >Reports
             </router-link>
-            <!-- <router-link 
-                to="/guides-and-documentation" 
+            <!-- <router-link
+                to="/guides-and-documentation"
                 class="link nav-item"
               >
                 Guides &amp; documentation
@@ -121,7 +121,7 @@ export default {
     <teleport to="body">
       <!-- <footer class="w-full border-t mt-4 bg-gray-100">
         <div class="container mx-auto py-3 flex" id="footer-content">
-            
+
         </div>
         <div class="container mx-auto py-3" id="debug-info" v-if="hasRole('super-user')">
         </div>

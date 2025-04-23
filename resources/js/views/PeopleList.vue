@@ -73,7 +73,7 @@ export default {
             if (this.hasPermission('people-manage')) {
                 return true;
             }
-            if (this.currentUser.id === person.user_id) {
+            if (Number.parseInt(this.currentUser.id) === Number.parseInt(person.user_id)) {
                 return true;
             }
 

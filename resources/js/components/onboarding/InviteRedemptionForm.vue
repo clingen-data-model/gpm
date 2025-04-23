@@ -47,7 +47,7 @@ export default {
                 const invite = await fetchInvite(inviteCode.value);
                 context.emit('codeverified', invite);
             } catch (error) {
-                if (error.response.status === 404) {
+                if (Number.parseInt(error.response.status) === 404) {
                     errors.value = ['The code you entered is not valid'];
                     return;
                 }
@@ -63,7 +63,7 @@ export default {
             checkInvite,
             syncCode,
         }
-   
+
     },
     data() {
         return {
@@ -94,13 +94,13 @@ export default {
     <input
       id="invite-code-input"
       v-model="inviteCode"
-      type="text" 
-      placeholder="XXXXXXXXXX" 
+      type="text"
+      placeholder="XXXXXXXXXX"
       class="w-full"
     >
     <InputErrors :errors="errors" />
-    <button 
-      class="btn blue btn-lg block mt-2 w-full" 
+    <button
+      class="btn blue btn-lg block mt-2 w-full"
       @click="checkInvite"
     >
       Submit

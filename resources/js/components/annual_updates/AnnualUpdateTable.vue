@@ -52,7 +52,7 @@ export default {
                 }
             ],
             // completedFilter: null
-            
+
         }
     },
     computed: {
@@ -63,15 +63,15 @@ export default {
             set (value) {
                 const currentQuery = this.$route.query;
                 const currentPath = this.$route.path;
-        
+
                 let updatedQuery = {...currentQuery};
-        
+
                 if (!value) {
                     delete updatedQuery.completed;
                 } else {
                     updatedQuery = {...currentQuery, ...{'completed': value} };
                 }
-        
+
                 this.$router.replace({path: currentPath, query: updatedQuery})
             }
         },
@@ -87,7 +87,7 @@ export default {
 
             if (this.completedFilter != null) {
                 result = result.filter(i => {
-                    if (this.completedFilter === 1) {
+                    if (Number.parseInt(this.completedFilter) === 1) {
                         return i.completed_at !== null;
                     }
                     return i.completed_at == null;
@@ -120,8 +120,8 @@ export default {
   <div>
     <div class="flex mb-2 items-end justify-between">
       <div class="flex space-x-4 items-end">
-        <input 
-          v-model="filter" 
+        <input
+          v-model="filter"
           placeholder="EP name, submitter name"
           class="w-60"
         >

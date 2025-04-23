@@ -21,10 +21,10 @@
 
 
     const stepReviewComponent = computed(() => {
-        if (group.value.expert_panel.current_step === 4) {
+        if (Number.parseInt(group.value.expert_panel.current_step) === 4) {
             return SustainedCurationReview
         }
-        if (expertPanel.value.current_step === 1) {
+        if (Number.parseInt(expertPanel.value.current_step) === 1) {
             return DefinitionReview
         }
 

@@ -112,8 +112,7 @@ export default {
     const needsToReviewSustainedCuration = computed(() => {
       return (
         group.value.pendingTasks &&
-        group.value.pendingTasks.filter((pt) => pt.task_type_id === 1).length >
-          0
+        group.value.pendingTasks.filter((pt) => Number.parseInt(pt.task_type_id) === 1).length > 0
       );
     });
 

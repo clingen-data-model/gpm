@@ -352,7 +352,7 @@ export default {
             if (field.sortable) {
                 classes.push('cursor-pointer underline hover:bg-gray-300');
             }
-            if (field.colspan === 1) {
+            if (Number.parseInt(field.colspan) === 1) {
                 if (this.realSort.field === field) {
                     classes.push(field)
                 }

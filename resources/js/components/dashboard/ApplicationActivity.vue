@@ -62,13 +62,13 @@
 
     const hasMadeJudgementOn = group => {
         return group.submission.judgements
-            && group.submission.judgements.some(j => j.person_id === props.user.person.id);
+            && group.submission.judgements.some(j => Number.parseInt(j.person_id) === Number.parseInt(props.user.person.id));
     }
 
     const judgementFor = group => {
         if (!group.submission.judgements) return {};
 
-        return group.submission.judgements.find(j => j.person_id === props.user.person.id);
+        return group.submission.judgements.find(j => Number.parseInt(j.person_id) === Number.parseInt(props.user.person.id));
     }
 
     onMounted(() => {

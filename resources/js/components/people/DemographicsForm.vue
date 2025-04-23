@@ -335,11 +335,11 @@ export default {
             })
             .catch((error) => {
                 if (error.response) {
-                    if (error.response.status === 404) {
+                    if (Number.parseInt(error.response.status) === 404) {
                         this.error = "Resource not found";
                         // eslint-disable-next-line no-alert
                         alert("The resource wasn't found.");
-                    } else if (error.response.status === 500) {
+                    } else if (Number.parseInt(error.response.status) === 500) {
                         this.error = "Server error";
                         // eslint-disable-next-line no-alert
                         alert("There was an internal server error.");
@@ -400,33 +400,33 @@ export default {
                 const items = { ...this.formdata, demographics_version: 2 };
 
                 // do not submit values for fields that are opted out
-                if (items.birth_country_opt_out === true) {
+                if (items.birth_country_opt_out) {
                     items.birth_country = null;
                     items.birth_country_other = null;
                 }
-                if (items.reside_country_opt_out === true) {
+                if (items.reside_country_opt_out) {
                     items.reside_country = null;
                     items.reside_country_other = null;
                 }
-                if (items.state_opt_out === true || items.reside_country !== 226) {
+                if (items.state_opt_out || Number.parseInt(items.reside_country) !== 226) {
                     items.reside_state = null;
                 }
-                if (items.ethnicity_opt_out === true) {
+                if (items.ethnicity_opt_out) {
                     items.ethnicities = null;
                     items.ethnicity_other = null;
                 }
-                if (items.birth_year_opt_out === true) {
+                if (items.birth_year_opt_out) {
                     items.birth_year = null;
                 }
-                if (items.identity_opt_out === true) {
+                if (items.identity_opt_out) {
                     items.identities = null;
                     items.identity_other = null;
                 }
-                if (items.gender_identities_opt_out === true) {
+                if (items.gender_identities_opt_out) {
                     items.gender_identities = null;
                     items.gender_identities_other = null;
                 }
-                if (items.support_opt_out === true) {
+                if (items.support_opt_out) {
                     items.support = null;
                     items.support_other = null;
                     items.grant_detail = null;
@@ -435,15 +435,15 @@ export default {
                 if (!items.support?.includes('grant')) {
                     items.grant_detail = null;
                 }
-                if (items.disadvantaged_opt_out === true) {
+                if (items.disadvantaged_opt_out) {
                     items.disadvantaged = null;
                     items.disadvantaged_other = null;
                 }
-                if (items.career_stage_opt_out === true) {
+                if (items.career_stage_opt_out) {
                     items.career_stage = null;
                     items.career_stage_other = null;
                 }
-                if (items.occupations_opt_out === true) {
+                if (items.occupations_opt_out) {
                     items.occupations = null;
                     items.occupations_other = null;
                     items.specialty = null;
@@ -458,7 +458,7 @@ export default {
                         items
                     );
                     //console.log(response.data);
-                    if (response.status === 200) {
+                    if (Number.parseInt(response.status) === 200) {
                         // eslint-disable-next-line no-alert
                         alert("Form was submitted succesfully!");
                     }

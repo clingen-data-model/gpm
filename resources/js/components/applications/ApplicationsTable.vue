@@ -107,7 +107,7 @@ export default {
                     },
                     {
                         name: 'step_1_received_date',
-                        label: this.epTypeId === 2 ? 'Step 1 Received' : 'Application Received',
+                        label: Number.parseInt(this.epTypeId) === 2 ? 'Step 1 Received' : 'Application Received',
                         type: Date,
                         sortable: true,
                         class: ['min-w-28'],
@@ -116,7 +116,7 @@ export default {
                     },
                     {
                         name: 'step_1_approval_date',
-                        label: this.epTypeId === 2 ? 'Step 1 Approved' : 'Application Approved',
+                        label: Number.parseInt(this.epTypeId) === 2 ? 'Step 1 Approved' : 'Application Approved',
                         type: Date,
                         sortable: true,
                         class: ['min-w-28'],
