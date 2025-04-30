@@ -320,21 +320,6 @@ export default {
       <div class="flex-grow mt-4">
         <ApplicationSummary v-if="group.isApplying" :group="group" />
         <tabs-container @tab-changed="handleTabChange">
-          <tab-item label="Summary Description">
-            <submission-wrapper
-              :visible="group.is_ep"
-              :show-controls="editingDescription"
-              @submitted="
-                submitForm('saveDescription', 'editingDescription')
-              "
-              @canceled="cancelForm('editingDescription')"
-            >
-              <GroupDescriptionForm
-                v-model:editing="editingDescription"
-                :errors="errors"
-              />
-            </submission-wrapper>
-          </tab-item>
           <tab-item label="Members">
             <MemberList :group="group" />
             <submission-wrapper
@@ -346,6 +331,21 @@ export default {
               <MembershipDescriptionForm
                 v-model:editing="editingExpertise"
                 class="mt-8"
+                :errors="errors"
+              />
+            </submission-wrapper>
+          </tab-item>
+          <tab-item label="Website Description">
+            <submission-wrapper
+              :visible="group.is_ep"
+              :show-controls="editingDescription"
+              @submitted="
+                submitForm('saveDescription', 'editingDescription')
+              "
+              @canceled="cancelForm('editingDescription')"
+            >
+              <GroupDescriptionForm
+                v-model:editing="editingDescription"
                 :errors="errors"
               />
             </submission-wrapper>

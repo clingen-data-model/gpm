@@ -45,7 +45,7 @@ export default {
 <template>
   <div>
     <header class="flex justify-between items-center">
-      <h4>Summary Description of Group</h4>
+      <h4>Website Summary Description of Group</h4>
       <EditIconButton
         v-if="hasAnyPermission(['groups-manage', ['application-edit', group]]) && !editing"
         @click="$emit('update:editing', true)"
@@ -67,7 +67,7 @@ export default {
         <div v-else class="border-2 mt-8 p-2">
           <div v-if="group.description" v-html="sanitizedDescription" />
           <p v-else class="well cursor-pointer" @click="showForm">
-            A summary description has not yet been provided.
+            A website summary description has not yet been provided.
           </p>
         </div>
       </transition>
