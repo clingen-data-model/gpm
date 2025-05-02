@@ -78,7 +78,7 @@ export default {
     },
     computed: {
         fields () {
-            if (this.group.group_type_id === 4 && !fields.map(f => f.name).includes('step')) {
+            if (Number.parseInt(this.group.group_type_id) === 4 && !fields.map(f => f.name).includes('step')) {
                 fields.splice(2, 0, {
                     name: 'step',
                     sortable: true,
@@ -134,8 +134,8 @@ export default {
           <router-link :to="{name: 'EditLogEntry', params:{id: item.id}}" class="btn btn-xs inline-block">
             <icon-edit width="12" />
           </router-link>
-          <router-link 
-            v-if="item.activity_type === null" 
+          <router-link
+            v-if="item.activity_type === null"
             :to="{name: 'ConfirmDeleteLogEntry', params:{id: item.id}}"
             class="btn btn-xs inline-block"
           >
@@ -148,7 +148,7 @@ export default {
       </template>
       <!-- <template v-slot:cell-step="{item}">
                 <pre>
-                    {{item}} 
+                    {{item}}
                 </pre>
             </template> -->
     </data-table>
