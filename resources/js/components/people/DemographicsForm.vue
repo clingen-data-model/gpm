@@ -468,11 +468,11 @@ export default {
                     if (error.response) {
                         // Request made and server responded
 
-                        if (error.response.status === 404) {
+                        if (Number.parseInt(error.response.status) === 404) {
                             this.error = "Resource not found";
                             // eslint-disable-next-line no-alert
                             alert("The resource wasn't found.");
-                        } else if (error.response.status === 500) {
+                        } else if (Number.parseInt(error.response.status) === 500) {
                             this.error = "Server error";
                             // eslint-disable-next-line no-alert
                             alert("There was an internal server error.");
@@ -511,7 +511,7 @@ export default {
                     country.trim() !== "" &&
                     isValidIndex(Number(country))) ||
                 isValidIndex(country) ||
-                countryOptOut === true
+                countryOptOut
             );
 
             const isSectionValid = (selection, other, optOut) =>
