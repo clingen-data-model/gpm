@@ -205,7 +205,7 @@ export default {
             immediate: true
         },
         selectedFields() {
-            if (this.showAllInfo === 1) {
+            if (+this.showAllInfo === 1) {
                 const stepsToShow = this.epTypeId === 2 ? [1,2,3,4] : [1]
                 const allInfoFields = this.allInfoFields.filter(field => stepsToShow.includes(field.step))
                 return [...this.fields, ...allInfoFields]
@@ -214,18 +214,18 @@ export default {
         },
         showAllInfo: {
             immediate: true,
-                get() {
-                    if (Object.keys(this.$route.query).includes('showAllInfo')) {
-                        return this.$route.query.showAllInfo
-                    }
-                    return 0
-                },
-                set(newValue) {
-                    const newQuery = {...this.$route.query};
-                    newQuery.showAllInfo = newValue
-
-                    this.$router.replace({path: this.$route.path, query: newQuery})
+            get() {
+                if (Object.keys(this.$route.query).includes('showAllInfo')) {
+                    return this.$route.query.showAllInfo
                 }
+                return 0
+            },
+            set(newValue) {
+                const newQuery = {...this.$route.query};
+                newQuery.showAllInfo = newValue
+
+                this.$router.replace({path: this.$route.path, query: newQuery})
+            }
         },
         remainingHeight () {
             return {height: 'calc(100vh - 220px)'}
