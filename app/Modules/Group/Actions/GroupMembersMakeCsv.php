@@ -35,7 +35,7 @@ class GroupMembersMakeCsv
                             'biography' => $member->person->biography,
                             'phone' => $member->person->phone,
                             'address' => $member->person->addressString,
-                            'country' => ($member->person->contry) ? $member->person->contry->name : null,
+                            'country' => ($member->person->country) ? $member->person->country->name : null,
                             'timezone' => $member->person->timezone,
                         ];
                     });

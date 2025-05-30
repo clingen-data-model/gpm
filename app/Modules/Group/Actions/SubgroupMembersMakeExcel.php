@@ -117,7 +117,7 @@ class SubgroupMembersMakeExcel {
             $member->person->biography,
             $member->person->phone,
             $member->person->addressString,
-            ($member->person->contry) ? $member->person->contry->name : null,
+            ($member->person->country) ? $member->person->country->name : null,
             $member->person->timezone,
        ]));
     }
