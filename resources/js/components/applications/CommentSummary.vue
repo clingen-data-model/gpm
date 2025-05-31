@@ -37,9 +37,9 @@
         :comment="comment"
         class="mb-1 flex-grow-0"
       />
-    </div>
-    <div v-if="sectionComments.length == 0">
-      No comments
+      <div v-if="sectionComments.length == 0">
+        No comments
+      </div>
     </div>
   </div>
 </template>
