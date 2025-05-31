@@ -165,7 +165,7 @@ export default {
         }),
         filteredData() {
             let applications = this.applications
-                .filter(item => !this.epTypeId || item.expert_panel_type_id === this.epTypeId)
+                .filter(item => !this.epTypeId || Number.parseInt(item.expert_panel_type_id) === Number.parseInt(this.epTypeId))
                 .filter(item => {
                     if (!this.showCompleted) {
                         return item.date_completed == null;
@@ -206,7 +206,7 @@ export default {
         },
         selectedFields() {
             if (+this.showAllInfo === 1) {
-                const stepsToShow = this.epTypeId === 2 ? [1,2,3,4] : [1]
+                const stepsToShow = Number.parseInt(this.epTypeId) === 2 ? [1,2,3,4] : [1]
                 const allInfoFields = this.allInfoFields.filter(field => stepsToShow.includes(field.step))
                 return [...this.fields, ...allInfoFields]
             }

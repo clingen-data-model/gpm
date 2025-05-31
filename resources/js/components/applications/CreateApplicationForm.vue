@@ -5,7 +5,7 @@ import { formatDate } from '@/date_utils'
 export default {
     name: 'CreateApplicationForm',
     props: {
-        
+
     },
     emits: [
         'canceled',
@@ -57,7 +57,7 @@ export default {
                 await this.$store.dispatch('applications/initiateApplication', this.app)
                 this.$emit('saved', this.app);
             } catch (error) {
-                if (error.response && error.response.status === 422 && error.response.data.errors) {
+                if (error.response && Number.parseInt(error.response.status) === 422 && error.response.data.errors) {
                     this.errors = error.response.data.errors
                     return;
                 }
@@ -102,7 +102,7 @@ export default {
       type="text"
       placeholder="A recognizable name"
     />
-        
+
     <input-row label="CDWG" :errors="errors.cdwg_id">
       <select v-model="app.cdwg_id">
         <option :value="null">
@@ -113,17 +113,17 @@ export default {
         </option>
       </select>
     </input-row>
-        
+
     <input-row label="EP Type" :errors="errors.expert_panel_type_id">
       <div>
         <label
           v-for="epType in epTypes"
-          :key="epType.id" 
-          :for="`ep-${epType.id}-radio`" 
+          :key="epType.id"
+          :for="`ep-${epType.id}-radio`"
         >
-          <input 
-            :id="`ep-${epType.id}-radio`" 
-            v-model="app.expert_panel_type_id" 
+          <input
+            :id="`ep-${epType.id}-radio`"
+            v-model="app.expert_panel_type_id"
             type="radio"
             :value="epType.id"
           >
@@ -134,16 +134,16 @@ export default {
     <input-row :errors="errors.date_initiated">
       <div>
         <div>
-          <checkbox 
-            id="show-initiation-checkbox" 
+          <checkbox
+            id="show-initiation-checkbox"
             v-model="showInitiationDate"
             label="Backdate this initiation"
           />
         </div>
-        <input-row 
-          v-show="showInitiationDate" 
-          v-model="app.date_initiated" 
-          type="date" 
+        <input-row
+          v-show="showInitiationDate"
+          v-model="app.date_initiated"
+          type="date"
           label="Initiation Date"
         />
       </div>
@@ -158,4 +158,4 @@ export default {
       </button>
     </button-row>
   </form-container>
-</template>   
+</template>

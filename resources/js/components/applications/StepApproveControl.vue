@@ -15,7 +15,7 @@
     const emits = defineEmits(['stepApproved']);
     const attrs = useAttrs();
     const showApproveForm = ref(false);
-    const isCurrentStep = computed(() => props.step === props.group.expert_panel.current_step)
+    const isCurrentStep = computed(() => props.step === Number.parseInt(props.group.expert_panel.current_step))
     const buttonTitle = computed(() => isCurrentStep.value
                                             ? 'Approve this step'
                                             : 'You can only approve the application\'s current step')

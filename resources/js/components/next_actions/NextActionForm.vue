@@ -114,7 +114,7 @@ export default {
                 return null;
             }
             if (this.application.next_actions) {
-                return this.application.next_actions.find(i => i.id === this.id);
+                return this.application.next_actions.find(i => i.id === +this.id);
             }
         },
         syncAction (action) {

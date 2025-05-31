@@ -12,7 +12,7 @@ export default {
         },
         id: {
             required: true,
-            type: String,
+            type: Number,
         }
     },
     data() {
@@ -31,7 +31,7 @@ export default {
             if (!this.application.next_actions) {
                 return {};
             }
-            const next_action = this.application.next_actions.find(na => na.id === this.id);
+            const next_action = this.application.next_actions.find(na => na.id === +this.id);
             return next_action || {};
         },
         flattenedErrors () {
@@ -58,9 +58,9 @@ export default {
         async commitDelete()
         {
             try {
-                await this.$store.dispatch('applications/deleteNextAction', 
+                await this.$store.dispatch('applications/deleteNextAction',
                                     {
-                                        application: this.application, 
+                                        application: this.application,
                                         nextAction: this.nextAction
                                     });
                 this.$router.go(-1);
@@ -69,14 +69,14 @@ export default {
                     this.errors = error.response.data.errors;
                 }
                 this.errors = {a: error.message};
-                
+
             }
         }
     }
 }
 </script>
 <template>
-  <div>            
+  <div>
     <h2>You are about to delete the following next action:</h2>
     <div v-if="nextAction" class="border-y py-2">
       <div class="ml-4 my-3 text-sm">
@@ -86,9 +86,9 @@ export default {
         <div v-html="nextAction.entry" />
       </blockquote>
       <div v-if="nextAction.assignee" class="ml-4 my-1 text-sm">
-        Assigned to: 
+        Assigned to:
         <strong>
-          <span v-if="nextAction.assigned_to_name">{{ nextAction.assigned_to_name }} in </span> 
+          <span v-if="nextAction.assigned_to_name">{{ nextAction.assigned_to_name }} in </span>
           {{ nextAction.assignee.name }}
         </strong>
       </div>
@@ -98,7 +98,7 @@ export default {
     </div>
 
     <div>This can not be undone. Are you sure you want to continue?</div>
-        
+
     <button-row submit-text="Delete Log Entry" @canceled="$router.go(-1)" @submitted="commitDelete" />
   </div>
 </template>
