@@ -92,7 +92,7 @@ export default {
         },
         filteredLogEntries() {
             if(this.logEntries && this.step) {
-                return this.logEntries.filter(entry => entry.step === this.step);
+                return this.logEntries.filter(entry => Number.parseInt(entry.step) === this.step);
             }
 
             if (this.logEntries) {

@@ -55,7 +55,7 @@ export default {
                 },
                 {
                     name: 'step_1_received_date',
-                    label: this.expert_panel_type_id === 2 ? 'Step 1 Received' : 'Application Received',
+                    label: Number.parseInt(this.expert_panel_type_id) === 2 ? 'Step 1 Received' : 'Application Received',
                     type: Date,
                     sortable: true,
                     class: ['min-w-28'],
@@ -64,7 +64,7 @@ export default {
                 },
                 {
                     name: 'step_1_approval_date',
-                    label: this.expert_panel_type_id === 2 ? 'Step 1 Approved' : 'Application Approved',
+                    label: Number.parseInt(this.expert_panel_type_id) === 2 ? 'Step 1 Approved' : 'Application Approved',
                     type: Date,
                     sortable: true,
                     class: ['min-w-28'],
@@ -111,7 +111,7 @@ export default {
         }),
         filteredData() {
             return this.applications
-                .filter(item => !this.expert_panel_type_id || item.expert_panel_type_id === this.expert_panel_type_id)
+                .filter(item => !this.expert_panel_type_id || Number.parseInt(item.expert_panel_type_id) === Number.parseInt(this.expert_panel_type_id))
                 .filter(item => {
                     if (!this.showCompleted) {
                         return item.date_completed == null;
@@ -140,7 +140,7 @@ export default {
             immediate: true
         },
         selectedFields() {
-            const stepsToShow = this.expert_panel_type_id === 2 ? [1,2,3,4] : [1]
+            const stepsToShow = Number.parseInt(this.expert_panel_type_id) === 2 ? [1,2,3,4] : [1]
             return this.fields.filter(field => !field.step || stepsToShow.includes(field.step))
         },
         showAllInfo: {

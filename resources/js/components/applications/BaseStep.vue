@@ -60,7 +60,7 @@ export default {
             return this.group.expert_panel;
         },
         isCurrentStep () {
-            return this.step === this.application.current_step
+            return Number.parseInt(this.step) === Number.parseInt(this.application.current_step)
         },
         dateApproved () {
             if (this.application.approvalDateForStep(this.step)) {

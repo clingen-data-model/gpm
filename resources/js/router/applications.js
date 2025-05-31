@@ -100,6 +100,7 @@ export default [{
                 meta: {
                     showModal: true,
                     protected: true,
+                    title: 'Delete Next Action',
                     permissions: ['ep-applications-manage']
                 },
                 props: true
