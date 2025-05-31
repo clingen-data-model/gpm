@@ -347,10 +347,6 @@ export default {
             return option
         },
 
-        resolveDefaultSelctionLabel (option) {
-            return this.resolveDefaultOptionLabel(option)
-        },
-
         log (input) {
             if (this.debug) {
                 // eslint-disable-next-line no-console
@@ -370,7 +366,7 @@ export default {
         >
           <label>
             <slot name="selection-label" :selection="currSelection">
-              {{ resolveDefaultOptionLabel(selection) }}
+              {{ resolveDefaultOptionLabel(currSelection) }}
             </slot>
           </label>
           <div
