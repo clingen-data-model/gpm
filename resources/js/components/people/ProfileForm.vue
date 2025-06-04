@@ -72,6 +72,7 @@
             if (isValidationError(error)) {
                 errors.value = error.response.data.errors;
             }
+            saving.value = false;
         }
     };
 
