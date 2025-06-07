@@ -72,13 +72,14 @@ export default {
         },
         parentOptions () {
             const options = [{value: 0, label: 'None'}];
+            const parentFilter = this.group.isEp() ? g => g.isCdwg() : g => g.type.can_be_parent;
             this.parents
-                .filter(group => group.type.can_be_parent)
+                .filter(parentFilter)
+                .sort((a, b) => a.displayName.localeCompare(b.displayName))
                 .forEach(parent => {
                     options.push({value: parent.id, label: parent.displayName})
                 })
-
-            return sortBy(options, 'label');
+            return options;
         }
     },
     beforeMount() {
