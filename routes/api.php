@@ -28,7 +28,7 @@ use App\Http\Controllers\Api\DiseaseLookupController;
 use App\Http\Controllers\Api\DocumentationController;
 use App\Http\Controllers\ImpersonateSearchController;
 use App\Modules\User\Http\Controllers\CurrentUserController;
-
+use App\Http\Controllers\FirebaseAuthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -40,6 +40,8 @@ use App\Modules\User\Http\Controllers\CurrentUserController;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+
+Route::post('/firebase-login', [FirebaseAuthController::class, 'handle']);
 
 Route::group(['middleware' => ['guest']], function () {
     Route::post('/send-reset-password-link', [AuthController::class, 'sendResetPasswordLink']);

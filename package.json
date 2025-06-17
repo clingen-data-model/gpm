@@ -17,6 +17,7 @@
     "@vueuse/core": "^12.7.0",
     "axios": "^1.7.9",
     "dompurify": "^3.2.4",
+    "firebase": "^11.9.1",
     "js-yaml": "^4.1.0",
     "lodash-es": "^4.17.21",
     "marked": "^15.0.7",

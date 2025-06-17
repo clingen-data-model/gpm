@@ -14,6 +14,8 @@
         "dompdf/dompdf": "^2.0",
         "guzzlehttp/guzzle": "^7.5",
         "itsgoingd/clockwork": "^5.1",
+        "kreait/firebase-php": "^7.19",
+        "kreait/laravel-firebase": "^6.1",
         "lab404/laravel-impersonate": "^1.7",
         "laravel/fortify": "^1.7",
         "laravel/framework": "^11.0",

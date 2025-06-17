@@ -1,86 +1,49 @@
-<script>
-import is_validation_error from '@/http/is_validation_error'
-import isAuthError from '@/http/is_auth_error'
+<script setup>
+import { ref } from 'vue'
+import { initializeApp } from 'firebase/app'
+import { getAuth, GoogleAuthProvider, signInWithPopup } from 'firebase/auth'
+import axios from 'axios'
 
-export default {
-    props: {
-    },
-    emits: [
-        'authenticated',
-        'authenticationFailed'
-    ],
-    data() {
-        return {
-            email: null,
-            password: null,
-            errors: {}
-        }
-    },
-    computed: {
-
-    },
-    methods: {
-        async authenticate() {
-            try {
-                await this.$store.dispatch('login', {email: this.email, password: this.password})
-            } catch (e) {
-                if (is_validation_error(e)) {
-                    this.errors = e.response.data.errors
-                    this.$emit('authenticationFailed')
-                }
-                throw e;
-            }
-
-            try {
-                await this.$store.dispatch('getCurrentUser')
-            } catch (e) {
-                if (isAuthError(e)) {
-                    this.$emit('authenticationFailed')
-                }
-                throw e
-            }
-            this.$emit('authenticated');
-
-        }
-    }
+const firebaseConfig = {
+	apiKey: "AIzaSyDBdjR8Qz1L245d1YlpmUCaEoLoNKYnLNE",
+	authDomain: "poc-gene-tracker.firebaseapp.com",
+	projectId: "poc-gene-tracker",
+	storageBucket: "poc-gene-tracker.firebasestorage.app",
+	messagingSenderId: "535802170323",
+	appId: "1:535802170323:web:54ea0c6f98730ecaf9fd26",
+	measurementId: "G-67S1SY9GBP"
 }
+
+// Initialize Firebase only once
+const firebaseApp = initializeApp(firebaseConfig)
+const auth = getAuth(firebaseApp)
+const message = ref('')
+
+const loginWithGoogle = async () => {
+  try {
+    const provider = new GoogleAuthProvider()
+    const result = await signInWithPopup(auth, provider)
+    const idToken = await result.user.getIdToken()
+
+    await axios.post('/api/firebase-login', { token: idToken }, {
+      	withCredentials: true
+    })
+
+    // Redirect or navigate manually
+    window.location.href = '/'
+  } catch (error) {
+    console.error('Login failed:', error)
+  }
+}
+
 </script>
 
 <template>
-  <form-container @keyup.enter="authenticate">
-    <input-row
-      v-model="email"
-      label="Email"
-      type="text"
-      :errors="errors.email"
-      name="email"
-      required
-    />
-    <input-row
-      v-model="password"
-      label="Password"
-      type="password"
-      :errors="errors.password"
-      name="password"
-      required
-    />
-
-    <!-- Links Section aligned to the left under the input fields -->
-    <div class="mt-2">
-      <router-link class="text-blue-500 underline" :to="{name: 'reset-password'}">
-        Forgot your password?
-      </router-link>
-      <br>
-      <router-link class="text-blue-500 underline" :to="{name: 'RedeemInvite'}">
-        Redeem your invite
-      </router-link>
-    </div>
-
-    <!-- Left-align the Log In button -->
-    <button-row class="mt-4">
-      <button class="btn blue w-auto px-4" name="login-button" @click="authenticate">
-        Log in
-      </button>
-    </button-row>
-  </form-container>
+  	<div class="w-full max-w-md mx-auto mt-12">
+		<!-- Firebase login button -->
+		<button @click="loginWithGoogle" class="bg-blue-500 text-white px-4 py-2 rounded">
+		Login with Google
+		</button>
+		<p class="mt-4 text-sm text-gray-600">{{ message }}</p>
+	</div>
 </template>

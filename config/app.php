@@ -72,6 +72,8 @@ return [
         App\DataExchange\KafkaServiceProvider::class,
         App\DataExchange\DataExchangeServiceProvider::class,
 
+        Kreait\Laravel\Firebase\ServiceProvider::class,
+
     ],
     'aliases' => [
         'App' => Illuminate\Support\Facades\App::class,
