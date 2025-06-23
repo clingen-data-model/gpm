@@ -8,8 +8,17 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
+use App\Services\GtApi\GtApiService;
+
 class DiseaseLookupController extends Controller
 {
+    protected GtApiService $gtApi;
+
+    public function __construct(GtApiService $gtApi)
+    {
+        $this->gtApi = $gtApi;
+    }
+
     public function show($mondoId)
     {
         $validator = Validator::make(['mondo_id' => $mondoId], [
@@ -19,24 +28,41 @@ class DiseaseLookupController extends Controller
             throw new ValidationException($validator);
         }
 
-        return DB::connection(config('database.gt_db_connection'))->table('diseases')->where('mondo_id', $mondoId)->sole();
+        $mondo_id = strtolower($validator->validated()['mondo_id']);
+        // return DB::connection(config('database.gt_db_connection'))->table('diseases')->where('mondo_id', $mondoId)->sole();
+        try {
+            $result = $this->gtApi->getDiseaseByMondoId($mondo_id);
+            return response()->json($result);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Failed to retrieve disease data.',
+                'details' => $e->getMessage(),
+            ], 500);
+        }
     }
 
     public function search(Request $request)
-    {
-        $queryString = strtolower(($request->query_string ?? ''));
-        if (strlen($queryString) < 3) {
-            return [];
-        }
-        
-        $results = DB::connection(config('database.gt_db_connection'))->table('diseases')
-                    ->select('id', 'mondo_id', 'doid_id', 'name',)
-                    ->where('name', 'like', '%'.$queryString.'%')
-                    ->orWhere('mondo_id', 'like', '%'.$queryString.'%')
-                    ->orWhere('doid_id', 'like', '%'.$queryString.'%')
-                    ->limit(50)
-                    ->get();
+    {       
 
-        return $results->toArray();
+        $validator = Validator::make($request->all(), [
+            'query_string' => ['required', 'string', 'min:3'],
+        ]);
+
+        if ($validator->fails()) {
+            return $this->errorResponse('Validation failed', 422, $validator->errors());
+        }
+
+        $query = strtolower($validator->validated()['query_string']);
+
+        
+        try {
+            $result = $this->gtApi->searchDiseases($query);
+            return response()->json($result);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Failed to search disease data.',
+                'details' => $e->getMessage(),
+            ], 500);
+        }
     }
 }
