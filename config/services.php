@@ -30,4 +30,10 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'gt_api' => [
+        'client_id'     => env('GT_CLIENT_API_ID'),
+        'client_secret' => env('GT_CLIENT_API_SECRET'),
+        'oauth_url'     => env('GT_CLIENT_BASE_URL') . '/oauth/token',
+        'base_url'      => env('GT_CLIENT_BASE_URL') . env('GT_CLIENT_API'),
+    ],
 ];
