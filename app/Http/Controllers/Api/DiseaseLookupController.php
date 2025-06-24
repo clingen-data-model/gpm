@@ -29,10 +29,12 @@ class DiseaseLookupController extends Controller
         }
 
         $mondo_id = strtolower($validator->validated()['mondo_id']);
-        // return DB::connection(config('database.gt_db_connection'))->table('diseases')->where('mondo_id', $mondoId)->sole();
         try {
-            $result = $this->gtApi->getDiseaseByMondoId($mondo_id);
-            return response()->json($result);
+            $response = $this->gtApi->getDiseaseByMondoId($mondo_id);
+            if (!($response['success'] ?? false) || empty($response['data'])) {
+                throw new \Exception("Disease with MONDO ID $mondoId not found.");
+            }
+            return $response['data'];
         } catch (\Exception $e) {
             return response()->json([
                 'error' => 'Failed to retrieve disease data.',
@@ -56,8 +58,11 @@ class DiseaseLookupController extends Controller
 
         
         try {
-            $result = $this->gtApi->searchDiseases($query);
-            return response()->json($result);
+            $response = $this->gtApi->searchDiseases($query);
+            if (!($response['success'] ?? false) || empty($response['data'])) {
+                throw new \Exception("Disease with MONDO ID $mondoId not found.");
+            }
+            return $response['data'];
         } catch (\Exception $e) {
             return response()->json([
                 'error' => 'Failed to search disease data.',
