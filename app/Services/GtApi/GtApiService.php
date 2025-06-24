@@ -1,6 +1,5 @@
 <?php
 
-// app/Services/GtApi/GtApiService.php
 namespace App\Services\GtApi;
 
 class GtApiService
@@ -47,4 +46,11 @@ class GtApiService
         $response = $this->client->post('/diseases/ontology', ['ontology_id' => $ontologyId]);
         return $response->json();
     }
+
+    public function lookupGenesBulk(string $genes): array
+    {
+        $response = $this->client->post('/genes/curations', ['gene_symbol' => $genes]);
+        return $response->json();
+    }
+
 }
