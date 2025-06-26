@@ -52,5 +52,10 @@ class GtApiService
         $response = $this->client->post('/genes/curations', ['gene_symbol' => $genes]);
         return $response->json();
     }
-
+    
+    public function approvalBulkUpload(array $payload): array
+    {
+        $response = $this->client->post('/genes/bulkupload', $payload);
+        return $response->json();
+    }
 }
