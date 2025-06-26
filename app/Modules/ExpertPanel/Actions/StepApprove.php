@@ -23,6 +23,7 @@ use App\Mail\UserDefinedMailTemplates\SpecificationPilotMailTemplate;
 use App\Modules\ExpertPanel\Exceptions\UnmetStepRequirementsException;
 use App\Mail\UserDefinedMailTemplates\SustainedCurationApprovalMailTemplate;
 use App\Modules\ExpertPanel\Notifications\ApplicationStepApprovedNotification;
+use App\Services\GtApi\GtApiService;
 
 class StepApprove
 {
@@ -32,7 +33,8 @@ class StepApprove
         private NotifyContacts $notifyContactsAction,
         private ApplicationComplete $applicationCompleteAction,
         private SubmissionApprove $approveSubmission,
-        private StepManagerFactory $stepManagerFactory
+        private StepManagerFactory $stepManagerFactory,
+        private GtApiService $gtApiService,
     ) {
     }
 
@@ -51,7 +53,7 @@ class StepApprove
     ) {
         $stepManager = ($this->stepManagerFactory)($expertPanel);
         $dateApproved = $dateApproved ? Carbon::parse($dateApproved) : Carbon::now();
-
+        
         if (! $stepManager->canApprove()) {
             throw new UnmetStepRequirementsException($expertPanel, $stepManager->getUnmetRequirements());
         }
@@ -62,6 +64,7 @@ class StepApprove
         if (!$stepManager->isLastStep()) {
             $expertPanel->current_step++;
         }
+        
         $expertPanel->save();
 
         $submission = $this->getSubmission($expertPanel, $approvedStep);
@@ -75,6 +78,23 @@ class StepApprove
             dateApproved: $dateApproved
         ));
 
+        if ($approvedStep === 1) {
+            $rows = $expertPanel->genes->map(function ($gene) use ($expertPanel) {
+                return [
+                    'gene_symbol' => $gene->gene_symbol,
+                    'date_uploaded' => $dateApproved,
+                ];
+            })->toArray();
+            $payload = [
+                'expert_panel_id' => $expertPanel->expert_panel_type_id,
+                'rows' => $rows,
+            ];
+            try {
+                $response = $this->gtApiService->approvalBulkUpload($payload);
+            } catch (\Throwable $e) {                
+                // Log::warning("Failed Step One"); DO SOMETHING HERE
+            }
+        }
         if ($stepManager->isLastStep()) {
             $this->applicationCompleteAction->handle($expertPanel, $dateApproved);
         }
@@ -198,5 +218,5 @@ class StepApprove
         }
 
     }
-
+    
 }
