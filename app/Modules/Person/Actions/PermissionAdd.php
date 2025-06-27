@@ -39,6 +39,11 @@ class PermissionAdd implements AsFollowAction
     public function asFollowAction(Event $event, ...$args): Person
     {
         extract($args);
+
+        if (!property_exists($event, 'person') || $event->person->id !== $personId) {
+            // Not match, Ignore it
+            return null;
+        }
         $person = Person::find($personId);
         return $this->handle($person, $permissionName);
     }

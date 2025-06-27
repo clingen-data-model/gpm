@@ -13,11 +13,15 @@ class FollowActionRun
 
     public function handle(FollowAction $followAction, Event $event)
     {
-        $follower = app()->make($followAction->follower);
+        try {
+            $follower = app()->make($followAction->follower);
 
-        $args = $followAction->args ?? [];
-        if ($follower->asFollowAction($event, ...$args)) {
-            $followAction->update(['completed_at' => Carbon::now()]);
+            $args = $followAction->args ?? [];
+            if ($follower->asFollowAction($event, ...$args)) {
+                $followAction->update(['completed_at' => Carbon::now()]);
+            }
+        } catch (\Throwable $e) {
+            \Log::warning('FollowAction failed: '.$e->getMessage());
         }
     }
 
