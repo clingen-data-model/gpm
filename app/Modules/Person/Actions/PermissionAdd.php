@@ -22,12 +22,23 @@ class PermissionAdd implements AsFollowAction
         }
 
         if (!$person->isLinkedToUser()) {
-            $this->FollowActionCreate->handle(
-                eventClass: InviteRedeemed::class,
-                follower: PermissionAdd::class,
-                args: ['personId' => $person->id, 'permissionName' => $permissionName],
-                name: 'Grant '.$permissionName.' permission to '.$person->name.' when invite redeemed.',
-            );
+
+            $existing = FollowAction::query()
+                ->where('event_class', InviteRedeemed::class)
+                ->where('follower', PermissionAdd::class)
+                ->where('args->personId', $person->id)
+                ->where('args->permissionName', $permissionName)
+                ->whereNull('completed_at')
+                ->first();
+
+            if (!$existing) {
+                $this->FollowActionCreate->handle(
+                    eventClass: InviteRedeemed::class,
+                    follower: PermissionAdd::class,
+                    args: ['personId' => $person->id, 'permissionName' => $permissionName],
+                    name: 'Grant '.$permissionName.' permission to '.$person->name.' when invite redeemed.',
+                );
+            }
             return $person;
         }
 
