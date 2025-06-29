@@ -15,9 +15,7 @@ class ApiServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        Log::info('ApiServiceProvider loaded!');
-        $this->app->singleton(GtApiService::class, function () {            
-            Log::info(config('services.gt_api'));
+        $this->app->singleton(GtApiService::class, function () {
             $config = config('services.gt_api');
 
             $tokenManager = new AccessTokenManager([
