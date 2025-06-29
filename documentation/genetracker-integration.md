@@ -15,7 +15,7 @@ This task focuses on enabling GPM to act as an API client to GeneTracker. Key co
 The AccessTokenManager handles OAuth2 token retrieval and caching.
 - API Services
 Request logic is encapsulated under the App\Services\GtApi\ namespace, primarily within the GtApiService class.
-To call the API, developers can use App\Services\GtApi\GtApiService and invoke the desired service method. Currently, this is built exclusively for GeneTracker integration, but the design allows for expansion to support additional services or APIs. Future enhancements could include modularizing services further and extending the token manager for multiple machine-to-machine integrations.
+To call the API, developers can use App\Services\Api\GtApiService and invoke the desired service method. Currently, this is built exclusively for GeneTracker integration, but the design allows for expansion to support additional services or APIs. Future enhancements could include modularizing services further and extending the token manager for multiple machine-to-machine integrations.
 This task also involves replacing existing direct database queries from GPM to GeneTracker with equivalent API calls.
 ---
 ### CGSP-755: UI-Level Integration

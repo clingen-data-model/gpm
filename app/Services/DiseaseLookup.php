@@ -3,7 +3,7 @@ namespace App\Services;
 
 use App\Services\DiseaseLookupInterface;
 use Exception;
-use App\Services\GtApi\GtApiService;
+use App\Services\Api\GtApiService;
 
 class DiseaseLookup implements DiseaseLookupInterface
 {

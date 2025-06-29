@@ -1,7 +1,7 @@
 <?php 
 
 
-namespace App\Services\GtApi;
+namespace App\Services\Api;
 
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
@@ -12,33 +12,32 @@ class AccessTokenManager
     protected string $clientId;
     protected string $clientSecret;
     protected string $tokenUrl;
+    protected string $cacheKey;
 
-    public function __construct()
+    public function __construct(array $config)
     {
-        $this->clientId = config('services.gt_api.client_id');
-        $this->clientSecret = config('services.gt_api.client_secret');
-        $this->tokenUrl = config('services.gt_api.oauth_url');
+        $this->clientId = $config['client_id'];
+        $this->clientSecret = $config['client_secret'];
+        $this->tokenUrl = $config['oauth_url'];
+        $this->cacheKey = $config['cache_key'] ?? md5($this->tokenUrl . $this->clientId);
     }
 
     public function getToken(): string
     {
-        // Check cache first
-        return Cache::remember('gt_api_access_token', 150, function () {
+        return Cache::remember($this->cacheKey, 150, function () {
             $response = Http::asForm()->post($this->tokenUrl, [
                 'grant_type' => 'client_credentials',
                 'client_id' => $this->clientId,
                 'client_secret' => $this->clientSecret,
-                'scope' => '', 
+                'scope' => '',
             ]);
 
             if ($response->failed()) {
-                throw new \Exception('Failed to retrieve access token from GT API: ' . $response->body());
+                throw new \Exception('Failed to retrieve access token: ' . $response->body());
             }
 
             $data = $response->json();
-            // Cache for slightly less than expires_in (default 180s)
-            Cache::put('gt_api_access_token', $data['access_token'], now()->addSeconds($data['expires_in'] - 10));
-
+            Cache::put($this->cacheKey, $data['access_token'], now()->addSeconds($data['expires_in'] - 10));
             return $data['access_token'];
         });
     }
