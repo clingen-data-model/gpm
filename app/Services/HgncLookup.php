@@ -3,7 +3,7 @@ namespace App\Services;
 
 use Exception;
 use App\Services\HgncLookupInterface;
-use App\Services\GtApi\GtApiService;
+use App\Services\Api\GtApiService;
 
 class HgncLookup implements HgncLookupInterface
 {

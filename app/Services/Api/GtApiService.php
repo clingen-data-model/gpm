@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Services\GtApi;
+namespace App\Services\Api;
 
 class GtApiService
 {
-    protected GtApiClient $client;
+    protected ApiClient $client;
 
-    public function __construct(GtApiClient $client)
+    public function __construct(ApiClient $client)
     {
         $this->client = $client;
     }
