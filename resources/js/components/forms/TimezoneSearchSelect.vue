@@ -123,7 +123,7 @@ export default {
     <div>
       <label for="region-select" class="block text-xs">Region:</label>
       <select id="region-select" v-model="region" class="input-cl">
-        <option v-for="r in regions" :key="r" :value="region">
+        <option v-for="r in regions" :key="r" :value="r">
           {{ r }}
         </option>
       </select>
