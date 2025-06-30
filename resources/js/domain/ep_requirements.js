@@ -30,6 +30,10 @@ const isEmpty = (val) => {
 
 export const longName = new Requirement('Long Base Name', group => !isEmpty(group.expert_panel.long_base_name));
 export const shortName = new Requirement('Short Base Name', group => !isEmpty(group.expert_panel.short_base_name));
+export const affiliationID = new Requirement('Affiliation ID', group => {
+    const id = group.expert_panel.affiliation_id;
+    return !isEmpty(id) && /^\d+$/.test(id) && id.length == 5;
+});
 
 export const chairs = new Requirement('1+ Co-chairs', group => !isEmpty(group.chairs));
 export const coordinators = new Requirement('1+ Coordinator', group => !isEmpty(group.coordinators));
@@ -117,6 +121,7 @@ export const memberExpertise = new Requirement (
 export default {
     longName,
     shortName,
+    affiliationID,
     chairs,
     coordinators,
     coisComplete,

@@ -144,7 +144,8 @@ export const VcepApplication = applicationDefinitionFactory({
                     name: 'Basic Information',
                     requirements: [
                         requirements.longName,
-                        requirements.shortName
+                        requirements.shortName,
+                        requirements.affiliationID
                     ],
                     // components: [
                     //     GroupForm,
@@ -283,7 +284,8 @@ export const GcepApplication = applicationDefinitionFactory({
                     name: 'Basic Information',
                     requirements: [
                         requirements.longName,
-                        requirements.shortName
+                        requirements.shortName,
+                        requirements.affiliationID
                     ],
                     // components: [
                         // GroupForm,
