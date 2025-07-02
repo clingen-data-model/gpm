@@ -60,6 +60,20 @@ class ReportVcepGenesMake
                         'expertPanel.group.type'
                     ])
                     ->get();
+        $gtApi = app(\App\Services\GtApi\GtApiService::class);
+
+        $genes->each(function ($gene) use ($gtApi) {
+            try {
+                $disease = $gtApi->getDiseaseByMondoId($gene->mondo_id);
+                $gene->setRelation('disease', (object)[
+                    'mondo_id' => $gene->mondo_id,
+                    'name' => $disease['data']['name'] ?? null,
+                ]);
+            } catch (\Throwable $e) {
+                $gene->setRelation('disease', (object) [] );
+                Log::warning("Disease not found for MONDO ID: {$gene->mondo_id}");
+            }
+        });
 
         return $genes
             ->groupBy(function ($g) {
