@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Exceptions\FollowActionDuplicateException;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -31,7 +31,7 @@ class FollowAction extends Model
             $hash_source = $model->event_class.'-'.$model->follower.'-'.json_encode($model->args).'-'.$model->completed_at;
             $model->hash = md5($hash_source);
             if (self::query()->otherWithHash($model->hash, $model)->count() > 0) {
-                \Log::info("FollowAction already exists. Skipping.");
+                Log::info("FollowAction already exists. Skipping.\n  " . $hash_source);
             }
         });
     }

@@ -5,6 +5,7 @@ namespace App\Modules\Person\Actions;
 use App\Actions\Contracts\AsFollowAction;
 use App\Events\Event;
 use App\Models\Permission;
+use App\Models\FollowAction;
 use App\Actions\FollowActionCreate;
 use App\Modules\Person\Models\Person;
 use App\Modules\Person\Events\InviteRedeemed;

@@ -6,7 +6,7 @@ use Carbon\Carbon;
 use App\Events\Event;
 use App\Models\FollowAction;
 use Lorisleiva\Actions\Concerns\AsListener;
-
+use Illuminate\Support\Facades\Log;
 class FollowActionRun
 {
     use AsListener;
@@ -21,7 +21,7 @@ class FollowActionRun
                 $followAction->update(['completed_at' => Carbon::now()]);
             }
         } catch (\Throwable $e) {
-            \Log::warning('FollowAction failed: '.$e->getMessage());
+            Log::warning('FollowAction failed: '.$e->getMessage());
         }
     }
 
