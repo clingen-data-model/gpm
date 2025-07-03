@@ -1,0 +1,2 @@
+import{A as o}from"./ApplicationsTable-CcLUq8uh.js";import{_ as t,c as p,f as s,a,b as n}from"./app-CwrbMPJ_.js";import"./router_aware_sort_and_filter-B9kzZ4nm.js";const c={components:{ApplicationsTable:o},props:{},data(){return{}}};function r(i,l,_,m,d,f){const e=a("ApplicationsTable");return n(),p("div",null,[s(e,{"ep-type-id":1})])}const $=t(c,[["render",r]]);export{$ as default};
+//# sourceMappingURL=GcepsList-DFEdSE7E.js.map
