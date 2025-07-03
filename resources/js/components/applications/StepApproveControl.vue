@@ -63,7 +63,7 @@
 			<slot />
 		</button>
 		<p v-if="isAffiliationMissing && props.step === 1" class="text-red-600 text-sm mt-1">
-			You must enter an Affiliation ID before approving this step.
+			This step cannot be approved until an Affiliation ID is provided.
 		</p>
 
 		<teleport to="body">
