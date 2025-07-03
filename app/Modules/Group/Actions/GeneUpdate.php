@@ -28,8 +28,21 @@ class GeneUpdate
 
     public function handle(Group $group, Gene $gene, array $data): Group
     {
-        $data['gene_symbol'] = $this->hgncLookup->findSymbolById($data['hgnc_id']);
-        $data['disease_name'] = $this->mondoLookup->findNameByOntologyId($data['mondo_id']);
+        try {
+            $data['gene_symbol'] = $this->hgncLookup->findSymbolById($data['hgnc_id']);
+        } catch (\Throwable $e) {
+            throw \Illuminate\Validation\ValidationException::withMessages([
+                'hgnc_id' => 'HGNC ID not found or invalid.',
+            ]);
+        }
+        
+        try {
+            $data['disease_name'] = $this->mondoLookup->findNameByOntologyId($data['mondo_id']);
+        } catch (\Throwable $e) {
+            throw \Illuminate\Validation\ValidationException::withMessages([
+                'mondo_id' => 'MONDO ID not found or invalid.',
+            ]);
+        }
         $gene->update($data);
 
         return $group;
@@ -61,15 +74,14 @@ class GeneUpdate
     
 
     public function rules(ActionRequest $request): array
-    {
-        $connectionName = config('database.gt_db_connection');
+    {        
         $rules = [
-            'hgnc_id' => 'required|numeric|exists:'.$connectionName.'.genes,hgnc_id',
+            'hgnc_id' => 'required|numeric',
         ];
 
         $group = $request->group;
         if ($group->isVcepOrScvcep) {
-            $rules['mondo_id'] = 'required|regex:/MONDO:\d\d\d\d\d\d\d/i|exists:'.$connectionName.'.diseases,mondo_id';
+            $rules['mondo_id'] = 'required|regex:/MONDO:\d{7}/i';
         }
 
         return $rules;

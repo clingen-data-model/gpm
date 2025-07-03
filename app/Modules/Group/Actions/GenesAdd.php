@@ -47,20 +47,20 @@ class GenesAdd
     }
     
     public function rules(ActionRequest $request): array
-    {
-        $gtConn = config('database.gt_db_connection');
+    {        
         $group = $request->group;
         if ($group->isVcepOrScvcep) {
             return [
                 'genes' => 'required|array|min:1',
                 'genes.*' => 'required|array:hgnc_id,mondo_id',
-                'genes.*.hgnc_id' => 'required|numeric|exists:'.$gtConn.'.genes,hgnc_id',
-                'genes.*.mondo_id' => 'required|regex:/MONDO:\d\d\d\d\d\d\d/i|exists:'.$gtConn.'.diseases,mondo_id'
+                'genes.*.hgnc_id' => 'required|numeric',
+                'genes.*.mondo_id' => 'required|regex:/MONDO:\d{7}/i'
             ];
         }
         if ($group->isGcep) {
             return [
-                'genes.*' => 'exists:'.$gtConn.'.genes,gene_symbol'
+                'genes' => 'required|array|min:1',
+                'genes.*' => 'required|string'
             ];
         }
 

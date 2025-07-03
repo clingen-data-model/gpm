@@ -41,6 +41,12 @@ class GtApiService
         return $response->json();
     }
 
+    public function getDiseasesByMondoIds(array $mondoId): array
+    {
+        $response = $this->client->post('/diseases/mondos', ['mondo_ids' => $mondoId]);
+        return $response->json();
+    }
+
     public function getDiseaseByOntologyId(string $ontologyId): array
     {
         $response = $this->client->post('/diseases/ontology', ['ontology_id' => $ontologyId]);

@@ -49,12 +49,27 @@ class GenesSyncToGcep
     private function addNewGenes($group, $addedGeneSymbols)
     {
         if ($addedGeneSymbols->count() > 0) {
-            $genes = $addedGeneSymbols->map(function ($gs) {
-                return new Gene([
-                    'hgnc_id' => $this->hgncLookup->findHgncIdBySymbol($gs),
-                    'gene_symbol' => $gs
-                ]);
-            });
+            
+            $genes = collect();
+
+            foreach ($addedGeneSymbols as $index => $geneSymbol) {
+                try {
+                    $hgncId = $this->hgncLookup->findHgncIdBySymbol($geneSymbol);
+                } catch (\Throwable $e) {
+                    throw ValidationException::withMessages([
+                        "genes.$index" => "Gene symbol '{$geneSymbol}' not found or invalid.",
+                    ]);
+                }
+
+                $genes->push(new Gene([
+                    'hgnc_id' => $hgncId,
+                    'gene_symbol' => $geneSymbol,
+                ]));
+            }
+            if ($genes->isEmpty()) {
+                throw new ValidationException('No valid genes provided for addition.');
+            }
+
             $group->expertPanel->genes()->saveMany($genes);
             event(new GenesAdded($group, $genes));
         }

@@ -30,14 +30,35 @@ class GenesAddToVcep
             throw ValidationException::withMessages(['group' => 'The group is not a VCEP.']);
         }
 
-        $genes = collect(array_map(function ($gene) {
-            return new Gene([
+        $genes = collect();
+
+        foreach ($inputGenes as $index => $gene) {
+            try {
+                $geneSymbol = $this->hgncLookup->findSymbolById($gene['hgnc_id']);
+            } catch (\Throwable $e) {
+                throw ValidationException::withMessages([
+                    "genes.$index.hgnc_id" => "HGNC ID {$gene['hgnc_id']} not found or invalid.",
+                ]);
+            }
+
+            try {
+                $diseaseName = $this->mondoLookup->findNameByOntologyId($gene['mondo_id']);
+            } catch (\Throwable $e) {
+                throw ValidationException::withMessages([
+                    "genes.$index.mondo_id" => "MONDO ID {$gene['mondo_id']} not found or invalid.",
+                ]);
+            }
+
+            $genes->push(new Gene([
                 'hgnc_id' => $gene['hgnc_id'],
-                'gene_symbol' => $this->hgncLookup->findSymbolById($gene['hgnc_id']),
+                'gene_symbol' => $geneSymbol,
                 'mondo_id' => $gene['mondo_id'],
-                'disease_name' => $this->mondoLookup->findNameByOntologyId($gene['mondo_id'])
-            ]);
-        }, $genes));
+                'disease_name' => $diseaseName,
+            ]));
+        }
+        if ($genes->isEmpty()) {
+            throw new ValidationException('No valid genes provided for addition.');
+        }
 
         $group->expertPanel->genes()->saveMany($genes);
         event(new GenesAdded($group, $genes));
