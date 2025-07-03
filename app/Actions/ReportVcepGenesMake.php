@@ -47,9 +47,6 @@ class ReportVcepGenesMake
                     })
                     ->orderBy('gene_symbol')
                     ->with([
-                        'disease' => function ($q) {
-                            $q->select(['mondo_id','name']);
-                        },
                         'expertPanel' => function ($q) {
                             $q->select(['id', 'long_base_name', 'expert_panel_type_id']);
                         },
@@ -60,19 +57,20 @@ class ReportVcepGenesMake
                         'expertPanel.group.type'
                     ])
                     ->get();
-        $gtApi = app(\App\Services\GtApi\GtApiService::class);
+        $gtApi = app(\App\Services\Api\GtApiService::class);
 
-        $genes->each(function ($gene) use ($gtApi) {
-            try {
-                $disease = $gtApi->getDiseaseByMondoId($gene->mondo_id);
-                $gene->setRelation('disease', (object)[
-                    'mondo_id' => $gene->mondo_id,
-                    'name' => $disease['data']['name'] ?? null,
-                ]);
-            } catch (\Throwable $e) {
-                $gene->setRelation('disease', (object) [] );
-                Log::warning("Disease not found for MONDO ID: {$gene->mondo_id}");
-            }
+        $mondoIds = $genes->pluck('mondo_id')->unique()->values()->all();
+        $diseaseData = $gtApi->getDiseasesByMondoIds($mondoIds);
+
+        // dd($diseaseData);
+        $diseaseMap = collect($diseaseData['data'])
+                        ->keyBy('mondo_id')
+                        ->map(fn($d) => (object)[
+                            'mondo_id' => $d['mondo_id'],
+                            'name' => $d['name']
+                        ]);
+        $genes->each(function ($gene) use ($diseaseMap) {
+            $gene->setRelation('disease', $diseaseMap[$gene->mondo_id] ?? (object)[]);
         });
 
         return $genes
