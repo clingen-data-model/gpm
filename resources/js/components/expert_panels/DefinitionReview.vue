@@ -1,13 +1,23 @@
 <script setup>
     import {useStore} from 'vuex';
-    import { computed} from 'vue'
+    import { computed, ref } from 'vue'
     import ReviewSection from '@/components/expert_panels/ReviewSection.vue'
     import ReviewMembership from '@/components/expert_panels/ReviewMembership.vue'
     import { formatDate } from '@/date_utils'
+    import GeneCurationStatus from '@/components/expert_panels/GeneCurationStatus.vue'
 
     const store = useStore();
     const group = computed(() => store.getters['groups/currentItemOrNew'])
     const expertPanel = computed(() => group.value.expert_panel);
+    const curatedGenes = computed(() => expertPanel.value?.curatedGenes || {
+      published: [],
+      notPublished: [],
+      notCurated: [],
+    });
+
+    const activeTab = ref('published');
+    console.log('curatedGenes', curatedGenes.value);
+
     const members = computed( () => {
         if (!group.value) {
             return [];
@@ -62,6 +72,9 @@
           key-by="id"
           :hide-columns="['id']"
         />
+
+        <GeneCurationStatus :data="curatedGenes" />
+        
       </div>
 
       <h3>Description of scope</h3>

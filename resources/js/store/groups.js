@@ -347,15 +347,61 @@ export const actions = {
             })
     },
 
-    getGenes ({ commit, getters,}, group) {
-        return api.get(`${getApplicationUrl(group.uuid)}/genes`)
-            .then(response => {
-                const item = getters.getItemByUuid(group.uuid)
-                item.expert_panel.genes = response.data;
-                commit('addItem', item);
-                return response.data;
+    async getGenes({ commit, getters, dispatch }, group) {
+        const response = await api.get(`${getApplicationUrl(group.uuid)}/genes`);
+            
+        const genes = response.data;
+        const item = getters.getItemByUuid(group.uuid);
+        item.expert_panel.genes = genes;
+
+        const geneSymbols = genes.map(g => g.gene_symbol).filter(Boolean);
+
+        if (geneSymbols.length) {
+            const curatedResult = await dispatch('loadCurationStatuses', geneSymbols);
+            item.expert_panel.curatedGenes = curatedResult;
+        }
+        
+        commit('addItem', item);
+        return genes;            
+    },  
+
+    async loadCurationStatuses(_, geneSymbols) {
+        if (!geneSymbols || geneSymbols.length === 0) return null;
+
+        try {
+            const response = await api.post('/api/genes/check-genes', {
+                gene_symbol: geneSymbols.join(', ')
             });
-    },
+
+            const data = response.data.data;
+
+            const grouped = {
+                published: [],
+                notPublished: [],
+                notCurated: []
+            };
+
+            geneSymbols.forEach(symbol => {
+                const matches = data.filter(item => item.gene_symbol === symbol);
+                if (matches.length === 0) {
+                    grouped.notCurated.push({ gene_symbol: symbol });
+                } else {
+                    matches.forEach(match => {
+                        if (match.current_status === 'Published') {
+                            grouped.published.push(match);
+                        } else {
+                            grouped.notPublished.push(match);
+                        }
+                    });
+                }
+            });
+
+            return grouped;
+        } catch (e) {
+            console.error('Failed to load curation status:', e);
+            return null;
+        }
+    },  
 
     getEvidenceSummaries ({commit, getters}, group) {
         return api.get(`${getApplicationUrl(group.uuid)}/evidence-summaries`)
