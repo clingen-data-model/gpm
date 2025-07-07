@@ -73,26 +73,32 @@ export default {
     },
     methods: {
         async save() {
-            try {
-                const data = new FormData();
-                Object.keys(this.newDocument)
-                    .forEach(key => {
-                        const val = this.newDocument[key]
-                        if (val == null) return;
-                        data.append(key, val);
-                    })
-                data.append('file', this.$refs.fileInput.files[0]);
-                data.append('document_type_id', this.documentTypeId);
-                await this.$store.dispatch('groups/addApplicationDocument', {group: this.group, data});
+          try {
+            const data = new FormData();
 
-                this.clearForm();
-                this.$emit('saved');
-            } catch (error) {
-                if (isValidationError(error)) {
-                    this.errors = error.response.data.errors
-                }
+            Object.entries(this.newDocument).forEach(([key, val]) => {
+              if (['file', 'document_type_id'].includes(key)) return;
+              if (val != null) {
+                  data.append(key, val);
+              }
+            });
+
+            const file = this.$refs.fileInput.files[0];
+            if (file) {
+                data.append('file', file);
             }
 
+            // Only append one correct document_type_id
+            data.append('document_type_id', this.newDocument.document_type_id);
+
+            await this.$store.dispatch('groups/addApplicationDocument', {group: this.group, data});
+            this.clearForm();
+            this.$emit('saved');
+          } catch (error) {
+              if (isValidationError(error)) {
+                  this.errors = error.response.data.errors;
+              }
+          }
         },
         cancel() {
             this.clearForm();
