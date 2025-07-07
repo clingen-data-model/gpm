@@ -423,8 +423,8 @@ export const actions = {
         if (!data.has('uuid')) {
             data.append('uuid', uuid4())
         }
-
-        return api.post(`/api/applications/${group.expert_panel.uuid}/documents`, data)
+        
+        return api.post(`/api/applications/${group.expert_panel.uuid}/documents`, data, { headers: { 'Content-Type': 'multipart/form-data' } })
             .then(response => {
                 group.documents.push(response.data);
                 if (response.data.document_type_id < 8) {
@@ -440,7 +440,7 @@ export const actions = {
             data.append('uuid', uuid4());
         }
 
-        return api.post(`${baseUrl}/${group.uuid}/documents`, data)
+        return api.post(`${baseUrl}/${group.uuid}/documents`, data, { headers: { 'Content-Type': 'multipart/form-data' } })
                 .then(response => {
                     group.documents.push(response.data);
                     if (response.data.document_type_id < 8) {
