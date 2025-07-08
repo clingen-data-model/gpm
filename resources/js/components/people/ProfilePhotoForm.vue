@@ -115,7 +115,7 @@ export default {
 
             formData.append('profile_photo', blob);
 
-            api.post(`/api/people/${this.person.uuid}/profile-photo`, formData)
+            api.postForm(`/api/people/${this.person.uuid}/profile-photo`, formData)
                 .then(() => {
                     this.$store.dispatch('people/getPerson', { uuid: this.person.uuid });
                     this.showForm = false;

@@ -67,7 +67,7 @@ export default {
         },
         removeItem(state, item) {
             const idx = state.items.findIndex(i => i.uuid === item.uuid);
-            state.items.splice(idx, 1);           
+            state.items.splice(idx, 1);
         },
         clearCurrentItemIdx(state) {
             state.currentItemIdx = null;
@@ -91,16 +91,16 @@ export default {
                 })
         },
         async getApplication({ commit }, appUuid) {
-            await appRepo.find(appUuid, { 
+            await appRepo.find(appUuid, {
                 with: [
-                    'group.logEntries', 
-                    'group.documents', 
-                    'contacts', 
-                    'group.logEntries.causer', 
-                    'cois', 
-                    'group.documents.type', 
+                    'group.logEntries',
+                    'group.documents',
+                    'contacts',
+                    'group.logEntries.causer',
+                    'cois',
+                    'group.documents.type',
                     'nextActions'
-                ] 
+                ]
             })
             .then(item => {
                 commit('addApplication', item)
@@ -139,7 +139,7 @@ export default {
                     application.nextActions[naIdx] = response.data;
                     return response;
                 });
-        
+
         },
 
         // eslint-disable-next-line unused-imports/no-unused-vars
@@ -163,7 +163,7 @@ export default {
                 })
         },
 
-         
+
         async addLogEntry({ dispatch }, { application, logEntryData }) {
             const url = `/api/applications/${application.uuid}/log-entries`
             await api.post(url, logEntryData)
@@ -172,7 +172,7 @@ export default {
                 })
         },
 
-         
+
         async updateLogEntry({ dispatch }, { application, updatedEntry }) {
             const url = `/api/applications/${application.uuid}/log-entries/${updatedEntry.id}`;
             await api.put(url, updatedEntry)
@@ -181,7 +181,7 @@ export default {
                 })
         },
 
-         
+
         async deleteLogEntry({ dispatch }, { application, logEntry }) {
             const url = `/api/applications/${application.uuid}/log-entries/${logEntry.id}`;
             await api.delete(url)
@@ -198,7 +198,7 @@ export default {
                 })
         },
 
-         
+
         async markDocumentReviewed({ dispatch }, { application, document, dateReviewed, isFinal }) {
             await appRepo.markDocumentReviewed(application, document, dateReviewed, isFinal)
                 .then(() => {
@@ -224,7 +224,7 @@ export default {
         },
 
         async updateDocumentInfo({ dispatch }, { application, document }) {
-            return await api.put(`/api/applications/${application.uuid}/documents/${document.uuid}`, document)
+            return await api.putForm(`/api/applications/${application.uuid}/documents/${document.uuid}`, document)
                 .then(() => {
                     dispatch('getApplication', application.uuid)
                 });
@@ -249,20 +249,16 @@ export default {
             });
 
             const url = `/api/applications/${application.uuid}/current-step/approve`
-            return await api.post(
+            return await api.postForm(
                     url,
-                    formData, {
-                        headers: {
-                            "Content-Type": "multipart/form-data"
-                        }
-                    }
+                    formData,
                 )
                 .then(() => {
                     dispatch('getApplication', application.uuid)
                 });
         },
 
-         
+
         async updateApprovalDate({ dispatch }, { application, dateApproved, step }) {
             await api.put(`/api/applications/${application.uuid}/approve`, {
                     date_approved: dateApproved,
@@ -273,7 +269,7 @@ export default {
                 });
         },
 
-         
+
         async addContact({ dispatch }, { application, contact }) {
             await appRepo.addContact(application, contact)
                 .then(() => {
@@ -281,7 +277,7 @@ export default {
                 })
         },
 
-         
+
         async removeContact({ dispatch }, { application, contact }) {
             await appRepo.removeContact(application, contact)
                 .then(() => {

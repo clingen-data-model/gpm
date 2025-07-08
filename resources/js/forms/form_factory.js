@@ -13,8 +13,11 @@ export const submitFormData = async ({method, url, data}) => {
         // return await api.put(
         return await api({
             method,
-            url, 
-            data
+            url,
+            data,
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            },
         }).then(response => response.data.data)
     } catch (error) {
         if (is_validation_error(error)) {

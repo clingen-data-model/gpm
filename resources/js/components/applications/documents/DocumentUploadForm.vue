@@ -65,14 +65,13 @@ export default {
         async save() {
             try {
                 const data = new FormData();
-                Object.keys(this.newDocument)
-                    .forEach(key => {
-                        const val = this.newDocument[key]
+                Object.entries(this.newDocument)
+                    .forEach(([key, val]) => {
                         if (val == null) return;
                         data.append(key, val);
                     })
-                data.append('file', this.$refs.fileInput.files[0]);
-                await this.$store.dispatch('groups/addApplicationDocument', 
+                data.set('file', this.$refs.fileInput.files[0]);
+                await this.$store.dispatch('groups/addApplicationDocument',
                         {group: this.group, data}
                     )
 
@@ -119,11 +118,11 @@ export default {
     <input-row label="Document" :errors="errors.file">
       <input ref="fileInput" type="file">
     </input-row>
-        
-    <input-row 
-      v-if="showNotes" 
-      v-model="newDocument.date_received" 
-      label="Date Received" 
+
+    <input-row
+      v-if="showNotes"
+      v-model="newDocument.date_received"
+      label="Date Received"
       type="date"
       :errors="errors.date_received"
     />
@@ -131,7 +130,7 @@ export default {
     <input-row v-if="showNotes" :errors="errors.notes" label="Notes">
       <textarea v-model="newDocument.notes" name="notes" cols="30" rows="5" />
     </input-row>
-        
+
     <button-row>
       <button class="btn white" @click="cancel">
         Cancel
