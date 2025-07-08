@@ -5,7 +5,7 @@ import axios from '@/http/api'
 
 const baseUrl = '/api/applications';
 
-function entityHasUuid(entity) { 
+function entityHasUuid(entity) {
     if (!entity.uuid) {
         throw new Error('Entity must have a uuid to complete the transaction.')
     }
@@ -43,7 +43,7 @@ async function approveCurrentStep(application, dateApproved, notifyContacts, not
 
 async function updateEpAttributes(application) {
     entityHasUuid(application);
-    
+
     const {long_base_name, short_base_name, affiliation_id, cdwg_id} = application;
     const data = {long_base_name, short_base_name, affiliation_id, cdwg_id};
 
@@ -59,7 +59,7 @@ async function addDocument(application, documentData) {
     }
 
     const url = `${baseUrl}/${application.uuid}/documents`;
-    return await axios.post(url, documentData)
+    return await axios.postForm(url, documentData)
         .then(response => response.data);
 }
 
@@ -83,32 +83,32 @@ async function addContact(application, person) {
 async function removeContact(application, contact) {
     entityHasUuid(application);
     entityHasUuid(contact);
-    
+
     const url = `${baseUrl}/${application.uuid}/contacts/${contact.uuid}`
     return await axios.delete(url)
                 .then(response => response.data);
 }
 
-export { 
-    all, 
-    find, 
-    initiate, 
+export {
+    all,
+    find,
+    initiate,
     approveCurrentStep,
-    // addNextAction, 
-    updateEpAttributes, 
+    // addNextAction,
+    updateEpAttributes,
     addDocument,
     markDocumentReviewed,
     addContact,
     removeContact
 }
 
-export default { 
-    all, 
-    find, 
-    initiate, 
+export default {
+    all,
+    find,
+    initiate,
     approveCurrentStep,
-    // addNextAction, 
-    updateEpAttributes, 
+    // addNextAction,
+    updateEpAttributes,
     addDocument,
     markDocumentReviewed,
     addContact,

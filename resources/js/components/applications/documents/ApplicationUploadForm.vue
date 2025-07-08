@@ -75,14 +75,13 @@ export default {
         async save() {
             try {
                 const data = new FormData();
-                Object.keys(this.newDocument)
-                    .forEach(key => {
-                        const val = this.newDocument[key]
+                Object.entries(this.newDocument)
+                    .forEach(([key, val]) => {
                         if (val == null) return;
                         data.append(key, val);
                     })
-                data.append('file', this.$refs.fileInput.files[0]);
-                data.append('document_type_id', this.documentTypeId);
+                data.set('file', this.$refs.fileInput.files[0]);
+                data.set('document_type_id', this.documentTypeId);
                 await this.$store.dispatch('groups/addApplicationDocument', {group: this.group, data});
 
                 this.clearForm();

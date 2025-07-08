@@ -424,7 +424,7 @@ export const actions = {
             data.append('uuid', uuid4())
         }
 
-        return api.post(`/api/applications/${group.expert_panel.uuid}/documents`, data)
+        return api.postForm(`/api/applications/${group.expert_panel.uuid}/documents`, data)
             .then(response => {
                 group.documents.push(response.data);
                 if (response.data.document_type_id < 8) {
@@ -440,7 +440,7 @@ export const actions = {
             data.append('uuid', uuid4());
         }
 
-        return api.post(`${baseUrl}/${group.uuid}/documents`, data)
+        return api.postForm(`${baseUrl}/${group.uuid}/documents`, data)
                 .then(response => {
                     group.documents.push(response.data);
                     if (response.data.document_type_id < 8) {
@@ -553,13 +553,9 @@ export const actions = {
         });
 
         const url = `/api/applications/${group.uuid}/current-step/approve`
-        return await api.post(
+        return await api.postForm(
                 url,
-                formData, {
-                    headers: {
-                        "Content-Type": "multipart/form-data"
-                    }
-                }
+                formData,
             )
             .then(() => {
                 dispatch('findAndSetCurrent', group.uuid);

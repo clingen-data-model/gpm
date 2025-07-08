@@ -40,7 +40,7 @@ export default {
             if (this.documentTypes.length === 0) {
                 return {};
             }
-            // return this.documentTypes. 
+            // return this.documentTypes.
             return this.$store.getters['doctypes/getItemById'](this.documentTypeId)
         }
     },
@@ -51,13 +51,12 @@ export default {
         async save() {
             try {
                 const data = new FormData();
-                Object.keys(this.newDocument)
-                    .forEach(key => {
-                        const val = this.newDocument[key]
+                Object.entries(this.newDocument)
+                    .forEach(([key, val]) => {
                         if (val == null) return;
                         data.append(key, val);
                     })
-                data.append('file', this.$refs.fileInput.files[0]);
+                data.set('file', this.$refs.fileInput.files[0]);
                 await this.saveFunction(data);
 
                 this.clearForm();
@@ -111,7 +110,7 @@ export default {
     <input-row :errors="errors.notes" label="Notes">
       <textarea v-model="newDocument.notes" name="notes" cols="30" rows="10" />
     </input-row>
-        
+
     <button-row>
       <button class="btn white" @click="cancel">
         Cancel
