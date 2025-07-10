@@ -453,7 +453,7 @@ export const actions = {
 
     // eslint-disable-next-line unused-imports/no-unused-vars
     async updateDocument({ commit }, { group, document }) {
-        return api.put(`/api/groups/${group.uuid}/documents/${document.uuid}`, document)
+        return api.putForm(`/api/groups/${group.uuid}/documents/${document.uuid}`, document)
             .then((response) => {
                 const idx = group.documents.findIndex(doc => doc.id === document.id);
                 group.documents[idx] = response.data;
