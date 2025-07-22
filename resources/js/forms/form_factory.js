@@ -8,16 +8,27 @@ const hideForm = () => {
     editing.value = false;
     errors.value = {};
 }
-export const submitFormData = async ({method, url, data}) => {
+export const submitFormData = async ({method, url, data, useFormData = false}) => {
     try {
-        // return await api.put(
+        let payload = data;
+        let headers = {};
+
+        if (useFormData) {
+            const formData = new FormData();
+            for (const key in data) {
+                formData.append(key, data[key]);
+            }
+            payload = formData;
+        } else {
+            payload = JSON.stringify(data);
+            headers['Content-Type'] = 'application/json';
+        }
+
         return await api({
             method,
             url,
-            data,
-            headers: {
-                'Content-Type': 'multipart/form-data'
-            },
+            data: payload,
+            headers
         }).then(response => response.data.data)
     } catch (error) {
         if (is_validation_error(error)) {
