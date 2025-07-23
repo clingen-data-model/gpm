@@ -10,24 +10,13 @@ const hideForm = () => {
 }
 export const submitFormData = async ({method, url, data, useFormData = false}) => {
     try {
-        let payload = data;
-        let headers = {};
-
-        if (useFormData) {
-            const formData = new FormData();
-            for (const key in data) {
-                formData.append(key, data[key]);
-            }
-            payload = formData;
-        } else {
-            payload = JSON.stringify(data);
-            headers['Content-Type'] = 'application/json';
+        const headers = {
+            'Content-Type': useFormData ? 'multipart/form-data' : 'application/json'
         }
-
         return await api({
             method,
             url,
-            data: payload,
+            data,
             headers
         }).then(response => response.data.data)
     } catch (error) {
