@@ -58,9 +58,7 @@ export default {
     </header>
     <div class="mt-4">
       <p class="text-sm">
-        This is a description of the group's purpose, goals, and objectives
-        as intended for public display (e.g., at the clinicalgenome.org
-        site). This may be more concise than the full scope of work.
+        Describe the expertise of VCEP members who regularly use the ACMG/AMP guidelines to classify variants and/or review variants during clinical laboratory case sign-out.
       </p>
       <transition name="fade" mode="out-in">
         <div v-if="editing" class="mt-2">

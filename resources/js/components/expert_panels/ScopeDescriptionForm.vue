@@ -74,7 +74,7 @@ export default {
         <div v-else class="border-2 mt-8 p-2">
           <div v-if="group.expert_panel.scope_description" v-html="sanitizedScopeDescription" />
           <p v-else class="well cursor-pointer" @click="showForm">
-            A description of expertise has not yet been provided.
+            A description of scope has not yet been provided.
           </p>
         </div>
       </transition>
