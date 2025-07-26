@@ -2,6 +2,7 @@ import { v4 as uuid4 } from 'uuid';
 import Group from '@/domain/group';
 import { api, queryStringFromParams } from '@/http';
 import { clone } from 'lodash-es';
+import groupBy from 'lodash/groupBy';
 
 const baseUrl = '/api/groups';
 const getApplicationUrl = (uuid) => `${baseUrl}/${uuid}/expert-panel`;
@@ -347,15 +348,83 @@ export const actions = {
             })
     },
 
-    getGenes ({ commit, getters,}, group) {
-        return api.get(`${getApplicationUrl(group.uuid)}/genes`)
-            .then(response => {
-                const item = getters.getItemByUuid(group.uuid)
-                item.expert_panel.genes = response.data;
-                commit('addItem', item);
-                return response.data;
+    async getGenes({ commit, getters, dispatch }, group) {
+        const response = await api.get(`${getApplicationUrl(group.uuid)}/genes`);   
+                 
+        const genes = response.data;
+        const item = getters.getItemByUuid(group.uuid);
+        const geneSymbols = genes.map(g => g.gene_symbol).filter(Boolean);
+
+        if (geneSymbols.length) {
+            const curatedResult = await dispatch('loadCurationStatuses', geneSymbols);
+
+            // Convert statuses array to a lookup by gene_symbol
+            const statusLookup = Object.fromEntries(
+                curatedResult.map(entry => [entry.gene_symbol, entry])
+            )
+
+            // Merge / Add details and statuses to each gene
+            item.expert_panel.genes = genes.map(gene => ({
+                ...gene,
+                // statuses: (statusLookup[gene.gene_symbol] || []).map(e => e.current_status),
+                // details: statusLookup[gene.gene_symbol] || [],
+                statuses: statusLookup[gene.gene_symbol]?.statuses || ['Not Curated'],
+                details: statusLookup[gene.gene_symbol]?.entries || [],
+            }))
+        } else {
+            item.expert_panel.genes = genes; // fallback if no symbols
+        }
+        
+        commit('addItem', item);
+        return genes;            
+    },  
+
+    async loadCurationStatuses(_, geneSymbols) {
+        if (!geneSymbols || geneSymbols.length === 0) return [];
+
+        try {
+            const upperCaseSymbols = geneSymbols.map(s => s.toUpperCase());
+
+            const response = await api.post('/api/genes/check-genes', {
+                gene_symbol: geneSymbols.join(', ')
             });
-    },
+
+            const data = (response.data.data || []).map(item => ({
+                            ...item,
+                            gene_symbol: item.gene_symbol.toUpperCase()
+                        }));
+
+
+            // Group by gene_symbol
+            const grouped = groupBy(data, 'gene_symbol');
+
+            const result = upperCaseSymbols.map((symbol, i) => {
+                const entries = grouped[symbol] || [];
+
+                if (entries.length === 0) {
+                    return {
+                        gene_symbol: geneSymbols[i],
+                        entries: [],
+                        statuses: ['Not Curated'],
+                    };
+                }
+
+                const statuses = [...new Set(entries.map(e => e.current_status || 'Unknown'))];
+                return {
+                    gene_symbol: geneSymbols[i],
+                    entries,
+                    statuses,
+                    tier: null
+                };
+            });
+
+            return result;
+        } catch (e) {
+            console.error('Failed to load curation status:', e);
+            return [];
+        }
+
+    },  
 
     getEvidenceSummaries ({commit, getters}, group) {
         return api.get(`${getApplicationUrl(group.uuid)}/evidence-summaries`)
