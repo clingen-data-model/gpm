@@ -52,6 +52,7 @@ export const expertiseDescription = new Requirement(
 
 export const genes = new Requirement('1+ genes in scope', group => group.expert_panel.genes.length > 0);
 export const scopeDescription = new Requirement('Description of scope', group => !isEmpty(group.expert_panel.scope_description));
+export const websiteDescription = new Requirement('Website Description', group => !isEmpty(group.description));
 
 export const curationProcess = new Requirement(
     'Plans for sustained curation',
@@ -123,6 +124,7 @@ export default {
     institutions,
     expertiseDescription,
     genes,
+    websiteDescription,
     scopeDescription,
     curationProcess,
     meetingFrequency,
