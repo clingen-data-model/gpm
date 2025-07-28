@@ -165,6 +165,12 @@ export const VcepApplication = applicationDefinitionFactory({
                         // MembershipDescriptionForm
                     // ]
                 },
+                websiteDescription: {
+                    name: 'Website Decription',
+                    requirements: [
+                        requirements.websiteDescription,
+                    ],
+                },
                 scope: {
                     name: 'Scope of Work',
                     requirements: [
@@ -301,6 +307,12 @@ export const GcepApplication = applicationDefinitionFactory({
                     // components: [
                         // MemberList,
                     // ]
+                },
+                websiteDescription: {
+                    name: 'Website Decription',
+                    requirements: [
+                        requirements.websiteDescription,
+                    ],
                 },
                 scope: {
                     name: 'Scope of Work',

@@ -11,6 +11,7 @@ import AttestationNhgri from '@/components/expert_panels/AttestationNhgri.vue'
 import GcepGeneList from '@/components/expert_panels/GcepGeneList.vue';
 import GroupForm from '@/components/groups/GroupForm.vue'
 import MemberList from '@/components/groups/MemberList.vue';
+import GroupDescriptionForm from '@/components/groups/GroupDescriptionForm.vue';
 import ScopeDescriptionForm from '@/components/expert_panels/ScopeDescriptionForm.vue';
 import GcepOngoingPlansForm from '@/components/expert_panels/GcepOngoingPlansForm.vue';
 
@@ -25,6 +26,7 @@ export default {
         GroupForm,
         GcepOngoingPlansForm,
         MemberList,
+        GroupDescriptionForm,
         ScopeDescriptionForm,
     },
     emits: [
@@ -67,6 +69,7 @@ export default {
                                     }
                                     return null;
                                 });
+            promises.push(this.saveWebDescription());
             promises.push(this.saveUpdates());
 
             try {
@@ -89,6 +92,14 @@ export default {
                         });
             }
         },
+        saveWebDescription() {
+            if (this.webDescriptionIsDirty()) {
+              return this.$store.dispatch('groups/descriptionUpdate', {
+                uuid: this.group.uuid,
+                description: this.group.description
+              })
+            }
+        },
         async autosave () {
             if (this.applicationIsDirty()) {
                 await this.save();
@@ -99,6 +110,9 @@ export default {
             return  this.group.expert_panel.isDirty()
                 || this.group.isDirty()
                 || this.genesChanged
+        },
+        webDescriptionIsDirty () {
+            return  this.group.isDirty('description')
         },
         handleUpdate () {
             this.debounceAutoSave();
@@ -121,6 +135,9 @@ export default {
           Expert Panels are expected to have broad representation of expertise in the field, including all major areas of expertise (clinical, diagnostic laboratory, and basic research).  Membership should include representation from three or more institutions and will encompass disease/gene expert members as well as biocurators. Biocurators do not have to be gene/disease experts and will be primarily responsible for assembling the available evidence for subsequent expert member review. For role, suggested examples include: primary biocurator, expert reviewer, etc.
         </p>
         <MemberList :group="group" />
+      </AppSection>
+      <AppSection id="websiteDescription" title="Website Description">
+        <GroupDescriptionForm @update="handleUpdate" />
       </AppSection>
       <AppSection id="scope" title="Scope of Work">
         <p>
