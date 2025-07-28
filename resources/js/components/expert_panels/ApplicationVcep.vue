@@ -13,6 +13,7 @@ import GroupForm from '@/components/groups/GroupForm.vue'
 import MemberDesignationForm from '@/components/expert_panels/MemberDesignationForm.vue';
 import MemberList from '@/components/groups/MemberList.vue';
 import MembershipDescriptionForm from '@/components/expert_panels/MembershipDescriptionForm.vue';
+import GroupDescriptionForm from '@/components/groups/GroupDescriptionForm.vue';
 import ScopeDescriptionForm from '@/components/expert_panels/ScopeDescriptionForm.vue';
 import VcepGeneList from '@/components/expert_panels/VcepGeneList.vue';
 import VcepOngoingPlansForm from '@/components/expert_panels/VcepOngoingPlansForm.vue';
@@ -30,6 +31,7 @@ export default {
         MemberDesignationForm,
         MemberList,
         MembershipDescriptionForm,
+        GroupDescriptionForm,
         ScopeDescriptionForm,
         VcepGeneList,
         VcepOngoingPlansForm,
@@ -74,6 +76,7 @@ export default {
                                     }
                                     return null;
                                 });
+            promises.push(this.saveWebDescription());
             promises.push(this.saveUpdates());
 
             try {
@@ -96,6 +99,14 @@ export default {
                         });
             }
         },
+        saveWebDescription() {
+          if(this.webDescriptionIsDirty) {
+            return this.$store.dispatch('groups/descriptionUpdate', {
+              uuid: this.group.uuid,
+              description: this.group.description
+            });
+          }
+        },
         async autosave () {
             if (this.applicationIsDirty()) {
                 await this.save();
@@ -106,6 +117,9 @@ export default {
             return  this.group.expert_panel.isDirty()
                 || this.group.isDirty()
                 || this.genesChanged
+        },
+        webDescriptionIsDirty () {
+          return this.group.isDirty('description')
         },
         handleUpdate () {
             this.debounceAutoSave();
@@ -135,6 +149,9 @@ export default {
         <hr>
         <MembershipDescriptionForm :editing="true" @update="handleUpdate" />
       </AppSection>
+      <AppSection id="websiteDescription" title="Website Description">
+        <GroupDescriptionForm :group="group" @update="handleUpdate" />
+      </AppSection>
       <AppSection id="scope" title="Scope of Work">
         <VcepGeneList ref="geneList" :group="group" @update="handleUpdate" />
         <hr>
@@ -147,19 +164,6 @@ export default {
         <AttestationNhgri @update="handleUpdate" />
       </AppSection>
     </ApplicationStep>
-
-    <!-- <application-step
-            id="specifications-development"
-            title="Specifications Development"
-            :disabled="group.expert_panel.current_step < 2 || group.expert_panel.hasPendingSubmission"
-            :no-submit="true"
-        >
-            <app-section>
-                <cspec-summary></cspec-summary>
-            </app-section>
-        </application-step>
-        -->
-
     <ApplicationStep
       id="draft-specifications"
       title="Draft Specifications"
