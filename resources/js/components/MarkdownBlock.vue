@@ -1,5 +1,5 @@
 <script setup>
-import { htmlFromMarkdown } from '@/markdown-utils';
+import { marked } from 'marked';
 import DOMPurify from 'dompurify';
 import { computed } from 'vue';
 
@@ -11,9 +11,8 @@ const props = defineProps({
 });
 
 const rendered = computed(() => {
-    if (!props.markdown) return null;
-
-    return DOMPurify.sanitize(htmlFromMarkdown(props.markdown));
+  if (!props.markdown) return null;
+  return DOMPurify.sanitize(marked.parse(props.markdown));
 });
 </script>
 <template>
