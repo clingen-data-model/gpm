@@ -35,4 +35,9 @@ return [
         'api_key' => env('OPENALEX_API_KEY'),
     ],
 
+    'affiliation_api' => [
+        'base_url' => env('AFFILIATION_API_BASE_URL'),
+        'client_secret' => env('AFFILIATION_API_CLIENT_SECRET'),
+    ],
+
 ];
