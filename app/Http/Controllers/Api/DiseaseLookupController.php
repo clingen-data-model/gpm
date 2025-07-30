@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
-use App\Services\GtApi\GtApiService;
+use App\Services\Api\GtApiService;
 
 class DiseaseLookupController extends Controller
 {
@@ -38,6 +38,6 @@ class DiseaseLookupController extends Controller
             return [];
         }
         
-        return $this->gtApi->searchDiseases($query);
+        return $this->gtApi->searchDiseases($queryString);
     }
 }
