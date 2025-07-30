@@ -47,9 +47,6 @@ class ReportVcepGenesMake
                     })
                     ->orderBy('gene_symbol')
                     ->with([
-                        'disease' => function ($q) {
-                            $q->select(['mondo_id','name']);
-                        },
                         'expertPanel' => function ($q) {
                             $q->select(['id', 'long_base_name', 'expert_panel_type_id']);
                         },
@@ -60,6 +57,20 @@ class ReportVcepGenesMake
                         'expertPanel.group.type'
                     ])
                     ->get();
+        $gtApi = app(\App\Services\Api\GtApiService::class);
+
+        $mondoIds = $genes->pluck('mondo_id')->unique()->values()->all();
+        $diseaseData = $gtApi->getDiseasesByMondoIds($mondoIds);
+
+        $diseaseMap = collect($diseaseData)
+                        ->keyBy('mondo_id')
+                        ->map(fn($d) => (object)[
+                            'mondo_id' => $d['mondo_id'],
+                            'name' => $d['name']
+                        ]);
+        $genes->each(function ($gene) use ($diseaseMap) {
+            $gene->setRelation('disease', $diseaseMap[$gene->mondo_id] ?? (object)[]);
+        });
 
         return $genes
             ->groupBy(function ($g) {
@@ -79,5 +90,4 @@ class ReportVcepGenesMake
             ->values()
             ->toArray();
     }
-
 }
