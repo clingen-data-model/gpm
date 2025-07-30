@@ -103,6 +103,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
 Route::get('/cdwgs', [CdwgController::class, 'index']);
 
+Route::post('/genes/check-genes', [GeneLookupController::class, 'check']);
 Route::get('/diseases/search', [DiseaseLookupController::class, 'search']);
 Route::get('/diseases/{mondo_id}', [DiseaseLookupController::class, 'show']);
 
