@@ -38,7 +38,7 @@
 
       <div v-if="group.is_vcep_or_scvcep" class="mt-6">
         <h4>Expertise of VCEP members</h4>
-        <blockquote v-html="expertPanel.membership_expertise_description"></blockquote>
+        <blockquote v-html="expertPanel.membership_description"></blockquote>
       </div>
     </ReviewSection>
 
