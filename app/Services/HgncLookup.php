@@ -7,20 +7,22 @@ use App\Services\Api\GtApiService;
 
 class HgncLookup implements HgncLookupInterface
 {
-    protected GtApiService $gtApiService;
+    protected GtApiService $gtApi;
 
-    public function __construct(GtApiService $gtApiService)
+    public function __construct(GtApiService $gtApi)
     {
-        $this->gtApiService = $gtApiService;
+        $this->gtApi = $gtApi;
     }
 
     public function findSymbolById($hgncId): string
     { 
-        return $this->gtApiService->getGeneSymbolById((int)$hgncId);
+        $result = $this->gtApi->getGeneSymbolById((int) $hgncId);
+        return $result['gene_symbol'] ?? '';
     }
 
     public function findHgncIdBySymbol($geneSymbol): int
     {
-        return $this->gtApiService->getGeneSymbolBySymbol((string)$geneSymbol);
+        $result = $this->gtApi->getGeneSymbolBySymbol((string)$geneSymbol);
+        return $result['hgnc_id'] ?? null;
     }
 }
