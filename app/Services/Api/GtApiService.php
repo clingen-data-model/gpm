@@ -13,7 +13,7 @@ class GtApiService
 
     public function searchDiseases(string $query): array
     {
-        $response = $this->client->post('/diseases/search', ['query' => $query]);
+        $response = $this->client->post('/diseases/search', ['query_string' => $query, 'limit' => 10]);
         return $response->json();
     }
 
@@ -38,7 +38,7 @@ class GtApiService
     
     public function searchGenes(string $query): array
     {
-        $response = $this->client->post('/genes/search', ['query' => $query]);
+        $response = $this->client->post('/genes/search', ['query' => $query, 'limit' => 10]);
         return $response->json();
     }
 
