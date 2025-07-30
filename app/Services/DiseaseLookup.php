@@ -3,11 +3,18 @@ namespace App\Services;
 
 use App\Services\DiseaseLookupInterface;
 use Exception;
-use Illuminate\Support\Facades\DB;
+use App\Services\Api\GtApiService;
 
 class DiseaseLookup implements DiseaseLookupInterface
 {
     const SUPPORTED_ONTOLOGIES = ['mondo', 'doid'];
+
+    protected GtApiService $gtApiService;
+
+    public function __construct(GtApiService $gtApiService)
+    {
+        $this->gtApiService = $gtApiService;
+    }
 
     public function findNameByOntologyId(string $ontologyId): string
     {
@@ -16,16 +23,6 @@ class DiseaseLookup implements DiseaseLookupInterface
             throw new Exception('Ontology '.$ontology.' is not supported');
         }
 
-        $diseaseData = DB::connection(config('database.gt_db_connection'))
-                ->table('diseases')
-                ->select('name')
-                ->where($ontology.'_id', $ontologyId)
-                ->first();
-
-        if (!$diseaseData) {
-            throw new Exception('We couldn\'t find a disease with '. $ontology .' ID '.$ontologyId.' in our records.');
-        }
-
-        return $diseaseData->name;
+        return $this->gtApi->getDiseaseByOntologyId($ontologyId);
     }
 }

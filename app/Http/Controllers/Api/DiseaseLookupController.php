@@ -7,9 +7,17 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
+use App\Services\GtApi\GtApiService;
 
 class DiseaseLookupController extends Controller
 {
+    protected GtApiService $gtApi;
+
+    public function __construct(GtApiService $gtApi)
+    {
+        $this->gtApi = $gtApi;
+    }
+
     public function show($mondoId)
     {
         $validator = Validator::make(['mondo_id' => $mondoId], [
@@ -19,24 +27,17 @@ class DiseaseLookupController extends Controller
             throw new ValidationException($validator);
         }
 
-        return DB::connection(config('database.gt_db_connection'))->table('diseases')->where('mondo_id', $mondoId)->sole();
+        $mondo_id = strtolower($validator->validated()['mondo_id']);
+        return $this->gtApi->getDiseaseByMondoId($mondo_id);
     }
 
     public function search(Request $request)
-    {
+    {       
         $queryString = strtolower(($request->query_string ?? ''));
         if (strlen($queryString) < 3) {
             return [];
         }
         
-        $results = DB::connection(config('database.gt_db_connection'))->table('diseases')
-                    ->select('id', 'mondo_id', 'doid_id', 'name',)
-                    ->where('name', 'like', '%'.$queryString.'%')
-                    ->orWhere('mondo_id', 'like', '%'.$queryString.'%')
-                    ->orWhere('doid_id', 'like', '%'.$queryString.'%')
-                    ->limit(50)
-                    ->get();
-
-        return $results->toArray();
+        return $this->gtApi->searchDiseases($query);
     }
 }
