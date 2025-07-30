@@ -9,11 +9,11 @@ class DiseaseLookup implements DiseaseLookupInterface
 {
     const SUPPORTED_ONTOLOGIES = ['mondo', 'doid'];
 
-    protected GtApiService $gtApiService;
+    protected GtApiService $gtApi;
 
-    public function __construct(GtApiService $gtApiService)
+    public function __construct(GtApiService $gtApi)
     {
-        $this->gtApiService = $gtApiService;
+        $this->gtApi = $gtApi;
     }
 
     public function findNameByOntologyId(string $ontologyId): string
@@ -23,6 +23,7 @@ class DiseaseLookup implements DiseaseLookupInterface
             throw new Exception('Ontology '.$ontology.' is not supported');
         }
 
-        return $this->gtApi->getDiseaseByOntologyId($ontologyId);
+        $result = $this->gtApi->getDiseaseByOntologyId($ontologyId);
+        return $result['name'] ?? '';
     }
 }
