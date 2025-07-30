@@ -38,9 +38,7 @@
 
       <div v-if="group.is_vcep_or_scvcep" class="mt-6">
         <h4>Expertise of VCEP members</h4>
-        <blockquote>
-          <markdown-block :markdown="expertPanel.membership_description" />
-        </blockquote>
+        <blockquote v-html="expertPanel.membership_description"></blockquote>
       </div>
     </ReviewSection>
 
@@ -65,7 +63,7 @@
       </div>
 
       <h3>Description of scope</h3>
-      <blockquote><markdown-block :markdown="expertPanel.scope_description" /></blockquote>
+      <blockquote v-html="expertPanel.scope_description"></blockquote>
     </ReviewSection>
 
     <ReviewSection v-if="group.is_gcep" title="Plans" name="plans">
