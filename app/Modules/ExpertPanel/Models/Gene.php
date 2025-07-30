@@ -3,12 +3,14 @@
 namespace App\Modules\ExpertPanel\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Models\GeneTracker\Gene as GtGene;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use App\Models\GeneTracker\Disease as GtDisease;
 use Database\Factories\GeneFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\Cache;
+use App\DataTransferObjects\GtGeneDto;
+use App\DataTransferObjects\GtDiseaseDto;
+use App\Services\Api\GtApiService;
 
 /**
  * @property int $id
@@ -24,12 +26,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Gene extends Model
 {
     use HasFactory, SoftDeletes;
-
-    public function getConnectionName()
-    {
-        return config('database.default');
-    }
-
 
     /**
      * The attributes that are mass assignable.
@@ -65,24 +61,30 @@ class Gene extends Model
         return $this->belongsTo(ExpertPanel::class);
     }
 
-    /**
-     * Get the gene that owns the Gene
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function gene(): BelongsTo
+    public function gene(): ?GtGeneDto
     {
-        return $this->belongsTo(GtGene::class, 'hgnc_id', 'hgnc_id');
+        try {
+            return Cache::remember("hgnc_id_{$this->hgnc_id}", 300, function () {
+                $data = app(GtApiService::class)->getGeneSymbolById($this->hgnc_id);
+                return $data ? GtGeneDto::fromArray($data) : null;
+            });
+        } catch (\Throwable $e) {
+            report($e);
+            return null;
+        }
     }
 
-    /**
-     * Get the disease that owns the Gene
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function disease(): BelongsTo
+    public function disease(): ?GtDiseaseDto
     {
-        return $this->belongsTo(GtDisease::class, 'mondo_id', 'mondo_id');
+        try {
+            return Cache::remember("mondo_id_{$this->mondo_id}", 300, function () {
+                $data = app(GtApiService::class)->getDiseaseByMondoId($this->mondo_id);
+                return $data ? GtDiseaseDto::fromArray($data) : null;
+            });
+        } catch (\Throwable $e) {
+            report($e);
+            return null;
+        }
     }
 
     /**
