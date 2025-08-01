@@ -113,5 +113,8 @@ Route::get('/curations', [GeneLookupController::class, 'curations']);
 Route::post('/curationids', [GeneLookupController::class, 'curationids']);
 Route::get('/mois', [MoiLookupController::class, 'index']);
 
+Route::get('/curations', [GeneLookupController::class, 'curations']);
+Route::get('/mois', [MoiLookupController::class, 'index']);
+
 Route::get('/docs', [DocumentationController::class, 'index']);
 Route::get('/docs/{slug}', [DocumentationController::class, 'show']);
