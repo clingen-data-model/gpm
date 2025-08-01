@@ -11,9 +11,21 @@ class GtApiService
         $this->client = $client;
     }
 
+    public function mois(): array
+    {
+        $response = $this->client->get('/mois');
+        return $response->json();
+    }
+
     public function searchDiseases(string $query): array
     {
         $response = $this->client->post('/diseases/search', ['query_string' => $query, 'limit' => 10]);
+        return $response->json();
+    }
+
+    public function searchCurations(string $query): array
+    {
+        $response = $this->client->get('/curations?', ['filter' => $query]);
         return $response->json();
     }
 
