@@ -43,6 +43,8 @@ class Gene extends Model
         'mondo_id',
         'disease_name',
         'date_approved',
+        'moi',
+        'plan',
     ];
 
     /**
@@ -55,6 +57,7 @@ class Gene extends Model
         'hgnc_id' => 'integer',
         'expert_panel_id' => 'integer',
         'date_approved' => 'datetime',
+        'plan' => 'array',
     ];
 
     /**
