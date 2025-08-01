@@ -25,7 +25,7 @@ class GeneListController extends Controller
         $genes = $group
                 ->expertPanel
                 ->genes()
-                ->select('gene_symbol', 'hgnc_id', 'mondo_id', 'disease_name', 'id', 'moi', 'tier', 'date_approved', 'plan')
+                ->select('gene_symbol', 'hgnc_id', 'mondo_id', 'disease_name', 'id')
                 ->get();
 
         $mondoIds = $genes->pluck('mondo_id')->filter()->unique()->values()->toArray();
