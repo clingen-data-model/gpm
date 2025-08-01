@@ -33,9 +33,7 @@ return [
     |
     */
 
-    'gt_db_connection' => env('GT_DB_CONNECTION', 'genetracker'),
     'connections' => [
-
         'sqlite' => [
             'driver' => 'sqlite',
             'url' => env('DATABASE_URL'),
