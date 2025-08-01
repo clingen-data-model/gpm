@@ -61,15 +61,14 @@ class GeneUpdate
     
 
     public function rules(ActionRequest $request): array
-    {
-        $connectionName = config('database.gt_db_connection');
+    {        
         $rules = [
-            'hgnc_id' => 'required|numeric|exists:'.$connectionName.'.genes,hgnc_id',
+            'hgnc_id' => 'required|numeric',
         ];
 
         $group = $request->group;
         if ($group->isVcepOrScvcep) {
-            $rules['mondo_id'] = 'required|regex:/MONDO:\d\d\d\d\d\d\d/i|exists:'.$connectionName.'.diseases,mondo_id';
+            $rules['mondo_id'] = 'required|regex:/MONDO:\d{7}$/i';
         }
 
         return $rules;
