@@ -29,7 +29,19 @@ class GeneLookupController extends Controller
 
     public function check(Request $request)
     {
-        $symbols = $request->input('gene_symbol');
+        $symbols = $request->input('gene_symbol') ?? '';
         return $this->gtApi->lookupGenesBulk($symbols);
+    }
+
+    public function curations(Request $request)
+    {        
+        $query = $request->get('query');
+
+        if (! $query || strlen($query) < 3) {
+            return response()->json([], 200);
+        }
+
+        // Call GT API service
+        return $this->gtApi->searchCurations($query);
     }
 }
