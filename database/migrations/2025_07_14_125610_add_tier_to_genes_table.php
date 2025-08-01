@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::table('genes', function (Blueprint $table) {
             $table->unsignedTinyInteger('tier')->nullable()->after('gene_symbol');
+            $table->string('moi', 20)->nullable()->after('mondo_id');            
+            $table->json('plan')->nullable()->after('moi');
         });
     }
 

@@ -270,10 +270,16 @@ const changeSort = key => {
                         <td class="px-2">
                             <input type="checkbox" :checked="selectedGenes.includes(gene.id)" @change="toggleSelect(gene.id)" :disabled="readonly || !editing" />
                         </td>
-                        <td class="font-mono text-blue-800 px-4 py-2 cursor-pointer" @click="toggleExpanded(index)">
+                        <td 
+                            class="font-mono text-blue-800 px-4 py-2" 
+                            :class="{ 'cursor-pointer': gene.details.length > 0, 'cursor-default': gene.details.length === 0 }"
+                            @click="gene.details.length > 0 && toggleExpanded(index)">
                             {{ gene.gene_symbol }}
                         </td>
-                        <td class="px-4 py-2 cursor-pointer" @click="toggleExpanded(index)">
+                        <td 
+                            class="px-4 py-2" 
+                            :class="{ 'cursor-pointer': gene.details.length > 0, 'cursor-default': gene.details.length === 0 }"
+                            @click="gene.details.length > 0 && toggleExpanded(index)">
                             {{ gene.statuses.join(', ') }} ({{ gene.details.length }})
                         </td>
                         <td class="px-4 py-2">
