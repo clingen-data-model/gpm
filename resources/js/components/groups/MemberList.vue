@@ -129,6 +129,9 @@ export default {
                         return m;
                     });
         },
+        application () {
+            return this.group.expert_panel;
+        },
         filteredEmails () {
             return this.filteredMembers.map(m => `${m.person.name} <${m.person.email}>`)
         },
@@ -154,7 +157,13 @@ export default {
             return this.hasAnyMemberPermission(['groups-manage', ['info-edit', this.group]])
         },
         showAddMemberButton () {
-            return this.hasAnyPermission([['members-invite', this.group], 'groups-manage', 'ep-applications-manage', 'annual-updates-manage']) && !this.readonly
+            if(! this.readonly) {
+              if (this.application.stepIsApproved(1)) {
+                  return (this.hasRole('super-user') || this.hasRole('super-admin'));
+              }
+              return this.hasAnyPermission([['members-invite', this.group], 'groups-manage', 'ep-applications-manage', 'annual-updates-manage'])
+            }
+            return false;
         },
         showMemberReportButton () {
             return this.hasAnyPermission([['members-invite', this.group], 'groups-manage', 'ep-applications-manage', 'annual-updates-manage'])
@@ -166,6 +175,16 @@ export default {
         features () {
             return this.$store.state.systemInfo.app.features
         },
+        canShowMemberActions() {
+          if(!this.readonly) {
+              if (this.application.stepIsApproved(1)) {
+                return (this.hasRole('super-user') || this.hasRole('super-admin'));
+              }
+              return this.hasAnyMemberPermission();
+          }
+          return false;
+        }
+
     },
     watch: {
         group: {
@@ -464,7 +483,7 @@ export default {
         <template #cell-actions="{item}">
           <div class="flex space-x-2 items-center">
             <dropdown-menu
-              v-if="hasAnyMemberPermission() && !readonly"
+              v-if="canShowMemberActions"
               :hide-cheveron="true"
               class="relative block"
             >
