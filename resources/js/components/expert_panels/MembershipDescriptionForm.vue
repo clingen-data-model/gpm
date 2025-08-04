@@ -44,7 +44,7 @@ export default {
         },
         canEdit() {
             if (this.application.stepIsApproved(1)) {
-                return (this.hasRole('super-user') || this.hasRole('super-admin'));
+                return this.hasRole('super-admin');
             }
             return this.hasAnyPermission(['groups-manage', ['application-edit', this.group]]);
         }

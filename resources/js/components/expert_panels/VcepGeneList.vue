@@ -172,7 +172,7 @@ export default {
         const canEdit = computed(() => {
             if(!props.readonly) {             
                 if (application.value.stepIsApproved(1)) {
-                    return (hasRole('super-user') || hasRole('super-admin'));
+                    return hasRole('super-admin');
                 }
                 return hasAnyPermission(['ep-applications-manage', ['application-edit', group.value]]);
             }

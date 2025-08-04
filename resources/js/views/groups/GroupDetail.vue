@@ -85,6 +85,11 @@ export default {
       return group.value.is_vcep_or_scvcep ? VcepGeneList : GcepGeneList;
     });
 
+    const application = computed(() => {
+        return group.value.expert_panel;
+    });
+
+
     const ongoingPlansFormComponent = computed(() => {
       return group.value.is_vcep_or_scvcep ? VcepOngoingPlansForm : GcepOngoingPlansForm;
     });
@@ -124,6 +129,7 @@ export default {
 
     return {
       group,
+      application,
       groupGeneList,
       showModal,
       ongoingPlansFormComponent,
@@ -321,6 +327,10 @@ export default {
         <ApplicationSummary v-if="group.isApplying" :group="group" />
         <tabs-container @tab-changed="handleTabChange">
           <tab-item label="Members">
+            <div v-if="application.stepIsApproved(1)" class="bg-yellow-100 text-yellow-800 p-3 rounded mb-4">
+              <strong>Note:</strong> This section is locked because the application has been approved.
+              Please contact GPM Support if you need to make changes.
+            </div>
             <MemberList :group="group" />
             <submission-wrapper
               v-if="group.is_vcep_or_scvcep"
@@ -352,6 +362,10 @@ export default {
           </tab-item>
 
           <tab-item label="Scope" :visible="group.is_ep">
+            <div v-if="application.stepIsApproved(1)" class="bg-yellow-100 text-yellow-800 p-3 rounded mb-4">
+              <strong>Note:</strong> This section is locked because the application has been approved.
+              Please contact GPM Support if you need to make changes.
+            </div>
             <h3>
               Plans for Ongoing Gene Review and Reanalysis and Discrepancy
               Resolution
