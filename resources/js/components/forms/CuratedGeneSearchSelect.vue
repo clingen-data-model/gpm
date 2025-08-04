@@ -36,7 +36,7 @@ export default {
 				is_other: true
 			};
 
-            if (! searchText || searchText.length < 2) {
+            if (! searchText || searchText.length < 3) {
 				return [otherOption];
 			}
 
@@ -96,7 +96,7 @@ export default {
 				Other (Not curated)
 			</div>
 			<div v-else-if="selection">
-				{{ selection.gene_symbol }} – {{ selection.mondo_id }} – {{ selection.moi }}
+				{{ selection.gene_symbol }} - {{ selection.mondo_id }} - {{ selection.moi }}
 			</div>
 			<div v-else>
 			</div>
