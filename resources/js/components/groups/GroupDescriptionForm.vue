@@ -45,7 +45,7 @@ export default {
         canEditDescription() {
             console.log('User roles:', this.$store.getters.currentUser.roles);
             if (this.group.expert_panel.stepIsApproved(1)) {
-                return (this.hasRole('super-admin') || this.hasRole('coordinator', this.group)) && !this.editing;
+                return (this.hasRole('super-admin') || this.hasRole('super-user') || this.hasRole('coordinator', this.group)) && !this.editing;
             }
             return this.hasAnyPermission(['groups-manage', ['application-edit', this.group]]) && !this.editing;
         }
