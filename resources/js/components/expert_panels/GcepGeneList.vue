@@ -123,7 +123,7 @@ export default {
         const canEdit = computed(() => {
             if (!props.readonly) {
                 if (application.value.stepIsApproved(1)) {
-                    return (hasRole('super-user') || hasRole('super-admin'));
+                    return hasRole('super-admin');
                 }
                 return hasAnyPermission(['groups-manage', ['application-edit', group.value]]);
             }
@@ -132,7 +132,7 @@ export default {
 
         const canEditGene = computed(() => {
             if (application.value.stepIsApproved(1)) {
-                return (hasRole('super-user') || hasRole('super-admin')) && !editing.value && !props.readonly;
+                return hasRole('super-admin') && !editing.value && !props.readonly;
             }
             return hasAnyPermission(['groups-manage', ['application-edit', group.value]]) && !editing.value && !props.readonly;
         });

@@ -159,7 +159,7 @@ export default {
         showAddMemberButton () {
             if(! this.readonly) {
               if (this.application.stepIsApproved(1)) {
-                  return (this.hasRole('super-user') || this.hasRole('super-admin'));
+                  return this.hasRole('super-admin');
               }
               return this.hasAnyPermission([['members-invite', this.group], 'groups-manage', 'ep-applications-manage', 'annual-updates-manage'])
             }
@@ -178,7 +178,7 @@ export default {
         canShowMemberActions() {
           if(!this.readonly) {
               if (this.application.stepIsApproved(1)) {
-                return (this.hasRole('super-user') || this.hasRole('super-admin'));
+                return this.hasRole('super-admin');
               }
               return this.hasAnyMemberPermission();
           }
