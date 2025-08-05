@@ -329,7 +329,7 @@ export default {
           <tab-item label="Members">
             <div v-if="application.stepIsApproved(1)" class="bg-yellow-100 text-yellow-800 p-3 rounded mb-4">
               <strong>Note:</strong> This section is locked because the application has been approved.
-              Please contact GPM Support if you need to make changes.
+              Please <a href="mailto:gpm_support@clinicalgenome.org">contact GPM Support</a> if you need to make changes.
             </div>
             <MemberList :group="group" />
             <submission-wrapper
@@ -364,7 +364,7 @@ export default {
           <tab-item label="Scope" :visible="group.is_ep">
             <div v-if="application.stepIsApproved(1)" class="bg-yellow-100 text-yellow-800 p-3 rounded mb-4">
               <strong>Note:</strong> This section is locked because the application has been approved.
-              Please contact GPM Support if you need to make changes.
+              Please <a href="mailto:gpm_support@clinicalgenome.org">contact GPM Support</a> if you need to make changes.
             </div>
             <h3>
               Plans for Ongoing Gene Review and Reanalysis and Discrepancy
