@@ -72,8 +72,9 @@ export default {
             if (this.id === null) {
                 return null;
             }
+            const iid = Number.parseInt(this.id);
             if (this.logEntries) {
-                return this.logEntries.find(i => i.id === this.id);
+                return this.logEntries.find(i => i.id === iid);
             }
         },
         initNewEntry () {
