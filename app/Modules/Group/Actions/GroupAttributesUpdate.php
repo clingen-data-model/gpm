@@ -97,12 +97,14 @@ class GroupAttributesUpdate
         return $this->handle($group, $data);
     }
 
-    public function authorize(ActionRequest $request, Group $group): bool
+    public function authorize(ActionRequest $request): bool
     {
         $user = Auth::user();
         if (!$user) { return false;}
 
         // If only updating the description field
+        $group = $request->group;
+        $group->load('expertPanel');
         if ($request->has('description')) {
             if ($group->expertPanel && $group->expertPanel->getApprovalDateForStep(1)) {
                 return $user->hasRole('super-admin') || $user->hasRole('super-user') || $user->hasRole('coordinator', $group);
