@@ -43,7 +43,19 @@ class GenesAdd
 
     public function authorize(ActionRequest $request): bool
     {
-        return Auth::user()->can('addGene', $request->group);
+        $user = Auth::user();
+        if (!$user) { return false; }
+
+        $group = $request->route('group'); // adjust param name if different        
+        $group->load('expertPanel');
+
+        // Step 1 approved → only super-admin can add genes    
+        if ($group->expertPanel && $group->expertPanel->getApprovalDateForStep(1)) {
+            return $user->hasRole('super-admin');
+        }
+
+        // Otherwise follow existing permission policy
+        return $user->can('addGene', $request->group);
     }
     
     public function rules(ActionRequest $request): array

@@ -105,4 +105,45 @@ class UpdateScopeDescriptionTest extends TestCase
             'scope_description' => ['A description of scope can only be set for expert panels.']
         ]);
     }
+
+    /**
+     * @test
+     */
+    public function when_step_1_is_approved_only_super_admin_can_update_scope()
+    {
+        // Mark Step 1 as approved
+        $this->expertPanel->update(['step_1_approval_date' => now()]);
+        $this->expertPanel->refresh();
+
+        // Regular privileged user (should be blocked)
+        Sanctum::actingAs($this->user);
+        $this->json('PUT', $this->url, ['scope_description' => 'should fail'])
+            ->assertStatus(403);
+
+        // Super-admin (should be allowed)
+        $this->setupRoles('super-admin', 'system');
+        $superAdmin = $this->setupUser();
+        $superAdmin->assignRole('super-admin');
+
+        Sanctum::actingAs($superAdmin);
+        $this->json('PUT', $this->url, ['scope_description' => 'approved desc'])
+            ->assertStatus(200)
+            ->assertJsonFragment(['scope_description' => 'approved desc']);
+    }
+
+
+    /**
+     * @test
+     */
+    public function before_step_1_approval_privileged_user_can_update_scope()
+    {
+        $this->expertPanel->update(['step_1_approval_date' => null]); // Not approved
+
+        Sanctum::actingAs($this->user);
+        $this->json('PUT', $this->url, ['scope_description' => 'pre-approval desc'])
+            ->assertStatus(200)
+            ->assertJsonFragment(['scope_description' => 'pre-approval desc']);
+    }
+
+
 }
