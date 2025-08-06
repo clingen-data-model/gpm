@@ -35,13 +35,21 @@ class ScopeDescriptionUpdate
     
     public function asController(ActionRequest $request, $uuid)
     {
+        $user = Auth::user();
         $group = Group::findByUuidOrFail($uuid);
-        if (Auth()->user()->cannot('updateApplicationAttribute', $group)) {
-            throw new AuthorizationException('You do not have permission to update this Expert Panel.');
-        }
-        $group = $this->handle($group, $request->scope_description);
         $group->load('expertPanel', 'members', 'members.person');
 
+        // Step 1 approved → only super-admin
+        if ($group->expertPanel && $group->expertPanel->getApprovalDateForStep(1)) {
+            if (!$user->hasRole('super-admin')) {
+                throw new AuthorizationException('Only super-admin can update the scope description after approval.');
+            }
+        } else {
+            if ($user->cannot('updateApplicationAttribute', $group)) {
+                throw new AuthorizationException('You do not have permission to update this Expert Panel.');
+            }
+        }
+        $group = $this->handle($group, $request->scope_description);
         return new GroupResource($group);
     }
 

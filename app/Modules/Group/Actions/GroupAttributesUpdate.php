@@ -97,9 +97,20 @@ class GroupAttributesUpdate
         return $this->handle($group, $data);
     }
 
-    public function authorize(ActionRequest $request): bool
+    public function authorize(ActionRequest $request, Group $group): bool
     {
-        return Auth::user() && Auth::user()->hasPermissionTo('groups-manage');
+        $user = Auth::user();
+        if (!$user) { return false;}
+
+        // If only updating the description field
+        if ($request->has('description')) {
+            if ($group->expertPanel && $group->expertPanel->getApprovalDateForStep(1)) {
+                return $user->hasRole('super-admin') || $user->hasRole('super-user') || $user->hasRole('coordinator', $group);
+            }
+        }
+
+        // Default permission check for other fields
+        return $user->hasPermissionTo('groups-manage');
     }
 
     public function asListener(ApplicationCompleted $event)

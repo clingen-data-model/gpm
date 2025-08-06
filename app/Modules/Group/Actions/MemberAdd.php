@@ -63,7 +63,19 @@ class MemberAdd
 
     public function authorize(ActionRequest $request): bool
     {
-        return $request->user()->can('inviteMembers', $request->group);
+        $user = $request->user();
+        if (!$user) { return false;}
+
+        $group = $request->route('group'); // adjust param name if different        
+        $group->load('expertPanel');
+
+        // Step 1 approved → only super-admin can add genes    
+        if ($group->expertPanel && $group->expertPanel->getApprovalDateForStep(1)) {
+            return $user->hasRole('super-admin');
+        }
+
+        // Otherwise fall back to existing permission logic
+        return $user->can('inviteMembers', $group);
     }
 
     public function cancelNotification(): static

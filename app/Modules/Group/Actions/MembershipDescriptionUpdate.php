@@ -31,16 +31,24 @@ class MembershipDescriptionUpdate
         event(new MembershipDescriptionUpdated($group, $description));
 
         return $group;
-    }
-    
+    }   
+
     public function asController(ActionRequest $request, $uuid)
     {
+        $user = Auth()->user();
         $group = Group::findByUuidOrFail($uuid);
-        if (Auth()->user()->cannot('updateApplicationAttribute', $group)) {
-            throw new AuthorizationException('You do not have permission to update this Expert Panel.');
+        // Step 1 approved → only super-admin can update
+        if ($group->expertPanel && $group->expertPanel->getApprovalDateForStep(1)) {
+            if (!($user->hasRole('super-admin') || $user->hasRole('super-user') || $user->hasRole('coordinator'))) {
+                throw new AuthorizationException('Only super-admin, super-user, and coordinator can update the membership description after approval.');
+            }
+        } else {
+            // Before approval → follow existing permission logic
+            if ($user->cannot('updateApplicationAttribute', $group)) {
+                throw new AuthorizationException('You do not have permission to update this Expert Panel.');
+            }
         }
         $group = $this->handle($group, $request->membership_description);
-        // $group->load('expertPanel', 'members', 'members.person');
 
         return new GroupResource($group);
     }
