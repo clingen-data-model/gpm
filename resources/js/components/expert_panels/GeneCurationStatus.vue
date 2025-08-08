@@ -252,7 +252,7 @@ const changeSort = key => {
         <table class="table-auto w-full border min-w-full">
             <thead class="bg-gray-100 sticky top-0 z-10">
                 <tr>
-                    <th class="px-2"><input type="checkbox" :checked="isAllSelected" @change="toggleSelectAll" /></th>
+                    <th v-if="editing && !readonly" class="px-2"><input type="checkbox" :checked="isAllSelected" @change="toggleSelectAll" :disabled="readonly || !editing" /></th>
                     <th class="text-left px-4 py-2 cursor-pointer" @click="changeSort('gene_symbol')">
                         Gene <span v-if="sortKey==='gene_symbol'">{{ sortOrder==='asc'?'▲':'▼' }}</span>
                     </th>
@@ -267,7 +267,7 @@ const changeSort = key => {
             <tbody>
                 <template v-for="(gene, index) in paginatedGenes" :key="gene.id">
                     <tr class="hover:bg-gray-50">
-                        <td class="px-2">
+                        <td class="px-2" v-if="editing && !readonly">
                             <input type="checkbox" :checked="selectedGenes.includes(gene.id)" @change="toggleSelect(gene.id)" :disabled="readonly || !editing" />
                         </td>
                         <td 
@@ -283,14 +283,17 @@ const changeSort = key => {
                             {{ gene.statuses.join(', ') }} ({{ gene.details.length }})
                         </td>
                         <td class="px-4 py-2">
-                            <select v-model="gene.tier" class="border rounded px-1 py-0.5" @change="updateTier(gene)" :disabled="savingTierFor === gene.id || readonly || !editing">
-                                <option value="">—</option>
-                                <option value="1">Tier 1</option>
-                                <option value="2">Tier 2</option>
-                                <option value="3">Tier 3</option>
-                                <option value="4">Tier 4</option>
-                            </select>
-                            <span v-if="savingTierFor === gene.id" class="ml-2 text-gray-500">Saving...</span>
+                            <template v-if="!readonly && editing">
+                                <select v-model="gene.tier" class="border rounded px-1 py-0.5" @change="updateTier(gene)" :disabled="savingTierFor === gene.id || readonly || !editing">
+                                    <option value="">—</option>
+                                    <option value="1">Tier 1</option>
+                                    <option value="2">Tier 2</option>
+                                    <option value="3">Tier 3</option>
+                                    <option value="4">Tier 4</option>
+                                </select>
+                                <span v-if="savingTierFor === gene.id" class="ml-2 text-gray-500">Saving...</span>
+                            </template>
+                            <span v-else>{{ gene.tier || '—' }}</span>
                         </td>
                     </tr>
 

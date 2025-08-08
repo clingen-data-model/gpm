@@ -9,11 +9,6 @@
     const store = useStore();
     const group = computed(() => store.getters['groups/currentItemOrNew'])
     const expertPanel = computed(() => group.value.expert_panel);
-    const curatedGenes = computed(() => expertPanel.value?.curatedGenes || {
-      published: [],
-      notPublished: [],
-      notCurated: [],
-    });
 
     const activeTab = ref('published');
     console.log('curatedGenes', curatedGenes.value);
@@ -73,7 +68,7 @@
           :hide-columns="['id']"
         />
 
-        <GeneCurationStatus :data="curatedGenes" />
+        <GeneCurationStatus v-if="group.is_gcep" :genes="expertPanel.genes" :readonly="true" :editing="false" />
         
       </div>
 

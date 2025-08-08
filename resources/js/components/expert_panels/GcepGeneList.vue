@@ -202,10 +202,6 @@ export default {
                 @update:model-value="$emit('geneschanged'); $emit('update')"
             />
             
-            <div v-if="geneCheckResults.length">
-                <GeneCurationStatus :genes="geneCheckResults" :groupID="group.uuid" :editing="editing" :readonly="readonly" />
-            </div>
-
         </div>
         <div v-else>
             <p v-if="genesAsText" style="text-indent: 1rem;">
@@ -214,6 +210,9 @@ export default {
             <div v-else class="well cursor-pointer" @click="showForm">
                 {{ loading ? `Loading...` : `No genes have been added to the gene list.` }}
             </div>
+        </div>
+        <div v-if="geneCheckResults.length">
+            <GeneCurationStatus :genes="geneCheckResults" :groupID="group.uuid" :editing="editing" :readonly="readonly" />
         </div>
     </div>
 </template>
