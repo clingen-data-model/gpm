@@ -2,7 +2,7 @@
 <div>
     <!-- Header controls -->
     <div class="flex justify-between items-center mb-4">
-        <div class="flex items-center gap-2">
+        <div v-if="editing" class="flex items-center gap-2">
             <button class="btn blue" @click="startAdd" :disabled="isFormVisible">
                 + Add Gene
             </button>
@@ -141,7 +141,7 @@
     <table v-if="genes" class="border-none w-full">
         <thead>
             <tr>
-                <th v-if="canEdit"><input type="checkbox" :checked="isAllSelected" @change="toggleSelectAll" /></th>
+                <th v-if="canEdit && editing"><input type="checkbox" :checked="isAllSelected" @change="toggleSelectAll" /></th>
                 <th @click="setSort('gene_symbol')" class="cursor-pointer">
                     HGNC Symbol <span v-if="sortKey === 'gene_symbol'">{{ sortOrder === 'asc' ? '▲' : '▼' }}</span>
                 </th>
@@ -164,26 +164,26 @@
         </tbody>
         <tbody>
             <tr v-for="gene in paginatedGenes" :key="gene.id">
-                <td v-if="canEdit">
+                <td v-if="canEdit & editing">
                     <input type="checkbox" :checked="selectedGenes.includes(gene.id)" @change="toggleSelect(gene.id)" />
                 </td>
                 <td>{{ gene.gene_symbol }}</td>
                 <td>{{ gene.mondo_id }}<br />{{ gene.disease_name }}</td>
                 <td>{{ gene.moi }}</td>
                 <td>
-                    <div v-if="!gene.plan.is_other" class="grid grid-cols-2 gap-x-4 text-xs text-gray-600">
-                        <div><strong>Expert Panel:</strong> {{ gene.plan.expert_panel ?? 'N/A' }}</div>
-                        <div><strong>Classification:</strong> {{ gene.plan.classification ?? 'N/A' }}</div>
-                        <div><strong>Status:</strong> {{ gene.plan.curation_status ?? 'N/A' }}</div>
+                    <div v-if="!gene.plan?.is_other" class="grid grid-cols-2 gap-x-4 text-xs text-gray-600">
+                        <div><strong>Expert Panel:</strong> {{ gene.plan?.expert_panel ?? 'N/A' }}</div>
+                        <div><strong>Classification:</strong> {{ gene.plan?.classification ?? 'N/A' }}</div>
+                        <div><strong>Status:</strong> {{ gene.plan?.curation_status ?? 'N/A' }}</div>
                         <div><strong>Date Approved:</strong>
-                            {{ gene.plan.date_approved ? new Date(gene.plan.date_approved).toLocaleDateString() : 'N/A' }}
+                            {{ gene.plan?.date_approved ? new Date(gene.plan?.date_approved).toLocaleDateString() : 'N/A' }}
                         </div>
-                        <div class="col-span-2"><strong>Phenotypes:</strong> {{ gene.plan.phenotypes ?? 'N/A' }}</div>
+                        <div class="col-span-2"><strong>Phenotypes:</strong> {{ gene.plan?.phenotypes ?? 'N/A' }}</div>
                     </div>
-                    <div v-else v-html="gene.plan.the_plan"></div>
+                    <div v-else v-html="gene.plan?.the_plan"></div>
                 </td>
                 <td>
-                    <div class="flex flex-col gap-1">
+                    <div v-if="editing" class="flex flex-col gap-1">
                         <select
                             v-model="gene.tier"
                             class="border rounded px-1 py-0.5 text-sm"
@@ -204,6 +204,7 @@
                             <dropdown-item @click="confirmRemove(gene)">Remove</dropdown-item>
                         </dropdown-menu>
                     </div>
+                    <span v-else>{{ gene.tier || '—' }}</span>
                 </td>
             </tr>
         </tbody>
@@ -244,7 +245,7 @@ import RichTextEditor from '@/components/prosekit/RichTextEditor.vue';
 export default {
     name: 'VcepGeneList',
     components: { GeneSearchSelect, DiseaseSearchSelect, CuratedGeneSearchSelect, RichTextEditor },
-    props: { readonly: { type: Boolean, default: false } },
+    props: { readonly: { type: Boolean, default: false }, editing: { type: Boolean, default: true } },
     emits: ['saved'],
     setup(props, { emit }) {
         const store = useStore();
