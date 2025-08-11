@@ -81,6 +81,11 @@ export default {
             this.notes = null;
         },
         async confirmSubmission () {
+          	if (!this.notes || this.notes.trim() === '') {
+                this.errors.notes = ['Notes are required.'];
+                return;
+            }
+
             try {
                 await this.$store.dispatch('groups/submitApplicationStep', {group: this.group, notes: this.notes});
                 this.$store.commit('pushSuccess', 'Your application has been submitted for approval.')
@@ -151,10 +156,10 @@ export default {
             </ol>
           </static-alert>
           <div class="mt-4 text-lg">
-            Optional notes for reviewers:
+            Required notes for reviewers:
           </div>
           <input-row label="" :errors="errors.notes" vertical>
-            <textarea v-model="notes" rows="5" class="w-full" />
+            <textarea v-model="notes" rows="5" class="w-full" :class="{'border-red-500': errors.notes}" />
           </input-row>
           <button-row @submitted="confirmSubmission" @canceled="cancelSubmission" />
         </modal-dialog>

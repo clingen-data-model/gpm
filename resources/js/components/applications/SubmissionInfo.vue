@@ -58,14 +58,20 @@ import MarkdownBlock from '../MarkdownBlock.vue';
       class="mb-4 border-blue-700"
       variant="bland"
     >
-      <div v-if="!latestSubmission.sent_to_chairs_at">
+      <div>
         <strong>Submitted</strong> by {{ latestSubmission.submitter ? latestSubmission.submitter.name : '' }} on
-        <strong>{{ formatDate(latestSubmission.created_at) }}</strong>
-        <MarkdownBlock v-if="latestSubmission.notes" class="ml-4" :markdown="latestSubmission.notes" />
+        <strong>{{ latestSubmission.created_at ? formatDate(latestSubmission.created_at) : '' }}</strong>        
       </div>
+	  	<div v-if="latestSubmission.notes" class="mb-2">
+			<strong>Note: </strong> 
+			<MarkdownBlock class="ml-4" :markdown="latestSubmission.notes" />
+		</div>
       <div v-if="latestSubmission.submission_status_id == 3">
         <strong>Sent to chairs</strong> on <strong>{{ formatDate(latestSubmission.sent_to_chairs_at) }}</strong>.
-      </div>
+		<div v-if="latestSubmission.notes_for_chairs">
+			<strong>Note for chairs:</strong> <MarkdownBlock class="ml-4" :markdown="latestSubmission.notes_for_chairs" />
+		</div>
+      </div>	  
       <div v-if="latestSubmission.submission_status_id == 2">
         <strong>{{ formatDate(latestSubmission.updated_at) }}</strong> - Revisions Requested.
       </div>

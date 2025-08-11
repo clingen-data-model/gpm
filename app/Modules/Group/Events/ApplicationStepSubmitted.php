@@ -19,7 +19,8 @@ class ApplicationStepSubmitted extends GroupEvent
     public function getLogEntry(): string
     {
         $submitterName = $this->submission->submitter ? $this->submission->submitter->name : 'system';
-        return $this->submission->type->name.' application submitted for approval by '.$submitterName.'.';
+        $submitterMessage = $this->submission->submitter ? $this->submission->submitter->name : 'system';
+        return $this->submission->type->name.' application submitted for approval by '.$submitterName.'. Note: ' . $this->submission->notes;
     }
 
     public function getProperties(): ?array

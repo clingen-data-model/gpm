@@ -29,7 +29,7 @@ class ApplicationSentToChairs extends GroupEvent
 
     public function getLogEntry(): string
     {
-        $logEntry = 'Sent to CDWG OC Chairs: Step ' . $this->group->expertPanel->current_step . ' application';
+        $logEntry = 'Sent to CDWG OC Chairs: Step ' . $this->group->expertPanel->current_step . ' application. Note: ' . $this->additionalComments;
 
         return $logEntry;
     }
