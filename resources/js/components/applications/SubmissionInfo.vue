@@ -16,9 +16,9 @@ import MarkdownBlock from '../MarkdownBlock.vue';
         }
     })
 
-    const submissions = computed(() => {
-        return props.group.expert_panel.submissionsForStep(props.step);
-    })
+	const submissions = computed(() => {
+		return props.group.expert_panel.submissionsForStep(props.step).sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+	});
 
     const stepHasBeenSubmitted = computed(() => {
         return submissions.value && submissions.value.length > 0;
@@ -58,20 +58,33 @@ import MarkdownBlock from '../MarkdownBlock.vue';
       class="mb-4 border-blue-700"
       variant="bland"
     >
-      <div>
-        <strong>Submitted</strong> by {{ latestSubmission.submitter ? latestSubmission.submitter.name : '' }} on
-        <strong>{{ latestSubmission.created_at ? formatDate(latestSubmission.created_at) : '' }}</strong>        
-      </div>
-	  	<div v-if="latestSubmission.notes" class="mb-2">
-			<strong>Note: </strong> 
-			<MarkdownBlock class="ml-4" :markdown="latestSubmission.notes" />
+	
+		<div v-for="(submission, index) in submissions" :key="submission.id" :class="{'gray-out': index > 0}">
+			<div>
+				<strong>Submitted</strong> by {{ submission.submitter ? submission.submitter.name : '' }} on
+				<strong>{{ submission.created_at ? formatDate(submission.created_at) : '' }}</strong>
+			</div>
+			<div v-if="submission.notes" class="mb-2">
+				<strong>Note: </strong>
+				<MarkdownBlock class="ml-4" :markdown="submission.notes" />
+			</div>
+
+			<div v-if="submission.sent_to_chairs_at">
+				<strong>Sent to chairs</strong> on <strong>{{ formatDate(submission.sent_to_chairs_at) }}</strong>.
+				<div v-if="submission.notes_for_chairs">
+					<strong>Note for chairs:</strong> <MarkdownBlock class="ml-4" :markdown="submission.notes_for_chairs" />
+				</div>
+			</div>
+			<ul v-if="submission.judgements && submission.judgements.length > 0" class="list-disc pl-6">
+				<li v-for="judgement in submission.judgements" :key="judgement.id">
+					<strong>{{ judgement.person.name }}:</strong>
+								&nbsp;
+					<badge :color="judgementColor(judgement)">{{ judgement.decision }}</badge>
+					<div v-if="judgement.notes" class="text-sm"><strong>Notes:</strong> {{ judgement.notes }}</div>
+				</li>
+			</ul>
+			<hr v-if="index > 0" />
 		</div>
-      <div v-if="latestSubmission.submission_status_id == 3">
-        <strong>Sent to chairs</strong> on <strong>{{ formatDate(latestSubmission.sent_to_chairs_at) }}</strong>.
-		<div v-if="latestSubmission.notes_for_chairs">
-			<strong>Note for chairs:</strong> <MarkdownBlock class="ml-4" :markdown="latestSubmission.notes_for_chairs" />
-		</div>
-      </div>	  
       <div v-if="latestSubmission.submission_status_id == 2">
         <strong>{{ formatDate(latestSubmission.updated_at) }}</strong> - Revisions Requested.
       </div>
@@ -106,4 +119,11 @@ import MarkdownBlock from '../MarkdownBlock.vue';
     .submission-log-table th {
         @apply border-0 border-b py-2;
     }
+
+	.gray-out {
+		color: gray;
+		background-color: #f0f0f0;
+		border-left: 5px solid #ddd;
+		padding: 10px;
+	}
 </style>
