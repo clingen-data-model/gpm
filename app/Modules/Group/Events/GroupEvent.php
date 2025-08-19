@@ -96,7 +96,9 @@ abstract class GroupEvent extends RecordableEvent implements PublishableEvent
     }
 
     public function getPublishableMessage(): array {
-        return ['group' => $this->groupRepresentation($this->group)];
+        $message = $this->getProperties() ?? [];
+        $message['group'] = $this->groupRepresentation($this->group);
+        return $message;
     }
 
     abstract public function getLogEntry() :string;
