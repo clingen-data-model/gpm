@@ -28,11 +28,15 @@ export default {
 				disease_name: '',
 				mondo_id: '',
 				moi: '',
+				moi_name: '',
+				hp_id: '',
 				expert_panel: '',				
 				date_approved: '',
 				classification: '',
 				curation_status: '',
 				phenotypes: '',
+				phenotypeIDs: '',
+				checkKey: '',
 				is_other: true
 			};
 
@@ -48,28 +52,14 @@ export default {
 
 			const curatedResults = response.data
 				.filter(item => {
-					const classificationId = item.current_classification?.id;
+					const classificationId = item.classification_id;
 					const statusId = item.curation_status_id;
-					return [1, 2, 3].includes(classificationId) && statusId === 9;
+					return [1, 2, 3, 4].includes(classificationId) && statusId === 9;
 				})
-				.map(item => {
-					const phenotypesFormatted = (item.phenotypes || []).map(ph => `${ph.name} (${ph.mim_number})`).join(', ');
-					
+				.map(item => {					
 					return {
-						curation_id: item.id,
-						hgnc_id: item.hgnc_id,
-						gene_symbol: item.gene_symbol,
-						disease_name: item.disease?.name || '',
-						mondo_id: item.mondo_id,
-						moi: item.mode_of_inheritance?.abbreviation || '',
-						moi_name: item.mode_of_inheritance?.name || '',
-						hp_id: item.mode_of_inheritance?.hp_id || '',
-						expert_panel: item.expert_panel?.name || '',
-						date_approved: item.current_status_date ?? null,
-						classification: item.current_classification?.name || null,
-						curation_status: item.current_status?.name || null,
-						phenotypes: phenotypesFormatted,
-						is_other: false
+						is_other: false,
+						...item 
 					};
 				});
 
@@ -86,7 +76,7 @@ export default {
 		v-model="selectedOption"
 		:search-function="search"
 		placeholder="Search curated Gene-MonDO ID-MoI"
-		style="z-index: 2"
+		style="z-index: 21"
 		key-options-by="id"
 		optionsHeight="400"
 	>
@@ -108,13 +98,17 @@ export default {
 				<strong>Other (Not curated)</strong>
 			</div>
 			<div v-else>
-				<div class="font-semibold">
-					{{ option.gene_symbol }} | {{ option.mondo_id }} | MoI: {{ option.moi }}
+				<div class="font-semibold" >
+					{{ option.gene_symbol }} | {{ option.mondo_id }} | MoI: {{ option.moi }} 
+					<span v-if="['Moderate','Limited'].includes(option.classification)" class="font-bold text-orange-500">⚠</span>
 				</div>
 				<div class="grid grid-cols-2 gap-x-4 text-xs text-gray-600 leading-snug">
 					<div><strong>Disease:</strong> {{ option.disease_name }}</div>
 					<div><strong>Expert Panel:</strong> {{ option.expert_panel }}</div>
-					<div><strong>Classification:</strong> {{ option.classification ?? 'N/A' }}</div>
+					<div>
+						<strong>Classification:</strong> {{ option.classification ?? 'N/A' }}
+						<span v-if="['Moderate','Limited'].includes(option.classification)" class="font-bold text-orange-500">⚠</span>
+					</div>
 					<div><strong>Status:</strong> {{ option.curation_status ?? 'N/A' }}</div>
 					<div><strong>Date Approved:</strong> 
 						{{ new Date(option.date_approved).toLocaleDateString('en-US', {
