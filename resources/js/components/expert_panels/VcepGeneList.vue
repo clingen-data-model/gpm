@@ -62,6 +62,30 @@
                 >
                     Click here for <strong>Other (Not Curated)</strong>
                 </button>
+
+                <!-- Curated plan required for Moderate/Limited -->
+                <div
+                    v-if="formGene?.requires_plan"
+                    class="mt-3 border rounded bg-amber-50 p-3"
+                    >
+                    <div class="flex items-start gap-2 mb-2">
+                        <span class="text-orange-500 font-bold">⚠</span>
+                        <div class="text-sm text-gray-800">
+                        This gene’s classification is <strong>{{ formGene.plan?.classification }}</strong>.  
+                        Please describe your plan for curation.
+                        </div>
+                    </div>
+
+                    <label class="block text-sm font-medium mb-1">Plan for Curation *</label>
+                    <RichTextEditor
+                        v-model="formGene.curated_plan_text"
+                        placeholder="Describe your plan (min 20 characters)"
+                        class="w-full"
+                    />
+                    <p v-if="!isCuratedPlanValid" class="text-xs text-red-500 mt-1">
+                        Plan must be at least 20 characters.
+                    </p>
+                </div>
             </div>
 
             <!-- Manual entry if Other -->
@@ -106,12 +130,15 @@
 
             <!-- Buttons -->
             <div class="mt-4 flex justify-end gap-2">
-                <button class="btn btn-gray" @click="cancelForm">Cancel</button>
+                <button class="btn btn-gray" @click="cancelForm">Cancel</button>                
                 <button
                     class="btn blue"
-                    :disabled="isEditing ? false : (formGene?.is_other && !isOtherFormValid)"
+                    :disabled="isEditing ? false : (
+                        (formGene?.is_other && !isOtherFormValid) ||
+                        (!formGene?.is_other && !isCuratedPlanValid)
+                    )"
                     @click="saveForm"
-                >
+                    >
                     Save
                 </button>
             </div>
@@ -163,24 +190,29 @@
             </tr>
         </tbody>
         <tbody>
-            <tr v-for="gene in paginatedGenes" :key="gene.id">
+            <template v-for="(gene, index) in paginatedGenes" :key="gene.id">
+            <tr :style="gene.plan?.classification === 'Moderate' ? 'background-color: oklch(98.7% 0.026 102.212);' : gene.plan?.classification === 'Limited' || gene.is_outdated ? 'background-color: oklch(97.3% 0.071 103.193);' : ''">
                 <td v-if="canEdit & editing">
                     <input type="checkbox" :checked="selectedGenes.includes(gene.id)" @change="toggleSelect(gene.id)" />
                 </td>
                 <td>{{ gene.gene_symbol }}</td>
                 <td>{{ gene.mondo_id }}<br />{{ gene.disease_name }}</td>
                 <td>{{ gene.moi }}</td>
-                <td>
-                    <div v-if="!gene.plan?.is_other" class="grid grid-cols-2 gap-x-4 text-xs text-gray-600">
+                <td class="text-xs">
+                    <div v-if="!gene.plan?.is_other" class="grid grid-cols-2 gap-x-4 text-gray-600">
                         <div><strong>Expert Panel:</strong> {{ gene.plan?.expert_panel ?? 'N/A' }}</div>
-                        <div><strong>Classification:</strong> {{ gene.plan?.classification ?? 'N/A' }}</div>
+                        <div>
+                            <strong>Classification:</strong> {{ gene.plan?.classification ?? 'N/A' }}
+                            <span v-if="['Moderate','Limited'].includes(gene.plan?.classification)" class="font-bold text-orange-500">⚠</span>
+                        </div>
                         <div><strong>Status:</strong> {{ gene.plan?.curation_status ?? 'N/A' }}</div>
                         <div><strong>Date Approved:</strong>
                             {{ gene.plan?.date_approved ? new Date(gene.plan?.date_approved).toLocaleDateString() : 'N/A' }}
                         </div>
                         <div class="col-span-2"><strong>Phenotypes:</strong> {{ gene.plan?.phenotypes ?? 'N/A' }}</div>
+                        <div class="col-span-2" v-if=" gene.plan?.requires_plan"><strong>Plan:</strong> <span v-html="gene.plan?.curated_plan_text"></span></div>                        
                     </div>
-                    <div v-else v-html="gene.plan?.the_plan"></div>
+                    <div v-else v-html="gene.plan?.the_plan"></div>                    
                 </td>
                 <td>
                     <div v-if="editing" class="flex flex-col gap-1">
@@ -190,23 +222,78 @@
                             @change="updateTier(gene)"
                             :disabled="savingTierFor === gene.id || readonly"
                         >
-                            <option value="">—</option>
+                            <option value="null">—</option>
                             <option value="1">Tier 1</option>
                             <option value="2">Tier 2</option>
                             <option value="3">Tier 3</option>
                             <option value="4">Tier 4</option>
                         </select>
+                        <button v-if="gene.is_outdated && gene.gt_data" 
+                            @click="applyGtUpdate(gene)"
+                            class="btn btn-xs w-full text-center text-amber-800 font-semibold"
+                            title="Snapshot differs from latest GeneTracker data"
+
+                            >
+                            Refresh data from GT ⚠
+                        </button>
                         <dropdown-menu v-if="!gene.toDelete" :hide-cheveron="true" class="relative">
                             <template #label>
                                 <button class="btn btn-xs w-full text-center">⋯</button>
                             </template>
                             <dropdown-item @click="startEdit(gene)">Edit</dropdown-item>
                             <dropdown-item @click="confirmRemove(gene)">Remove</dropdown-item>
-                        </dropdown-menu>
+                        </dropdown-menu>                        
                     </div>
                     <span v-else>{{ gene.tier || '—' }}</span>
                 </td>
             </tr>
+            <tr v-if="gene.is_outdated && gene.gt_data"> <!-- && ! expanded.includes(index) -->
+                <td :colspan="editing ? 6 : 5">
+                    <div
+                        role="status" aria-live="polite"
+                        class="rounded-md border border-amber-300 bg-amber-50
+                                px-3 py-2 text-xs text-amber-900 col-span-2" 
+                        >
+                        <div class="flex items-start gap-2">
+                            ⚠
+                            <div>
+                                <div class="font-medium">Snapshot out of date</div>
+                                <div class="text-amber-900/80">This record differs from the latest GeneTracker data. 
+                                   <span @click="gene.is_outdated && toggleExpanded(index)" class="underline cursor-pointer font-semibold">
+                                     {{ expanded.includes(index) ? 'Hide' : 'View' }} GeneTracker data
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr v-if="gene.is_outdated && gene.gt_data && expanded.includes(index)">                
+                <td v-if="editing" @click="toggleExpanded(index)">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" aria-labelledby="box" role="presentation" name="cheveron-down" class="m-auto cursor-pointer"><title id="box" lang="en">box</title><g fill="currentColor"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"></path></g></svg>
+                </td>
+                <td>{{ gene.gt_data?.gene_symbol }}</td>
+                <td>{{ gene.gt_data?.mondo_id }}<br />{{ gene.gt_data?.disease_name }}</td>
+                <td>{{ gene.gt_data?.moi }}</td>
+                <td class="text-xs" :colspan="editing ? 2 : 1">
+                    <div class="grid grid-cols-2 gap-x-4 text-gray-600">
+                        <div><strong>Expert Panel:</strong> {{ gene.gt_data?.expert_panel ?? 'N/A' }}</div>
+                        <div>
+                            <strong>Classification:</strong> {{ gene.gt_data?.classification ?? 'N/A' }}
+                            <span v-if="['Moderate','Limited'].includes(gene.gt_data?.classification)" class="font-bold text-orange-500">⚠</span>
+                        </div>
+                        <div><strong>Status:</strong> {{ gene.gt_data?.curation_status ?? 'N/A' }}</div>
+                        <div><strong>Date Approved:</strong>
+                            {{ gene.gt_data?.date_approved ? new Date(gene.gt_data?.date_approved).toLocaleDateString() : 'N/A' }}
+                        </div>
+                        <div class="col-span-2"><strong>Phenotypes:</strong> {{ gene.gt_data?.phenotypes ?? 'N/A' }}</div>
+                    </div>
+                </td>
+                <td v-if="! editing" @click="toggleExpanded(index)">
+                    Hide
+                </td>
+            </tr>
+            </template>
         </tbody>
     </table>
 
@@ -245,7 +332,7 @@ import RichTextEditor from '@/components/prosekit/RichTextEditor.vue';
 export default {
     name: 'VcepGeneList',
     components: { GeneSearchSelect, DiseaseSearchSelect, CuratedGeneSearchSelect, RichTextEditor },
-    props: { readonly: { type: Boolean, default: false }, editing: { type: Boolean, default: true } },
+    props: { readonly: { type: Boolean, required: false, default: false }, editing: { type: Boolean, required: false, default: true } },
     emits: ['saved'],
     setup(props, { emit }) {
         const store = useStore();
@@ -288,9 +375,9 @@ export default {
             if (!selectedGene.value) return;
             try {
                 await api.delete(`/api/groups/${group.value.uuid}/expert-panel/genes/${selectedGene.value.id}`);
-                await getGenes();
                 showConfirmRemove.value = false;
                 selectedGene.value = null;
+                await getGenes();                
             } catch (error) {
                 store.commit('pushError', error.response.data);
             }
@@ -309,11 +396,10 @@ export default {
         const getGenes = async () => {
             if (!group.value.uuid) return;
             try {
-                genes.value = await api.get(`/api/groups/${group.value.uuid}/expert-panel/genes?with[]=gene&with[]=disease`)
-                    .then(r => r.data);
-                group.value.expert_panel.genes = genes.value;
+                await store.dispatch('groups/getGenes', group.value);
+                genes.value = group.value.expert_panel.genes;
             } catch (error) {
-                store.commit('pushError', error.response.data);
+                store.commit('pushError', error.response?.data || error);
             }
         };
 
@@ -335,7 +421,7 @@ export default {
 
         const startEdit = (gene) => {
             isFormVisible.value = true;
-            isEditing.value = true;
+            isEditing.value = gene.id;
 
             if (gene.plan?.is_other) {
                 // Build form for Other gene
@@ -357,7 +443,9 @@ export default {
                     mondo_id: gene.mondo_id,
                     moi: gene.moi,
                     date_approved: gene.date_approved,
+                    requires_plan: ['Moderate', 'Limited'].includes(gene.plan?.classification),
                     plan: gene.plan,
+                    curated_plan_text: gene.plan?.the_plan || '',
                     is_other: false
                 };
             }
@@ -396,9 +484,23 @@ export default {
 
         const handleCuratedSelection = selected => {
             if (selected && !selected.is_other) {
-                formGene.value = selected;
+                formGene.value = {
+                    ...selected,
+                    is_other: false,
+                    requires_plan: ['Moderate', 'Limited'].includes(selected.classification),
+                    curated_plan_text: ''
+                };
+
             }
         };
+
+        const isCuratedPlanValid = computed(() => {
+            if (!formGene.value?.requires_plan) return true;
+            const plain = (formGene.value.curated_plan_text || '')
+                .replace(/<[^>]+>/g, '') // strip HTML from RTE
+                .trim();
+            return plain.length >= 20;
+        });
 
         const saveForm = async () => {
             try {
@@ -421,6 +523,12 @@ export default {
                         date_approved: null
                     };
                 } else {
+                    const planSnapshot = { ...formGene.value };
+                    planSnapshot.requires_plan = !!formGene.value.requires_plan;
+                    if (formGene.value.requires_plan) {
+                        planSnapshot.the_plan = formGene.value.curated_plan_text || '';
+                    }
+
                     payload = {
                         hgnc_id: formGene.value.hgnc_id,
                         gene_symbol: formGene.value.gene_symbol,
@@ -434,9 +542,7 @@ export default {
                 }
 
                 if (isEditing.value) {
-                    console.log('Updating gene:', formGene.value.id);
-                    console.log('Payload:', payload);
-                    await api.put(`/api/groups/${group.value.uuid}/expert-panel/genes/${formGene.value.id}`, payload);
+                    await api.put(`/api/groups/${group.value.uuid}/expert-panel/genes/${isEditing.value}`, payload);
                 } else {
                     await api.post(`/api/groups/${group.value.uuid}/expert-panel/genes`, { genes: [payload] });
                 }
@@ -481,8 +587,8 @@ export default {
             try {
                 await api.put(`/api/groups/${group.value.uuid}/expert-panel/genes/update-tier`, { ids: selectedGenes.value, tier: bulkTier.value });
                 store.commit('pushSuccess', `Tier updated for ${selectedGenes.value.length} genes`);
-                await getGenes();
                 selectedGenes.value = [];
+                await getGenes();                
                 bulkTier.value = '';
             } catch (error) {
                 store.commit('pushError', 'Failed to update tiers in bulk');
@@ -560,6 +666,35 @@ export default {
             return result;
         });
 
+        const applyGtUpdate = async (gene) => {
+            try {
+                const snap = gene.gt_data;
+                if (!snap) return;
+
+                const payload = {
+                    is_other: false,
+                    hgnc_id: snap.hgnc_id,
+                    gene_symbol: snap.gene_symbol,
+                    disease_name: snap.disease_name,
+                    mondo_id: snap.mondo_id,
+                    moi: snap.moi,
+                    date_approved: snap.date_approved,
+                    requires_plan: ['Moderate', 'Limited'].includes(snap.plan?.classification),
+                    plan: {
+                        ...snap,
+                        checkKey: snap.checkKey,
+                    },
+                };
+
+                await api.put(`/api/groups/${group.value.uuid}/expert-panel/genes/${gene.id}`, payload);
+                store.commit('pushSuccess', `Updated ${gene.gene_symbol} from GeneTracker`);
+                await getGenes();
+            } catch (e) {
+                store.commit('pushError', 'Failed to apply update from GeneTracker');
+            }
+        };
+
+
         const moiOptions = computed(() => [...new Set(genes.value.map(g => g.moi).filter(Boolean))]);
         const classificationOptions = computed(() => [...new Set(genes.value.map(g => g.plan?.classification).filter(Boolean))]);
         const totalPages = computed(() => Math.ceil(filteredAndSortedGenes.value.length / pageSize.value));
@@ -570,6 +705,14 @@ export default {
         const isAllSelected = computed(() => paginatedGenes.value.every(g => selectedGenes.value.includes(g.id)));
 
         onMounted(() => { getGenes(); getMois(); });
+        const expanded = ref([])
+        const toggleExpanded = index => {
+            if (expanded.value.includes(index)) {
+                expanded.value = expanded.value.filter(i => i !== index)
+            } else {
+                expanded.value.push(index)
+            }
+        }
 
         return {
             group, genes, formGene, curatedGeneKey, isEditing, isFormVisible,
@@ -577,10 +720,10 @@ export default {
             pageSize, currentPage, totalPages, paginatedGenes, filteredAndSortedGenes,
             moiOptions, classificationOptions,
             selectedGenes, bulkTier, savingTierFor, isAllSelected,
-            canEdit, isOtherFormValid,
+            canEdit, isOtherFormValid, isCuratedPlanValid, toggleExpanded, expanded,
             showConfirmRemove, selectedGene, confirmRemove, cancelRemove, removeGene,
             setSort, startAdd, startEdit, cancelForm, selectOther, handleCuratedSelection, saveForm,
-            remove, updateTier, applyBulkTier, toggleSelect, toggleSelectAll
+            remove, updateTier, applyBulkTier, toggleSelect, toggleSelectAll, applyGtUpdate
         };
     }
 };
