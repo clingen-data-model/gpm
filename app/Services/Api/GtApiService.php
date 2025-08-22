@@ -23,18 +23,6 @@ class GtApiService
         return $response->json();
     }
 
-    public function searchCurations(string $query): array
-    {
-        $response = $this->client->get('/curations?', ['filter' => $query]);
-        return $response->json();
-    }
-
-    public function getDiseaseByMondoId(string $mondoId): array
-    {
-        $response = $this->client->post('/diseases/mondo', ['mondo_id' => $mondoId]);
-        return $response->json();
-    }
-
     public function getDiseasesByMondoIds(array $mondoId): array
     {
         $response = $this->client->post('/diseases/mondos', ['mondo_ids' => $mondoId]);
@@ -68,7 +56,19 @@ class GtApiService
 
     public function lookupGenesBulk(string $genes): array
     {
-        $response = $this->client->post('/genes/curations', ['gene_symbol' => $genes]);
+        $response = $this->client->post('/bulk-lookup', ['gene_symbol' => $genes, 'resource' => 'simple', 'perPage' => 1500]);
+        return $response->json();
+    }
+
+    public function getCurationByID(string $uuid): array
+    {
+        $response = $this->client->post('/bulk-lookup', ['uuid' => $uuid, 'resource' => 'simple', 'perPage' => 1500]);
+        return $response->json();
+    }
+
+    public function searchCurations(string $query): array
+    {
+        $response = $this->client->post('/bulk-lookup?', ['filter' => $query, 'resource' => 'simple']);
         return $response->json();
     }
     
