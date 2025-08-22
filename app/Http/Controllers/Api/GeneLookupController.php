@@ -41,7 +41,12 @@ class GeneLookupController extends Controller
             return response()->json([], 200);
         }
 
-        // Call GT API service
         return $this->gtApi->searchCurations($query);
+    }
+
+    public function curationids(Request $request)
+    {        
+        $curationIDs = $request->input('curation_ids') ?? '';
+        return $this->gtApi->getCurationByID($curationIDs);
     }
 }
