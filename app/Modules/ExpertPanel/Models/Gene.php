@@ -78,7 +78,7 @@ class Gene extends Model
     {
         try {
             return Cache::remember("mondo_id_{$this->mondo_id}", 300, function () {
-                $data = app(GtApiService::class)->getDiseaseByMondoId($this->mondo_id);
+                $data = app(GtApiService::class)->getDiseasesByMondoIds($this->mondo_id);
                 return $data ? GtDiseaseDto::fromArray($data) : null;
             });
         } catch (\Throwable $e) {
