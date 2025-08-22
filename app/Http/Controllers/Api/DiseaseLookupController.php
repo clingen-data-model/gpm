@@ -27,7 +27,7 @@ class DiseaseLookupController extends Controller
         }
 
         $mondo_id = strtolower($validator->validated()['mondo_id']);
-        return $this->gtApi->getDiseaseByMondoId($mondo_id);
+        return $this->gtApi->getDiseasesByMondoIds($mondo_id);
     }
 
     public function search(Request $request)
