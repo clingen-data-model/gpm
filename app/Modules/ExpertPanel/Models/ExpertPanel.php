@@ -465,8 +465,52 @@ class ExpertPanel extends Model implements HasMembers, BelongsToGroup, RecordsEv
         return $this->{'step_'.$stepNumber.'_approval_date'};
     }
 
+    public function memberNamesForAffils(): string
+    {
+        // Avoid N+1s if caller didn’t eager-load.
+        $this->loadMissing('members.person');
 
+        return $this->members
+            ->map(fn ($m) => $m->person ? trim($m->person->first_name.' '.$m->person->last_name) : null)
+            ->filter()         // remove null/empty
+            ->unique()         // dedupe identical names
+            ->implode(', ');
+    }
 
+    public function coordinatorsForAffils(): array
+    {
+        // Try to use roles on the specific membership; fall back to person->activeMemberships scope.
+        $this->loadMissing('members.person', 'members.roles', 'members.person.activeMemberships.roles');
+
+        return $this->members
+            ->filter(function ($m) {
+                // Prefer checking roles on THIS membership (most accurate).
+                if ($m->relationLoaded('roles') && $m->roles instanceof Collection) {
+                    return $m->roles->pluck('name')->contains('coordinator');
+                }
+
+                // Fallback: check if the person is a coordinator for THIS group via activeMemberships.
+                if ($m->person && $m->person->relationLoaded('activeMemberships')) {
+                    return $m->person->activeMemberships
+                        ->where('group_id', $this->group_id)
+                        ->flatMap(fn ($mem) => $mem->roles ?? collect())
+                        ->pluck('name')
+                        ->contains('coordinator');
+                }
+
+                return false;
+            })
+            ->map(function ($m) {
+                $p = $m->person;
+                return [
+                    'coordinator_name'  => $p ? trim($p->first_name.' '.$p->last_name) : null,
+                    'coordinator_email' => $p->email ?? null,
+                ];
+            })
+            ->filter(fn ($row) => !empty($row['coordinator_name'])) // keep rows with a name
+            ->values()
+            ->all();
+    }
 
     // Factory support
     protected static function newFactory()

@@ -25,6 +25,7 @@ use App\Modules\ExpertPanel\Http\Controllers\Api\ApplicationStepController;
 use App\Modules\ExpertPanel\Http\Controllers\Api\ApplicationContactController;
 use App\Modules\ExpertPanel\Http\Controllers\Api\NextActionAssigneeController;
 use App\Modules\ExpertPanel\Actions\ClinvarOrganizationUpdate;
+use App\Modules\ExpertPanel\Http\Controllers\Api\AffiliationController;
 
 Route::get('/next-actions/assignees', [NextActionAssigneeController::class, 'index']);
 
@@ -39,6 +40,9 @@ Route::group([
         Route::get('/{app_uuid}', [ApplicationController::class, 'show']);
         Route::put('/{app_uuid}', ExpertPanelUpdateAttributes::class);
         Route::delete('/{app_uuid}', ExpertPanelDelete::class);
+
+        Route::get('/{expertPanel:uuid}/affiliation', [AffiliationController::class, 'show']);
+        Route::post('/{expertPanel:uuid}/affiliation', [AffiliationController::class, 'store']);
 
         Route::get('/{app_uuid}/contacts', [ApplicationContactController::class, 'index']);
         Route::post('/{app_uuid}/contacts', ContactAdd::class);
