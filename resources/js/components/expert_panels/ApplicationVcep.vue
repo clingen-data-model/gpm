@@ -83,6 +83,9 @@ export default {
                 await Promise.all(promises);
                 this.$emit('saved');
                 this.genesChanged = false;
+
+                if (this.group?.markClean) this.group.markClean();
+                if (this.group?.expert_panel?.markClean) this.group.expert_panel.markClean();
             } catch (error) {
                 if (isValidationError(error)) {
                     this.errors = error.response.data.errors;
@@ -101,7 +104,7 @@ export default {
             console.log('expert panel dirty fields:', this.group.expert_panel.getDirty());
         },
         saveUpdates () {
-            if (this.applicationIsDirty()) {
+            if (this.applicationIsDirty() ) {
                 return this.$store.dispatch('groups/saveApplicationData', this.group)
                         .then(() => {
                             this.$emit('saved');
@@ -109,7 +112,7 @@ export default {
             }
         },
         saveWebDescription() {
-          if(this.webDescriptionIsDirty) {
+          if(this.webDescriptionIsDirty()) {
             return this.$store.dispatch('groups/descriptionUpdate', {
               uuid: this.group.uuid,
               description: this.group.description

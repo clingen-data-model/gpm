@@ -91,7 +91,7 @@ class Entity {
         this.original = {};
     }
 
-    isDirty (attribute = null) {
+    isDirtyOld (attribute = null) {
         if (attribute) {
             return this.original[attribute] !== this.attributes[attribute];
         }
@@ -100,35 +100,89 @@ class Entity {
         });
     }
 
-    getDirty (attribute = null) {
-        if (!this.isDirty(attribute)) {
-            return {};
+    isDirty (attribute = null) {
+        const keys = Object.keys(this.original);
+        const same = (a, b) => {
+            const norm = v => (v instanceof Date ? v.toISOString() : v);
+            return isEqual(norm(a), norm(b));
+        };
+        
+        if (attribute) {
+            if (!keys.includes(attribute)) return false;
+            return !same(this.original[attribute], this.attributes[attribute]);
         }
+        const compareKeys = keys.filter(k => !this.constructor.dates.includes(k));
+        return compareKeys.some(k => !same(this.original[k], this.attributes[k]));
+    }
+    isDirty(attribute = null) {
+        const keys = Object.keys(this.original);
+        const same = (a, b) => {
+            const norm = v => (v instanceof Date ? v.toISOString() : v);
+            return isEqual(norm(a), norm(b));
+        };
+
+        if (attribute) {
+            if (!keys.includes(attribute)) return false;
+            return !same(this.original[attribute], this.attributes[attribute]);
+        }
+        
+        const compareKeys = keys.filter(k => !this.constructor.dates.includes(k));
+        return compareKeys.some(k => !same(this.original[k], this.attributes[k]));
+    }
+
+
+    getDirty(attribute = null) {
+        if (!this.isDirty(attribute)) return {};
         let keys = Object.keys(this.original);
         if (attribute) {
-            if (Array.isArray(attribute)) {
-                keys = attribute
-            }
-            if (typeof attribute == 'string') {
-                keys = [attribute];
-            }
+            keys = Array.isArray(attribute) ? attribute : [attribute];
+        } else {
+            keys = keys.filter(k => !this.constructor.dates.includes(k));
         }
-
         const dirty = {};
         keys.forEach(key => {
             if (this.isDirty(key)) {
-                dirty[key] = {original: this.original[key], new: this.attributes[key]}
+                dirty[key] = { original: this.original[key], new: this.attributes[key] };
             }
         });
-
         return dirty;
     }
 
-    revertDirty () {
-        this.attributes = {...this.attributes, ...this.original};
-        this.clearChanges();
+    revertDirty (fields = null) {
+        if (!fields) {
+            this.attributes = cloneDeep(this.original);
+            this.setOriginal(this.attributes);
+            return;
+        }
+        const list = Array.isArray(fields) ? fields : [fields];
+        list.forEach(k => {
+            if (k in this.original) {
+            this.attributes[k] = cloneDeep(this.original[k]);
+            }
+        });
+        this.markClean(list);
+    }
+
+    
+    /** This function is to seset the dirty baseline. If fields passed, only reset those. */
+    markClean(fields = null) {
+        if (!fields) {
+            this.original = cloneDeep(this.attributes);
+            return;
+        }
+        const list = Array.isArray(fields) ? fields : [fields];
+        list.forEach(k => {
+            this.original[k] = cloneDeep(this.attributes[k]);
+        });
+    }
+
+    /** And this one is to replace the whole object with a fresh snapshot (use when refetching). */
+    replaceAttributes(attrs) {
+        this.attributes = cloneDeep(attrs);
+        this.original   = cloneDeep(attrs);
     }
 
 }
+
 
 export default Entity;

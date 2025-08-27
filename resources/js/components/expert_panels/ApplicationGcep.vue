@@ -76,6 +76,9 @@ export default {
                 await Promise.all(promises);
                 this.$emit('saved');
                 this.genesChanged = false;
+
+                if (this.group?.markClean) this.group.markClean();
+                if (this.group?.expert_panel?.markClean) this.group.expert_panel.markClean();
             } catch (error) {
                 if (isValidationError(error)) {
                     this.errors = error.response.data.errors;
@@ -146,7 +149,7 @@ export default {
         <MemberList :group="group" />
       </AppSection>
       <AppSection id="websiteDescription" title="Website Description">
-        <GroupDescriptionForm @update="handleUpdate" />
+        <GroupDescriptionForm :group="group" @update="handleUpdate" />
       </AppSection>
       <AppSection id="scope" title="Scope of Work">
         <p>
