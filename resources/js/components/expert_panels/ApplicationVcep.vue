@@ -93,15 +93,6 @@ export default {
                 }
                 throw error;
             }
-            // TODO: remove this console log after debugging
-            console.log(`supposedly saved application data
-            applicationIsDirty: ${this.applicationIsDirty()}
-            webDescriptionIsDirty: ${this.webDescriptionIsDirty()}
-            genesChanged: ${this.genesChanged}
-            group.isDirty(): ${this.group.isDirty()}
-            group.expert_panel.isDirty(): ${this.group.expert_panel.isDirty()}`);
-            console.log('group dirty fields:', this.group.getDirty());
-            console.log('expert panel dirty fields:', this.group.expert_panel.getDirty());
         },
         saveUpdates () {
             if (this.applicationIsDirty() ) {
