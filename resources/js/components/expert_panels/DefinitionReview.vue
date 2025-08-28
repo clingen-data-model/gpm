@@ -4,6 +4,7 @@
     import ReviewSection from '@/components/expert_panels/ReviewSection.vue'
     import ReviewMembership from '@/components/expert_panels/ReviewMembership.vue'
     import { formatDate } from '@/date_utils'
+    import VcepGeneList from '@/components/expert_panels/VcepGeneList.vue';
 
     const store = useStore();
     const group = computed(() => store.getters['groups/currentItemOrNew'])
@@ -48,18 +49,8 @@
         <p v-if="group.is_gcep">
           {{ expertPanel.genes.map(g => g.gene_symbol).join(', ') }}
         </p>
-        <simple-table
-          v-if="group.is_vcep_or_scvcep"
-          :data="
-            expertPanel.genes.map((g) => ({
-              id: g.id,
-              gene: g.gene_symbol,
-              disease: g.disease_name,
-            }))
-          "
-          key-by="id"
-          :hide-columns="['id']"
-        />
+
+        <VcepGeneList v-if="group.is_vcep_or_scvcep" :group="group" :editing="false" />
       </div>
 
       <h3>Description of scope</h3>
