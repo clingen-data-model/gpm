@@ -4,10 +4,12 @@ import {useStore} from 'vuex';
 import formFactory from '@/forms/form_factory'
 import is_validation_error from '@/http/is_validation_error'
 import api from '@/http/api'
+import GeneCurationStatus from './GeneCurationStatus.vue';
 
 export default {
     name: 'GcepGeneList',
     components: {
+        GeneCurationStatus
     },
     props: {
         editing: {
@@ -33,6 +35,8 @@ export default {
 
         const loading = ref(false);
         const genesAsText = ref(null);
+        const geneCheckResults = ref([]);
+        const activeTab = ref('published');
 
         const {errors, resetErrors} = formFactory(props, context)
 
@@ -53,8 +57,25 @@ export default {
             try {
                 await store.dispatch('groups/getGenes', group.value);
                 genesAsText.value = group.value.expert_panel.genes.map(g => g.gene_symbol).join(", ");
+                geneCheckResults.value = group.value.expert_panel.genes;
             } catch (error) {
-                store.commit('pushError', error.response.data);
+                let message = 'An unexpected error occurred.';
+    
+                if (error.response) {
+                    if (typeof error.response.data === 'string') {
+                        message = error.response.data;
+                    } else if (error.response.data?.message) {
+                        message = error.response.data.message;
+                    } else if (Array.isArray(error.response.data?.errors)) {
+                        message = error.response.data.errors.join(', ');
+                    } else if (typeof error.response.data === 'object') {
+                        message = JSON.stringify(error.response.data);
+                    }
+                } else if (error.message) {
+                    message = error.message;
+                }
+
+                store.commit('pushError', message);
             }
             loading.value = false;
             
@@ -86,10 +107,10 @@ export default {
                             : [];
 
             try {
-                await api.post(`/api/groups/${group.value.uuid}/expert-panel/genes`, {genes});
+                await api.post(`/api/groups/${group.value.uuid}/expert-panel/genes`, {genes});                
                 hideForm();
                 context.emit('saved')
-                getGenes();
+                await getGenes();
             } catch (error) {
                 if (is_validation_error(error)) {
                     const messages = error.response.data.errors
@@ -116,7 +137,6 @@ export default {
             }
         };
 
-
         watch(() => store.getters['groups/currentItem'], (to, from) => {
             if (to.id && (!from || to.id !== from.id)) {
                 // syncGenesAsText();
@@ -142,6 +162,8 @@ export default {
             cancel,
             syncGenesAsText,
             save,
+            geneCheckResults,
+            activeTab
         }
     },
     computed: {
@@ -161,32 +183,36 @@ export default {
 }
 </script>
 <template>
-  <div>
-    <h4 class="flex justify-between mb-2">
-      Gene List
-      <edit-icon-button 
-        v-if="hasAnyPermission(['groups-manage', ['application-edit', group]]) && !editing && !readonly"
-        @click="showForm"
-      />
-    </h4>
-    <div v-if="editing">
-      <input-row 
-        v-model="genesAsText"
-        type="large-text"
-        label="List the gene symbols for the genes the Expert Panel plans to curate.  Separate genes by commas, spaces, or new lines."
-        :errors="errors.genes"
-        placeholder="ABC, DEF1, BEAN"
-        vertical
-        @update:model-value="$emit('geneschanged'); $emit('update')"
-      />
+    <div>
+        <h4 class="flex justify-between mb-2">
+            Gene List
+            <edit-icon-button 
+                v-if="hasAnyPermission(['groups-manage', ['application-edit', group]]) && !editing && !readonly"
+                @click="showForm"
+            />
+        </h4>
+        <div v-if="editing">
+            <input-row 
+                v-model="genesAsText"
+                type="large-text"
+                label="List the gene symbols for the genes the Expert Panel plans to curate.  Separate genes by commas, spaces, or new lines."
+                :errors="errors.genes"
+                placeholder="ABC, DEF1, BEAN"
+                vertical
+                @update:model-value="$emit('geneschanged'); $emit('update')"
+            />
+            
+        </div>
+        <div v-else>
+            <p v-if="genesAsText" style="text-indent: 1rem;">
+                {{ genesAsText }}
+            </p>
+            <div v-else class="well cursor-pointer" @click="showForm">
+                {{ loading ? `Loading...` : `No genes have been added to the gene list.` }}
+            </div>
+        </div>
+        <div v-if="geneCheckResults.length">
+            <GeneCurationStatus :genes="geneCheckResults" :groupID="group.uuid" :editing="editing" :readonly="readonly" />
+        </div>
     </div>
-    <div v-else>
-      <p v-if="genesAsText" style="text-indent: 1rem;">
-        {{ genesAsText }}
-      </p>
-      <div v-else class="well cursor-pointer" @click="showForm">
-        {{ loading ? `Loading...` : `No genes have been added to the gene list.` }}
-      </div>
-    </div>
-  </div>
 </template>
