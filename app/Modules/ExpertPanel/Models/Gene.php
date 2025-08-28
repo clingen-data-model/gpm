@@ -36,6 +36,7 @@ class Gene extends Model
         'hgnc_id',
         'expert_panel_id',
         'gene_symbol',
+        'tier',
         'mondo_id',
         'disease_name',
         'moi',
