@@ -439,7 +439,7 @@ export const actions = {
                     };
                 }
 
-                const statuses = [...new Set(entries.map(e => e.current_status || 'Unknown'))];
+                const statuses = [...new Set(entries.map(e => e.curation_status || 'Unknown'))];
                 return {
                     gene_symbol: geneSymbols[i],
                     entries,
