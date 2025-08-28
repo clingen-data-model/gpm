@@ -44,7 +44,7 @@ export default {
   <SearchSelect 
     v-model="selectedDisease" 
     :search-function="search"
-    style="z-index: 2"
+    style="z-index: 1"
     placeholder="MonDO ID or name"
   >
     <template #selection-label="{selection}">
