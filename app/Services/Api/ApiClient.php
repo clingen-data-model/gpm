@@ -19,7 +19,8 @@ class ApiClient
 
     protected function request(): \Illuminate\Http\Client\PendingRequest
     {
-        return Http::timeout(10)
+        return Http::baseUrl($this->baseUrl)
+            ->timeout(10)
             ->retry(2, 200)
             ->withToken($this->tokenManager->getToken())
             ->acceptJson();

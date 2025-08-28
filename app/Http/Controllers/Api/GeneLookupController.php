@@ -30,6 +30,9 @@ class GeneLookupController extends Controller
     public function check(Request $request)
     {
         $symbols = $request->input('gene_symbol') ?? '';
+        if (! $symbols) {
+            return response()->json([], 200);
+        }
         return $this->gtApi->lookupGenesBulk($symbols);
     }
 
@@ -47,6 +50,9 @@ class GeneLookupController extends Controller
     public function curationids(Request $request)
     {        
         $curationIDs = $request->input('curation_ids') ?? '';
+        if (! $curationIDs) {
+            return response()->json([], 200);
+        }
         return $this->gtApi->getCurationByID($curationIDs);
     }
 }
