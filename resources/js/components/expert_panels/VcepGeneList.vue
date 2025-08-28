@@ -376,6 +376,7 @@ export default {
             try {
                 await api.delete(`/api/groups/${group.value.uuid}/expert-panel/genes/${selectedGene.value.id}`);
                 showConfirmRemove.value = false;
+                store.commit('pushSuccess', `Successfully removed gene ${selectedGene.value.gene_symbol}`);
                 selectedGene.value = null;
                 await getGenes();                
             } catch (error) {
@@ -434,7 +435,12 @@ export default {
                     custom_plan: gene.plan.the_plan || ''
                 };
             } else {
-                // Build form for Curated gene
+                const plan = {
+                    ...gene.plan,
+                    is_other: false,
+                    curated_plan_text: gene.plan?.curated_plan_text ?? gene.plan?.the_plan ?? ''
+                };
+
                 formGene.value = {
                     id: gene.id,
                     hgnc_id: gene.hgnc_id,
@@ -444,8 +450,8 @@ export default {
                     moi: gene.moi,
                     date_approved: gene.date_approved,
                     requires_plan: ['Moderate', 'Limited'].includes(gene.plan?.classification),
-                    plan: gene.plan,
-                    curated_plan_text: gene.plan?.the_plan || '',
+                    plan,
+                    curated_plan_text: plan.curated_plan_text,
                     is_other: false
                 };
             }
@@ -502,6 +508,45 @@ export default {
             return plain.length >= 20;
         });
 
+        // helper to build a complete, flat snapshot for plan
+        const buildBasePlan = (fg) => {
+            const fromPlan = (fg?.plan && Object.keys(fg.plan).length) ? fg.plan : {};
+
+            const snap = {
+                // prefer what's already inside plan; fall back to top-level fields on fg
+                curation_id:       fromPlan.curation_id       ?? fg.curation_id,
+                gene_symbol:       fromPlan.gene_symbol       ?? fg.gene_symbol,
+                hgnc_id:           fromPlan.hgnc_id           ?? fg.hgnc_id,
+                hgnc_name:         fromPlan.hgnc_name         ?? fg.hgnc_name ?? null,
+                disease_name:      fromPlan.disease_name      ?? fg.disease_name,
+                mondo_id:          fromPlan.mondo_id          ?? fg.mondo_id,
+                expert_panel:      fromPlan.expert_panel      ?? fg.expert_panel ?? null,
+                moi:               fromPlan.moi               ?? fg.moi,
+                moi_name:          fromPlan.moi_name          ?? fg.moi_name ?? null,
+                hp_id:             fromPlan.hp_id             ?? fg.hp_id ?? null,
+                classification_id: fromPlan.classification_id ?? fg.classification_id ?? null,
+                classification:    fromPlan.classification    ?? fg.classification ?? null,
+                curation_status_id:fromPlan.curation_status_id?? fg.curation_status_id ?? null,
+                curation_type:     fromPlan.curation_type     ?? fg.curation_type ?? null,
+                curation_status:   fromPlan.curation_status   ?? fg.curation_status ?? null,
+                date_approved:     fromPlan.date_approved     ?? fg.date_approved ?? null,
+                phenotypes:        fromPlan.phenotypes        ?? fg.phenotypes ?? null,
+                phenotypeIDs:      fromPlan.phenotypeIDs      ?? fg.phenotypeIDs ?? null,
+                checkKey:          fromPlan.checkKey          ?? fg.checkKey ?? null,
+
+                // normalize flags/text
+                is_other: false,
+                requires_plan: !!fg?.requires_plan,
+                curated_plan_text:
+                (fg?.requires_plan ? (fg?.curated_plan_text || fromPlan.curated_plan_text || '') 
+                                    : (fromPlan.curated_plan_text || ''))
+            };
+
+            // strip undefined to keep payload clean
+            Object.keys(snap).forEach(k => snap[k] === undefined && delete snap[k]);
+            return snap;
+        };
+
         const saveForm = async () => {
             try {
                 let payload;
@@ -523,11 +568,7 @@ export default {
                         date_approved: null
                     };
                 } else {
-                    const planSnapshot = { ...formGene.value };
-                    planSnapshot.requires_plan = !!formGene.value.requires_plan;
-                    if (formGene.value.requires_plan) {
-                        planSnapshot.the_plan = formGene.value.curated_plan_text || '';
-                    }
+                    const basePlan = buildBasePlan(formGene.value);
 
                     payload = {
                         hgnc_id: formGene.value.hgnc_id,
@@ -536,7 +577,7 @@ export default {
                         mondo_id: formGene.value.mondo_id,
                         moi: formGene.value.moi,
                         date_approved: formGene.value.date_approved,
-                        plan: formGene.value,
+                        plan: basePlan,
                         is_other: false
                     };
                 }
@@ -678,11 +719,11 @@ export default {
                     disease_name: snap.disease_name,
                     mondo_id: snap.mondo_id,
                     moi: snap.moi,
-                    date_approved: snap.date_approved,
-                    requires_plan: ['Moderate', 'Limited'].includes(snap.plan?.classification),
+                    date_approved: snap.date_approved,                    
                     plan: {
                         ...snap,
                         checkKey: snap.checkKey,
+                        requires_plan: ['Moderate', 'Limited'].includes(snap.plan?.classification),
                     },
                 };
 
