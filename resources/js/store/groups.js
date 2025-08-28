@@ -349,13 +349,13 @@ export const actions = {
     },
 
     async getGenes({ commit, getters, dispatch }, group) {
-        const response = await api.get(`${getApplicationUrl(group.uuid)}/genes`);   
-                 
+        const response = await api.get(`${getApplicationUrl(group.uuid)}/genes`);
+
         const genes = response.data;
         const item = getters.getItemByUuid(group.uuid);
         const geneSymbols = genes.map(g => g.gene_symbol).filter(Boolean);
         const curationIDs = genes.map(g => g.plan?.curation_id).filter(Boolean);
-        
+
         if (geneSymbols.length && group.is_gcep) {
             const curatedResult = await dispatch('loadCurationStatuses', geneSymbols);
 
@@ -371,10 +371,9 @@ export const actions = {
                 details: statusLookup[gene.gene_symbol]?.entries || [],
             }))
         } else if (group.is_vcep_or_scvcep) {
-            console.log("group.is_vcep_or_scvcep", group.is_vcep_or_scvcep)
             const response = await api.post('/api/curationids', { curation_ids: curationIDs.join(',') });
-            const gtCurations = response.data.data           
-           
+            const gtCurations = response.data.data
+
             const gtById = Object.fromEntries( gtCurations.map(c => [String(c.curation_id), c]) );
             item.expert_panel.genes = genes.map(g => {
                 const plan = g.plan || {};
@@ -392,7 +391,7 @@ export const actions = {
                     is_outdated = localKey !== remoteKey;
                     if (is_outdated) {
                         gt_data = gt;
-                    }                   
+                    }
                 }
 
                 return {
@@ -402,12 +401,11 @@ export const actions = {
                 };
             });
         } else {
-            item.expert_panel.genes = genes; 
+            item.expert_panel.genes = genes;
         }
-        console.log("item.expert_panel.genes: ", item.expert_panel.genes)
         commit('addItem', item);
-        return genes;            
-    },  
+        return genes;
+    },
 
     async loadCurationStatuses(_, geneSymbols) {
         if (!geneSymbols || geneSymbols.length === 0) return [];
@@ -454,7 +452,7 @@ export const actions = {
             return [];
         }
 
-    },  
+    },
 
     getEvidenceSummaries ({commit, getters}, group) {
         return api.get(`${getApplicationUrl(group.uuid)}/evidence-summaries`)
