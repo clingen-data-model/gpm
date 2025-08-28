@@ -35,7 +35,7 @@ class GtApiService
         return $response->json();
     }
 
-    
+
     public function searchGenes(string $query): array
     {
         $response = $this->client->post('/genes/search', ['query' => $query, 'limit' => 10]);
@@ -71,7 +71,7 @@ class GtApiService
         $response = $this->client->post('/bulk-lookup', ['filter' => $query, 'resource' => 'simple']);
         return $response->json();
     }
-    
+
     public function approvalBulkUpload(array $payload): array
     {
         $response = $this->client->post('/genes/bulkupload', $payload);
