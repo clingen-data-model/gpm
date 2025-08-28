@@ -373,7 +373,7 @@ export const actions = {
         } else if (group.is_vcep_or_scvcep) {
             console.log("group.is_vcep_or_scvcep", group.is_vcep_or_scvcep)
             const response = await api.post('/api/curationids', { curation_ids: curationIDs.join(',') });
-            const gtCurations = response.data.data           
+            const gtCurations = response.data?.data ?? [];       
            
             const gtById = Object.fromEntries( gtCurations.map(c => [String(c.curation_id), c]) );
             item.expert_panel.genes = genes.map(g => {
