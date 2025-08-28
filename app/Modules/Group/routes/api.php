@@ -163,7 +163,9 @@ Route::group([
                 Route::put('/{gene_id}', GeneUpdate::class);
                 Route::get('/', [GeneListController::class, 'index']);
                 Route::post('/', GenesAdd::class);
-                Route::delete('/', GeneRemove::class);                                
+                Route::put('/update-tier', GenesUpdateTier::class);
+                Route::put('/{gene_id}', GeneUpdate::class);
+                Route::delete('/', GeneRemove::class);
             });
 
             // EVIDENCE SUMMARIES
