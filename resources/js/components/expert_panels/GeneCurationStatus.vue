@@ -300,16 +300,25 @@ const changeSort = key => {
                     <!-- Expanded details -->
                     <tr v-if="expanded.includes(index)">
                         <td colspan="4" class="bg-gray-100 px-6 py-3 text-sm">
-                            <div v-for="entry in gene.details" :key="entry.disease + entry.current_status" class="mb-2">
+                            <div v-for="entry in gene.details" :key="entry.disease + entry.curation_status" class="mb-2">
                                 <div class="grid grid-cols-2 text-sm text-gray-700">
-                                    <div><strong>Status:</strong> {{ entry.current_status }}</div>
-                                    <div><strong>Status Date:</strong> {{ entry.current_status_date }}</div>
+                                    <div><strong>Status:</strong> {{ entry.curation_status }}</div>
+                                    <div><strong>Status Date:</strong> {{ 
+                                    new Date(entry?.date_approved).toLocaleString('en-US', {
+                                        year: 'numeric',
+                                        month: 'short',
+                                        day: 'numeric',
+                                        hour: 'numeric',
+                                        minute: '2-digit',
+                                        hour12: true })
+                                        }}
+                                    </div>
                                     <div><strong>Disease:</strong> {{ entry.mondo_id }} {{ entry.disease }}</div>
                                     <div><strong>Expert Panel:</strong> {{ entry.expert_panel }}</div>
                                     <div><strong>Classification:</strong> {{ entry.classification }}</div>
                                     <div><strong>MOI:</strong> {{ entry.moi }}</div>
                                     <div><strong>Type:</strong> {{ entry.curation_type }}</div>
-                                    <div><strong>Phenotype:</strong> {{ entry.phenotype }}</div>
+                                    <div><strong>Phenotype:</strong> {{ entry.phenotypes }}</div>
                                 </div>
                                 <hr />
                             </div>
