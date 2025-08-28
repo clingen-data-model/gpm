@@ -68,16 +68,4 @@ class ApiClient
             throw new \Exception('API request failed: ' . $e->getMessage());
         }
     }
-
-    public function get(string $endpoint, array $params = []): Response
-    {
-        try {
-            return $this->request()
-                ->get($this->baseUrl . $endpoint, $params)
-                ->throw();
-        } catch (RequestException $e) {
-            report($e);
-            throw new \Exception('API request failed: ' . $e->getMessage());
-        }
-    }
 }
