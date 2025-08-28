@@ -39,7 +39,9 @@ class Gene extends Model
         'tier',
         'mondo_id',
         'disease_name',
-        'date_approved',        
+        'date_approved',
+        'moi',
+        'plan',
     ];
 
     /**
@@ -53,6 +55,7 @@ class Gene extends Model
         'expert_panel_id' => 'integer',
         'tier' => 'integer',
         'date_approved' => 'datetime',
+        'plan' => 'array',
     ];
 
     /**
@@ -80,7 +83,7 @@ class Gene extends Model
     {
         try {
             return Cache::remember("mondo_id_{$this->mondo_id}", 300, function () {
-                $data = app(GtApiService::class)->getDiseasesByMondoIds($this->mondo_id);
+                $data = app(GtApiService::class)->getDiseasesByMondoIds([$this->mondo_id]);
                 return $data ? GtDiseaseDto::fromArray($data) : null;
             });
         } catch (\Throwable $e) {
