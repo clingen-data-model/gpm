@@ -68,7 +68,7 @@ class GtApiService
 
     public function searchCurations(string $query): array
     {
-        $response = $this->client->post('/bulk-lookup?', ['filter' => $query, 'resource' => 'simple']);
+        $response = $this->client->post('/bulk-lookup', ['filter' => $query, 'resource' => 'simple']);
         return $response->json();
     }
     
