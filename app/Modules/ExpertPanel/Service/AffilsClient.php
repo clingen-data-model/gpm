@@ -38,4 +38,13 @@ class AffilsClient
 
         return $this->http()->patch($url, $fields);
     }
+
+    public function createCDWG(array $payload) {
+        return $this->http()->post($this->base.$this->paths['cdwg_create'], $payload);        
+    }
+
+    public function updateCDWG(int $id, array $payload) {
+        $url = $this->base . sprintf($this->paths['cdwg_update'], $id);
+        return $this->http()->patch($url, $payload);        
+    }
 }

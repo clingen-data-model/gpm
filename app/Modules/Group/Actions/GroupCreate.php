@@ -12,13 +12,16 @@ use App\Modules\Group\Events\GroupCreated;
 use Lorisleiva\Actions\Concerns\AsController;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Modules\Group\Http\Resources\GroupResource;
+use App\Modules\ExpertPanel\Service\AffilsClient;
+use Illuminate\Support\Facades\Log;
 
 class GroupCreate
 {
     use AsController;
 
-    public function __construct(private CoiCodeMake $makeCoiCode)
-    {
+    public function __construct(
+        private CoiCodeMake $makeCoiCode, 
+        private AffilsClient $affils) {
     }
 
 
@@ -46,6 +49,28 @@ class GroupCreate
             $expertPanel->uuid = Uuid::uuid4();
             $group->expertPanel()->save($expertPanel);
         }
+
+         // If CDWG, send data AM API with ONLY { name }
+        if ((int) $group->group_type_id === 2) {
+            try {
+                $resp = $this->affils->createCdwg(['name' => $group->name]);
+                if (isset($resp['id'])) {
+                    $group->parent_id = (int) $resp['id'];
+                    $group->save();
+                }
+            } catch (\RuntimeException $e) {
+                Log::warning('CDWG create failed on Affils API', [
+                    'group_id' => $group->id,
+                    'message'  => $e->getMessage(),
+                    'status'   => $e->getCode(),
+                ]);
+                
+                throw \Illuminate\Validation\ValidationException::withMessages([
+                    'name' => [$e->getMessage()],
+                ]);
+            }
+        }
+
 
         event(new GroupCreated($group));
 
