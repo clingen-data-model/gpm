@@ -19,8 +19,8 @@ class SyncGroupParentsFromAffils extends Command
     {
         // Config/env with sensible defaults
         $base    = rtrim(config('services.affils.base_url'), '/');
-        $listUrl = $base . config('services.affils.endpoints.cdwg_list');     // https://.../api/cdwg_list/
-        $createUrl = $base . config('services.affils.endpoints.cdwg_create'); // https://.../api/cdwg/create/
+        $listUrl = $base . config('services.affils.paths.cdwg_list');     
+        $createUrl = $base . config('services.affils.paths.cdwg_create');
         $apiKey  = config('services.affils.api_key');
 
         $dry            = (bool) $this->option('dry');
@@ -45,8 +45,7 @@ class SyncGroupParentsFromAffils extends Command
             $this->error('List response is not valid JSON.');
             return self::FAILURE;
         }
-
-        // Accept array or common wrappers
+        
         $list = null;
         if (is_array($json)) {
             if (array_is_list($json)) {
