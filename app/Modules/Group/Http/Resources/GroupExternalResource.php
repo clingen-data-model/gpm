@@ -24,12 +24,14 @@ class GroupExternalResource extends JsonResource
      */
     public function toArray($request)
     {
+        $d = fn($dt) => optional($dt)->toDateString();
+
         $data = [
             'uuid' => $this->uuid,
             'name' => $this->name,
             'description' => $this->description,
             'status' => $this->groupStatus->name,
-            'status_date' => $this->groupStatus->updated_at,
+            'status_date' => $d($this->groupStatus->updated_at),
             'type' => $this->type->name,
             'coi' => $this->expertPanel && $this->expertPanel->affiliation_id ? url('/coi/'.$this->expertPanel->affiliation_id) : null,
             'members' => $this->members()->with(['person', 'person.credentials', 'roles', 'latestCoi'])->get()->map(function ($member) {
@@ -67,16 +69,16 @@ class GroupExternalResource extends JsonResource
                     'type' => $ep->type->name,
 
                     // VCEP
-                    'vcep_define_group'         => ($this->isVcep || $this->isScvcep) ? $ep->step_1_approval_date : null,
-                    'vcep_classification_rules' => ($this->isVcep || $this->isScvcep) ? $ep->step_2_approval_date : null,
-                    'vcep_pilot_rules'          => ($this->isVcep || $this->isScvcep) ? $ep->step_3_approval_date : null,
-                    'vcep_approval'             => ($this->isVcep || $this->isScvcep) ? $ep->step_4_approval_date : null,
+                    'vcep_define_group'         => ($this->isVcep || $this->isScvcep) ? $d($ep->step_1_approval_date) : null,
+                    'vcep_classification_rules' => ($this->isVcep || $this->isScvcep) ? $d($ep->step_2_approval_date) : null,
+                    'vcep_pilot_rules'          => ($this->isVcep || $this->isScvcep) ? $d($ep->step_3_approval_date) : null,
+                    'vcep_approval'             => ($this->isVcep || $this->isScvcep) ? $d($ep->step_4_approval_date) : null,
 
                     // GCEP dates
-                    'gcep_define_group'         => $this->isGcep ? $ep->step_1_received_date : null,
-                    'gcep_approval'             => $this->isGcep ? $ep->step_1_approval_date : null,
+                    'gcep_define_group'         => $this->isGcep ? $d($ep->step_1_received_date) : null,
+                    'gcep_approval'             => $this->isGcep ? $d($ep->step_1_approval_date) : null,
 
-                    'date_completed' => $ep->date_completed,
+                    'date_completed' => $d($ep->date_completed),
                     'inactive_date' => $this->group_status_id === 5 ? $this->deriveInactiveDate($this->id) : null,
                     'current_step' => $ep->current_step,
                 ],
