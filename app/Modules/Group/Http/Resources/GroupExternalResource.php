@@ -30,7 +30,7 @@ class GroupExternalResource extends JsonResource
             'status' => $this->groupStatus->name,
             'status_date' => $this->groupStatus->updated_at,
             'type' => $this->type->name,
-            'members' => $this->members->map(function ($member) {
+            'members' => $this->members()->with(['person', 'person.credentials', 'roles', 'latestCoi'])->get()->map(function ($member) {
                 $p = $member->person;
                 $personData = [
                     'first_name' => $p->first_name,
@@ -42,6 +42,7 @@ class GroupExternalResource extends JsonResource
                     'roles' => $member->roles->map(function ($role) {
                         return $role->display_name;
                     }),
+                    'last_coi_completion_date' => $member->latestCoi?->completed_at,
                 ];
                 if ($p->profile_photo) {
                     $personData['profile_photo'] = URL::to('/profile-photos/' . $p->profile_photo);

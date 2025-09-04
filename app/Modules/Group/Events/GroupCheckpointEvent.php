@@ -9,6 +9,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
+use App\Modules\Group\Http\Resources\GroupExternalResource;
 
 class GroupCheckpointEvent extends GroupEvent implements PublishableEvent
 {
@@ -40,16 +41,7 @@ class GroupCheckpointEvent extends GroupEvent implements PublishableEvent
     }
 
     public function getPublishableMessage(): array {
-        $message = parent::getPublishableMessage();
-        $message['members'] = $this->group->members()->with(['person', 'roles', 'latestCoi'])->get()->map(function ($member) {
-            return [
-                'name' => $member->person->name,
-                'email' => $member->person->email,
-                'roles' => $member->roles()->pluck('name')->toArray(),
-                'latest_coi_completed' => $member->latestCoi ? $member->latestCoi->completed_at : null,
-            ];
-        });
-        return $message;
+        return (new GroupExternalResource($this->group))->toArray(null);
     }
 
     public function getLogEntry() :string
