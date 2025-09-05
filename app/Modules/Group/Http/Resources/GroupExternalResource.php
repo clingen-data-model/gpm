@@ -37,8 +37,7 @@ class GroupExternalResource extends JsonResource
             'members' => $this->members()->with(['person', 'person.credentials', 'roles', 'latestCoi'])->get()->map(function ($member) {
                 $p = $member->person;
                 $personData = [
-                    'name'        => trim($p->first_name.' '.$p->last_name),
-                    // 'first_name' => $p->first_name, 'last_name' => $p->last_name,
+                    'name'        => $p->name,
                     'email'       => $p->email, 
                     'credentials' => $p->credentials->map(function ($credential) {
                         return $credential->name;
