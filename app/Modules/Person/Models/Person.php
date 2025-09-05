@@ -353,7 +353,7 @@ class Person extends Model implements HasLogEntries
      */
     public function getNameAttribute(): String
     {
-        return $this->first_name.' '.$this->last_name;
+        return trim($this->first_name.' '.$this->last_name);
     }
 
     public function getAddressStringAttribute()
