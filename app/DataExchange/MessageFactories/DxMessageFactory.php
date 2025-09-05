@@ -27,10 +27,11 @@ class DxMessageFactory implements MessageFactoryInterface
 
     public function makeFromEvent(PublishableEvent $event): array
     {
+        $schemaVersion = method_exists($event, 'getSchemaVersion') ? $event->getSchemaVersion() : null;
         return $this->make(
             eventType: $event->getEventType(),
             message: $event->getPublishableMessage(),
-            schemaVersion: null,
+            schemaVersion: $schemaVersion,
             date: $event->getLogDate()
         );
     }

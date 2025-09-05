@@ -29,9 +29,14 @@ class GroupCheckpointEvent extends GroupEvent implements PublishableEvent
         return Carbon::now();
     }
 
+    public function getSchemaVersion(): string
+    {
+        return '2.0.0';
+    }
+    
     public function getTopic(): string
     {
-        return config('dx.topics.outgoing.gpm-general-events');
+        return config('dx.topics.outgoing.gpm-checkpoint-events');
     }
 
     public function shouldPublish(): bool

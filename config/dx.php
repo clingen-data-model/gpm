@@ -47,6 +47,7 @@ return [
         ],
         'outgoing' => [
             'gpm-general-events' => env('DX_OUTGOING_GPM_GENERAL_EVENTS', 'gpm-general-events'),
+            'gpm-checkpoint-events' => env('DX_OUTGOING_GPM_CHECKPOINT_EVENTS', 'gpm-checkpoint-events'),
             'gpm-person-events' => env('DX_OUTGOING_GPM_PERSON_EVENTS', 'gpm-person-events'),
         ]
     ],
@@ -56,7 +57,8 @@ return [
      */
     'schema_versions' => [
         'gpm-general-events' => '1.9.9',
-        'gpm-person-events' => '1.9.9'
+        'gpm-person-events' => '1.9.9',
+        'gpm-checkpoint-events' => '2.0.0'
     ]
 
 ];
