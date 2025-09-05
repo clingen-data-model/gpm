@@ -33,7 +33,7 @@ class GroupExternalResource extends JsonResource
             'status' => $this->groupStatus->name,
             'status_date' => $d($this->groupStatus->updated_at),
             'type' => $this->type->name,
-            'coi' => $this->expertPanel && $this->expertPanel->affiliation_id ? url('/coi/'.$this->expertPanel->affiliation_id) : null,
+            'coi' => url('/coi/'.$this->uuid),
             'members' => $this->members()->with(['person', 'person.credentials', 'roles', 'latestCoi'])->get()->map(function ($member) {
                 $p = $member->person;
                 $personData = [
