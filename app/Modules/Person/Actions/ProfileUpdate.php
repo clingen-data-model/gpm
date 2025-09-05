@@ -73,6 +73,9 @@ class ProfileUpdate
             'memberships.group',
             'country'
         );
+
+        $person->makeVisible(Person::$contact_details_private_fields);
+
         return $person;
     }
 

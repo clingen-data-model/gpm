@@ -41,6 +41,7 @@ class CurrentUserController extends Controller
             'person.institution',
             'person.credentials',
             'person.expertises',
+            'person.country',
             'preferences'
         ]);
 
