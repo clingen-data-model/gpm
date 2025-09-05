@@ -25,10 +25,9 @@ use App\Modules\Group\Models\Group;
 | contains the "web" middleware group. Now create something great!
 |
 */
-Route::get('/coi/{affiliation_id}', function (int $affiliation_id) {
-    $group = Group::whereHas('expertPanel', fn($q) => $q->where('affiliation_id', $affiliation_id))->firstOrFail();
-    return app(CoiReportMakePdf::class)->handle($group);
-})->where('affiliation_id', '[0-9]{5}');
+Route::get('/coi/{group:uuid}', function (Group $group) {
+   return app(CoiReportMakePdf::class)->handle($group); 
+});
 
 Route::get('/{any}', [ViewController::class, 'app'])
     ->where('any', '^(?!(api|sanctum|impersonate|dev|documents|downloads|clockwork|profile-photos|storage)).*$');
