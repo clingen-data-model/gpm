@@ -24,14 +24,12 @@ class GroupExternalResource extends JsonResource
      */
     public function toArray($request)
     {
-        $d = fn($dt) => optional($dt)->toDateString();
-
         $data = [
             'uuid' => $this->uuid,
             'name' => $this->name,
             'description' => $this->description,
             'status' => $this->groupStatus->name,
-            'status_date' => $d($this->groupStatus->updated_at),
+            'status_date' => $this->groupStatus->updated_at,
             'type' => $this->type->name,
             'coi' => url('/coi/'.$this->uuid),
             'members' => $this->members()->with(['person', 'person.credentials', 'roles', 'latestCoi'])->get()->map(function ($member) {
@@ -62,24 +60,24 @@ class GroupExternalResource extends JsonResource
                 'affiliation_id' => $ep->affiliation_id,
                 'name' => $ep->long_base_name,
                 'short_name' => $ep->short_base_name,
-                // 'scope_description' => $ep->scope_description,
+                'scope_description' => $ep->scope_description,
                 'membership_description' => $ep->membership_description,
                 'type' => $ep->type->name,
 
-                'date_completed' => $d($ep->date_completed),
+                'date_completed' => $ep->date_completed,
                 'inactive_date' => $this->group_status_id === 5 ? $this->deriveInactiveDate($this->id) : null,
                 'current_step' => $ep->current_step,
             ];
             
             if ($this->isVcep || $this->isScvcep) {
-                $epData['vcep_define_group']         = $d($ep->step_1_approval_date);
-                $epData['vcep_classification_rules'] = $d($ep->step_2_approval_date);
-                $epData['vcep_pilot_rules']          = $d($ep->step_3_approval_date);
-                $epData['vcep_approval']             = $d($ep->step_4_approval_date);
+                $epData['vcep_define_group']         = $ep->step_1_approval_date;
+                $epData['vcep_classification_rules'] = $ep->step_2_approval_date;
+                $epData['vcep_pilot_rules']          = $ep->step_3_approval_date;
+                $epData['vcep_approval']             = $ep->step_4_approval_date;
             }
             if ($this->isGcep) {
-                $epData['gcep_define_group']         = $d($ep->step_1_received_date);
-                $epData['gcep_approval']             = $d($ep->step_4_approval_date);
+                $epData['gcep_define_group']         = $ep->step_1_received_date;
+                $epData['gcep_approval']             = $ep->step_4_approval_date;
             }
             
             $data['expert_panel'] = $epData;
