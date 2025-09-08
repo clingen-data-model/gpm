@@ -28,6 +28,7 @@ class GroupExternalResource extends JsonResource
             'uuid' => $this->uuid,
             'name' => $this->name,
             'description' => $this->description,
+            'caption' => null, // TODO here as a placeholder for now, see GPM-513
             'status' => $this->groupStatus->name,
             'status_date' => $this->groupStatus->updated_at,
             'type' => $this->type->name,
@@ -36,7 +37,7 @@ class GroupExternalResource extends JsonResource
                 $p = $member->person;
                 $personData = [
                     'name'        => $p->name,
-                    'email'       => $p->email, 
+                    'email'       => $p->email,
                     'credentials' => $p->credentials->map(function ($credential) {
                         return $credential->name;
                     }),
@@ -68,7 +69,7 @@ class GroupExternalResource extends JsonResource
                 'inactive_date' => $this->group_status_id === 5 ? $this->deriveInactiveDate($this->id) : null,
                 'current_step' => $ep->current_step,
             ];
-            
+
             if ($this->isVcep || $this->isScvcep) {
                 $epData['vcep_define_group']         = $ep->step_1_approval_date;
                 $epData['vcep_classification_rules'] = $ep->step_2_approval_date;
@@ -79,7 +80,7 @@ class GroupExternalResource extends JsonResource
                 $epData['gcep_define_group']         = $ep->step_1_received_date;
                 $epData['gcep_approval']             = $ep->step_4_approval_date;
             }
-            
+
             $data['expert_panel'] = $epData;
         }
 
@@ -93,7 +94,7 @@ class GroupExternalResource extends JsonResource
                 ],
             ];
         }
-        
+
         return $data;
     }
 
