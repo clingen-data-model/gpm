@@ -20,6 +20,7 @@
         "laravel/sanctum": "^4.0",
         "laravel/slack-notification-channel": "^3.4",
         "laravel/tinker": "^2.5",
+        "league/html-to-markdown": "^5.1",
         "lorisleiva/laravel-actions": "^2.1",
         "rap2hpoutre/laravel-log-viewer": "^2.0",
         "spatie/laravel-activitylog": "^4.0",
