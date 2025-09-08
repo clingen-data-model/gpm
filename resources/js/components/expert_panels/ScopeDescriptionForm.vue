@@ -4,7 +4,7 @@ import GcepQuickGuideLink from '../links/GcepQuickGuideLink.vue';
 import VcepProtocolLink from '../links/VcepProtocolLink.vue';
 import EditIconButton from '@/components/buttons/EditIconButton.vue'
 import RichTextEditor from '@/components/prosekit/RichTextEditor.vue'
-import DOMPurify from 'dompurify';
+import { htmlFromMarkdown } from '@/markdown-utils';
 
 export default {
     name: "ScopeDescriptionForm",
@@ -40,8 +40,8 @@ export default {
                 this.$store.commit("groups/addItem", value);
             }
         },
-        sanitizedScopeDescription() {
-            return DOMPurify.sanitize(this.group.expert_panel.scope_description);
+        htmlScopeDescription() {
+            return htmlFromMarkdown(this.group.expert_panel.scope_description);
         },
     }
 }
@@ -50,7 +50,7 @@ export default {
   <div>
     <header class="flex justify-between items-center">
       <h4>Description of Scope</h4>
-      <EditIconButton 
+      <EditIconButton
         v-if="hasAnyPermission(['groups-manage', ['application-edit', group]]) && !editing"
         @click="$emit('update:editing', true)"
       />
@@ -72,7 +72,7 @@ export default {
           />
         </div>
         <div v-else class="border-2 mt-8 p-2">
-          <div v-if="group.expert_panel.scope_description" v-html="sanitizedScopeDescription" />
+          <div v-if="group.expert_panel.scope_description" v-html="htmlScopeDescription" />
           <p v-else class="well cursor-pointer" @click="showForm">
             A description of scope has not yet been provided.
           </p>

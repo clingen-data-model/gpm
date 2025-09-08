@@ -4,7 +4,7 @@ import 'prosekit/basic/style.css'
 import { ref, watchPostEffect } from 'vue'
 import { createEditor } from 'prosekit/core'
 import { defineExtension } from './extension.ts'
-import { markdownFromHTML } from '@/markdown-utils'
+import { htmlFromMarkdown, markdownFromHTML } from '@/markdown-utils'
 import { ProseKit, useDocChange } from 'prosekit/vue'
 import ProsekitToolbar from './ProsekitToolbar.vue'
 import ProsekitInlineMenu from './ProsekitInlineMenu.vue'
@@ -17,7 +17,7 @@ const props = defineProps({
     },
     markdownFormat: {
         type: Boolean,
-        default: false,
+        default: true,
     },
 })
 
@@ -26,7 +26,7 @@ const emit = defineEmits(['update:modelValue'])
 const extension = defineExtension()
 
 const formatValue = (value) => {
-    return props.markdownFormat ? markdownFromHTML(value) : DOMPurify.sanitize(value)
+    return props.markdownFormat ? htmlFromMarkdown(value) : DOMPurify.sanitize(value)
 }
 const initialContent = formatValue(props.modelValue)
 const editor = createEditor({ extension, defaultContent: initialContent })
@@ -43,12 +43,14 @@ watchPostEffect((onCleanup) => {
     onCleanup(() => editor.unmount())
 })
 
+/*
 watchPostEffect(() => {
     const newContent = formatValue(props.modelValue)
     if (editor.getDocHTML() !== newContent) {
         editor.setContent(newContent)
     }
 })
+*/
 </script>
 
 <template>
