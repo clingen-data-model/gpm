@@ -37,16 +37,17 @@ class GroupExternalResource extends JsonResource
                 $p = $member->person;
                 $personData = [
                     'name'        => $p->name,
-                    'email'       => $p->email,
                     'credentials' => $p->credentials->map(function ($credential) {
                         return $credential->name;
-                    }),
+                    })->toArray(),
                     'uuid' => $p->uuid,
                     'roles' => $member->roles->map(function ($role) {
                         return $role->display_name;
-                    }),
-                    // 'last_coi_completion_date' => $member->latestCoi?->completed_at,
+                    })->toArray(),
                 ];
+                if (array_intersect($personData['roles'], ['Coordinator', 'Chair'])) {
+                    $personData['email'] = $p->email; // show email for coordinators and chairs. TODO: confirm this is desired, maybe include Grant Liasons, too?
+                }
                 if ($p->profile_photo) {
                     $personData['profile_photo'] = URL::to('/profile-photos/' . $p->profile_photo);
                 }
