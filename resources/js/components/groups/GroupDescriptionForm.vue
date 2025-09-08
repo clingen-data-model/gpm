@@ -2,7 +2,7 @@
 import Group from '@/domain/group'
 import EditIconButton from '@/components/buttons/EditIconButton.vue'
 import RichTextEditor from '@/components/prosekit/RichTextEditor.vue'
-import DOMPurify from 'dompurify';
+import { htmlFromMarkdown } from '@/markdown-utils';
 
 export default {
     name: "GroupDescriptionForm",
@@ -36,8 +36,8 @@ export default {
                 this.$store.commit("groups/addItem", value);
             }
         },
-        sanitizedDescription() {
-            return DOMPurify.sanitize(this.group.description);
+        htmlDescription() {
+            return htmlFromMarkdown(this.group.description);
         }
     },
 }
@@ -65,7 +65,7 @@ export default {
           />
         </div>
         <div v-else class="border-2 mt-8 p-2">
-          <div v-if="group.description" v-html="sanitizedDescription" />
+          <div v-if="group.description" v-html="htmlDescription" />
           <p v-else class="well cursor-pointer" @click="showForm">
             A website summary description has not yet been provided.
           </p>
