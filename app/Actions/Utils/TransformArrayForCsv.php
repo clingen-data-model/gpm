@@ -2,31 +2,37 @@
 
 namespace App\Actions\Utils;
 
-
 class TransformArrayForCsv
 {
-    public function handle(array $data): string
+    public function handle(iterable $data): string
     {
-        $rows = [];
-        
-        $fd = fopen('php://memory', 'rw');
-        foreach ($data as $row) {
-            if (count($rows) == 0) {
-                $this->pushRow(array_keys($row), $rows, $fd);
-            }
-            $this->pushRow($row, $rows, $fd);
-        }
+        $fd = fopen('php://temp', 'w+');
+        $this->writeCsv($fd, $data);
+        rewind($fd);
+        $csv = stream_get_contents($fd);
         fclose($fd);
-
-        return implode("\n", $rows);
+        return $csv;
     }
 
-    private function pushRow(array $row, array &$rows, &$fd)
+    public function stream(iterable $data, $fd): void
     {
-        fputcsv($fd, $row);
-        rewind($fd);
-        $rows[] = trim(fgets($fd));
-        rewind($fd);
+        $this->writeCsv($fd, $data);
     }
-    
+
+    private function writeCsv($fd, iterable $data): void
+    {
+        $wroteHeader = false;
+        foreach ($data as $row) {
+            foreach ($row as $k => $v) {
+                if (is_string($v)) {
+                    $row[$k] = preg_replace('/\R/u', '; ', $v);
+                }
+            }
+            if (!$wroteHeader) {
+                fputcsv($fd, array_keys($row));
+                $wroteHeader = true;
+            }
+            fputcsv($fd, $row);
+        }
+    }
 }

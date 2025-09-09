@@ -1,51 +1,76 @@
 <?php
 
 namespace App\Actions;
-use Illuminate\Console\Command;
-use Lorisleiva\Actions\ActionRequest;
+
+use Illuminate\Support\Facades\DB;
 use App\Modules\ExpertPanel\Models\Gene;
-use App\Actions\Utils\TransformArrayForCsv;
-use Lorisleiva\Actions\Concerns\AsCommand;
-use Lorisleiva\Actions\Concerns\AsListener;
-use Lorisleiva\Actions\Concerns\AsController;
 
 class ReportGcepGenesMake extends ReportMakeAbstract
 {
-    use AsController;
-    use AsCommand;
-
     public $commandSignature = 'reports:gcep-genes';
 
-    public function handle()
+    public function handle(): array
     {
-        $genes  = Gene::whereHas('expertPanel', function ($q) {
-            $q->typeGcep();
-        })
-        ->orderBy('gene_symbol')
-        ->with([
-            'expertPanel' => function ($q) {
-                $q->select(['id', 'long_base_name', 'expert_panel_type_id']);
-            },
-            'expertPanel.type',
-            'expertPanel.group' => function ($q) {
-                $q->select(['id', 'group_type_id']);
-            },
-            'expertPanel.group.type'
-        ])
-        ->get();
+        $rows = [];
+        $this->streamRows(function (array $row) use (&$rows) { $rows[] = $row; });
+        return $rows;
+    }
 
-        return $genes
-            ->groupBy("hgnc_id")
-            ->map(function ($group) {
-                return [
-                    'gene_symbol' => $group->first()->gene_symbol,
-                    'hgnc_id' => $group->first()->hgnc_id,
-                    'GCEPs' => $group->map(function ($g) {
-                        return $g->expertPanel->full_long_base_name;
-                    })->join(', ')
-                ];
-            })
-            ->values()
-            ->toArray();
+    public function csvHeaders(): ?array
+    {
+        return ['gene_symbol','hgnc_id','GCEPs'];
+    }
+
+    public function streamRows(callable $push): void
+    {
+        DB::connection()->disableQueryLog();
+
+        $currentHgnc = null;
+        $currentSymbol = null;
+        $eps = [];
+
+        $this->baseQuery()
+            ->orderBy('hgnc_id')
+            ->orderBy('id')
+            ->chunk(2000, function ($genes) use (&$currentHgnc, &$currentSymbol, &$eps, $push) {
+                foreach ($genes as $g) {
+                    if ($currentHgnc !== null && $g->hgnc_id !== $currentHgnc) {
+                        $push([
+                            'gene_symbol' => $currentSymbol,
+                            'hgnc_id'     => $currentHgnc,
+                            'GCEPs'       => implode(', ', $eps),
+                        ]);
+                        $eps = [];
+                    }
+
+                    $currentHgnc = $g->hgnc_id;
+                    $currentSymbol = $g->gene_symbol;
+                    $eps[] = $g->expertPanel->full_long_base_name;
+                }
+
+                $genes->each->unsetRelations();
+                gc_collect_cycles();
+            });
+
+        if ($currentHgnc !== null) {
+            $push([
+                'gene_symbol' => $currentSymbol,
+                'hgnc_id'     => $currentHgnc,
+                'GCEPs'       => implode(', ', array_values(array_unique($eps))),
+            ]);
+        }
+    }
+
+    private function baseQuery()
+    {
+        return Gene::query()
+            ->whereHas('expertPanel', fn($q) => $q->typeGcep())
+            ->select(['id','gene_symbol','hgnc_id','expert_panel_id'])
+            ->with([
+                'expertPanel' => fn($q) => $q->select(['id','long_base_name','expert_panel_type_id','group_id']),
+                'expertPanel.type:id,name,display_name',
+                'expertPanel.group:id,group_type_id',
+                'expertPanel.group.type:id,name,display_name',
+            ]);
     }
 }
