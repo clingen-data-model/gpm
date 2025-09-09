@@ -6,10 +6,8 @@ use Illuminate\Support\Facades\DB;
 
 class ReportDemographicsMake extends ReportMakeAbstract
 {
-
     public $commandSignature = 'reports:demographics';
 
-    // FIXME: it would be nice to get these directly from the Person model...
     private static $multiValueFields = [
         'ethnicities',
         'identities',
@@ -26,124 +24,163 @@ class ReportDemographicsMake extends ReportMakeAbstract
         'institution',
     ];
 
-    private function countSingleValuedFields(String $subset, $data)
+    public function handle(): array
     {
+        $rows = [];
+        $this->streamRows(function (array $row) use (&$rows) { $rows[] = $row; });
+        return $rows;
+    }
+
+    public function csvHeaders(): ?array
+    {
+        return ['subset','field','value','count'];
+    }
+
+    public function streamRows(callable $push): void
+    {
+        DB::connection()->disableQueryLog();
+
         $counts = [];
-        foreach (self::$singleValueFields as $f) {
-            $data->countBy($f)->sort()->reverse()->map(function ($count, $value) use ($f, $subset, &$counts) {
-                array_push($counts, [
-                    "subset" => $subset,
-                    "field" => $f,
-                    "value" => $value,
-                    "count" => $count,
-                ]);
+
+        $this->streamAll(function ($subset, $row) use (&$counts) {
+            $this->tallyRow($counts, $subset, $row);
+        });
+
+        foreach (['vcep','gcep','cdwg','wg'] as $gt) {
+            $this->streamGroupType($gt, function ($subset, $row) use (&$counts) {
+                $this->tallyRow($counts, $subset, $row);
             });
         }
-        return $counts;
+
+        foreach ($this->flattenCounts($counts) as $record) {
+            $push($record);
+        }
     }
 
-    private function countMultiValuedFields(String $subset, $data)
+    private function streamAll(callable $cb): void
     {
-        $multiValueCounts = [];
-        foreach (self::$multiValueFields as $f) {
-            $multiValueCounts[$f] = [];
-        };
-
-        foreach ($data as $p) {
-            foreach (self::$multiValueFields as $f) {
-                if ($p->$f) {
-                    foreach ($p->$f as $value) {
-                        $multiValueCounts[$f][$value] = ($multiValueCounts[$f][$value] ?? 0) + 1;
+        $seenPerson = [];
+        DB::table('v_profile_demographics')
+            ->whereNull('deleted_at')
+            ->whereNotNull('demographics_completed_date')
+            ->orderBy('person_id')
+            ->select(array_merge(
+                ['person_id'],
+                self::$singleValueFields,
+                self::$multiValueFields
+            ))
+            ->chunk(2000, function ($rows) use (&$seenPerson, $cb) {
+                foreach ($rows as $d) {
+                    foreach (self::$multiValueFields as $f) {
+                        $d->$f = $d->$f ? json_decode($d->$f, true) : [];
                     }
-                } else {
-                    $multiValueCounts[$f][''] = ($multiValueCounts[$f][''] ?? 0) + 1;
+                    $cb('all', $d);
+                    if (!isset($seenPerson[$d->person_id])) {
+                        $seenPerson[$d->person_id] = true;
+                        $cb('all_person', $d);
+                    }
                 }
-            };
-        }
-
-        $counts = [];
-        foreach ($multiValueCounts as $f => $mvCounts) {
-            $mvCounts = collect($mvCounts)->sort()->reverse();
-            foreach ($mvCounts as $value => $count) {
-                array_push($counts, [
-                    "subset" => $subset,
-                    "field" => $f,
-                    "value" => $value,
-                    "count" => $count,
-                ]);
-            }
-        }
-        return $counts;
+            });
     }
 
-    private function countsForGroupType(String $groupType)
+    private function streamGroupType(string $groupType, callable $cb): void
     {
-        $group_subset = DB::table('v_group_profile_demographics')
+        $seenPerson = [];
+        $seenBioPerson = [];
+        $seenCoorPerson = [];
+        $seenChairPerson = [];
+
+        DB::table('v_group_profile_demographics')
             ->whereNull('deleted_at')
             ->whereNotNull('demographics_completed_date')
             ->where('group_type', '=', $groupType)
-            ->get()
-            ->transform(function ($d) {
-                foreach (self::$multiValueFields as $f) {
-                    $d->$f = $d->$f ? json_decode($d->$f) : [];
+            ->orderBy('person_id')
+            ->select(array_merge(
+                ['person_id','role'],
+                self::$singleValueFields,
+                self::$multiValueFields
+            ))
+            ->chunk(2000, function ($rows) use ($groupType, &$seenPerson, &$seenBioPerson, &$seenCoorPerson, &$seenChairPerson, $cb) {
+                foreach ($rows as $d) {
+                    foreach (self::$multiValueFields as $f) {
+                        $d->$f = $d->$f ? json_decode($d->$f, true) : [];
+                    }
+
+                    $cb($groupType, $d);
+
+                    if (!isset($seenPerson[$d->person_id])) {
+                        $seenPerson[$d->person_id] = true;
+                        $cb($groupType.'_person', $d);
+                    }
+
+                    if ($d->role === 'biocurator') {
+                        $cb($groupType.'_biocurator', $d);
+                        if (!isset($seenBioPerson[$d->person_id])) {
+                            $seenBioPerson[$d->person_id] = true;
+                            $cb($groupType.'_biocurator_person', $d);
+                        }
+                    }
+
+                    if ($d->role === 'coordinator') {
+                        $cb($groupType.'_coordinator', $d);
+                        if (!isset($seenCoorPerson[$d->person_id])) {
+                            $seenCoorPerson[$d->person_id] = true;
+                            $cb($groupType.'_coordinator_person', $d);
+                        }
+                    }
+
+                    if ($d->role === 'chair') {
+                        $cb($groupType.'_chair', $d);
+                        if (!isset($seenChairPerson[$d->person_id])) {
+                            $seenChairPerson[$d->person_id] = true;
+                            $cb($groupType.'_chair_person', $d);
+                        }
+                    }
                 }
-                return $d;
             });
-        $counts = self::countSingleValuedFields($groupType, $group_subset);
-        $counts = array_merge($counts, self::countMultiValuedFields($groupType, $group_subset));
-
-        $subset = $group_subset->unique('person_id');
-        $counts = array_merge($counts, self::countSingleValuedFields($groupType . '_person', $subset));
-        $counts = array_merge($counts, self::countMultiValuedFields($groupType . '_person', $subset));
-
-        $subset = $group_subset->where('role', 'biocurator');
-        $counts = array_merge($counts, self::countSingleValuedFields($groupType . '_biocurator', $subset));
-        $counts = array_merge($counts, self::countMultiValuedFields($groupType . '_biocurator', $subset));
-
-        $subset = $subset->unique('person_id');
-        $counts = array_merge($counts, self::countSingleValuedFields($groupType . '_biocurator_person', $subset));
-        $counts = array_merge($counts, self::countMultiValuedFields($groupType . '_biocurator_person', $subset));
-
-        $subset = $group_subset->where('role', 'coordinator');
-        $counts = array_merge($counts, self::countSingleValuedFields($groupType . '_coordinator', $subset));
-        $counts = array_merge($counts, self::countMultiValuedFields($groupType . '_coordinator', $subset));
-
-        $subset = $subset->unique('person_id');
-        $counts = array_merge($counts, self::countSingleValuedFields($groupType . '_coordinator_person', $subset));
-        $counts = array_merge($counts, self::countMultiValuedFields($groupType . '_coordinator_person', $subset));
-
-        $subset = $group_subset->where('role', 'chair');
-        $counts = array_merge($counts, self::countSingleValuedFields($groupType . '_chair', $subset));
-        $counts = array_merge($counts, self::countMultiValuedFields($groupType . '_chair', $subset));
-
-        $subset = $subset->unique('person_id');
-        $counts = array_merge($counts, self::countSingleValuedFields($groupType . '_chair_person', $subset));
-        $counts = array_merge($counts, self::countMultiValuedFields($groupType . '_chair_person', $subset));
-
-        return $counts;
     }
 
-    public function handle(): array
+    private function tallyRow(array &$counts, string $subset, $row): void
     {
-        $subset = DB::table('v_profile_demographics')
-            ->whereNull('deleted_at')
-            ->whereNotNull('demographics_completed_date')
-            ->get()
-            ->transform(function ($d) {
-                foreach (self::$multiValueFields as $f) {
-                    $d->$f = $d->$f ? json_decode($d->$f) : [];
+        foreach (self::$singleValueFields as $f) {
+            $val = $row->$f ?? '';
+            $this->inc($counts, $subset, $f, (string) $val);
+        }
+
+        foreach (self::$multiValueFields as $f) {
+            $arr = is_array($row->$f) ? $row->$f : [];
+            if (count($arr) === 0) {
+                $this->inc($counts, $subset, $f, '');
+            } else {
+                foreach ($arr as $val) {
+                    $this->inc($counts, $subset, $f, (string) $val);
                 }
-                return $d;
-            });
+            }
+        }
+    }
 
-        $counts = self::countSingleValuedFields('all', $subset);
-        $counts = array_merge($counts, self::countMultiValuedFields('all', $subset));
+    private function inc(array &$counts, string $subset, string $field, string $value): void
+    {
+        if (!isset($counts[$subset])) $counts[$subset] = [];
+        if (!isset($counts[$subset][$field])) $counts[$subset][$field] = [];
+        if (!isset($counts[$subset][$field][$value])) $counts[$subset][$field][$value] = 0;
+        $counts[$subset][$field][$value]++;
+    }
 
-        $counts = array_merge($counts, self::countsForGroupType('vcep'));
-        $counts = array_merge($counts, self::countsForGroupType('gcep'));
-        $counts = array_merge($counts, self::countsForGroupType('cdwg'));
-        $counts = array_merge($counts, self::countsForGroupType('wg'));
-
-        return $counts;
+    private function flattenCounts(array $counts): \Generator
+    {
+        foreach ($counts as $subset => $fields) {
+            foreach ($fields as $field => $values) {
+                arsort($values);
+                foreach ($values as $value => $count) {
+                    yield [
+                        'subset' => $subset,
+                        'field'  => $field,
+                        'value'  => $value,
+                        'count'  => $count,
+                    ];
+                }
+            }
+        }
     }
 }
