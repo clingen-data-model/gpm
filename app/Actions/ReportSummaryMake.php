@@ -3,18 +3,13 @@
 namespace App\Actions;
 
 use Carbon\Carbon;
-use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use App\Modules\Group\Models\Group;
 use App\Modules\Person\Models\Person;
-use Lorisleiva\Actions\ActionRequest;
 use App\Modules\Person\Models\Country;
 use App\Modules\ExpertPanel\Models\Gene;
 use App\Modules\Group\Models\GroupMember;
 use App\Modules\Person\Models\Institution;
-use Lorisleiva\Actions\Concerns\AsCommand;
-use App\Actions\Utils\TransformArrayForCsv;
-use Lorisleiva\Actions\Concerns\AsController;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 
 class ReportSummaryMake extends ReportMakeAbstract
@@ -23,35 +18,54 @@ class ReportSummaryMake extends ReportMakeAbstract
 
     public function handle(): array
     {
-        $vcepStepsSummary = $this->getVcepStepSummary();
-        return [
-            ['Groups', Group::count()],
-            ['Working Groups', Group::wg()->count()],
-            ['CDWGs', Group::cdwg()->count()],
-            ['VCEPs', Group::vcep()->count()],
-            ['GCEPS', Group::gcep()->count()],
-            ['VCEP applications in definition', isset($vcepStepsSummary[1]) ? $vcepStepsSummary[1] : 0],
-            ['VCEP applications in draft specs', isset($vcepStepsSummary[2]) ? $vcepStepsSummary[2] : 0],
-            ['VCEP applications in pilot specs', isset($vcepStepsSummary[3]) ? $vcepStepsSummary[3] : 0],
-            ['VCEP applications in sustained curation', isset($vcepStepsSummary[4]) ? $vcepStepsSummary[4] : 0],
-            ['VCEPs approved', $this->getVcepApprovedCount()],
-            ['GCEPs applying', $this->getGcepApplyingCount()],
-            ['GCEPs approved', $this->getGcepApprovedCount()],
-            ['VCEP genes', $this->getVcepGenesCount()],
-            ['GCEP genes', $this->getGcepGenesCount()],
-            ['All Individuals', Person::count()],
-            ['Active Individuals (has active group membership)', Person::hasActiveMembership()->count()],
-            ['Individuals in 1+ WGs', $this->getWgMembersCount()],
-            ['Individuals in 1+ CDWGs', $this->getCdwgMembersCount()],
-            ['Individuals in 1+ EPs', $this->getTotalEpMembersCount()],
-            ['Individuals in 1+ GCEPs', $this->getGcepMembersCount()],
-            ['Individuals in 1+ VCEps', $this->getVcepMembersCount()],
-            ['Countries represented', $this->getCountriesRepresentedCount()],
-            ['Institutions represented', $this->getInstitutionsRepresentedCount()],
-            ['People in 2+ EPs', $this->getPeopleInManyEpsCount()],
-            ['Individuals with demographics info', $this->getEverFilledDemographics()],
-            ['Individuals with current demographics info (within last year)', $this->getFilledDemographicsInLastYear()],
-        ];
+        $rows = [];
+        $this->streamRows(function (array $row) use (&$rows) { $rows[] = $row; });
+        return $rows;
+    }
+
+    public function csvHeaders(): ?array
+    {
+        return ['Metric', 'Value'];
+    }
+
+    public function streamRows(callable $push): void
+    {
+        DB::connection()->disableQueryLog();
+        foreach ($this->metrics() as $metric => $value) {
+            $push(['Metric' => $metric, 'Value' => $value]);
+        }
+    }
+
+    private function metrics(): iterable
+    {
+        $v = $this->getVcepStepSummary();
+
+        yield 'Groups' => Group::count();
+        yield 'Working Groups' => Group::wg()->count();
+        yield 'CDWGs' => Group::cdwg()->count();
+        yield 'VCEPs' => Group::vcep()->count();
+        yield 'GCEPS' => Group::gcep()->count();
+        yield 'VCEP applications in definition' => $v[1] ?? 0;
+        yield 'VCEP applications in draft specs' => $v[2] ?? 0;
+        yield 'VCEP applications in pilot specs' => $v[3] ?? 0;
+        yield 'VCEP applications in sustained curation' => $v[4] ?? 0;
+        yield 'VCEPs approved' => $this->getVcepApprovedCount();
+        yield 'GCEPs applying' => $this->getGcepApplyingCount();
+        yield 'GCEPs approved' => $this->getGcepApprovedCount();
+        yield 'VCEP genes' => $this->getVcepGenesCount();
+        yield 'GCEP genes' => $this->getGcepGenesCount();
+        yield 'All Individuals' => Person::count();
+        yield 'Active Individuals (has active group membership)' => Person::hasActiveMembership()->count();
+        yield 'Individuals in 1+ WGs' => $this->getWgMembersCount();
+        yield 'Individuals in 1+ CDWGs' => $this->getCdwgMembersCount();
+        yield 'Individuals in 1+ EPs' => $this->getTotalEpMembersCount();
+        yield 'Individuals in 1+ GCEPs' => $this->getGcepMembersCount();
+        yield 'Individuals in 1+ VCEps' => $this->getVcepMembersCount();
+        yield 'Countries represented' => $this->getCountriesRepresentedCount();
+        yield 'Institutions represented' => $this->getInstitutionsRepresentedCount();
+        yield 'People in 2+ EPs' => $this->getPeopleInManyEpsCount();
+        yield 'Individuals with demographics info' => $this->getEverFilledDemographics();
+        yield 'Individuals with current demographics info (within last year)' => $this->getFilledDemographicsInLastYear();
     }
 
     private function getVcepGenesCount(): int
@@ -185,5 +199,5 @@ class ReportSummaryMake extends ReportMakeAbstract
         return Person::whereDate('demographics_completed_date', '>=', Carbon::now()->subYear())
             ->count();
     }
-
+    
 }

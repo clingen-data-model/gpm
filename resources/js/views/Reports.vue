@@ -66,12 +66,12 @@
           Summary Report
         </h2>
         <table>
-          <tr v-for="row in summaryData" :key="row[0]">
+          <tr v-for="row in summaryData" :key="row.Metric">
             <th>
-              {{ row[0] }}
+              {{ row.Metric }}
             </th>
             <td class="text-right">
-              {{ row[1] }}
+              {{ row.Value }}
             </td>
           </tr>
         </table>
