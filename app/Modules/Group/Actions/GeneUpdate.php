@@ -28,8 +28,8 @@ class GeneUpdate
 
     public function handle(Group $group, Gene $gene, array $data): Group
     {
-        $data['gene_symbol'] = $this->hgncLookup->findSymbolById($data['hgnc_id']);
-        $data['disease_name'] = $this->mondoLookup->findNameByOntologyId($data['mondo_id']);
+        // $data['gene_symbol'] = $this->hgncLookup->findSymbolById($data['hgnc_id']);
+        // $data['disease_name'] = $this->mondoLookup->findNameByOntologyId($data['mondo_id']);
         $gene->update($data);
 
         return $group;
@@ -68,7 +68,7 @@ class GeneUpdate
 
         $group = $request->group;
         if ($group->isVcepOrScvcep) {
-            $rules['mondo_id'] = 'required|regex:/MONDO:\d{7}$/i';
+            $rules['mondo_id'] = 'nullable|regex:/MONDO:\d{7}$/i';
         }
 
         return $rules;

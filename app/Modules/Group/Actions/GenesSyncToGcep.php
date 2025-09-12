@@ -17,46 +17,20 @@ class GenesSyncToGcep
     {
     }
 
-    public function handle(Group $group, $genes): Group
+    public function handle(Group $group, $gene): Group
     {
-        $genes = collect($genes)->filter();
-
         if (!$group->isGcep) {
             throw new InvalidArgumentException('Expected group '.$group->name.' ('.$group->id.') to be a GCEP.  group is a '.$group->fullType->name);
         }
 
-        $existingGeneSymbols = $group->expertPanel->genes->pluck('gene_symbol');
-        $this->removeGenes($group, $existingGeneSymbols->diff($genes));
-        $this->addNewGenes($group, $genes->diff($existingGeneSymbols));
+        $model = new Gene([
+            'hgnc_id'     => (int)($gene['hgnc_id'] ?? 0),
+            'gene_symbol' => $gene['gene_symbol'] ?? null,
+        ]);
+
+        $group->expertPanel->genes()->save($model);
+        event(new GenesAdded($group, collect($model)));
         
         return $group;
-    }
-
-    private function removeGenes($group, $removedGeneSymbols)
-    {
-        if ($removedGeneSymbols->count() > 0) {
-            $group->expertPanel->genes()
-                ->whereIn('gene_symbol', $removedGeneSymbols)
-                ->get()
-                ->each(function ($g) use ($group) {
-                    $g->delete();
-                    event(new GeneRemoved($group, $g));
-                });
-        }
-    }
-    
-
-    private function addNewGenes($group, $addedGeneSymbols)
-    {
-        if ($addedGeneSymbols->count() > 0) {
-            $genes = $addedGeneSymbols->map(function ($gs) {
-                return new Gene([
-                    'hgnc_id' => $this->hgncLookup->findHgncIdBySymbol($gs),
-                    'gene_symbol' => $gs
-                ]);
-            });
-            $group->expertPanel->genes()->saveMany($genes);
-            event(new GenesAdded($group, $genes));
-        }
     }
 }
