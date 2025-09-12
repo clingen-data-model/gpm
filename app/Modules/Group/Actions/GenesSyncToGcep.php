@@ -16,7 +16,7 @@ class GenesSyncToGcep
     {
     }
 
-    public function handle(Group $group, $genes): Group
+    public function handle(Group $group, $gene): Group
     {
         if (!$group->isGcep) {
             throw new InvalidArgumentException('Expected group '.$group->name.' ('.$group->id.') to be a GCEP.  group is a '.$group->fullType->name);
