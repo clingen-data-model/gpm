@@ -368,6 +368,7 @@ export const actions = {
             item.expert_panel.genes = genes.map(gene => ({
                 ...gene,
                 statuses: statusLookup[gene.gene_symbol]?.statuses || ['Not Curated'],
+                expert_panels: statusLookup[gene.gene_symbol]?.expert_panels || [],
                 details: statusLookup[gene.gene_symbol]?.entries || [],
             }))
         } else if (group.is_vcep_or_scvcep) {
@@ -433,15 +434,18 @@ export const actions = {
                     return {
                         gene_symbol: geneSymbols[i],
                         entries: [],
+                        expert_panels: [],
                         statuses: ['Not Curated'],
                     };
                 }
 
                 const statuses = [...new Set(entries.map(e => e.curation_status || 'Unknown'))];
+                const expert_panels = [...new Set(entries.map(e => e.expert_panel || ''))];
                 return {
                     gene_symbol: geneSymbols[i],
                     entries,
                     statuses,
+                    expert_panels,
                     tier: null
                 };
             });
