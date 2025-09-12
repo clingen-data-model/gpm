@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, nextTick } from 'vue'
+import { ref, computed } from 'vue'
 import { useStore } from 'vuex'
 import api from '@/http/api'
 
@@ -185,6 +185,12 @@ const applyBulkTier = async () => {
 		savingBulk.value = false
 	}
 }
+const clearSelection = () => {
+  if (selectedGenes.value.length === 0) return
+  selectedGenes.value = [] 
+}
+
+
 </script>
 
 <template>
@@ -192,6 +198,7 @@ const applyBulkTier = async () => {
     <!-- Toolbar (search, status filter, sort, page size) -->
     <div class="mb-3 flex items-center justify-between border rounded-lg bg-white px-3 py-2">
       <div class="flex items-center gap-3">
+        <input type="checkbox" :checked="isAllSelected" @change="toggleSelectAll" v-if="editing" />
         <input
           v-model="search"
           type="text"
@@ -237,6 +244,7 @@ const applyBulkTier = async () => {
 
     <!-- Bulk Tier Update Bar -->
     <div v-if="selectedGenes.length > 0 && editing && !readonly" class="flex items-center gap-2 bg-gray-50 p-3 border rounded">
+      {{ selectedGenes.length }} gene(s) selected.
       <span class="font-semibold">Bulk Tier Update:</span>
       <select v-model="bulkTier" class="border rounded px-2 py-1 text-sm">
         <option value="">Select Tier</option>
@@ -251,6 +259,9 @@ const applyBulkTier = async () => {
         :disabled="!bulkTier || selectedGenes.length === 0 || savingBulk"
       >
         {{ savingBulk ? 'Applying…' : 'Apply' }}
+      </button>
+      <button type="button" class="border rounded px-3 py-1 text-sm bg-white hover:bg-gray-50" @click="clearSelection" title="Clear selection">
+        Clear
       </button>
     </div>
 
