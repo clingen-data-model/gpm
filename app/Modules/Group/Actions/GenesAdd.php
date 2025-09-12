@@ -10,6 +10,7 @@ use App\Modules\Group\Actions\GenesAddToVcep;
 use Lorisleiva\Actions\Concerns\AsController;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Validation\Rule;
 
 class GenesAdd
 {
@@ -20,24 +21,24 @@ class GenesAdd
     {
     }
 
-    public function handle(Group $group, $genes): Group
+    public function handle(Group $group, $gene): Group
     {
         if (!$group->isExpertPanel) {
-            throw ValidationException::withMessages(['group' => 'Genes can only be added to an Expert Panel.']);
+            throw ValidationException::withMessages(['group' => 'Gene can only be added to an Expert Panel.']);
         }
 
         if ($group->isVcepOrScvcep) {
-            return $this->addGenesToVcep->handle($group, $genes);
+            return $this->addGenesToVcep->handle($group, $gene);
         }
         if ($group->isGcep) {
-            return $this->addGenesToGcep->handle($group, $genes);
+            return $this->addGenesToGcep->handle($group, $gene);
         }
         return $group;
     }
 
     public function asController(ActionRequest $request, Group $group)
     {
-        $this->handle($group, $request->genes);
+        $this->handle($group, $request->gene);
         return $group->fresh()->load('expertPanel.genes');
     }
 
@@ -48,32 +49,53 @@ class GenesAdd
     
     public function rules(ActionRequest $request): array
     {
-        $group = $request->group;
-        if ($group->isVcepOrScvcep) {
-            return [
-                'genes' => 'required|array|min:1',
-                'genes.*' => 'required|array',
-                'genes.*.hgnc_id' => 'required|numeric',
-                'genes.*.mondo_id' => 'required|regex:/MONDO:\d{7}/i'
-            ];
-        }
-        if ($group->isGcep) {
-            return [
-                'genes' => 'required|array|min:1',
-                'genes.*' => 'required|string'
-            ];
-        }
+        $panelId = optional($request->group->expertPanel)->id;
+        $table   = 'genes';
 
-        return [];
+        $rules = [
+            'gene'              => 'required',
+            'gene.hgnc_id'      => ['required', 'integer'],
+            'gene.gene_symbol'  => 'required|string',
+            'gene.mondo_id'     => 'nullable|regex:/MONDO:\d{7}/i',
+            'gene.moi'          => ['nullable', 'string'],
+        ];
+
+
+        if ($request->group?->isGcep) {
+            // GCEP: enforce uniqueness on hgnc_id only
+            $rules['gene.hgnc_id'][] = Rule::unique($table, 'hgnc_id')->where(fn($q) => $q->where('expert_panel_id', $panelId)->whereNull('deleted_at'));
+        } elseif ($request->group?->isVcepOrScvcep) {
+            // VCEP: require mondo_id + moi and enforce composite uniqueness
+            $rules['gene.hgnc_id'][] = Rule::unique($table, 'hgnc_id')
+                                        ->where(function ($q) use ($panelId, $request) {
+                                            $q->where('expert_panel_id', $panelId)
+                                            ->where('gene_symbol', $request->input('gene.gene_symbol'))
+                                            ->when(
+                                                filled($request->input('gene.mondo_id')),
+                                                fn ($qq) => $qq->where('mondo_id', $request->input('gene.mondo_id')),
+                                                fn ($qq) => $qq->whereNull('mondo_id')
+                                            )
+                                            ->when(
+                                                filled($request->input('gene.moi')),
+                                                fn ($qq) => $qq->where('moi', $request->input('gene.moi')),
+                                                fn ($qq) => $qq->whereNull('moi')
+                                            )
+                                            ->whereNull('deleted_at');
+                                        });
+        }
+        return $rules;
     }
 
     public function getValidationMessages(): array
     {
         return [
-            'required' => 'This field is required.',
-            'exists' => 'Your selection is invalid.',
-            'numeric' => 'Your selection is invalid.',
-            'regex' => 'Your selection selection should have a mondo_id with the format "MONDO:#######".'
+            'gene.required'             => 'Please provide a gene.',
+            'gene.hgnc_id.required'     => 'Gene must have an HGNC ID.',
+            'gene.hgnc_id.integer'      => 'The HGNC ID must be an integer.',
+            'gene.hgnc_id.unique'       => 'This gene is already on this Expert Panel.',
+            'gene.gene_symbol.required' => 'Gene must have a gene symbol.',
+            'gene.gene_symbol.string'   => 'The Gene Symbol must be a string.',
+            'gene.mondo_id.regex'       => 'The MONDO ID must follow the format "MONDO:#######".',
         ];
     }
 }

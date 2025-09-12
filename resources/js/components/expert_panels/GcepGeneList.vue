@@ -1,15 +1,16 @@
 <script>
-import {ref, watch, computed, onMounted} from 'vue';
+import {ref, watch, computed, nextTick, onMounted} from 'vue';
 import {useStore} from 'vuex';
 import formFactory from '@/forms/form_factory'
 import is_validation_error from '@/http/is_validation_error'
 import api from '@/http/api'
 import GeneCurationStatus from './GeneCurationStatus.vue';
+import GeneSearchSelect from '@/components/forms/GeneSearchSelect.vue'
 
 export default {
     name: 'GcepGeneList',
     components: {
-        GeneCurationStatus
+        GeneCurationStatus, GeneSearchSelect 
     },
     props: {
         editing: {
@@ -38,6 +39,11 @@ export default {
         const geneCheckResults = ref([]);
         const activeTab = ref('published');
 
+        const selectedGene = ref(null)
+        const selectKey = ref(0)
+        const adding = ref(false)
+
+
         const {errors, resetErrors} = formFactory(props, context)
 
         const group = computed({
@@ -48,6 +54,35 @@ export default {
                 store.commit('groups/addItem', value)
             }
         });
+
+        const addGene = async () => {
+            if (!selectedGene.value) return
+            adding.value = true
+            try {
+                const payloadItem = {
+                    hgnc_id: selectedGene.value.hgnc_id,
+                    gene_symbol: selectedGene.value.gene_symbol ?? selectedGene.value.symbol
+                }
+                await api.post(`/api/groups/${group.value.uuid}/expert-panel/genes`, { gene: payloadItem })                
+                await getGenes()
+                context.emit('saved')
+                store.commit('pushSuccess', `Added ${payloadItem.gene_symbol}`)
+            } catch (error) {
+                const res = error?.response
+                if (res?.status === 422 && res.data?.errors) {
+                    const all = Object.values(res.data.errors).flat()
+                    store.commit('pushError', all.join('\n'))
+                } else {
+                    store.commit('pushError', res?.data?.message || `Failed to add ${payloadItem.gene_symbol}`)
+                }
+            } finally {
+                selectedGene.value = null
+                await nextTick()
+                selectKey.value++
+                adding.value = false
+            }
+        }
+
 
         const getGenes = async () => {
             if (!group.value.uuid) {
@@ -99,6 +134,7 @@ export default {
                 ? group.value.expertPanel.genes.join(', ')
                 : null
         };
+        
         const save = async () => {
             const genes = genesAsText.value 
                             ? genesAsText.value
@@ -144,26 +180,18 @@ export default {
             }
         })
 
+        const onChildChange = async () => {
+            await getGenes()
+            context.emit('geneschanged')
+            context.emit('update')
+}
         onMounted(() => {
             getGenes();
         })
 
-        watch(() => group.value.expert_panel.genes, () => {
-            // syncGenesAsText();
-        })
-
         return {
-            group,
-            genesAsText,
-            loading,
-            errors,
-            resetErrors,
-            hideForm,
-            cancel,
-            syncGenesAsText,
-            save,
-            geneCheckResults,
-            activeTab
+            group, genesAsText, loading, errors, resetErrors, hideForm, cancel, syncGenesAsText,
+            save, geneCheckResults, activeTab, selectedGene, adding, addGene, onChildChange, selectKey 
         }
     },
     computed: {
@@ -191,28 +219,25 @@ export default {
                 @click="showForm"
             />
         </h4>
-        <div v-if="editing">
-            <input-row 
-                v-model="genesAsText"
-                type="large-text"
-                label="List the gene symbols for the genes the Expert Panel plans to curate.  Separate genes by commas, spaces, or new lines."
-                :errors="errors.genes"
-                placeholder="ABC, DEF1, BEAN"
-                vertical
-                @update:model-value="$emit('geneschanged'); $emit('update')"
-            />
-            
+        <div v-if="editing && !readonly" class="border rounded bg-gray-50 p-4 mb-4">
+            <label class="block text-sm font-semibold mb-2">Add gene</label>
+            <div class="flex items-center gap-2">
+                <GeneSearchSelect v-model="selectedGene" placeholder="Search gene by HGNC symbol…" class="w-full max-w-xl" :key="selectKey" />
+                <button type="button" class="rounded bg-blue-600 text-white px-3 py-1.5 text-sm disabled:opacity-50" :disabled="!selectedGene || adding" @click="addGene">
+                    {{ adding ? 'Adding…' : 'Add' }}
+                </button>
+            </div>
         </div>
+
+            <!-- View mode stays the same -->
         <div v-else>
-            <p v-if="genesAsText" style="text-indent: 1rem;">
-                {{ genesAsText }}
-            </p>
+            <p v-if="genesAsText" class="pl-4">{{ genesAsText }}</p>
             <div v-else class="well cursor-pointer" @click="showForm">
                 {{ loading ? `Loading...` : `No genes have been added to the gene list.` }}
             </div>
         </div>
         <div v-if="geneCheckResults.length">
-            <GeneCurationStatus :genes="geneCheckResults" :groupID="group.uuid" :editing="editing" :readonly="readonly" />
+            <GeneCurationStatus :genes="geneCheckResults" :groupID="group.uuid" :editing="editing" :readonly="readonly" @removed="onChildChange" />
         </div>
     </div>
 </template>

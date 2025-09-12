@@ -28,20 +28,12 @@
                 <option value="">All Classifications</option>
                 <option v-for="c in classificationOptions" :key="c" :value="c">{{ c }}</option>
             </select>
-
-            <!-- Page size -->
-            <div class="flex items-center gap-2">
-                <label class="text-sm">Page size:</label>
-                <select v-model="pageSize" class="border px-2 py-1 rounded text-sm">
-                    <option v-for="size in [20, 50, 100]" :key="size" :value="size">{{ size }}</option>
-                </select>
-            </div>
         </div>
     </div>
 
     <!-- Add/Edit Form -->
-    <transition name="fade">
-        <div v-if="isFormVisible" class="border rounded bg-gray-50 p-4 mb-4">
+    <transition name="fade" @after-enter="onFormEntered">
+        <div v-if="isFormVisible" ref="formEl" class="border rounded bg-gray-50 p-4 mb-4">
             <h3 class="text-lg font-semibold mb-3">
                 {{ isEditing ? 'Edit Gene' : 'Add Gene' }}
             </h3>
@@ -71,8 +63,8 @@
                     <div class="flex items-start gap-2 mb-2">
                         <span class="text-orange-500 font-bold">⚠</span>
                         <div class="text-sm text-gray-800">
-                        This gene’s classification is <strong>{{ formGene.plan?.classification }}</strong>.  
-                        Please describe your plan for curation.
+                        This gene is currently classified as <strong>{{ (formGene.classification ?? formGene.plan?.classification) }}</strong>.  
+                        Please explain the rationale for proposing its inclusion.
                         </div>
                     </div>
 
@@ -111,12 +103,12 @@
 
                     <!-- Disease -->
                     <div class="col-span-2">
-                        <label class="block text-sm font-medium mb-1">Disease *</label>
+                        <label class="block text-sm font-medium mb-1">Disease</label>
                         <DiseaseSearchSelect v-model="formGene.custom_disease" placeholder="Search disease..." />
                     </div>
 
                     <!-- Plan -->
-                    <div class="col-span-2 mb-3">
+                    <div class="col-span-2 mb-6">
                         <label class="block text-sm font-medium mb-1">Plan for Curation *</label>
                         <RichTextEditor
                             v-model="formGene.custom_plan"
@@ -164,138 +156,199 @@
         </button>
     </div>
 
-    <!-- Table -->
-    <table v-if="genes" class="border-none w-full">
-        <thead>
-            <tr>
-                <th v-if="canEdit && editing"><input type="checkbox" :checked="isAllSelected" @change="toggleSelectAll" /></th>
-                <th @click="setSort('gene_symbol')" class="cursor-pointer">
-                    HGNC Symbol <span v-if="sortKey === 'gene_symbol'">{{ sortOrder === 'asc' ? '▲' : '▼' }}</span>
-                </th>
-                <th @click="setSort('disease')" class="cursor-pointer">
-                    Disease <span v-if="sortKey === 'disease'">{{ sortOrder === 'asc' ? '▲' : '▼' }}</span>
-                </th>
-                <th @click="setSort('moi')" class="cursor-pointer">
-                    MOI <span v-if="sortKey === 'moi'">{{ sortOrder === 'asc' ? '▲' : '▼' }}</span>
-                </th>
-                <th>Plan</th>
-                <th @click="setSort('tier')" class="cursor-pointer">
-                    Tier <span v-if="sortKey === 'tier'">{{ sortOrder === 'asc' ? '▲' : '▼' }}</span>
-                </th>
-            </tr>
-        </thead>
-        <tbody v-if="paginatedGenes.length === 0">
-            <tr>
-                <td colspan="6" class="p-3 text-center">No genes found.</td>
-            </tr>
-        </tbody>
-        <tbody>
-            <template v-for="(gene, index) in paginatedGenes" :key="gene.id">
-            <tr :style="gene.plan?.classification === 'Moderate' ? 'background-color: oklch(98.7% 0.026 102.212);' : gene.plan?.classification === 'Limited' || gene.is_outdated ? 'background-color: oklch(97.3% 0.071 103.193);' : ''">
-                <td v-if="canEdit & editing">
-                    <input type="checkbox" :checked="selectedGenes.includes(gene.id)" @change="toggleSelect(gene.id)" />
-                </td>
-                <td>{{ gene.gene_symbol }}</td>
-                <td>{{ gene.mondo_id }}<br />{{ gene.disease_name }}</td>
-                <td>{{ gene.moi }}</td>
-                <td class="text-xs">
-                    <div v-if="!gene.plan?.is_other" class="grid grid-cols-2 gap-x-4 text-gray-600">
-                        <div><strong>Expert Panel:</strong> {{ gene.plan?.expert_panel ?? 'N/A' }}</div>
-                        <div>
-                            <strong>Classification:</strong> {{ gene.plan?.classification ?? 'N/A' }}
-                            <span v-if="['Moderate','Limited'].includes(gene.plan?.classification)" class="font-bold text-orange-500">⚠</span>
-                        </div>
-                        <div><strong>Status:</strong> {{ gene.plan?.curation_status ?? 'N/A' }}</div>
-                        <div><strong>Date Approved:</strong>
-                            {{ gene.plan?.date_approved ? new Date(gene.plan?.date_approved).toLocaleDateString() : 'N/A' }}
-                        </div>
-                        <div class="col-span-2"><strong>Phenotypes:</strong> {{ gene.plan?.phenotypes ?? 'N/A' }}</div>
-                        <div class="col-span-2" v-if=" gene.plan?.requires_plan"><strong>Plan:</strong> <span v-html="gene.plan?.curated_plan_text"></span></div>                        
-                    </div>
-                    <div v-else v-html="gene.plan?.the_plan"></div>                    
-                </td>
-                <td>
-                    <div v-if="editing" class="flex flex-col gap-1">
-                        <select
-                            v-model="gene.tier"
-                            class="border rounded px-1 py-0.5 text-sm"
-                            @change="updateTier(gene)"
-                            :disabled="savingTierFor === gene.id || readonly"
-                        >
-                            <option value="null">—</option>
-                            <option value="1">Tier 1</option>
-                            <option value="2">Tier 2</option>
-                            <option value="3">Tier 3</option>
-                            <option value="4">Tier 4</option>
-                        </select>
-                        <button v-if="gene.is_outdated && gene.gt_data" 
-                            @click="applyGtUpdate(gene)"
-                            class="btn btn-xs w-full text-center text-amber-800 font-semibold"
-                            title="Snapshot differs from latest GeneTracker data"
+    <!-- List toolbar -->
+    <div class="mb-3 flex items-center justify-between border rounded-lg bg-white px-3 py-2">
+        <div class="flex items-center gap-3">
+            <input
+            v-if="canEdit && editing"
+            type="checkbox"
+            :checked="isAllSelected"
+            @change="toggleSelectAll"
+            aria-label="Select all on page"
+            />
+            <span class="text-sm text-gray-600">
+            {{ paginatedGenes.length }} shown / {{ filteredAndSortedGenes.length }} total
+            </span>
+        </div>
 
-                            >
-                            Refresh data from GT ⚠
-                        </button>
-                        <dropdown-menu v-if="!gene.toDelete" :hide-cheveron="true" class="relative">
-                            <template #label>
-                                <button class="btn btn-xs w-full text-center">⋯</button>
-                            </template>
-                            <dropdown-item @click="startEdit(gene)">Edit</dropdown-item>
-                            <dropdown-item @click="confirmRemove(gene)">Remove</dropdown-item>
-                        </dropdown-menu>                        
+        <div class="flex items-center gap-2">
+            <label class="text-xs text-gray-500">Sort by</label>
+            <select v-model="sortKey" class="border rounded px-2 py-1 text-sm">
+                <option value="gene_symbol">HGNC Symbol</option>
+                <option value="disease">Disease</option>
+                <option value="moi">MOI</option>
+                <option value="tier">Tier</option>
+            </select>
+            <button
+                class="border rounded px-2 py-1 text-xs"
+                @click="sortOrder = sortOrder === 'asc' ? 'desc' : 'asc'"
+                :aria-label="`Toggle sort order (currently ${sortOrder})`"
+                title="Toggle sort order"
+                >
+                {{ sortOrder === 'asc' ? 'ASC ▲' : 'DESC ▼' }}
+            </button>
+            <div class="ml-2 flex items-center gap-2">
+                <label class="text-xs text-gray-500">Page size</label>
+                <select v-model="pageSize" class="border rounded px-2 py-1 text-sm">
+                    <option v-for="size in [2, 20, 50, 100]" :key="size" :value="size">{{ size }}</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Card list (replaces the whole <table>...</table>) -->
+    <div v-if="paginatedGenes.length === 0" class="p-6 text-center text-sm text-gray-500 border rounded-lg bg-white">
+        No genes found.
+    </div>
+
+    <ul v-else class="space-y-2">
+        <li v-for="(gene, index) in paginatedGenes" :key="gene.id">
+            <div class="rounded-2xl overflow-hidden border border-gray-200 bg-white shadow-sm hover:shadow transition-shadow">
+                
+                <div class="flex items-start justify-between gap-3 p-3">
+                    <div class="flex items-start gap-3">
+                        <div v-if="canEdit && editing" class="mt-1">
+                            <input type="checkbox" :checked="selectedGenes.includes(gene.id)" @change="toggleSelect(gene.id)" :aria-label="`Select ${gene.gene_symbol}`" />
+                        </div>
+                        <div>
+                            <div class="flex flex-wrap items-center gap-2">
+                                <span class="text-base font-semibold text-gray-900">{{ gene.gene_symbol }}</span>
+                                <span v-if="gene.mondo_id" class="text-xs rounded-full bg-gray-100 px-2 py-0.5 text-gray-700">{{ gene.mondo_id }}</span>
+                                <span v-if="gene.moi" class="text-xs rounded-full bg-gray-100 px-2 py-0.5 text-gray-700">{{ gene.moi }}</span>
+                                <span v-if="gene.plan?.is_other" class="'inline-flex h-2 w-2 rounded-full animate-pulse bg-green-500" aria-hidden="true">
+
+                                </span>
+                                <span
+                                    v-if="gene.is_outdated && gene.gt_data"
+                                    class="text-[11px] rounded-full bg-amber-100 text-amber-900 px-2 py-0.5 border border-amber-300"
+                                >Snapshot out of date</span>
+                            </div>
+                            <div class="mt-0.5 text-sm text-gray-700 truncate">{{ gene.disease_name }}</div>
+                        </div>
                     </div>
-                    <span v-else>{{ gene.tier || '—' }}</span>
-                </td>
-            </tr>
-            <tr v-if="gene.is_outdated && gene.gt_data"> <!-- && ! expanded.includes(index) -->
-                <td :colspan="editing ? 6 : 5">
-                    <div
-                        role="status" aria-live="polite"
-                        class="rounded-md border border-amber-300 bg-amber-50
-                                px-3 py-2 text-xs text-amber-900 col-span-2" 
-                        >
-                        <div class="flex items-start gap-2">
-                            ⚠
-                            <div>
-                                <div class="font-medium">Snapshot out of date</div>
-                                <div class="text-amber-900/80">This record differs from the latest GeneTracker data. 
-                                   <span @click="gene.is_outdated && toggleExpanded(index)" class="underline cursor-pointer font-semibold">
-                                     {{ expanded.includes(index) ? 'Hide' : 'View' }} GeneTracker data
-                                    </span>
-                                </div>
+
+                    <div class="flex items-center gap-2">
+                        <template v-if="editing">
+                            <select v-model="gene.tier" class="border rounded px-2 py-1 text-xs" @change="updateTier(gene)" :disabled="savingTierFor === gene.id || readonly" title="Tier">
+                                <option value="null">—</option>
+                                <option value="1">Tier 1</option>
+                                <option value="2">Tier 2</option>
+                                <option value="3">Tier 3</option>
+                                <option value="4">Tier 4</option>
+                            </select>
+
+                            <button v-if="gene.is_outdated && gene.gt_data" @click="applyGtUpdate(gene)" title="Refresh from latest GT"
+                            class="hidden sm:inline-flex rounded border border-amber-400 bg-amber-50 px-2 py-1 text-xs font-semibold text-amber-900 hover:bg-amber-100">
+                                Refresh GT ⚠
+                            </button>
+
+                            <dropdown-menu v-if="!gene.toDelete" :hide-cheveron="true" class="relative">
+                                <template #label>
+                                    <button class="rounded border px-2 py-1 text-xs bg-white">⋯</button>
+                                </template>
+                                <dropdown-item @click="startEdit(gene)">Edit</dropdown-item>
+                                <dropdown-item @click="confirmRemove(gene)">Remove</dropdown-item>
+                            </dropdown-menu>
+                        </template>
+                        <span v-else class="text-xs text-gray-700">Tier: {{ gene.tier || '—' }}</span>
+                    </div>
+                </div>
+
+                <!-- Snapshot quick facts (COMPACT) -->
+                <div class="px-3 pb-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 text-sm">
+                    <div v-if="gene.plan?.is_other" class="sm:col-span-2 lg:col-span-4 rounded-xl border p-2 text-sm border-green-200 bg-green-50 p-2">
+                        <div class="text-[11px] uppercase tracking-wide text-gray-500">Plan</div>
+                        <div class="prose max-w-none" v-html="htmlFromMarkdown((gene.plan?.the_plan || '').replace(/\\/g, ''))"></div>
+                    </div>
+                    <template v-else>
+                        <div class="rounded-xl border border-gray-200 bg-gray-50 p-2">
+                            <div class="text-[11px] uppercase tracking-wide text-gray-500">Expert Panel</div>
+                            <div class="text-sm text-gray-900">{{ gene.plan?.expert_panel ?? 'N/A' }}</div>
+                        </div>
+
+                        <div :class="['rounded-xl border p-2',
+                            ['Moderate','Limited'].includes(gene.plan?.classification)
+                            ? (gene.plan?.classification === 'Limited'
+                                ? 'border-amber-200 bg-amber-100 ring-1 ring-amber-500'
+                                : 'border-amber-100 bg-amber-50 ring-1 ring-amber-300')
+                            : 'border-gray-200 bg-gray-50'
+                        ]">
+                            <div class="text-[11px] uppercase tracking-wide text-gray-500">Classification</div>
+                            <div class="mt-0.5 text-gray-900 flex items-center gap-2 text-sm">
+                                {{ gene.plan?.classification ?? 'N/A' }}
+                                <span v-if="['Moderate','Limited'].includes(gene.plan?.classification)" 
+                                    :class="['inline-flex h-2 w-2 rounded-full animate-pulse', gene.plan?.classification === 'Limited' ? 
+                                        'bg-amber-500' : 'bg-amber-300']" aria-hidden="true"></span>
                             </div>
                         </div>
-                    </div>
-                </td>
-            </tr>
-            <tr v-if="gene.is_outdated && gene.gt_data && expanded.includes(index)">                
-                <td v-if="editing" @click="toggleExpanded(index)">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" aria-labelledby="box" role="presentation" name="cheveron-down" class="m-auto cursor-pointer"><title id="box" lang="en">box</title><g fill="currentColor"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"></path></g></svg>
-                </td>
-                <td>{{ gene.gt_data?.gene_symbol }}</td>
-                <td>{{ gene.gt_data?.mondo_id }}<br />{{ gene.gt_data?.disease_name }}</td>
-                <td>{{ gene.gt_data?.moi }}</td>
-                <td class="text-xs" :colspan="editing ? 2 : 1">
-                    <div class="grid grid-cols-2 gap-x-4 text-gray-600">
-                        <div><strong>Expert Panel:</strong> {{ gene.gt_data?.expert_panel ?? 'N/A' }}</div>
-                        <div>
-                            <strong>Classification:</strong> {{ gene.gt_data?.classification ?? 'N/A' }}
-                            <span v-if="['Moderate','Limited'].includes(gene.gt_data?.classification)" class="font-bold text-orange-500">⚠</span>
+
+                        <div class="rounded-xl border border-gray-200 bg-gray-50 p-2">
+                            <div class="text-[11px] uppercase tracking-wide text-gray-500">Status</div>
+                            <div class="text-sm text-gray-900">{{ gene.plan?.curation_status ?? 'N/A' }}</div>
                         </div>
-                        <div><strong>Status:</strong> {{ gene.gt_data?.curation_status ?? 'N/A' }}</div>
-                        <div><strong>Date Approved:</strong>
-                            {{ gene.gt_data?.date_approved ? new Date(gene.gt_data?.date_approved).toLocaleDateString() : 'N/A' }}
+
+                        <div class="rounded-xl border border-gray-200 bg-gray-50 p-2">
+                            <div class="text-[11px] uppercase tracking-wide text-gray-500">Date Approved</div>
+                            <div class="text-sm text-gray-900">
+                                {{ gene.plan?.date_approved ? new Date(gene.plan?.date_approved).toLocaleDateString() : 'N/A' }}
+                            </div>
                         </div>
-                        <div class="col-span-2"><strong>Phenotypes:</strong> {{ gene.gt_data?.phenotypes ?? 'N/A' }}</div>
+
+                        <div class="sm:col-span-2 lg:col-span-4 rounded-xl border border-gray-200 bg-gray-50 p-2">
+                            <div class="text-[11px] uppercase tracking-wide text-gray-500">Phenotypes</div>
+                            <div class="text-sm text-gray-900 line-clamp-2">{{ gene.plan?.phenotypes ?? 'N/A' }}</div>
+                        </div>
+                        
+                        <div v-if="['Moderate','Limited'].includes(gene.plan?.classification)" class="sm:col-span-2 lg:col-span-4 rounded-xl border border-amber-200 bg-amber-50 p-2">
+                            <div class="text-[11px] uppercase tracking-wide text-amber-800">Plan</div>
+                            <div class="prose max-w-none text-sm text-amber-900" v-html="htmlFromMarkdown((gene.plan?.curated_plan_text || '').replace(/\\/g, ''))"></div>
+                        </div>
+                    </template>
+                </div>
+
+                <div v-if="gene.is_outdated && gene.gt_data" class="flex items-center justify-between gap-2 border-t border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900">
+                    <div class="flex items-center gap-2">
+                        <span class="inline-flex h-4 w-4">⚠</span>
+                        <span class="truncate">Snapshot differs from latest GeneTracker data.</span>
                     </div>
-                </td>
-                <td v-if="! editing" @click="toggleExpanded(index)">
-                    Hide
-                </td>
-            </tr>
-            </template>
-        </tbody>
-    </table>
+                    <button @click="toggleExpanded(index)" class="rounded border border-amber-400 px-2 py-1 text-xs font-medium hover:bg-amber-100">
+                        {{ expanded.includes(index) ? 'Hide GT diff' : 'Show GT diff' }}
+                    </button>
+                </div>
+                
+                <transition name="fade">
+                    <div v-if="gene.is_outdated && gene.gt_data && expanded.includes(index)" class="px-3 pb-3 pt-2 text-xs">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                            <div v-for="row in compactDiffRows(gene)" :key="row.key" class="rounded-lg border border-gray-200">
+                            <div class="flex items-center justify-between border-b bg-gray-50 px-2 py-1 text-[11px] text-gray-600">
+                                <span class="uppercase tracking-wide">{{ row.label }}</span>
+                            </div>
+                            <div class="grid grid-cols-2">
+                                <div class="min-w-0 p-2">
+                                <div class="truncate" :title="row.a">{{ row.a || '—' }}</div>
+                                </div>
+                                <div class="min-w-0 p-2" :class="isDiff(row.a, row.b) ? 'bg-sky-50 ring-1 ring-sky-300' : ''">
+                                <div class="truncate" :title="row.b">{{ row.b || '—' }}</div>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+
+                        <!-- Small-screen actions -->
+                        <div class="mt-2 flex flex-wrap items-center gap-2 sm:hidden">
+                            <button v-if="gene.is_outdated && gene.gt_data" type="button" class="rounded bg-amber-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-amber-700" @click="applyGtUpdate(gene)">
+                                Refresh from GT
+                            </button>
+                            <button type="button" class="rounded border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-gray-800 hover:bg-gray-50" @click="toggleExpanded(index)" >
+                                Keep Snapshot
+                            </button>
+                        </div>
+                    </div>
+                </transition>
+            </div>
+        </li>
+    </ul>
 
     <!-- Pagination -->
     <div class="mt-4 flex justify-between items-center">
@@ -320,12 +373,12 @@
 
 <script>
 import { api } from '@/http';
-import { ref, computed, onMounted } from 'vue';
+import { ref, nextTick, computed, onMounted } from 'vue';
 import { useStore } from 'vuex';
 import GeneSearchSelect from '@/components/forms/GeneSearchSelect.vue';
 import DiseaseSearchSelect from '@/components/forms/DiseaseSearchSelect.vue';
 import CuratedGeneSearchSelect from '@/components/forms/CuratedGeneSearchSelect.vue';
-import is_validation_error from '@/http/is_validation_error';
+import { htmlFromMarkdown, markdownFromHTML } from '@/markdown-utils'
 import { hasAnyPermission } from '@/auth_utils';
 import RichTextEditor from '@/components/prosekit/RichTextEditor.vue';
 
@@ -344,10 +397,13 @@ export default {
         const errors = ref({});
         const mois = ref([]);
 
+        const formEl = ref(null)
+        const shouldScrollToForm = ref(false)
+
         const selectedGenes = ref([]);
         const bulkTier = ref('');
         const savingTierFor = ref(null);
-
+        
         const search = ref('');
         const filterMoi = ref('');
         const filterClassification = ref('');
@@ -420,7 +476,10 @@ export default {
             curatedGeneKey.value++;
         };
 
+        const unescapeMarkdown = (s = '') => s.replace(/\\([\\`*_{}\[\]()#+\-.!>~|])/g, '$1');
+
         const startEdit = (gene) => {
+            const wasOpen = isFormVisible.value
             isFormVisible.value = true;
             isEditing.value = gene.id;
 
@@ -432,13 +491,13 @@ export default {
                     custom_gene: { hgnc_id: gene.hgnc_id, gene_symbol: gene.gene_symbol },
                     custom_disease: { mondo_id: gene.mondo_id, name: gene.disease_name },
                     custom_moi: mois.value.find(m => m.abbreviation === gene.moi) || null,
-                    custom_plan: gene.plan.the_plan || ''
+                    custom_plan: (unescapeMarkdown(gene.plan?.the_plan || ''))
                 };
             } else {
                 const plan = {
                     ...gene.plan,
                     is_other: false,
-                    curated_plan_text: gene.plan?.curated_plan_text ?? gene.plan?.the_plan ?? ''
+                    curated_plan_text: gene.plan?.curated_plan_text ?? ''
                 };
 
                 formGene.value = {
@@ -451,12 +510,17 @@ export default {
                     date_approved: gene.date_approved,
                     requires_plan: ['Moderate', 'Limited'].includes(gene.plan?.classification),
                     plan,
-                    curated_plan_text: plan.curated_plan_text,
+                    curated_plan_text: (unescapeMarkdown(plan?.curated_plan_text || '')),
                     is_other: false
                 };
             }
-
+            console.log('Editing gene:', formGene.value);
             curatedGeneKey.value++;
+            if (wasOpen) {
+                scrollToFormSoon()
+            } else {
+                shouldScrollToForm.value = true
+            }
         };
 
 
@@ -471,7 +535,7 @@ export default {
             if (!formGene.value?.is_other) return false;
             return (
                 !!formGene.value.custom_gene?.hgnc_id &&
-                !!formGene.value.custom_disease?.mondo_id &&
+                // !!formGene.value.custom_disease?.mondo_id &&
                 (formGene.value.custom_plan?.trim().length >= 20)
             );
         });
@@ -494,7 +558,7 @@ export default {
                     ...selected,
                     is_other: false,
                     requires_plan: ['Moderate', 'Limited'].includes(selected.classification),
-                    curated_plan_text: ''
+                    curated_plan_text: htmlFromMarkdown('')
                 };
 
             }
@@ -537,9 +601,7 @@ export default {
                 // normalize flags/text
                 is_other: false,
                 requires_plan: !!fg?.requires_plan,
-                curated_plan_text:
-                (fg?.requires_plan ? (fg?.curated_plan_text || fromPlan.curated_plan_text || '') 
-                                    : (fromPlan.curated_plan_text || ''))
+                curated_plan_text: (fg?.requires_plan ? markdownFromHTML(fg?.curated_plan_text || fromPlan.curated_plan_text || '') : markdownFromHTML(fromPlan.curated_plan_text || ''))
             };
 
             // strip undefined to keep payload clean
@@ -553,7 +615,7 @@ export default {
                 if (formGene.value.is_other) {
                     const plan = {
                         is_other: true,
-                        the_plan: formGene.value.custom_plan,
+                        the_plan: markdownFromHTML(formGene.value.custom_plan),
                         moi_name: formGene.value.custom_moi?.name || '',
                         hp_id: formGene.value.custom_moi?.hp_id || ''
                     };
@@ -584,18 +646,22 @@ export default {
 
                 if (isEditing.value) {
                     await api.put(`/api/groups/${group.value.uuid}/expert-panel/genes/${isEditing.value}`, payload);
+                    store.commit('pushSuccess', `Successfully updated for ${payload.gene_symbol}-${payload.mondo_id}-${payload.moi}`);
                 } else {
-                    await api.post(`/api/groups/${group.value.uuid}/expert-panel/genes`, { genes: [payload] });
+                    await api.post(`/api/groups/${group.value.uuid}/expert-panel/genes`, { gene: payload });
+                    store.commit('pushSuccess', `Successfully added: ${payload.gene_symbol}-${payload.mondo_id}-${payload.moi}`);
                 }
 
                 await getGenes();
                 cancelForm();
                 emit('saved');
-            } catch (error) {
-                if (is_validation_error(error)) {
-                    errors.value = error.response.data.errors;
+            } catch (error) {                
+                const res = error?.response
+                if (res?.status === 422 && res.data?.errors) {
+                    const all = Object.values(res.data.errors).flat()
+                    store.commit('pushError', all.join('\n'))
                 } else {
-                    store.commit('pushError', error.response.data);
+                    store.commit('pushError', res?.data?.message || `Failed to add ${payload.gene_symbol}`)
                 }
             }
         };
@@ -745,6 +811,81 @@ export default {
         });
         const isAllSelected = computed(() => paginatedGenes.value.every(g => selectedGenes.value.includes(g.id)));
 
+
+        // Helper functions for compare diff rows
+        const isDiff = (a, b) => (a ?? '') !== (b ?? '');
+        const snapVal = (gene, key) => {
+            const s = gene?.plan ?? {};
+            const map = {
+                gene_symbol:  gene.gene_symbol ?? s.gene_symbol,
+                moi:          gene.moi ?? s.moi,
+                mondo_id:     gene.mondo_id ?? s.mondo_id,
+                disease_name: gene.disease_name ?? s.disease_name,
+                expert_panel:s.expert_panel,
+                classification: s.classification,
+                curation_status: s.curation_status,
+                date_approved: s.date_approved,
+                phenotypes:   s.phenotypes,
+            };
+            return map[key];
+        };
+
+        const gtVal = (gene, key) => {
+            const g = gene?.gt_data ?? {};
+            const map = {
+                gene_symbol: g.gene_symbol,
+                moi:         g.moi,
+                mondo_id:    g.mondo_id,
+                disease_name:g.disease_name,
+                expert_panel:g.expert_panel,
+                classification: g.classification,
+                curation_status: g.curation_status,
+                date_approved: g.date_approved,
+                phenotypes:  g.phenotypes,
+            };
+            return map[key];
+        };
+
+        const compactDiffRows = (gene, { onlyChanged = false } = {}) => {
+            // Format dates for display consistency
+            const fmtDate = (d) => (d ? new Date(d).toLocaleDateString() : '');
+
+            const rows = [
+                { key: 'gene_symbol',   label: 'HGNC Symbol',   a: snapVal(gene, 'gene_symbol'),   b: gtVal(gene, 'gene_symbol') },
+                { key: 'moi',           label: 'MOI',           a: snapVal(gene, 'moi'),           b: gtVal(gene, 'moi') },
+                { key: 'mondo_id',      label: 'MONDO ID',      a: snapVal(gene, 'mondo_id'),      b: gtVal(gene, 'mondo_id') },
+                { key: 'disease_name',  label: 'Disease',       a: snapVal(gene, 'disease_name'),  b: gtVal(gene, 'disease_name') },
+
+                { key: 'expert_panel',  label: 'Expert Panel',  a: snapVal(gene, 'expert_panel'),  b: gtVal(gene, 'expert_panel') },
+                { key: 'classification',label: 'Classification',a: snapVal(gene, 'classification'),b: gtVal(gene, 'classification') },
+                { key: 'curation_status',label:'Status',        a: snapVal(gene, 'curation_status'),b: gtVal(gene, 'curation_status') },
+                { key: 'date_approved', label: 'Date Approved', a: fmtDate(snapVal(gene, 'date_approved')), b: fmtDate(gtVal(gene, 'date_approved')) },
+                { key: 'phenotypes',    label: 'Phenotypes',    a: snapVal(gene, 'phenotypes'),    b: gtVal(gene, 'phenotypes') },
+            ];
+
+            return onlyChanged ? rows.filter(r => isDiff(r.a, r.b)) : rows;
+        };
+
+        // NEXT 2 FUNCTIONS HANDLE SCROLLING TO FORM WHEN IT OPENS
+        const scrollToForm = () => {
+            const el = formEl.value
+            if (!el) return
+            el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+        }
+
+        const onFormEntered = () => {
+            if (shouldScrollToForm.value) {
+                shouldScrollToForm.value = false
+                scrollToForm()
+            }
+        }
+        const scrollToFormSoon = async () => {
+            await nextTick()
+            requestAnimationFrame(() => scrollToForm())
+        }
+
+
+
         onMounted(() => { getGenes(); getMois(); });
         const expanded = ref([])
         const toggleExpanded = index => {
@@ -764,7 +905,8 @@ export default {
             canEdit, isOtherFormValid, isCuratedPlanValid, toggleExpanded, expanded,
             showConfirmRemove, selectedGene, confirmRemove, cancelRemove, removeGene,
             setSort, startAdd, startEdit, cancelForm, selectOther, handleCuratedSelection, saveForm,
-            remove, updateTier, applyBulkTier, toggleSelect, toggleSelectAll, applyGtUpdate
+            remove, updateTier, applyBulkTier, toggleSelect, toggleSelectAll, applyGtUpdate,
+            compactDiffRows, isDiff, htmlFromMarkdown, formEl, onFormEntered,
         };
     }
 };
@@ -781,27 +923,6 @@ export default {
 .fade-leave-to {
   opacity: 0;
   transform: translateY(-8px);
-}
-
-/* Table styles */
-table {
-  border-collapse: collapse;
-  width: 100%;
-}
-th, td {
-  padding: 8px 10px;
-  text-align: left;
-  border-bottom: 1px solid #e5e7eb;
-  font-size: 14px;
-}
-th {
-  background-color: #f9fafb;
-  font-weight: 600;
-  cursor: pointer;
-}
-th span {
-  font-size: 12px;
-  margin-left: 4px;
 }
 
 /* Buttons */
@@ -859,4 +980,6 @@ input:focus, select:focus {
     flex-wrap: wrap;
   }
 }
+
+.scroll-target { scroll-margin-top: 96px; }
 </style>
