@@ -139,6 +139,7 @@
 
     <!-- Bulk Tier Update Bar -->
     <div v-if="selectedGenes.length > 0 && !readonly" class="flex items-center gap-2 bg-gray-50 p-3 border rounded mb-3">
+        {{ selectedGenes.length }} gene(s) selected.
         <span class="font-semibold">Bulk Tier Update:</span>
         <select v-model="bulkTier" class="border rounded px-2 py-1 text-sm">
             <option value="">Select Tier</option>
@@ -153,6 +154,9 @@
             :disabled="!bulkTier || selectedGenes.length === 0"
         >
             Apply
+        </button>
+        <button type="button" class="border rounded px-3 py-1 text-sm bg-white hover:bg-gray-50" @click="clearSelection" title="Clear selection">
+            Clear
         </button>
     </div>
 
@@ -702,6 +706,11 @@ export default {
             }
         };
 
+        const clearSelection = () => {
+            if (selectedGenes.value.length === 0) return
+            selectedGenes.value = [] 
+        }
+
         const toggleSelect = id => {
             if (selectedGenes.value.includes(id)) {
                 selectedGenes.value = selectedGenes.value.filter(x => x !== id);
@@ -906,7 +915,7 @@ export default {
             showConfirmRemove, selectedGene, confirmRemove, cancelRemove, removeGene,
             setSort, startAdd, startEdit, cancelForm, selectOther, handleCuratedSelection, saveForm,
             remove, updateTier, applyBulkTier, toggleSelect, toggleSelectAll, applyGtUpdate,
-            compactDiffRows, isDiff, htmlFromMarkdown, formEl, onFormEntered,
+            compactDiffRows, isDiff, htmlFromMarkdown, formEl, onFormEntered, clearSelection
         };
     }
 };
