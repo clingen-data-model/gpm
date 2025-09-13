@@ -31,7 +31,7 @@ export default {
 			this.affilError = null
 
 			try {				
-				const { data } = await api.post(`/api/applications/${this.group.uuid}/affiliation`)
+				const { data } = await api.post(`/api/applications/${this.group.expert_panel.uuid}/affiliation`)
 				const affiliationID = data?.affiliation_id
 				if (! affiliationID) { throw new Error(data?.message || 'Request failed to create Affiliation ID') }
 				this.application.affiliation_id = affiliationID
