@@ -13,6 +13,7 @@ use Lorisleiva\Actions\Concerns\AsController;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Modules\Group\Http\Resources\GroupResource;
 use App\Modules\ExpertPanel\Service\AffilsClient;
+use App\Modules\ExpertPanel\Actions\AffiliationCreate; 
 use Illuminate\Support\Facades\Log;
 
 class GroupCreate
@@ -21,7 +22,8 @@ class GroupCreate
 
     public function __construct(
         private CoiCodeMake $makeCoiCode, 
-        private AffilsClient $affils) {
+        private AffilsClient $affils,
+        private AffiliationCreate $affiliationCreate) {
     }
 
 
@@ -36,21 +38,7 @@ class GroupCreate
             'parent_id' => $this->resolveParentId($data),
         ]);
 
-        if ($group->isEp) {
-            $expertPanel = new ExpertPanel([
-                'long_base_name' => $data['name'],
-                'short_base_name' => isset($data['short_base_name']) ? $data['short_base_name'] : null,
-                'group_id' => $group->id,
-                'cdwg_id' => $this->resolveParentId($data),
-                'expert_panel_type_id' => ($data['group_type_id'] - 2),
-                'date_initiated' => Carbon::now(),
-                'current_step' => 1,
-            ]);
-            $expertPanel->uuid = Uuid::uuid4();
-            $group->expertPanel()->save($expertPanel);
-        }
-
-         // If CDWG, send data AM API with ONLY { name }
+        // If CDWG, send data AM API with ONLY { name }
         if ((int) $group->group_type_id === 2) {
             try {
                 $resp = $this->affils->createCdwg(['name' => $group->name]);
@@ -71,6 +59,30 @@ class GroupCreate
             }
         }
 
+        if ($group->isEp) {
+            $expertPanel = new ExpertPanel([
+                'long_base_name' => $data['name'],
+                'short_base_name' => isset($data['short_base_name']) ? $data['short_base_name'] : null,
+                'group_id' => $group->id,
+                'cdwg_id' => $this->resolveParentId($data),
+                'expert_panel_type_id' => ($data['group_type_id'] - 2),
+                'date_initiated' => Carbon::now(),
+                'current_step' => 1,
+            ]);
+            $expertPanel->uuid = Uuid::uuid4();
+            $group->expertPanel()->save($expertPanel);
+
+            try {
+                $this->affiliationCreate->handle($expertPanel);
+            } catch (\RuntimeException $e) {
+                Log::warning('EP affiliation create failed', [
+                    'group_uuid'        => $group->uuid,
+                    'expert_panel_uuid' => $expertPanel->uuid,
+                    'message'           => $e->getMessage(),
+                    'status'            => $e->getCode(),
+                ]);
+            }
+        }
 
         event(new GroupCreated($group));
 
@@ -90,12 +102,12 @@ class GroupCreate
     public function rules(): array
     {
         return [
-            'name' => 'required|max:255',
-            'long_base_name' => 'max:255',
+            'name'            => 'required|max:255',
+            'long_base_name'  => 'max:255',
             'short_base_name' => 'max:16',
-            'group_type_id' => 'required', // TODO: should check for existence when we merge vcep/gcep into group
+            'group_type_id'   => 'required',
             'group_status_id' => 'required|exists:group_statuses,id',
-            'parent_id' => [
+            'parent_id'       => [
                 'nullable',
                 function ($attribute, $value, $fail) {
                     if ($value != 0) {
