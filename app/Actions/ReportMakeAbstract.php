@@ -3,10 +3,11 @@
 namespace App\Actions;
 
 use Illuminate\Console\Command;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsCommand;
-use App\Actions\Utils\TransformArrayForCsv;
 use Lorisleiva\Actions\Concerns\AsController;
+use Symfony\Component\HttpFoundation\StreamedJsonResponse;
 
 abstract class ReportMakeAbstract
 {
@@ -15,10 +16,6 @@ abstract class ReportMakeAbstract
 
     public $commandSignature = null;
 
-    public function __construct(private TransformArrayForCsv $csvTransformer)
-    {
-    }
-
     abstract public function handle();
 
     public function asController(ActionRequest $request)
@@ -26,11 +23,25 @@ abstract class ReportMakeAbstract
         $data = $this->handle();
 
         if ($request->header('accept') == 'application/json') {
-            return $data;
+            return new StreamedJsonResponse($data);
         }
 
-        $data = $this->csvTransformer->handle($this->handle());
-        return response($data, 200, ['Content-type' => 'text/csv']);
+        return new StreamedResponse(function () use ($data) {
+            $handle = fopen('php://output', 'w');
+            $rowCount = 0;
+            foreach ($data as $row) {
+                if ($rowCount == 0) {
+                    // only print header once
+                    fputcsv($handle, array_keys($row));
+                }
+                $rowCount++;
+                fputcsv($handle, $row);
+            }
+            fclose($handle);
+        }, 200, [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="report.csv"',
+        ]);
     }
 
     public function asCommand(Command $command)
