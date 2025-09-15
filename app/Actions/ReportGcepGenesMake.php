@@ -1,12 +1,8 @@
 <?php
 
 namespace App\Actions;
-use Illuminate\Console\Command;
-use Lorisleiva\Actions\ActionRequest;
 use App\Modules\ExpertPanel\Models\Gene;
-use App\Actions\Utils\TransformArrayForCsv;
 use Lorisleiva\Actions\Concerns\AsCommand;
-use Lorisleiva\Actions\Concerns\AsListener;
 use Lorisleiva\Actions\Concerns\AsController;
 
 class ReportGcepGenesMake extends ReportMakeAbstract
