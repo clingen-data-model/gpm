@@ -2,14 +2,10 @@
 
 namespace App\Actions;
 use Illuminate\Console\Command;
-use Lorisleiva\Actions\ActionRequest;
 use App\Modules\ExpertPanel\Models\Gene;
-use Lorisleiva\Actions\Concerns\AsController;
 
-class ReportVcepGenesMake
+class ReportVcepGenesMake extends ReportMakeAbstract
 {
-    use AsController;
-
     public $commandSignature = 'reports:gcep-genes';
 
     public function handle()
@@ -17,23 +13,10 @@ class ReportVcepGenesMake
         return $this->pullData();
     }
 
-    public function asController(ActionRequest $request)
-    {
-        $data = $this->handle();
-
-        if ($request->header('accept') == 'application/json') {
-            return $data;
-        }
-
-        $data = $this->csvTransformer->handle($this->handle());
-        return response($data, 200, ['Content-type' => 'text/csv']);
-    }
-
     public function asCommand(Command $command)
     {
         dump(collect($this->handle()));
     }
-
 
     private function pullData(): array
     {
