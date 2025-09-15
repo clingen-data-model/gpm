@@ -22,7 +22,7 @@ class ReportPeopleMake extends ReportMakeAbstract
             'country',
             'credentials',
             'expertises',
-        ])->lazy(100)->map(function ($person) {
+        ])->lazy(500)->map(function ($person) {
             $data = [];
             $data['id'] = $person->id;
             $data['name'] = $person->first_name.' '.$person->last_name;
@@ -43,7 +43,7 @@ class ReportPeopleMake extends ReportMakeAbstract
                                                 : ''
                                             );
                                     })->filter()->join("; ");
-            $data['biography'] = $person->biograghy;
+            $data['biography'] = $person->biography;
             $data['orcid_id'] = $person->orcid_id;
             $data['hypothesis_id'] = $person->hypothesis_id;
             $data['has_registered'] = $person->user_id ? 'yes' : 'no';
