@@ -4,7 +4,6 @@ namespace App\Actions;
 use Illuminate\Console\Command;
 use Lorisleiva\Actions\ActionRequest;
 use App\Modules\ExpertPanel\Models\Gene;
-use App\Actions\Utils\TransformArrayForCsv;
 use Lorisleiva\Actions\Concerns\AsController;
 
 class ReportVcepGenesMake
@@ -12,10 +11,6 @@ class ReportVcepGenesMake
     use AsController;
 
     public $commandSignature = 'reports:gcep-genes';
-
-    public function __construct(private TransformArrayForCsv $csvTransformer)
-    {
-    }
 
     public function handle()
     {

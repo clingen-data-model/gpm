@@ -3,18 +3,13 @@
 namespace App\Actions;
 
 use Carbon\Carbon;
-use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use App\Modules\Group\Models\Group;
 use App\Modules\Person\Models\Person;
-use Lorisleiva\Actions\ActionRequest;
 use App\Modules\Person\Models\Country;
 use App\Modules\ExpertPanel\Models\Gene;
 use App\Modules\Group\Models\GroupMember;
 use App\Modules\Person\Models\Institution;
-use Lorisleiva\Actions\Concerns\AsCommand;
-use App\Actions\Utils\TransformArrayForCsv;
-use Lorisleiva\Actions\Concerns\AsController;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 
 class ReportSummaryMake extends ReportMakeAbstract
