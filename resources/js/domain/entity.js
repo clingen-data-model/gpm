@@ -91,29 +91,6 @@ class Entity {
         this.original = {};
     }
 
-    isDirtyOld (attribute = null) {
-        if (attribute) {
-            return this.original[attribute] !== this.attributes[attribute];
-        }
-        return Object.keys(this.original).some(key => {
-            return !isEqual(this.original[key], this.attributes[key]);
-        });
-    }
-
-    isDirty (attribute = null) {
-        const keys = Object.keys(this.original);
-        const same = (a, b) => {
-            const norm = v => (v instanceof Date ? v.toISOString() : v);
-            return isEqual(norm(a), norm(b));
-        };
-        
-        if (attribute) {
-            if (!keys.includes(attribute)) return false;
-            return !same(this.original[attribute], this.attributes[attribute]);
-        }
-        const compareKeys = keys.filter(k => !this.constructor.dates.includes(k));
-        return compareKeys.some(k => !same(this.original[k], this.attributes[k]));
-    }
     isDirty(attribute = null) {
         const keys = Object.keys(this.original);
         const same = (a, b) => {
