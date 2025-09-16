@@ -128,8 +128,24 @@ class GroupCreate
     public function getValidationMessages()
     {
         return [
-            'required' => 'This field is required.',
-            'exists' => 'The selection is invalid.'
+            'name.required'            => 'Please enter a group name.',
+            'name.max'                 => 'The group name can’t be longer than :max characters.',
+            
+            'long_base_name.max'       => 'Long base name can’t be longer than :max characters.',
+            'short_base_name.max'      => 'Short base name can’t be longer than :max characters.',
+            
+            'group_type_id.required'   => 'Please choose a group type (CDWG, GCEP, VCEP, or SCVCEP).',
+            
+            'group_status_id.required' => 'Please choose a group status.',
+            'group_status_id.exists'   => 'Please select a valid status from the list.',
+            
+            // If you switch parent_id to use a normal exists rule, this will be used:
+            // 'parent_id.required'       => 'Please choose a parent group.',
+            'parent_id.exists'         => 'The selected parent group could not be found.',
+            
+            'required'                 => 'This field is required.',
+            'exists'                   => 'The selected value is invalid.',
+            'max'                      => 'Please keep this value under :max characters.',
         ];
     }
 
