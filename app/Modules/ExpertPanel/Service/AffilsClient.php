@@ -21,8 +21,21 @@ class AffilsClient
         return $this->http()->post($this->base.$this->paths['create'], $payload);
     }
     
-    public function detail(string $uuid) {
-        return $this->http()->get($this->base . $this->paths['detail'] . '?uuid=' . $uuid);
+    public function detail($uuid=null, $affID=null) {
+        if (!$uuid && !$affilId) {
+            throw new \InvalidArgumentException('You must provide $uuid or $affilId.');
+        }
+        
+        if ($uuid) { // By UUID
+            $base = rtrim($this->base . $this->paths['detail'], '/');
+            $url  = $base . '/uuid/' . rawurlencode($uuid) . '/';
+            $response = $this->http()->get($url);
+            return $response;
+        }
+
+        // by Affiliation ID
+        $url = $this->base . $this->paths['detail'] . '?affil_id=' . rawurlencode($affilId);
+        return $this->http()->get($url);
     }
 
     public function updateByEpID(string $epID, array $fields) {

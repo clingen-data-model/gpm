@@ -3,7 +3,6 @@ namespace App\Modules\ExpertPanel\Actions;
 
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Modules\ExpertPanel\Service\AffilsClient;
-use App\Modules\ExpertPanel\Service\CdwgResolver;
 use App\Modules\Group\Events\ExpertPanelAffiliationIdUpdated;
 use App\Modules\ExpertPanel\Models\AmAffiliationRequest;
 use Illuminate\Http\JsonResponse;
@@ -13,26 +12,18 @@ use Illuminate\Support\Str;
 class AffiliationCreate
 {
     public function __construct(
-        private AffilsClient $client,
-        private CdwgResolver $cdwg
+        private AffilsClient $client
     ) {}
 
     public function handle(ExpertPanel $ep): JsonResponse
     {
-        if ($ep->affiliation_id) {
-            return response()->json([
-                'affiliation_id' => (int) $ep->affiliation_id,
-                'message' => 'Affiliation already assigned.',
-            ], 200);
-        }
+        $existing = $this->client->detail($ep->uuid);
 
-        // Check remote by UUID and sync if present.
-        $existing = $this->client->detail((string) $ep->uuid);
         if ($existing) {
             $data = $this->normalizeClientResponse($existing);
             $affId = (int) ($data['expert_panel_id'] ?? 0);
 
-            if ($affId > 0) {
+            if ($affId > 0 && $data['expert_panel_id'] != $ep->affiliation_id) { // THE LOGIC IS IF IT EXIST IT SHOULD HAVE AN AFFILIATION ID
                 $ep->forceFill(['affiliation_id' => $affId])->save();
                 $audit = AmAffiliationRequest::create([
                     'request_uuid'    => (string) Str::uuid(),
@@ -46,11 +37,16 @@ class AffiliationCreate
                     'affiliation_id' => $affId,
                     'message' => 'Affiliation already exists (synced).',
                 ], 200);
+            } else {
+                return response()->json([
+                    'affiliation_id' => (int) $ep->affiliation_id,
+                    'message' => 'Affiliation already assigned.',
+                ], 200);
             }
         }
 
         // Build payload
-        $cdwgId = (int) ($this->cdwg->resolveAmId($ep) ?? 1); // default 1 = 'None'
+        $cdwgId = (int) ($ep->group->parent->parent_id ?? 1); // default 1 = 'None'. Expert Panel->>Group->Parent->parent_id. The parent_id of the Parent is the id that is synced from AM
         $payload = [
             'uuid'        => (string) $ep->uuid,
             'full_name'   => $ep->long_base_name  ?: $ep->group?->name,
@@ -68,7 +64,6 @@ class AffiliationCreate
             'payload'         => $payload,
             'status'          => 'pending',
         ]);
-
         try {
             $res  = $this->client->create($payload);
             $data = $this->normalizeClientResponse($res);
