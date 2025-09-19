@@ -314,61 +314,6 @@ export default {
           await checkSelectedGeneCuration(gene)
         })
 
-        const submittingBulk = ref(false)
-
-        async function submitBulkFromReviewUI () {
-            const symbols = reviewBuckets.value.ready
-            if (!symbols.length) return
-            
-            const toAdd = symbols.map(sym => {
-                const fromAvail = availabilityMap.value.get(sym)
-                const fromReview = bulkCheckResults.value.find(r => String(r.gene_symbol || '').toUpperCase() === sym)
-
-                const hgncId = fromAvail?.hgnc_id ?? fromReview?.hgnc_id ?? null
-                const geneSymbol = fromAvail?.gene_symbol ?? fromReview?.gene_symbol ?? sym
-
-                return { hgnc_id: hgncId, gene_symbol: geneSymbol }
-            })
-
-            const missing = toAdd.filter(g => !g.hgnc_id)
-            const finalToAdd = toAdd.filter(g => g.hgnc_id)
-
-            if (!finalToAdd.length) {
-                store.commit('pushError', 'No addable genes were found (missing HGNC IDs).')
-                return
-            }
-            if (missing.length) {
-                store.commit('pushError', `Some genes are missing HGNC IDs and were skipped: ${missing.map(m => m.gene_symbol).join(', ')}`)
-            }
-
-            submittingBulk.value = true
-            try {
-                await api.post(`/api/groups/${group.value.uuid}/expert-panel/genes`, { genes: finalToAdd })
-                store.commit('pushSuccess', `Added ${finalToAdd.length} gene${finalToAdd.length > 1 ? 's' : ''}.`)
-                await getGenes()
-                showPasteModal.value = false
-                bulkCheckResults.value = []
-                pasteText.value = ''
-            } catch (err) {
-                if (is_validation_error(err)) {
-                    const messages = err.response?.data?.errors || {}
-                    const items = Object.keys(messages).map(k => `${k}: ${[].concat(messages[k]).join(', ')}`)
-                    store.commit('pushError', items.join('\n') || 'Validation failed while adding genes.')
-                } else {
-                    store.commit('pushError', err?.response?.data?.message || 'Failed to add genes.')
-                }
-            } finally {
-                submittingBulk.value = false
-            }
-        }
-
-        watch(() => group.value?.uuid, (uuid, prev) => {
-                if (!uuid) return
-                if (uuid === prev && geneCheckResults.value?.length) return
-                getGenes()
-            }, { immediate: true }
-        )
-
         const onChildChange = async () => {
             await getGenes()
             context.emit('geneschanged')
