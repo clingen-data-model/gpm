@@ -106,7 +106,7 @@ Route::get('/diseases/{mondo_id}', [DiseaseLookupController::class, 'show']);
 
 Route::get('/genes/search', [GeneLookupController::class, 'search']);
 Route::get('/genes/{hgnc_id}', [GeneLookupController::class, 'show']);
-
+Route::post('/genes/availability', [GeneLookupController::class, 'genesAvailability']);
 Route::get('/curations', [GeneLookupController::class, 'curations']);
 Route::post('/curationids', [GeneLookupController::class, 'curationids']);
 Route::get('/mois', [MoiLookupController::class, 'index']);
