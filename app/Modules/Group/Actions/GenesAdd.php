@@ -21,24 +21,24 @@ class GenesAdd
     {
     }
 
-    public function handle(Group $group, $gene): Group
+    public function handle(Group $group, $genes): Group
     {
         if (!$group->isExpertPanel) {
             throw ValidationException::withMessages(['group' => 'Gene can only be added to an Expert Panel.']);
         }
 
         if ($group->isVcepOrScvcep) {
-            return $this->addGenesToVcep->handle($group, $gene);
+            return $this->addGenesToVcep->handle($group, $genes);
         }
         if ($group->isGcep) {
-            return $this->addGenesToGcep->handle($group, $gene);
+            return $this->addGenesToGcep->handle($group, $genes);
         }
         return $group;
     }
 
     public function asController(ActionRequest $request, Group $group)
     {
-        $this->handle($group, $request->gene);
+        $this->handle($group, $request->genes);
         return $group->fresh()->load('expertPanel.genes');
     }
 
