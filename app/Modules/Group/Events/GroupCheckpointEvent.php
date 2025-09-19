@@ -3,10 +3,8 @@
 namespace App\Modules\Group\Events;
 
 use App\Events\PublishableEvent;
-use Illuminate\Support\Carbon;
 use App\Modules\Group\Models\Group;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use App\Modules\Group\Http\Resources\GroupExternalResource;
@@ -24,25 +22,14 @@ class GroupCheckpointEvent extends GroupEvent implements PublishableEvent
     {
     }
 
-    public function getLogDate(): Carbon
-    {
-        return Carbon::now();
-    }
-
     public function getSchemaVersion(): string
     {
         return '2.0.0';
     }
-    
+
     public function getTopic(): string
     {
         return config('dx.topics.outgoing.gpm-checkpoint-events');
-    }
-
-    public function shouldPublish(): bool
-    {
-        // EP events are only publishable after definition is approved
-        return !$this->group->isEp || $this->group->expertPanel->definitionIsApproved;
     }
 
     public function getPublishableMessage(): array {
@@ -52,15 +39,5 @@ class GroupCheckpointEvent extends GroupEvent implements PublishableEvent
     public function getLogEntry() :string
     {
         return 'Checkpoint event for group: ' . $this->group->name;
-    }
-
-    /**
-     * Get the channels the event should broadcast on.
-     *
-     * @return \Illuminate\Broadcasting\Channel|array
-     */
-    public function broadcastOn()
-    {
-        return new PrivateChannel('group-events');
     }
 }
