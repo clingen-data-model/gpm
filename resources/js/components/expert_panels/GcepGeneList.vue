@@ -1,5 +1,5 @@
 <script>
-import {ref, watch, computed, nextTick, onMounted} from 'vue';
+import {ref, watch, computed, nextTick} from 'vue';
 import {useStore} from 'vuex';
 import formFactory from '@/forms/form_factory'
 import is_validation_error from '@/http/is_validation_error'
@@ -37,7 +37,6 @@ export default {
         const loading = ref(false);
         const genesAsText = ref(null);
         const geneCheckResults = ref([]);
-        const activeTab = ref('published');
 
         const selectedGene = ref(null)
         const selectKey = ref(0)
@@ -131,15 +130,6 @@ export default {
             context.emit('canceled');
         }
 
-        const syncGenesAsText = () => {
-            if (!group.value.expert_panel) {
-                return;
-            }
-            genesAsText.value = group.value.expert_panel.genes
-                ? group.value.expertPanel.genes.join(', ')
-                : null
-        };
-
         function openPasteModal () {
             showPasteModal.value = true
             nextTick(() => pasteArea.value && pasteArea.value.focus())
@@ -156,6 +146,9 @@ export default {
             return new Set(arr.map(r => String(r?.gene_symbol ?? '').toUpperCase()).filter(Boolean))
         })
 
+        const availabilityMap = ref(new Map())
+        const lastReviewedSymbols = ref([])
+
         async function onReviewClick () {
             const genes = (pasteText.value || '').split(/[, \n\t]+/).map(s => s.trim()).filter(Boolean)
 
@@ -166,9 +159,17 @@ export default {
 
             reviewing.value = true
             try {
-                const results = await store.dispatch('groups/loadCurationStatuses', genes)
-                bulkCheckResults.value = results
-                await doubleCheckAvailabilityForNotFound()
+                lastReviewedSymbols.value = [...new Set(genes.map(s => s.toUpperCase()))]
+                const resp = await api.post('/api/genes/availability', { genes: lastReviewedSymbols.value.join(',') })
+                const rows = Array.isArray(resp.data) ? resp.data : (resp.data?.data || [])
+
+                const map = new Map()
+                for (const row of rows) {
+                    const sym = String(row.gene_symbol ?? '').toUpperCase()
+                    if (sym) map.set(sym, row)
+                }
+                availabilityMap.value = map
+                bulkCheckResults.value = rows
             } catch (e) {
                 store.commit('pushError', 'Failed to review pasted genes.')
                 console.error(e)
@@ -177,58 +178,22 @@ export default {
             }
         }
 
-        const availabilityMap = ref(new Map())
-
-        async function doubleCheckAvailabilityForNotFound() {
-            const symbolsToCheck = reviewBuckets.value.notFound
-            if (!symbolsToCheck.length) return
-
-            const resp = await api.post('/api/genes/availability', { genes: symbolsToCheck.join(',') })
-            const rows = Array.isArray(resp.data) ? resp.data : (resp.data?.data || [])
-
-            const map = new Map()
-            for (const row of rows) {
-                const sym = String(row.gene_symbol ?? '').toUpperCase()
-                if (sym) map.set(sym, row)
-            }
-            availabilityMap.value = map
-
-            const foundSet = new Set([...map.keys()])
-            bulkCheckResults.value = bulkCheckResults.value.map(r => {
-                const sym = String(r.gene_symbol || '').toUpperCase()
-                return foundSet.has(sym) ? { ...r, exists_in_gt: true } : r
-            })
-        }
-
         const reviewBuckets = computed(() => {
             const already = []
             const notFound = []
             const ready = []
-            const seen = new Set()
 
-            for (const r of bulkCheckResults.value) {
-                const sym = String(r?.gene_symbol ?? '').toUpperCase()
-                if (!sym || seen.has(sym)) continue
-                seen.add(sym)
+            const alreadySet = alreadyAddedSet.value
 
-                const isAlready = alreadyAddedSet.value.has(sym)
-                
-                const curatedOrHasStatus =
-                (Array.isArray(r.details) && r.details.length > 0) ||
-                (Array.isArray(r.statuses) && r.statuses.some(s => String(s).toUpperCase() !== 'NOT CURATED'))
-                
-                const existsInGT = !!r.exists_in_gt || curatedOrHasStatus
+            for (const sym of lastReviewedSymbols.value) {
+                const isAlready = alreadySet.has(sym)
+                const existsInGT = availabilityMap.value.has(sym)
 
-                if (isAlready) {
-                    already.push(sym)
-                } else if (existsInGT) {
-                    ready.push(sym)
-                } else {
-                    notFound.push(sym)
-                }
+                if (isAlready) { already.push(sym) } else if (existsInGT) { ready.push(sym) } else { notFound.push(sym)}
             }
 
             return { ready, already, notFound }
+
         })
 
         const submittingBulk = ref(false)
@@ -238,14 +203,13 @@ export default {
             if (!symbols.length) return
             
             const toAdd = symbols.map(sym => {
-                const fromAvail = availabilityMap.value.get(sym)
-                const fromReview = bulkCheckResults.value.find(r => String(r.gene_symbol || '').toUpperCase() === sym)
-
-                const hgncId = fromAvail?.hgnc_id ?? fromReview?.hgnc_id ?? null
-                const geneSymbol = fromAvail?.gene_symbol ?? fromReview?.gene_symbol ?? sym
-
-                return { hgnc_id: hgncId, gene_symbol: geneSymbol }
+                const row = availabilityMap.value.get(sym) || {}
+                return {
+                    hgnc_id: row.hgnc_id ?? null,
+                    gene_symbol: row.gene_symbol ?? sym
+                }
             })
+
 
             const missing = toAdd.filter(g => !g.hgnc_id)
             const finalToAdd = toAdd.filter(g => g.hgnc_id)
@@ -266,6 +230,9 @@ export default {
                 showPasteModal.value = false
                 bulkCheckResults.value = []
                 pasteText.value = ''
+                availabilityMap.value = new Map()
+                lastReviewedSymbols.value = []
+
             } catch (err) {
                 if (is_validation_error(err)) {
                     const messages = err.response?.data?.errors || {}
@@ -293,8 +260,8 @@ export default {
         }
 
         return {
-            group, genesAsText, loading, errors, resetErrors, hideForm, cancel, syncGenesAsText,
-            geneCheckResults, activeTab, selectedGene, adding, addGene, onChildChange, selectKey,
+            group, genesAsText, loading, errors, resetErrors, hideForm, cancel,
+            geneCheckResults, selectedGene, adding, addGene, onChildChange, selectKey,
             showPasteModal, pasteText, pasteArea, openPasteModal, closePasteModal, onReviewClick, reviewing, bulkCheckResults,
             reviewBuckets, submitBulkFromReviewUI, submittingBulk
 
@@ -325,7 +292,9 @@ export default {
                 @click="showForm"
             />
         </h4>
-        <div class="mb-2">{{ genesAsText }}</div>
+        <div v-if="genesAsText != ''" class="mb-2">{{ genesAsText }}</div>
+        <div v-else class="well cursor-pointer mb-2" @click="showForm">{{ loading ? `Loading...` : `No genes have been added to the gene list.` }}</div>
+
         <div v-if="editing && !readonly" class="border rounded bg-gray-50 p-4 mb-4">
             <label class="block text-sm font-semibold mb-2">Add gene</label>
             <div class="flex items-center gap-2">
@@ -338,13 +307,6 @@ export default {
             </div>
         </div>
 
-            <!-- View mode stays the same -->
-        <div v-else>
-            <p v-if="genesAsText"></p>
-            <div v-else class="well cursor-pointer" @click="showForm">
-                {{ loading ? `Loading...` : `No genes have been added to the gene list.` }}
-            </div>
-        </div>
         <div v-if="geneCheckResults.length">
             <GeneCurationStatus :genes="geneCheckResults" :groupID="group.uuid" :editing="editing" :readonly="readonly" @removed="onChildChange" />
         </div>
