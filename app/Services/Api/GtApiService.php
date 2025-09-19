@@ -36,9 +36,15 @@ class GtApiService
     }
 
 
-    public function searchGenes(string $query): array
+    public function searchGenes(string $query): array // SEARCH CURATED GENES
     {
         $response = $this->client->post('/genes/search', ['query' => $query, 'limit' => 10]);
+        return $response->json();
+    }
+
+    public function genesAvailability(string $query): array // SEARCH AVAILABLE GENES ON GT by GENE SYMBOL
+    {
+        $response = $this->client->post('/genes/availability', ['where' => [ "gene_symbol" => $query ]]);
         return $response->json();
     }
 

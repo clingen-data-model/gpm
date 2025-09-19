@@ -364,8 +364,9 @@ const clearSelection = () => {
                     <div><span class="text-[11px] uppercase text-gray-500">Disease</span><div class="text-gray-900">{{ entry.mondo_id ? `${entry.mondo_id} ${entry.disease_name || ''}` : (entry.disease_name || '—') }}</div></div>
                     <div><span class="text-[11px] uppercase text-gray-500">Classification</span><div class="text-gray-900">{{ entry.classification || '—' }}</div></div>
                     <div><span class="text-[11px] uppercase text-gray-500">MOI</span><div class="text-gray-900">{{ entry.moi || '—' }}</div></div>
-					<div><span class="text-[11px] uppercase text-gray-500">Type</span><div class="text-gray-900">{{ entry.curation_type || '—' }}</div></div>
-                    <div class="sm:col-span-2"><span class="text-[11px] uppercase text-gray-500">Phenotype</span><div class="text-gray-900">{{ entry.phenotypes || '—' }}</div></div>
+					          <div><span class="text-[11px] uppercase text-gray-500">Type</span><div class="text-gray-900">{{ entry.curation_type || '—' }}</div></div>
+                    <div><span class="text-[11px] uppercase text-gray-500">Rationales</span><div class="text-gray-900">{{ entry.rationales || '—' }}</div></div>
+                    <div><span class="text-[11px] uppercase text-gray-500">Phenotype</span><div class="text-gray-900">{{ entry.phenotypes || '—' }}</div></div>
                   </div>
                 </div>
               </div>

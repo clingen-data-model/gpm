@@ -21,24 +21,24 @@ class GenesAdd
     {
     }
 
-    public function handle(Group $group, $gene): Group
+    public function handle(Group $group, $genes): Group
     {
         if (!$group->isExpertPanel) {
             throw ValidationException::withMessages(['group' => 'Gene can only be added to an Expert Panel.']);
         }
 
         if ($group->isVcepOrScvcep) {
-            return $this->addGenesToVcep->handle($group, $gene);
+            return $this->addGenesToVcep->handle($group, $genes);
         }
         if ($group->isGcep) {
-            return $this->addGenesToGcep->handle($group, $gene);
+            return $this->addGenesToGcep->handle($group, $genes);
         }
         return $group;
     }
 
     public function asController(ActionRequest $request, Group $group)
     {
-        $this->handle($group, $request->gene);
+        $this->handle($group, $request->genes);
         return $group->fresh()->load('expertPanel.genes');
     }
 
@@ -53,20 +53,21 @@ class GenesAdd
         $table   = 'genes';
 
         $rules = [
-            'gene'              => 'required',
-            'gene.hgnc_id'      => ['required', 'integer'],
-            'gene.gene_symbol'  => 'required|string',
-            'gene.mondo_id'     => 'nullable|regex:/MONDO:\d{7}/i',
-            'gene.moi'          => ['nullable', 'string'],
+            'genes'                 => ['required', 'array', 'min:1'],
+            
+            'genes.*.hgnc_id'       => ['required', 'integer'],
+            'genes.*.gene_symbol'   => ['required', 'string'],
+            'genes.*.mondo_id'      => ['nullable', 'regex:/MONDO:\d{7}/i'],
+            'genes.*.moi'           => ['nullable', 'string'],
         ];
 
 
         if ($request->group?->isGcep) {
             // GCEP: enforce uniqueness on hgnc_id only
-            $rules['gene.hgnc_id'][] = Rule::unique($table, 'hgnc_id')->where(fn($q) => $q->where('expert_panel_id', $panelId)->whereNull('deleted_at'));
+            $rules['genes.*.hgnc_id'][] = Rule::unique($table, 'hgnc_id')->where(fn($q) => $q->where('expert_panel_id', $panelId)->whereNull('deleted_at'));
         } elseif ($request->group?->isVcepOrScvcep) {
             // VCEP: require mondo_id + moi and enforce composite uniqueness
-            $rules['gene.hgnc_id'][] = Rule::unique($table, 'hgnc_id')
+            $rules['genes.*.hgnc_id'][] = Rule::unique($table, 'hgnc_id')
                                         ->where(function ($q) use ($panelId, $request) {
                                             $q->where('expert_panel_id', $panelId)
                                             ->where('gene_symbol', $request->input('gene.gene_symbol'))
@@ -89,13 +90,16 @@ class GenesAdd
     public function getValidationMessages(): array
     {
         return [
-            'gene.required'             => 'Please provide a gene.',
-            'gene.hgnc_id.required'     => 'Gene must have an HGNC ID.',
-            'gene.hgnc_id.integer'      => 'The HGNC ID must be an integer.',
-            'gene.hgnc_id.unique'       => 'This gene is already on this Expert Panel.',
-            'gene.gene_symbol.required' => 'Gene must have a gene symbol.',
-            'gene.gene_symbol.string'   => 'The Gene Symbol must be a string.',
-            'gene.mondo_id.regex'       => 'The MONDO ID must follow the format "MONDO:#######".',
+            'genes.required'             => 'Please provide a gene.',
+            'genes.array'                  => 'The genes payload must be an array of gene objects.',
+            'genes.min'                    => 'Please provide at least one gene.',
+            'genes.*.hgnc_id.required'     => 'Gene must have an HGNC ID.',
+            'genes.*.hgnc_id.integer'      => 'The HGNC ID must be an integer.',
+            'genes.*.hgnc_id.unique'       => 'This gene is already on this Expert Panel.',
+            'genes.*.gene_symbol.required' => 'Gene must have a gene symbol.',
+            'genes.*.gene_symbol.string'   => 'The Gene Symbol must be a string.',
+            'genes.*.mondo_id.regex'       => 'The MONDO ID must follow the format "MONDO:#######".',
+            'genes.*.moi.string'           => 'The Mode of Inheritance must be a string.',
         ];
     }
 }
