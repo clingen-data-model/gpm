@@ -55,4 +55,13 @@ class GeneLookupController extends Controller
         }
         return $this->gtApi->getCurationByID($curationIDs);
     }
+
+    public function genesAvailability(Request $request)
+    {        
+        $geneSymbols = $request->input('genes') ?? '';
+        if (trim($geneSymbols) === '') {
+            return response()->json([], 200);
+        }
+        return $this->gtApi->genesAvailability($geneSymbols);
+    }
 }
