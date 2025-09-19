@@ -220,7 +220,7 @@
                                 <span class="text-base font-semibold text-gray-900">{{ gene.gene_symbol }}</span>
                                 <span v-if="gene.mondo_id" class="text-xs rounded-full bg-gray-100 px-2 py-0.5 text-gray-700">{{ gene.mondo_id }}</span>
                                 <span v-if="gene.moi" class="text-xs rounded-full bg-gray-100 px-2 py-0.5 text-gray-700">{{ gene.moi }}</span>
-                                <span v-if="gene.plan?.is_other" class="'inline-flex h-2 w-2 rounded-full animate-pulse bg-green-500" aria-hidden="true">
+                                <span v-if="gene.plan?.is_other" class="'inline-flex h-2 w-2 rounded-full animate-pulse bg-rose-500" aria-hidden="true">
 
                                 </span>
                                 <span
@@ -261,7 +261,7 @@
 
                 <!-- Snapshot quick facts (COMPACT) -->
                 <div class="px-3 pb-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 text-sm">
-                    <div v-if="gene.plan?.is_other" class="sm:col-span-2 lg:col-span-4 rounded-xl border p-2 text-sm border-green-200 bg-green-50 p-2">
+                    <div v-if="gene.plan?.is_other" class="sm:col-span-2 lg:col-span-4 rounded-xl border p-2 text-sm border-rose-300 bg-rose-50 p-2">
                         <div class="text-[11px] uppercase tracking-wide text-gray-500">Plan</div>
                         <div class="prose max-w-none" v-html="htmlFromMarkdown((gene.plan?.the_plan || '').replace(/\\/g, ''))"></div>
                     </div>
@@ -652,7 +652,7 @@ export default {
                     await api.put(`/api/groups/${group.value.uuid}/expert-panel/genes/${isEditing.value}`, payload);
                     store.commit('pushSuccess', `Successfully updated for ${payload.gene_symbol}-${payload.mondo_id}-${payload.moi}`);
                 } else {
-                    await api.post(`/api/groups/${group.value.uuid}/expert-panel/genes`, { gene: payload });
+                    await api.post(`/api/groups/${group.value.uuid}/expert-panel/genes`, { genes: [payload] });
                     store.commit('pushSuccess', `Successfully added: ${payload.gene_symbol}-${payload.mondo_id}-${payload.moi}`);
                 }
 
