@@ -43,6 +43,12 @@ export default {
         const selectKey = ref(0)
         const adding = ref(false)
 
+        const bulkCheckResults = ref([])
+        const showPasteModal = ref(false)
+        const pasteText = ref('')
+        const pasteArea = ref(null)
+        const reviewing = ref(false)
+
 
         const {errors, resetErrors} = formFactory(props, context)
 
@@ -63,7 +69,7 @@ export default {
                     hgnc_id: selectedGene.value.hgnc_id,
                     gene_symbol: selectedGene.value.gene_symbol ?? selectedGene.value.symbol
                 }
-                await api.post(`/api/groups/${group.value.uuid}/expert-panel/genes`, { gene: payloadItem })                
+                await api.post(`/api/groups/${group.value.uuid}/expert-panel/genes`, { genes: [ payloadItem ] })                
                 await getGenes()
                 context.emit('saved')
                 store.commit('pushSuccess', `Added ${payloadItem.gene_symbol}`)
@@ -85,9 +91,8 @@ export default {
 
 
         const getGenes = async () => {
-            if (!group.value.uuid) {
-                return;
-            }
+            if (!group.value.uuid) return;
+            if (loading.value) return 
             loading.value = true;
             try {
                 await store.dispatch('groups/getGenes', group.value);
@@ -134,64 +139,165 @@ export default {
                 ? group.value.expertPanel.genes.join(', ')
                 : null
         };
-        
-        const save = async () => {
-            const genes = genesAsText.value 
-                            ? genesAsText.value
-                                .split(/[, \n]/)
-                                .filter(i => i !== '')
-                            : [];
 
+        function openPasteModal () {
+            showPasteModal.value = true
+            nextTick(() => pasteArea.value && pasteArea.value.focus())
+        }
+
+        function closePasteModal () {
+            showPasteModal.value = false
+            pasteText.value = ''
+            bulkCheckResults.value = []
+        }
+
+        const alreadyAddedSet = computed(() => {
+            const arr = Array.isArray(geneCheckResults.value) ? geneCheckResults.value : []
+            return new Set(arr.map(r => String(r?.gene_symbol ?? '').toUpperCase()).filter(Boolean))
+        })
+
+        async function onReviewClick () {
+            const genes = (pasteText.value || '').split(/[, \n\t]+/).map(s => s.trim()).filter(Boolean)
+
+            if (genes.length === 0) {
+                store.commit('pushError', 'Please paste at least one gene symbol separated by commas.')
+                return
+            }
+
+            reviewing.value = true
             try {
-                await api.post(`/api/groups/${group.value.uuid}/expert-panel/genes`, {genes});                
-                hideForm();
-                context.emit('saved')
-                await getGenes();
-            } catch (error) {
-                if (is_validation_error(error)) {
-                    const messages = error.response.data.errors
-                    if (messages.group) {
-                        messages.group
-                            .forEach(m => {
-                                store.pushError(m)
-                            })
-                    }
-                    const geneMessages = Object.keys(messages).map(key => {
-                        const [g, geneIdx] = key.split('.')
-                        if (g === 'genes') {
-                            if (geneIdx) {
-                                return `Gene #${(Number.parseInt(geneIdx)+1)}, "${genes[geneIdx]}" wasn't found in our records.  Please confirm it is currently an approved HGNC gene symbol.`
-                            }
-                            return messages[key];
-                        }
-                        return `Gene validation error: ${key}`;
-                    });
-                    errors.value = {
-                        genes: geneMessages
-                    }
+                const results = await store.dispatch('groups/loadCurationStatuses', genes)
+                bulkCheckResults.value = results
+                await doubleCheckAvailabilityForNotFound()
+            } catch (e) {
+                store.commit('pushError', 'Failed to review pasted genes.')
+                console.error(e)
+            } finally {
+                reviewing.value = false
+            }
+        }
+
+        const availabilityMap = ref(new Map())
+
+        async function doubleCheckAvailabilityForNotFound() {
+            const symbolsToCheck = reviewBuckets.value.notFound
+            if (!symbolsToCheck.length) return
+
+            const resp = await api.post('/api/genes/availability', { genes: symbolsToCheck.join(',') })
+            const rows = Array.isArray(resp.data) ? resp.data : (resp.data?.data || [])
+
+            const map = new Map()
+            for (const row of rows) {
+                const sym = String(row.gene_symbol ?? '').toUpperCase()
+                if (sym) map.set(sym, row)
+            }
+            availabilityMap.value = map
+
+            const foundSet = new Set([...map.keys()])
+            bulkCheckResults.value = bulkCheckResults.value.map(r => {
+                const sym = String(r.gene_symbol || '').toUpperCase()
+                return foundSet.has(sym) ? { ...r, exists_in_gt: true } : r
+            })
+        }
+
+        const reviewBuckets = computed(() => {
+            const already = []
+            const notFound = []
+            const ready = []
+            const seen = new Set()
+
+            for (const r of bulkCheckResults.value) {
+                const sym = String(r?.gene_symbol ?? '').toUpperCase()
+                if (!sym || seen.has(sym)) continue
+                seen.add(sym)
+
+                const isAlready = alreadyAddedSet.value.has(sym)
+                
+                const curatedOrHasStatus =
+                (Array.isArray(r.details) && r.details.length > 0) ||
+                (Array.isArray(r.statuses) && r.statuses.some(s => String(s).toUpperCase() !== 'NOT CURATED'))
+                
+                const existsInGT = !!r.exists_in_gt || curatedOrHasStatus
+
+                if (isAlready) {
+                    already.push(sym)
+                } else if (existsInGT) {
+                    ready.push(sym)
+                } else {
+                    notFound.push(sym)
                 }
             }
-        };
 
-        watch(() => store.getters['groups/currentItem'], (to, from) => {
-            if (to.id && (!from || to.id !== from.id)) {
-                // syncGenesAsText();
-                getGenes();
-            }
+            return { ready, already, notFound }
         })
+
+        const submittingBulk = ref(false)
+
+        async function submitBulkFromReviewUI () {
+            const symbols = reviewBuckets.value.ready
+            if (!symbols.length) return
+            
+            const toAdd = symbols.map(sym => {
+                const fromAvail = availabilityMap.value.get(sym)
+                const fromReview = bulkCheckResults.value.find(r => String(r.gene_symbol || '').toUpperCase() === sym)
+
+                const hgncId = fromAvail?.hgnc_id ?? fromReview?.hgnc_id ?? null
+                const geneSymbol = fromAvail?.gene_symbol ?? fromReview?.gene_symbol ?? sym
+
+                return { hgnc_id: hgncId, gene_symbol: geneSymbol }
+            })
+
+            const missing = toAdd.filter(g => !g.hgnc_id)
+            const finalToAdd = toAdd.filter(g => g.hgnc_id)
+
+            if (!finalToAdd.length) {
+                store.commit('pushError', 'No addable genes were found (missing HGNC IDs).')
+                return
+            }
+            if (missing.length) {
+                store.commit('pushError', `Some genes are missing HGNC IDs and were skipped: ${missing.map(m => m.gene_symbol).join(', ')}`)
+            }
+
+            submittingBulk.value = true
+            try {
+                await api.post(`/api/groups/${group.value.uuid}/expert-panel/genes`, { genes: finalToAdd })
+                store.commit('pushSuccess', `Added ${finalToAdd.length} gene${finalToAdd.length > 1 ? 's' : ''}.`)
+                await getGenes()
+                showPasteModal.value = false
+                bulkCheckResults.value = []
+                pasteText.value = ''
+            } catch (err) {
+                if (is_validation_error(err)) {
+                    const messages = err.response?.data?.errors || {}
+                    const items = Object.keys(messages).map(k => `${k}: ${[].concat(messages[k]).join(', ')}`)
+                    store.commit('pushError', items.join('\n') || 'Validation failed while adding genes.')
+                } else {
+                    store.commit('pushError', err?.response?.data?.message || 'Failed to add genes.')
+                }
+            } finally {
+                submittingBulk.value = false
+            }
+        }
+
+        watch(() => group.value?.uuid, (uuid, prev) => {
+                if (!uuid) return
+                if (uuid === prev && geneCheckResults.value?.length) return
+                getGenes()
+            }, { immediate: true }
+        )
 
         const onChildChange = async () => {
             await getGenes()
             context.emit('geneschanged')
             context.emit('update')
-}
-        onMounted(() => {
-            getGenes();
-        })
+        }
 
         return {
             group, genesAsText, loading, errors, resetErrors, hideForm, cancel, syncGenesAsText,
-            save, geneCheckResults, activeTab, selectedGene, adding, addGene, onChildChange, selectKey 
+            geneCheckResults, activeTab, selectedGene, adding, addGene, onChildChange, selectKey,
+            showPasteModal, pasteText, pasteArea, openPasteModal, closePasteModal, onReviewClick, reviewing, bulkCheckResults,
+            reviewBuckets, submitBulkFromReviewUI, submittingBulk
+
         }
     },
     computed: {
@@ -219,6 +325,7 @@ export default {
                 @click="showForm"
             />
         </h4>
+        <div class="mb-2">{{ genesAsText }}</div>
         <div v-if="editing && !readonly" class="border rounded bg-gray-50 p-4 mb-4">
             <label class="block text-sm font-semibold mb-2">Add gene</label>
             <div class="flex items-center gap-2">
@@ -226,12 +333,14 @@ export default {
                 <button type="button" class="rounded bg-blue-600 text-white px-3 py-1.5 text-sm disabled:opacity-50" :disabled="!selectedGene || adding" @click="addGene">
                     {{ adding ? 'Adding…' : 'Add' }}
                 </button>
+                &nbsp; OR &nbsp; 
+                <button type="button" class="rounded border border-gray-300 px-3 py-1.5 text-sm hover:bg-gray-100" @click="openPasteModal">Bulk paste genes</button>
             </div>
         </div>
 
             <!-- View mode stays the same -->
         <div v-else>
-            <p v-if="genesAsText" class="pl-4">{{ genesAsText }}</p>
+            <p v-if="genesAsText"></p>
             <div v-else class="well cursor-pointer" @click="showForm">
                 {{ loading ? `Loading...` : `No genes have been added to the gene list.` }}
             </div>
@@ -240,4 +349,69 @@ export default {
             <GeneCurationStatus :genes="geneCheckResults" :groupID="group.uuid" :editing="editing" :readonly="readonly" @removed="onChildChange" />
         </div>
     </div>
+
+    <teleport to="body">
+        <div
+            v-if="showPasteModal"
+            class="fixed inset-0 z-[1000] flex items-center justify-center bg-black/50"
+            @click.self="closePasteModal"
+        >
+            <div class="w-[min(52rem,92vw)] bg-white rounded-lg shadow-xl">
+                <div class="flex items-center justify-between border-b px-4 py-3">
+                    <h3 class="text-base font-semibold">Paste genes</h3>
+                    <button class="text-xl leading-none px-2 py-1" aria-label="Close" @click="closePasteModal">×</button>
+                </div>
+
+                <div class="px-4 py-4">
+                    <p class="text-sm text-gray-600 mb-2">
+                        Enter gene symbols separated by commas or spaces.
+                    </p>
+                    <textarea ref="pasteArea" v-model="pasteText" class="w-full min-h-[260px] border rounded-md p-3 font-mono text-sm outline-none focus:ring focus:ring-blue-200" placeholder="BRCA1 BRCA2 CFTR"></textarea>
+                </div>
+
+                <div class="flex justify-end gap-2 border-t px-4 py-3">
+                    <button class="rounded border border-gray-300 px-3 py-1.5 text-sm hover:bg-gray-100" @click="closePasteModal">Cancel</button>
+                    <button class="rounded bg-blue-600 text-white px-3 py-1.5 text-sm disabled:opacity-50" :disabled="!pasteText.trim() || reviewing" @click="onReviewClick">{{ reviewing ? 'Reviewing…' : 'Review' }}</button>
+                    <button class="rounded bg-green-600 text-white px-3 py-1.5 text-sm disabled:opacity-50" :disabled="reviewBuckets.ready.length === 0 || submittingBulk" @click="submitBulkFromReviewUI" title="Add only genes that exist in GT and aren’t already in this list">
+                        {{ submittingBulk ? 'Adding…' : `Add ${reviewBuckets.ready.length} gene${reviewBuckets.ready.length !== 1 ? 's' : ''}` }}
+                    </button>
+                </div>
+
+
+                <div v-if="bulkCheckResults.length" class="px-4 py-3">
+                    <div class="flex flex-wrap gap-2 mb-3">
+                        <span class="inline-flex items-center gap-2 rounded-full border px-3 py-1 text-sm">
+                        Ready to add <span class="font-semibold">{{ reviewBuckets.ready.length }}</span>
+                        </span>
+                        <span class="inline-flex items-center gap-2 rounded-full border px-3 py-1 text-sm">
+                        Already in list <span class="font-semibold">{{ reviewBuckets.already.length }}</span>
+                        </span>
+                        <span class="inline-flex items-center gap-2 rounded-full border px-3 py-1 text-sm">
+                        Not found in GT <span class="font-semibold">{{ reviewBuckets.notFound.length }}</span>
+                        </span>
+                    </div>
+                    <div class="space-y-2 text-sm">
+                        <div>
+                            <span class="font-semibold">Ready to add: </span>
+                            <span v-if="!reviewBuckets.ready.length" class="text-gray-500"> — </span>
+                            <span v-else>{{ reviewBuckets.ready.join(', ') }}</span>
+                        </div>
+
+                        <div>
+                            <span class="font-semibold">Already in list: </span>
+                            <span v-if="!reviewBuckets.already.length" class="text-gray-500"> — </span>
+                            <span v-else>{{ reviewBuckets.already.join(', ') }}</span>
+                        </div>
+
+                        <div>
+                            <span class="font-semibold">Not found in GT: </span>
+                            <span v-if="!reviewBuckets.notFound.length" class="text-gray-500"> — </span>
+                            <span v-else>{{ reviewBuckets.notFound.join(', ') }}</span>
+                        </div>
+                    </div>
+                    <!-- <GeneCurationStatus :genes="bulkCheckResults" :groupID="group.uuid" :editing="false" :readonly="true" /> -->
+                </div>
+            </div>
+        </div>
+    </teleport>
 </template>
