@@ -301,4 +301,9 @@ class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDoc
     {
         return new GroupFactory();
     }
+
+    public function publications()
+    {
+        return $this->hasMany(Publication::class);
+    }
 }
