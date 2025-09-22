@@ -433,5 +433,4 @@ class Group extends Model implements HasMembers, RecordsEvents, HasDocuments, Ha
     {
         return $this->hasMany(Publication::class);
     }
-
 }
