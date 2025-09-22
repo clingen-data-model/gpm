@@ -62,6 +62,10 @@ use App\Modules\ExpertPanel\Http\Controllers\Api\SimpleCoiController;
 use App\Modules\Group\Http\Controllers\Api\EvidenceSummaryController;
 use App\Modules\Group\Http\Controllers\Api\GroupSubmissionsController;
 use App\Modules\Group\Actions\EmitGroupCheckpoints;
+use App\Modules\Group\Http\Controllers\Api\GroupPublicationsController;
+use App\Modules\Group\Actions\PublicationStore;
+use App\Modules\Group\Actions\PublicationUpdate;
+use App\Modules\Group\Actions\PublicationDelete;
 
 Route::group([
     'prefix' => 'api',
@@ -215,6 +219,14 @@ Route::group([
         Route::put('/status', GroupStatusUpdate::class);
         Route::put('/visibility', GroupVisibilityUpdate::class);
         Route::put('/caption-icon', CaptionIconUpdate::class);
+
+        // PUBLICATIONS
+        Route::group(['prefix' => '/publications'], function () {
+            Route::get('/', [GroupPublicationsController::class, 'index']);
+            Route::post('/', PublicationStore::class);
+            Route::patch('/{publication}', PublicationUpdate::class);
+            Route::delete('/{publication}', PublicationDelete::class);
+        });
 
     });
 
