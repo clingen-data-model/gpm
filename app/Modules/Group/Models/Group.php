@@ -423,4 +423,8 @@ class Group extends Model implements HasMembers, RecordsEvents, HasDocuments, Ha
         })->get();
     }
 
+    public function publications()
+    {
+        return $this->hasMany(Publication::class);
+    }
 }

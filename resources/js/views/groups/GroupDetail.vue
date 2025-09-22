@@ -30,6 +30,7 @@ import SustainedCurationReviewAlert from "@/components/alerts/SustainedCurationR
 import SubgroupList from '@/components/groups/SubgroupList.vue'
 import WGCaptionIconForm from '@/components/groups/WGCaptionIconForm.vue';
 import ClinvarForm from '@/components/expert_panels/ClinvarForm.vue';
+import GroupPublications from "./GroupPublications.vue";
 
 import { api, isValidationError } from "../../http";
 
@@ -62,6 +63,7 @@ export default {
     SubgroupList,
     WGCaptionIconForm,
     ClinvarForm,
+    GroupPublications,
   },
   props: {
     uuid: {
@@ -271,6 +273,9 @@ export default {
       if (tabName === "Log" && hasPermission("groups-manage")) {
         this.getLogEntries();
       }
+      if (tabName === "Publications" && this.$refs.groupPublicationsRef) {
+        this.$refs.groupPublicationsRef.refresh();
+      }
     },
     initDelete() {
       this.showConfirmDelete = true;
@@ -478,6 +483,11 @@ export default {
           <tab-item v-if="userInGroup(group) || hasPermission('groups-manage')" label="Documents">
             <GroupDocuments />
             <note>Documents are only available to members of this group.</note>
+          </tab-item>
+
+          <tab-item v-if="userInGroup(group) || hasPermission('groups-manage')" label="Publications">
+            <GroupPublications :key="group.uuid" :group="group" />
+            <note>Publications are visible to members of this group (and admins).</note>
           </tab-item>
 
           <tab-item label="Attestations" :visible="group.is_ep">
