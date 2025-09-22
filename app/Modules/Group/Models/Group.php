@@ -378,4 +378,8 @@ class Group extends Model implements HasMembers, RecordsEvents, HasDocuments, Ha
         return (int)$this->group_status_id === (int)config('groups.statuses.active.id');
     }
 
+    public function publications()
+    {
+        return $this->hasMany(Publication::class);
+    }
 }
