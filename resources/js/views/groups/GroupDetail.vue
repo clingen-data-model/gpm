@@ -29,6 +29,7 @@ import ProgressChart from "@/components/applications/ProgressChart.vue";
 import SustainedCurationReviewAlert from "@/components/alerts/SustainedCurationReviewAlert.vue";
 import SubgroupList from '@/components/groups/SubgroupList.vue'
 import WGCaptionIconForm from '@/components/groups/WGCaptionIconForm.vue';
+import GroupPublications from "./GroupPublications.vue";
 
 import { api, isValidationError } from "../../http";
 
@@ -60,6 +61,7 @@ export default {
     SustainedCurationReviewAlert,
     SubgroupList,
     WGCaptionIconForm,
+    GroupPublications,
   },
   props: {
     uuid: {
@@ -261,6 +263,9 @@ export default {
     handleTabChange(tabName) {
       if (tabName === "Log" && hasPermission("groups-manage")) {
         this.getLogEntries();
+      }
+      if (tabName === "Publications" && this.$refs.groupPublicationsRef) {
+        this.$refs.groupPublicationsRef.refresh();
       }
     },
     initDelete() {
@@ -464,6 +469,11 @@ export default {
             <note>Documents are only available to members of this group.</note>
           </tab-item>
 
+          <tab-item v-if="userInGroup(group) || hasPermission('groups-manage')" label="Publications">
+            <GroupPublications :key="group.uuid" :group="group" />
+            <note>Publications are visible to members of this group (and admins).</note>
+          </tab-item>
+
           <tab-item label="Attestations" :visible="group.is_ep">
             <note>
               The attestations below are read only. Attestations can only be
@@ -494,7 +504,7 @@ export default {
             <button class="btn btn-xs mt-1" @click="getLogEntries">
               Refresh
             </button>
-          </tab-item>          
+          </tab-item>
 
           <tab-item label="Admin" :visible="hasPermission('groups-manage')">
             <div v-if="group.isApplying && group.is_ep">
