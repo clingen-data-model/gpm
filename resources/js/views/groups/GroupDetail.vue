@@ -66,6 +66,7 @@ export default {
     ClinvarForm,
     GroupPublications,
     FundingAwardsTab,
+    GroupPublications,
   },
   props: {
     uuid: {
