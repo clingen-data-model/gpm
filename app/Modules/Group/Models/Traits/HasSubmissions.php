@@ -38,8 +38,14 @@ trait HasSubmissions
             });
     }
 
-    public function hasApprovedSubmissionFor():bool
+    public function hasApprovedSubmissionFor(?int $submissionTypeId = null):bool
     {   
-        return (bool)$this->approvedSubmission;
+        $q = $this->submissions()->where('submission_status_id', config('submissions.statuses.approved.id'));
+
+        if ($submissionTypeId !== null) {
+            $q->where('submission_type_id', $submissionTypeId);
+        }
+
+        return $q->exists();
     }
 }
