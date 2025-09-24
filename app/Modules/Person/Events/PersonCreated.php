@@ -41,6 +41,6 @@ class PersonCreated extends PersonEvent implements PublishableEvent
      */
     public function broadcastOn()
     {
-        return new PrivateChannel('channel-name');
+        return new PrivateChannel('person-events');
     }
 }
