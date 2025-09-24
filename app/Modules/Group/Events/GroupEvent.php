@@ -101,6 +101,13 @@ abstract class GroupEvent extends RecordableEvent implements PublishableEvent
         return $message;
     }
 
+    public function checkpointIfNeeded(): void
+    {
+        if ($this->shouldPublish()) {
+            event(new GroupCheckpointEvent($this->group));
+        }
+    }
+
     abstract public function getLogEntry() :string;
 
     /**

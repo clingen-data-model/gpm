@@ -12,4 +12,5 @@ interface PublishableEvent extends Event
     public function getEventType(): string;
     public function getPublishableMessage(): array;
     public function shouldPublish(): bool;
+    public function checkpointIfNeeded(): void;
 }

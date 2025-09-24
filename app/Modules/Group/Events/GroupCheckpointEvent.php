@@ -36,6 +36,13 @@ class GroupCheckpointEvent extends GroupEvent implements PublishableEvent
         return (new GroupExternalResource($this->group))->toArray(null);
     }
 
+    public function checkpointIfNeeded(): void
+    {
+        // Nothing to do here, this is the checkpoint event
+        // that other events trigger. What do you want to do,
+        // bring the system down with recursion?
+    }
+
     public function getLogEntry() :string
     {
         return 'Checkpoint event for group: ' . $this->group->name;

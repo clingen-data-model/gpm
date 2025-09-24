@@ -4,6 +4,7 @@ namespace App\Modules\Person\Events\Traits;
 
 use Illuminate\Support\Str;
 use Illuminate\Support\Carbon;
+use App\Modules\Group\Events\GroupCheckpointEvent;
 
 /**
  * Base methods for making a person event publishable
@@ -49,9 +50,6 @@ trait PublishesEvent
         ];
     }
 
-
-
-
     private function getInstitutionMessage(): ?array
     {
         if (!$this->person->institution_id) {
@@ -67,6 +65,20 @@ trait PublishesEvent
             'address' => $this->person->institution->address,
             'country' => $this->person->institution->country,
         ];
+    }
+
+    public function checkpointIfNeeded(): void
+    {
+        // For now, we don't have checkpointing for people, but will need
+        // to checkpoint groups in which the person is a member.
+
+        // FIXME: not all person events need to trigger a checkpoint
+        //      (but maybe all publishable ones do?)
+        if ($this->shouldPublish()) {
+            foreach ($this->person->groups as $g) {
+                event(new GroupCheckpointEvent($g));
+            }
+        }
     }
 
 

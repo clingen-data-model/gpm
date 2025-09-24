@@ -3,10 +3,7 @@
 namespace App\Actions;
 
 use App\Events\PublishableEvent;
-use App\Modules\Group\Models\Group;
-use App\Modules\Group\Events\GeneEvent;
 use App\DataExchange\Models\StreamMessage;
-use App\Modules\Group\Events\GroupMemberEvent;
 use App\DataExchange\Actions\StreamMessageCreate;
 use App\DataExchange\MessageFactories\DxMessageFactory;
 
@@ -26,11 +23,14 @@ class EventPublish
 
         $message = $this->messageFactory->makeFromEvent($event);
         if ($event->shouldPublish($event) && $message) {
-            return $this->streamMessageCreate->handle(
+            $streamMessage = $this->streamMessageCreate->handle(
                 topic: $event->getTopic(),
                 message: $message,
                 eventUuid: $event->getEventUuid()
             );
+            // TODO: check that we don't have a race condition between the primary event and checkpointing
+            $event->checkpointIfNeeded();
+            return $streamMessage;
         }
 
         return null;
