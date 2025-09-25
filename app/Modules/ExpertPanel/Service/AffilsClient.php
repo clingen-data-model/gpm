@@ -22,8 +22,8 @@ class AffilsClient
     }
     
     public function detail($uuid=null, $affID=null) {
-        if (!$uuid && !$affilId) {
-            throw new \InvalidArgumentException('You must provide $uuid or $affilId.');
+        if (!$uuid && !$affID) {
+            throw new \InvalidArgumentException('You must provide $uuid or $affID.');
         }
         
         if ($uuid) { // By UUID
@@ -34,20 +34,13 @@ class AffilsClient
         }
 
         // by Affiliation ID
-        $url = $this->base . $this->paths['detail'] . '?affil_id=' . rawurlencode($affilId);
+        $url = $this->base . $this->paths['detail'] . '?affil_id=' . rawurlencode($affID);
         return $this->http()->get($url);
     }
 
     public function updateByEpID(string $epID, array $fields) {
         $prefix = rtrim($this->paths['update_by_epid'], '/');
         $url    = $this->base . $prefix . '/' . $epID . '/';
-
-        return $this->http()->patch($url, $fields);
-    }
-
-    public function updateByUUID(string $UUID, array $fields) {
-        $prefix = rtrim($this->paths['update_by_uuid'], '/');
-        $url    = $this->base . $prefix . '/' . $UUID . '/';
 
         return $this->http()->patch($url, $fields);
     }

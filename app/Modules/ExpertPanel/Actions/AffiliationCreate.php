@@ -54,8 +54,6 @@ class AffiliationCreate
             'clinical_domain_working_group' => $cdwgId,
             'type'        => $this->deriveType($ep),   // GCEP | VCEP | SC_VCEP
             'status'      => $this->deriveStatus($ep), // APPLYING | ACTIVE | INACTIVE | RETIRED | REMOVED
-            'members'      => $ep->memberNamesForAffils(),
-            'coordinators' => $ep->coordinatorsForAffils(),
         ];
         
         $audit = AmAffiliationRequest::create([
@@ -107,11 +105,9 @@ class AffiliationCreate
 
     private function normalizeClientResponse(mixed $res): array
     {
-        // If AffilsClient already returns arrays, this just passes through.
         if (is_array($res)) {
             return $res;
         }
-        // If it's an HTTP response object with ->json() or ->body()
         if (is_object($res)) {
             if (method_exists($res, 'json')) {
                 return (array) $res->json();
