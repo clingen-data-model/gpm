@@ -42,6 +42,10 @@
       </div>
     </ReviewSection>
 
+    <ReviewSection title="Website Description" name="website-description">
+      <blockquote v-html="group.description"></blockquote>
+    </ReviewSection>
+
     <ReviewSection title="Scope" name="scope">
       <h3>Genes</h3>
       <div class="mb-6">
