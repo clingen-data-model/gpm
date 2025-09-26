@@ -122,7 +122,7 @@ export default {
     <input-row v-model="newEntry.log_date" label="Log Date" :errors="errors.log_date" type="date" />
     <StepInput v-if="application.expert_panel_type_id == 2" v-model="newEntry.step" :errors="errors.step" />
     <input-row label="Entry" :errors="errors.entry">
-      <RichTextEditor v-model="newEntry.entry" />
+      <RichTextEditor v-model="newEntry.entry" :markdown-format="false" />
     </input-row>
     <button-row>
       <button class="btn" @click="cancel">

@@ -99,7 +99,7 @@
     />
     <StepInput v-if="group.is_vcep" v-model="newEntry.step" :errors="errors.step" />
     <input-row label="Entry" :errors="errors.entry">
-      <RichTextEditor v-model="newEntry.entry" />
+      <RichTextEditor v-model="newEntry.entry" :markdown-format="false" />
     </input-row>
     <button-row>
       <button class="btn" @click="cancel">

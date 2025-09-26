@@ -174,7 +174,7 @@ export default {
     <input-row v-model="newAction.target_date" label="Target Date" :errors="errors.target_date" type="date" />
 
     <input-row label="Entry" :errors="errors.entry">
-      <RichTextEditor v-model="newAction.entry" />
+      <RichTextEditor v-model="newAction.entry" :markdown-format="false" />
     </input-row>
 
     <input-row label="Assigned To" :errors="assignmentErrors">

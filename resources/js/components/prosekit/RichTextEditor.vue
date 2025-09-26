@@ -1,7 +1,7 @@
 <script setup>
 import 'prosekit/basic/style.css'
 
-import { ref, watchPostEffect } from 'vue'
+import { ref, watch, watchPostEffect } from 'vue'
 import { createEditor } from 'prosekit/core'
 import { defineExtension } from './extension.ts'
 import { htmlFromMarkdown, markdownFromHTML } from '@/markdown-utils'
@@ -41,6 +41,13 @@ const editorRef = ref(null)
 watchPostEffect((onCleanup) => {
     editor.mount(editorRef.value)
     onCleanup(() => editor.unmount())
+})
+
+watch(() => props.modelValue, (newValue) => {
+    const incomingContent = formatValue(newValue)
+    if (editor.getDocHTML() !== incomingContent) {
+        editor.setContent(incomingContent)
+    }
 })
 
 /*

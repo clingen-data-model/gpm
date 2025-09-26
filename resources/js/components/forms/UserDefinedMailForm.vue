@@ -89,7 +89,7 @@ export default {
       <input v-model="workingEmail.subject" type="text" class="w-full">
     </input-row>
     <input-row label="Body">
-      <RichTextEditor v-model="workingEmail.body" />
+      <RichTextEditor v-model="workingEmail.body" :markdown-format="false" />
     </input-row>
     <input-row label="Attachments">
       <input ref="attachmentsField" type="file" multiple @change="handleAttachments">

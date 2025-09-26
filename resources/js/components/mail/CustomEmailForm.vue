@@ -124,7 +124,7 @@ export default {
     </input-row>
 
     <input-row label="Body" :errors="errors.body">
-      <RichTextEditor v-model="workingCopy.body" />
+      <RichTextEditor v-model="workingCopy.body" :markdown-format="false" />
     </input-row>
 
     <input-row label="Attachments" :errors="errors.attachments">
