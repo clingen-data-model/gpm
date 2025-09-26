@@ -5,6 +5,7 @@ namespace App\Modules\ExpertPanel\Models;
 use App\Models\AnnualUpdate;
 use App\Models\Traits\HasUuid;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Collection;
 use App\Models\Contracts\HasNotes;
 use App\Modules\Group\Models\Group;
 use App\Models\Contracts\HasMembers;
@@ -20,7 +21,6 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use App\Modules\ExpertPanel\Models\EvidenceSummary;
 use App\Modules\ExpertPanel\Models\ExpertPanelType;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Modules\Group\Models\Contracts\BelongsToGroup;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -29,6 +29,7 @@ use App\Modules\ExpertPanel\Models\CurationReviewProtocol;
 use App\Models\Traits\RecordsEvents as TraitsRecordsEvents;
 use App\Modules\Group\Models\Traits\HasMembers as TraitsHasMembers;
 use App\Modules\Group\Models\Traits\BelongsToGroup as TraitsBelongsToGroup;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup, RecordsEvents
 {
@@ -88,7 +89,7 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
         'id' => 'integer',
         'group_id' => 'integer',
         'expert_panel_type_id' => 'integer',
-        'curtion_review_protocol_id' => 'integer',
+        'curation_review_protocol_id' => 'integer',
         'reanalysis_discrepency_resolution_id' => 'integer',
         'current_step' => 'integer',
         'reanalysis_conflicting' => 'boolean',
@@ -114,16 +115,14 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
         'preprint_attestation_date' => 'datetime',
         'reanalysis_attestation_date' => 'datetime',
         'gci_training_date' => 'datetime',
-        'gcep_attesation_date' => 'datetime',
-
+        'gcep_attestation_date' => 'datetime',
     ];
 
     protected $with = [
-        'type'
+        'type',
     ];
 
     protected $appends = [
-        // 'working_name',
         'name',
         'full_long_base_name',
         'full_short_base_name',
@@ -137,14 +136,13 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
         'sustained_curation_is_approved',
     ];
 
-    public static function booted()
+    protected static function booted(): void
     {
-        static::deleted(function ($expertPanel) {
+        static::deleted(function (self $expertPanel): void {
             $expertPanel->evidenceSummaries->each->delete();
             $expertPanel->specifications->each->delete();
         });
     }
-
 
     // RELATIONSHIPS
     public function group(): BelongsTo
@@ -152,83 +150,58 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
         return $this->belongsTo(Group::class);
     }
 
-    public function type()
+    public function type(): BelongsTo
     {
         return $this->belongsTo(ExpertPanelType::class, 'expert_panel_type_id');
     }
 
-    public function contacts()
+    public function contacts(): HasMany
     {
-        return $this->hasMany(GroupMember::class, 'group_id', 'group_id')
-            ->contact();
+        return $this->hasMany(GroupMember::class, 'group_id', 'group_id')->contact();
     }
 
-    public function members(): Relation
+    public function members(): HasMany
     {
         return $this->hasMany(GroupMember::class, 'group_id', 'group_id');
     }
 
-    public function nextActions()
+    public function nextActions(): HasMany
     {
         return $this->hasMany(NextAction::class);
     }
 
-    public function latestPendingNextAction()
+    public function latestPendingNextAction(): HasOne
     {
         return $this->hasOne(NextAction::class)
-                ->pending()
-                ->orderBy('created_at', 'desc');
+            ->pending()
+            ->orderBy('created_at', 'desc');
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function genes()
+    public function genes(): HasMany
     {
         return $this->hasMany(Gene::class);
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function evidenceSummaries()
+    public function evidenceSummaries(): HasMany
     {
         return $this->hasMany(EvidenceSummary::class);
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
     public function cdwg(): BelongsTo
     {
         return $this->belongsTo(Group::class, 'cdwg_id');
     }
 
-    /**
-     * Get all of the Specifications for the ExpertPanel
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
     public function specifications(): HasMany
     {
         return $this->hasMany(Specification::class);
     }
 
-    /**
-     * Get the curationReviewProtocol that owns the ExpertPanel
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
     public function curationReviewProtocol(): BelongsTo
     {
         return $this->belongsTo(CurationReviewProtocol::class);
     }
 
-    /**
-     * Get all of the annualReviews for the ExpertPanel
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
     public function annualUpdates(): HasMany
     {
         return $this->hasMany(AnnualUpdate::class);
@@ -241,7 +214,7 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
 
     public function previousYearAnnualUpdate(): HasOne
     {
-        return $this->hasOne(AnnualUpdate::class)->ofMany([], function($query) {
+        return $this->hasOne(AnnualUpdate::class)->ofMany([], function ($query) {
             $query->whereHas('window', function ($q) {
                 $q->forYear(Carbon::now()->year - 2);
             });
@@ -304,13 +277,12 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
     }
 
 
-    // ACCESS METHODS
-    public static function findByAffiliationId($affiliationId)
+    public static function findByAffiliationId($affiliationId): ?self
     {
         return static::where('affiliation_id', $affiliationId)->first();
     }
 
-    public static function findByAffiliationIdOrFail($affiliationId)
+    public static function findByAffiliationIdOrFail($affiliationId): self
     {
         return static::where('affiliation_id', $affiliationId)->sole();
     }
@@ -338,9 +310,9 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
     public function getFirstScopeDocumentAttribute()
     {
         return $this->group->documents()
-                ->type(config('documents.types.scope.id'))
-                ->isVersion(1)
-                ->first();
+            ->type(config('documents.types.scope.id'))
+            ->isVersion(1)
+            ->first();
     }
 
     public function getFirstFinalDocumentAttribute()
@@ -351,28 +323,25 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
             ->first();
     }
 
-    /**
-     * @deprecated Use group's isVcep accessor
-     */
-    public function getIsVcepAttribute(): bool
+    public function isVcep(): Attribute
     {
-        return $this->group->group_type_id == config('groups.types.vcep.id');
+        return Attribute::make(
+            get: fn () => (int) ($this->group?->group_type_id) === (int) config('groups.types.vcep.id'),
+        );
     }
 
-    /**
-     * @deprecated Use group's isGcep accessor
-     */
-    public function getIsGcepAttribute(): bool
+    public function isGcep(): Attribute
     {
-        return $this->group->group_type_id == config('groups.types.gcep.id');
+        return Attribute::make(
+            get: fn () => (int) ($this->group?->group_type_id) === (int) config('groups.types.gcep.id'),
+        );
     }
 
-    /**
-     * @deprecated Use group's isScvcep accessor
-     */
-    public function getIsScvcepAttribute(): bool
+    public function isScvcep(): Attribute
     {
-        return $this->group->group_type_id == config('groups.types.scvcep.id');
+        return Attribute::make(
+            get: fn () => (int) ($this->group?->group_type_id) === (int) config('groups.types.scvcep.id'),
+        );
     }
 
     public function getNameAttribute()
@@ -390,7 +359,6 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
         return $this->getFullLongBaseNameAttribute();
     }
 
-
     public function getFullLongBaseNameAttribute()
     {
         return isset($this->attributes['long_base_name'])
@@ -405,17 +373,17 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
             : $this->addEpTypeSuffix('');
     }
 
-    public function setLongBaseNameAttribute($value)
+    public function setLongBaseNameAttribute($value): void
     {
         $this->attributes['long_base_name'] = $this->trimEpTypeSuffix($value);
     }
 
-    public function setShortBaseNameAttribute($value)
+    public function setShortBaseNameAttribute($value): void
     {
         $this->attributes['short_base_name'] = $this->trimEpTypeSuffix($value);
     }
 
-    private function trimEpTypeSuffix($string)
+    private function trimEpTypeSuffix($string): string
     {
         if (in_array(substr($string, -4), ['VCEP', 'GCEP'])) {
             return trim(substr($string, 0, -4));
@@ -423,27 +391,26 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
         return $string;
     }
 
-    private function addEpTypeSuffix($string)
+    private function addEpTypeSuffix($string): string
     {
         if (!$this->type) {
             return $string;
         }
-        return $string.' '.$this->type->display_name;
+        return $string . ' ' . $this->type->display_name;
     }
 
-
-    public function getClingenUrlAttribute()
+    public function getClingenUrlAttribute(): ?string
     {
         if (is_null($this->affiliation_id)) {
             return null;
         }
 
-        return 'https://clinicalgenome.org/affiliation/'.$this->affiliation_id;
+        return 'https://clinicalgenome.org/affiliation/' . $this->affiliation_id;
     }
 
     public function getDefinitionIsApprovedAttribute(): bool
     {
-        return (bool)$this->step_1_approval_date;
+        return (bool) $this->step_1_approval_date;
     }
 
     public function getHasApprovedDraftAttribute(): bool
@@ -461,10 +428,11 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
         return !is_null($this->step_4_approval_date);
     }
 
-
-    public function getApprovalDateForStep($stepNumber): Carbon
+    public function getApprovalDateForStep($stepNumber): ?Carbon
     {
-        return $this->{'step_'.$stepNumber.'_approval_date'};
+        /** @var ?Carbon $date */
+        $date = $this->{'step_' . $stepNumber . '_approval_date'};
+        return $date;
     }
 
     public function memberNamesForAffils(): string
@@ -473,9 +441,9 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
         $this->loadMissing('members.person');
 
         return $this->members
-            ->map(fn ($m) => $m->person ? trim($m->person->first_name.' '.$m->person->last_name) : null)
-            ->filter()         // remove null/empty
-            ->unique()         // dedupe identical names
+            ->map(fn ($m) => $m->person ? trim($m->person->first_name . ' ' . $m->person->last_name) : null)
+            ->filter()
+            ->unique()
             ->implode(', ');
     }
 
@@ -505,11 +473,11 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
             ->map(function ($m) {
                 $p = $m->person;
                 return [
-                    'coordinator_name'  => $p ? trim($p->first_name.' '.$p->last_name) : null,
+                    'coordinator_name'  => $p ? trim($p->first_name . ' ' . $p->last_name) : null,
                     'coordinator_email' => $p->email ?? null,
                 ];
             })
-            ->filter(fn ($row) => !empty($row['coordinator_name'])) // keep rows with a name
+            ->filter(fn ($row) => !empty($row['coordinator_name']))
             ->values()
             ->all();
     }
