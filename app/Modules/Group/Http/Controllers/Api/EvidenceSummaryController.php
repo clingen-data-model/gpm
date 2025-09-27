@@ -12,7 +12,8 @@ class EvidenceSummaryController extends Controller
     public function index(Request $request, $groupUuid)
     {
         $group = Group::where('uuid', $groupUuid)->sole();
-        $group->expertPanel->load('evidenceSummaries', 'evidenceSummaries.gene', 'evidenceSummaries.gene.gene');
+        $group->expertPanel->load('evidenceSummaries.gene');
+        $group->expertPanel->evidenceSummaries->pluck('gene')->filter()->each->append('gt_gene');
         
         return ['data' => $group->expertPanel->evidenceSummaries];
     }
