@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Services\Api;
-
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Arr;
