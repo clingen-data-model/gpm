@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Services\Api;
+use Illuminate\Support\Facades\Log;
 
 class GtApiService
 {
@@ -63,7 +64,7 @@ class GtApiService
     public function lookupGenesBulk(string $genes): array
     {
         $response = $this->client->post('/bulk-lookup', ['gene_symbol' => $genes, 'resource' => 'simple', 'perPage' => 1500]);
-        return $response->json();
+        return $response->json(); 
     }
 
     public function getCurationByID(string $uuid): array
@@ -80,7 +81,15 @@ class GtApiService
 
     public function approvalBulkUpload(array $payload): array
     {
+        Log::info('Sending GT bulk upload', $payload); return []; // TEMPORARY DISABLE CALL TO GT
         $response = $this->client->post('/genes/bulkupload', $payload);
         return $response->json();
     }
+
+    public function syncPanelMembers(int $affID, array $members): array
+    {
+        $resp = $this->client->post("/panels/{$affID}/members/sync", [ 'members' => $members]);
+        return $resp->json();
+    }
+
 }
