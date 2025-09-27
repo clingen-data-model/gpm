@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Cache;
 use App\DataTransferObjects\GtGeneDto;
 use App\DataTransferObjects\GtDiseaseDto;
 use App\Services\Api\GtApiService;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 /**
  * @property int $id
@@ -58,6 +59,8 @@ class Gene extends Model
         'plan' => 'array',
     ];
 
+    protected $appends = ['gt_gene'];
+
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
@@ -66,11 +69,14 @@ class Gene extends Model
         return $this->belongsTo(ExpertPanel::class);
     }
 
-    public function gene(): ?GtGeneDto
+    public function geneDto(): ?GtGeneDto
     {
         try {
-            return Cache::remember("hgnc_id_{$this->hgnc_id}", 300, function () {
-                $data = app(GtApiService::class)->getGeneSymbolById($this->hgnc_id);
+            $hgncID = (int) $this->hgnc_id ?? 0;
+            if ($hgncID <= 0) { return null; }
+
+            return Cache::remember("hgnc_id_{$hgncID}", now()->addMinutes(5), function () use ($hgncID) {
+                $data = app(GtApiService::class)->getGeneSymbolById($hgncID);
                 return $data ? GtGeneDto::fromArray($data) : null;
             });
         } catch (\Throwable $e) {
@@ -79,11 +85,14 @@ class Gene extends Model
         }
     }
 
-    public function disease(): ?GtDiseaseDto
+    public function diseaseDto(): ?GtDiseaseDto
     {
         try {
-            return Cache::remember("mondo_id_{$this->mondo_id}", 300, function () {
-                $data = app(GtApiService::class)->getDiseasesByMondoIds([$this->mondo_id]);
+            $mondoID = $this->mondo_id;
+            if (empty($mondoID)) { return null; }
+
+            return Cache::remember("mondo_id_{$mondoID}", now()->addMinutes(5), function () use ($mondoID) {
+                $data = app(GtApiService::class)->getDiseasesByMondoIds([$mondoID]);
                 return $data ? GtDiseaseDto::fromArray($data) : null;
             });
         } catch (\Throwable $e) {
@@ -91,6 +100,24 @@ class Gene extends Model
             return null;
         }
     }
+
+    protected function gtGene(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                $dto = $this->geneDto();
+                return $dto ? [
+                    'hgnc_id'     => $dto->hgnc_id,
+                    'gene_symbol' => $dto->gene_symbol,
+                    'omim_id'     => $dto->omim_id,
+                    'hgnc_name'   => $dto->hgnc_name,
+                    'hgnc_status' => $dto->hgnc_status,
+                ] : null;
+            }
+        );
+    }
+
+
 
     /**
      * SCOPES
