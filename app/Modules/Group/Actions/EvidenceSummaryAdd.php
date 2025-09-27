@@ -38,7 +38,8 @@ class EvidenceSummaryAdd
         }
 
         $evidenceSummary = $this->handle($group, $request->all());
-        $evidenceSummary->load('gene', 'gene.gene');
+        $evidenceSummary->load('gene');
+        $evidenceSummary->gene?->append('gt_gene');
         return ['data' => $evidenceSummary];
     }
 
