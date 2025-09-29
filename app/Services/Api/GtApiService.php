@@ -1,7 +1,11 @@
 <?php
 
 namespace App\Services\Api;
+
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Http;
 
 class GtApiService
 {
@@ -49,10 +53,29 @@ class GtApiService
         return $response->json();
     }
 
-    public function getGeneSymbolById(int $hgncId): array
+    public function getGeneSymbolById(int $hgncId, bool $forceRefresh = false): array
     {
-        $response = $this->client->post('/genes/byid', ['hgnc_id' => $hgncId]);
-        return $response->json();
+        $key = "gt:genes:byid:{$hgncId}";
+        if ($forceRefresh) { Cache::forget($key); }
+        if (Cache::has($key)) { return Cache::get($key); }
+        
+        try {
+            $response = $this->client->post('/genes/byid', ['hgnc_id' => $hgncId]);
+
+            if ($response->status() === 404) {
+                Cache::put("{$key}:miss", true, now()->addMinutes(10));
+                return null;
+            }
+            $response->throw();
+            $data = $response->json();
+
+            Cache::put($key, $data, now()->addDay(3));
+
+            return $data ?: null;
+        } catch (Throwable $e) {
+            if (Cache::has($key)) { return Cache::get($key); }
+            return null;
+        }
     }
 
     public function getGeneSymbolBySymbol(string $symbol): array
@@ -79,16 +102,46 @@ class GtApiService
         return $response->json();
     }
 
-    public function approvalBulkUpload(array $payload): array
+    public function approvalBulkUpload(array $payload, int $chunkSize = 50): array
     {
-        Log::info('Sending GT bulk upload', $payload); return []; // TEMPORARY DISABLE CALL TO GT
-        $response = $this->client->post('/genes/bulkupload', $payload);
-        return $response->json();
+        $affId  = $payload['affiliation_id'];
+        $rows   = $payload['rows'] ?? [];
+        $chunks = array_chunk($rows, $chunkSize);
+
+        $results = [];
+        foreach ($chunks as $i => $chunk) {
+            $chunkPayload          = $payload;
+            $chunkPayload['rows']  = $chunk;
+
+            $idem = $this->makeRowsIdemKey($affId, $chunk, $i);
+
+            $res = $this->client->post('/genes/bulkupload', $chunkPayload, [
+                'timeout'         => 600,
+                'connect_timeout' => 30,
+                'retry'           => 0,
+                'headers'         => ['Idempotency-Key' => $idem],
+            ])->json();
+
+            $results[] = $res;
+        }
+
+        return ['chunks' => count($chunks), 'results' => $results];
     }
 
-    public function syncPanelMembers(int $affID, array $members): array
+    private function makeRowsIdemKey(int $affID, array $rows, int $index): string
     {
-        $resp = $this->client->post("/panels/{$affID}/members/sync", [ 'members' => $members]);
+        $genes = array_map( fn ($r) => strtoupper(trim((string) Arr::get((array)$r, 'gene_symbol', ''))), $rows);
+        sort($genes);
+        return 'gt-bulkupload:' . $affID . ':' . $index . ':' . sha1(json_encode($genes));
+    }
+
+    public function syncPanelMembers(int $affiliationId, array $members, string $mode = 'add'): array
+    {
+        $resp = $this->client->post('/affiliations/members/sync', [
+                            'affiliation_id' => $affiliationId,
+                            'members'        => $members,
+                            'mode'           => $mode,
+                        ]);
         return $resp->json();
     }
 

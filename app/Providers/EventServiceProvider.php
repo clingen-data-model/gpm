@@ -42,8 +42,6 @@ class EventServiceProvider extends ServiceProvider
         JudgementCreated::class => [JudgementNotifyAboutEvent::class],
         JudgementUpdated::class => [JudgementNotifyAboutEvent::class],
         JudgementDeleted::class => [JudgementNotifyAboutEvent::class],
-
-        StepApproved::class => [SendGenesToGtOnGcepApproval::class],
     ];
 
     /**
