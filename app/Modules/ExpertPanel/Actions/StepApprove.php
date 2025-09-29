@@ -23,6 +23,8 @@ use App\Mail\UserDefinedMailTemplates\SpecificationPilotMailTemplate;
 use App\Modules\ExpertPanel\Exceptions\UnmetStepRequirementsException;
 use App\Mail\UserDefinedMailTemplates\SustainedCurationApprovalMailTemplate;
 use App\Modules\ExpertPanel\Notifications\ApplicationStepApprovedNotification;
+use App\Modules\ExpertPanel\Actions\AffiliationUpdate;
+use Illuminate\Support\Facades\DB;
 
 class StepApprove
 {
@@ -32,7 +34,8 @@ class StepApprove
         private NotifyContacts $notifyContactsAction,
         private ApplicationComplete $applicationCompleteAction,
         private SubmissionApprove $approveSubmission,
-        private StepManagerFactory $stepManagerFactory
+        private StepManagerFactory $stepManagerFactory,
+        private AffiliationUpdate $affiliationUpdate
     ) {
     }
 
@@ -56,32 +59,41 @@ class StepApprove
             throw new UnmetStepRequirementsException($expertPanel, $stepManager->getUnmetRequirements());
         }
 
-        $this->setStepApprovalDate($expertPanel, $dateApproved);
-        $approvedStep = $expertPanel->current_step;
+        DB::transaction(function () use (&$expertPanel, $stepManager, $dateApproved, $notifyContacts, $subject, $body, $attachments) {        
+            $this->setStepApprovalDate($expertPanel, $dateApproved);
+            $approvedStep = (int) $expertPanel->current_step;
 
-        if (!$stepManager->isLastStep()) {
-            $expertPanel->current_step++;
-        }
-        $expertPanel->save();
+            if (! $stepManager->isLastStep()) {
+                $expertPanel->current_step++;
+            }
+            $expertPanel->save();
 
-        $submission = $this->getSubmission($expertPanel, $approvedStep);
-        if ($submission) {
-            $this->approveSubmission->handle($submission, $dateApproved);
-        }
+            if (($approvedStep === 1 && $expertPanel->is_gcep) ||
+                ($approvedStep === 4 && $expertPanel->is_vcep)) {
+                $this->affiliationUpdate->activate($expertPanel);
+            }
 
-        event(new StepApproved(
-            application: $expertPanel,
-            step: $approvedStep,
-            dateApproved: $dateApproved
-        ));
+            $submission = $this->getSubmission($expertPanel, $approvedStep);
+            if ($submission) {
+                $this->approveSubmission->handle($submission, $dateApproved);
+            }
 
-        if ($stepManager->isLastStep()) {
-            $this->applicationCompleteAction->handle($expertPanel, $dateApproved);
-        }
+            DB::afterCommit(function () use ($expertPanel, $approvedStep, $dateApproved, $stepManager, $notifyContacts, $subject, $body, $attachments) {
+                event(new StepApproved(
+                    application: $expertPanel,
+                    step: $approvedStep,
+                    dateApproved: $dateApproved
+                ));
 
-        if ($notifyContacts) {
-            $this->notifyContacts($expertPanel, $approvedStep, $subject, $body, $attachments);
-        }
+                if ($stepManager->isLastStep()) {
+                    $this->applicationCompleteAction->handle($expertPanel, $dateApproved);
+                }
+
+                if ($notifyContacts) {
+                    $this->notifyContacts($expertPanel, $approvedStep, $subject, $body, $attachments);
+                }
+            });
+        });
     }
 
     public function asController(ActionRequest $request, Group $group)
@@ -198,5 +210,4 @@ class StepApprove
         }
 
     }
-
 }

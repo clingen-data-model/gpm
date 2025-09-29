@@ -17,6 +17,9 @@ use App\Modules\Group\Events\JudgementDeleted;
 use App\Modules\Group\Events\JudgementUpdated;
 use App\Modules\Group\Actions\JudgementNotifyAboutEvent;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
+use App\Modules\ExpertPanel\Events\StepApproved;
+use App\Modules\ExpertPanel\Listeners\SendGenesToGtOnGcepApproval;
+use App\Modules\ExpertPanel\Listeners\RegisterMembersInGtOnGcepApproval;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -40,6 +43,9 @@ class EventServiceProvider extends ServiceProvider
         JudgementCreated::class => [JudgementNotifyAboutEvent::class],
         JudgementUpdated::class => [JudgementNotifyAboutEvent::class],
         JudgementDeleted::class => [JudgementNotifyAboutEvent::class],
+
+        StepApproved::class => [SendGenesToGtOnGcepApproval::class,
+                                RegisterMembersInGtOnGcepApproval::class],
     ];
 
     /**
