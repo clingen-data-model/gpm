@@ -224,7 +224,6 @@ Route::group([
         Route::group(['prefix' => '/publications'], function () {
             Route::get('/', [GroupPublicationsController::class, 'index']);
             Route::post('/', PublicationStore::class);
-            Route::patch('/{publication}', PublicationUpdate::class);
             Route::delete('/{publication}', PublicationDelete::class);
         });
 

@@ -19,11 +19,11 @@ return new class extends Migration {
             $t->enum('source', ['pmid','pmcid','doi','url'])->index();
             $t->string('identifier'); 
             $t->json('meta')->nullable();
-            $t->string('pub_type', 50)->nullable()->index();
+            $t->string('pub_type', 250)->nullable()->index();
             $t->date('published_at')->nullable()->index();
 
             $t->enum('status', ['pending','enriched','failed'])->default('pending')->index();
-            $t->string('error')->nullable(); // last error message if any
+            $t->string('error')->nullable();
 
             $t->timestamps();
             $t->softDeletes();
