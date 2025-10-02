@@ -3,7 +3,6 @@ namespace App\Modules\ExpertPanel\Service;
 
 use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Client\Response;
-use Illuminate\Support\Facades\Log;
 
 class AffilsClient
 {
@@ -21,8 +20,14 @@ class AffilsClient
         return $this->http()->post($this->base.$this->paths['create'], $payload);
     }
     
-    public function detail(string $uuid) {
-        return $this->http()->get($this->base . $this->paths['detail'] . '?uuid=' . $uuid);
+    public function detail($uuid=null) {
+        if (!$uuid) {
+            throw new \InvalidArgumentException('You must provide $uuid or $affID.');
+        }
+        $base = rtrim($this->base . $this->paths['detail'], '/');
+        $url  = $base . '/uuid/' . rawurlencode($uuid) . '/';
+        $response = $this->http()->get($url);
+        return $response;
     }
 
     public function updateByEpID(string $epID, array $fields) {
@@ -32,10 +37,12 @@ class AffilsClient
         return $this->http()->patch($url, $fields);
     }
 
-    public function updateByUUID(string $UUID, array $fields) {
-        $prefix = rtrim($this->paths['update_by_uuid'], '/');
-        $url    = $this->base . $prefix . '/' . $UUID . '/';
+    public function createCDWG(array $payload) {
+        return $this->http()->post($this->base.$this->paths['cdwg_create'], $payload);        
+    }
 
-        return $this->http()->patch($url, $fields);
+    public function updateCDWG(int $id, array $payload) {
+        $url = $this->base . sprintf($this->paths['cdwg_update'], $id);
+        return $this->http()->patch($url, $payload);        
     }
 }

@@ -26,7 +26,9 @@ export default {
             groupTypes: configs.groups.types,
             groupStatuses: configs.groups.statuses,
             newGroup: new Group(),
-            parents: []
+            parents: [],
+            creatingAffil: false,
+            affilError: null,
         }
     },
     computed: {
@@ -80,7 +82,10 @@ export default {
                     options.push({value: parent.id, label: parent.displayName})
                 })
             return options;
-        }
+        },
+        canRequestAffil () {
+            return this.hasAnyPermission(['groups-manage']) && this.group?.isEp?.() && this.group?.expert_panel?.uuid && !this.group?.expert_panel?.affiliation_id
+        },
     },
     beforeMount() {
         this.getParentOptions();
@@ -236,7 +241,25 @@ export default {
         },
         emitUpdate () {
             this.$emit('update');
-        }
+        },
+
+        async createAffiliationId () {
+            if (this.creatingAffil) return
+                this.creatingAffil = true
+                this.affilError = null
+            try {
+                const epUuid = this.group?.expert_panel?.uuid
+                const id = await this.$store.dispatch('groups/createAffiliationId', { epUuid })
+                this.$store.commit('pushSuccess', `Affiliation ID set to ${id}.`)
+            } catch (e) {
+                const msg = e?.message || 'Request failed'
+                this.affilError = msg
+                this.$store.commit('pushError', msg)
+            } finally {
+                this.creatingAffil = false
+            }
+        },
+
     }
 }
 </script>
@@ -273,21 +296,46 @@ export default {
           input-class="w-full"
           @update:model-value="emitUpdate"
         />
-        <div v-if="hasAnyPermission(['groups-manage'])">
-          <input-row
-            v-model="group.expert_panel.affiliation_id"
-            label="Affiliation ID"
-            :placeholder="affiliationIdPlaceholder"
-            :errors="errors.affiliation_id"
-            input-class="w-full"
-            @update:model-value="emitUpdate"
-          >
-            <template #label>
-              Affiliation ID
-              <note>admin-only</note>
-            </template>
-          </input-row>
-        </div>
+        
+
+            <div class="flex items-end gap-2" v-if="hasAnyPermission(['groups-manage'])">
+                <div class="flex-1">
+                    <input-row
+                        :errors="errors.affiliation_id"
+                        label="Affiliation ID"
+                        >
+                        <template #label>
+                            Affiliation ID
+                            <note>admin-only</note>
+                        </template>
+
+                        <!-- Custom field content (inline) -->
+                        <div class="flex items-center gap-2">
+                            <input
+                                type="text"
+                                class="w-full"
+                                :placeholder="affiliationIdPlaceholder"
+                                :value="group.expert_panel.affiliation_id"
+                                disabled="true"
+                                @input="group.expert_panel.affiliation_id = $event.target.value; emitUpdate()"
+                                @change="emitUpdate"
+                            />
+
+                            <button
+                                v-if="canRequestAffil"
+                                class="btn"
+                                :disabled="creatingAffil"
+                                @click="createAffiliationId"
+                            >
+                            <span v-if="creatingAffil">Creating…</span>
+                            <span v-else>Create</span>
+                            </button>
+                        </div>
+                    </input-row>
+                </div>
+            </div>
+          
+            
         <dictionary-row v-else label="Affiliation ID">
           <span v-if="group.expert_panel.affiliation_id">{{ group.expert_panel.affiliation_id }}</span>
           <span v-else class="text-gray-400">{{ 'Not yet assigend' }}</span>
