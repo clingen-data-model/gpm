@@ -5,6 +5,7 @@ namespace App\Modules\Group\Actions;
 use App\Modules\Group\Models\Group;
 use App\Modules\Group\Models\Publication;
 use Illuminate\Http\Request;
+use App\Modules\Group\Events\PublicationDeleted;
 
 class PublicationDelete
 {
@@ -13,7 +14,9 @@ class PublicationDelete
         $this->authorize($request->user(), $group);
         abort_if($publication->group_id !== $group->id, 404);
 
+        $toLog = $publication->replicate();
         $publication->delete();
+        event(new PublicationDeleted($group, $toLog));
 
         return response()->noContent();
     }
