@@ -20,7 +20,9 @@ class EnrichPublication implements ShouldQueue
         if (!$pub) return;
 
         try {
-            $meta = $client->fetch($pub->source, $pub->identifier);
+            $meta = (array) $client->fetch($pub->source, $pub->identifier);
+            $meta['url'] = $client->extractUrl($meta);
+            
             $pub->meta = $meta;
             $pub->published_at = $client->extractDate($meta);
             $pub->pub_type = $client->extractType($meta);

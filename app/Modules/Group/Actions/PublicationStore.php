@@ -7,6 +7,7 @@ use App\Modules\Group\Models\Publication;
 use App\Modules\Group\Service\PublicationLookup;
 use App\Jobs\EnrichPublication;
 use Illuminate\Http\Request;
+use App\Modules\Group\Events\PublicationAdded;
 
 class PublicationStore
 {
@@ -29,12 +30,12 @@ class PublicationStore
             $pub = Publication::firstOrCreate(
                 ['group_id' => $group->id, 'source' => $source, 'identifier' => $identifier],
                 ['added_by_id' => optional($request->user())->id, 'status' => 'pending']
-            );
+            );            
+            EnrichPublication::dispatch($pub->id)->afterCommit();
 
-            EnrichPublication::dispatch($pub->id);
+            event(new PublicationAdded($group, $pub));
             $ids[] = $pub->id;
-        }
-
+        }        
         return response()->json(['ids' => $ids], 202);
     }
 
