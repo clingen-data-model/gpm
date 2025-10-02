@@ -104,7 +104,14 @@ export const mutations = {
             }
             throw new Error(`Item with uuid ${groupUuid} not found in groups.items with length ${state.items.length}`);
         }
-    }
+    },
+
+    updateAffiliationID(state, { epUuid, affiliationId }) {
+        const group = state.items.find(g => g?.expert_panel?.uuid === epUuid)
+        if (group && group.expert_panel) {
+            group.expert_panel.affiliation_id = affiliationId
+        }
+    },
 };
 
 export const actions = {
@@ -567,6 +574,23 @@ export const actions = {
       return data; // { status, accepted, batch_id, ids, denied_ids, not_found_ids }
     }
 
+    async createAffiliationId({ commit, state }, { epUuid }) {
+        // POST /api/applications/{expertPanelUuid}/affiliation
+        const res = await api.post(`/api/applications/${epUuid}/affiliation`).catch(err => err?.response ?? Promise.reject(err))
+
+        const data = res?.data ?? {}
+        const ok = res && res.status >= 200 && res.status < 300
+        if (!ok) {
+            const msg = data?.message || data?.error || `Request failed (${res?.status || 'unknown'})`
+            throw new Error(msg)
+        }
+
+        const id = data?.affiliation_id
+        if (!id) throw new Error(data?.message || 'No affiliation id returned.')
+
+        commit('updateAffiliationID', { epUuid, affiliationId: id })
+        return id
+    },
 };
 
 export default {

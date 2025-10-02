@@ -2,66 +2,60 @@
 namespace App\Modules\ExpertPanel\Actions;
 
 use App\Modules\ExpertPanel\Models\ExpertPanel;
-use App\Modules\ExpertPanel\Service\AffilsClient;
-use App\Modules\ExpertPanel\Service\CdwgResolver;
-use App\Modules\Group\Events\ExpertPanelAffiliationIdUpdated;
 use App\Modules\ExpertPanel\Models\AmAffiliationRequest;
+use App\Modules\ExpertPanel\Service\AffilsClient;
+use App\Modules\Group\Events\ExpertPanelAffiliationIdUpdated;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class AffiliationCreate
 {
     public function __construct(
         private AffilsClient $client,
-        private CdwgResolver $cdwg
     ) {}
 
     public function handle(ExpertPanel $ep): JsonResponse
     {
+        // 1) Already has an ID locally → no-op
         if ($ep->affiliation_id) {
             return response()->json([
                 'affiliation_id' => (int) $ep->affiliation_id,
-                'message' => 'Affiliation already assigned.',
+                'message'        => 'Affiliation already assigned.',
             ], 200);
         }
 
-        // Check remote by UUID and sync if present.
-        $existing = $this->client->detail((string) $ep->uuid);
-        if ($existing) {
-            $data = $this->normalizeClientResponse($existing);
-            $affId = (int) ($data['expert_panel_id'] ?? 0);
+        // 2) See if AM already has this UUID; if so, sync locally and return 200
+        try {
+            $maybe = $this->client->detail((string) $ep->uuid);             // may be Response or array
+            $am    = $this->normalizeClientResponse($maybe);
 
-            if ($affId > 0) {
-                $ep->forceFill(['affiliation_id' => $affId])->save();
-                $audit = AmAffiliationRequest::create([
+            $existingId = (int) ($am['expert_panel_id'] ?? 0);
+            if ($existingId > 0) {
+                $ep->forceFill(['affiliation_id' => $existingId])->save();
+
+                AmAffiliationRequest::create([
                     'request_uuid'    => (string) Str::uuid(),
                     'expert_panel_id' => $ep->id,
-                    'payload'         => ['synced_existing' => true, 'remote' => $affId],
+                    'payload'         => ['synced_existing' => true, 'remote' => $existingId],
+                    'http_status'     => 200,
+                    'response'        => $am,
                     'status'          => 'success',
                 ]);
-                event(new ExpertPanelAffiliationIdUpdated($ep->group, $affId));
+
+                event(new ExpertPanelAffiliationIdUpdated($ep->group, $existingId));
 
                 return response()->json([
-                    'affiliation_id' => $affId,
-                    'message' => 'Affiliation already exists (synced).',
+                    'affiliation_id' => $existingId,
+                    'message'        => 'Affiliation already exists (synced).',
                 ], 200);
             }
+        } catch (\Throwable $e) {
+            // If AM detail lookup fails, proceed to create below.
+            // We intentionally do not fail the flow here.
         }
 
-        // Build payload
-        $cdwgId = (int) ($this->cdwg->resolveAmId($ep) ?? 1); // default 1 = 'None'
-        $payload = [
-            'uuid'        => (string) $ep->uuid,
-            'full_name'   => $ep->long_base_name  ?: $ep->group?->name,
-            'short_name'  => $ep->short_base_name ?: $ep->group?->name,
-            'clinical_domain_working_group' => $cdwgId,
-            'type'        => $this->deriveType($ep),   // GCEP | VCEP | SC_VCEP
-            'status'      => $this->deriveStatus($ep), // APPLYING | ACTIVE | INACTIVE | RETIRED | REMOVED
-            'members'      => $ep->memberNamesForAffils(),
-            'coordinators' => $ep->coordinatorsForAffils(),
-        ];
-        
+        $payload = $this->buildCreatePayload($ep);
+
         $audit = AmAffiliationRequest::create([
             'request_uuid'    => (string) Str::uuid(),
             'expert_panel_id' => $ep->id,
@@ -70,38 +64,51 @@ class AffiliationCreate
         ]);
 
         try {
-            $res  = $this->client->create($payload);
-            $data = $this->normalizeClientResponse($res);
-
-            $affId = (int) ($data['expert_panel_id'] ?? 0);
-            if ($affId <= 0) {
-                $msg = $data['message']
-                    ?? (is_array($data['details'] ?? null) ? collect($data['details'])->flatten()->implode(' ') : 'Unknown error creating affiliation.');
-                $status = $this->normalizeStatusCode((int) ($data['status'] ?? 422));
-                $audit->markFailed($status, $msg, $data);
+            $res = $this->client->create($payload);
+            $am  = $this->normalizeClientResponse($res);
+            
+            $amId = (int) ($am['expert_panel_id'] ?? 0);
+            if ($amId <= 0) {
+                $msg    = $this->extractMessage($am) ?: 'Unknown error creating affiliation.';
+                $status = $this->normalizeStatus((int) ($am['status'] ?? 422));
+                $audit->markFailed($status, $msg, $am);
                 return response()->json(['message' => $msg], $status);
             }
 
-            $ep->forceFill(['affiliation_id' => $affId])->save();
-            $audit->markSuccess(201, $data);
-            event(new ExpertPanelAffiliationIdUpdated($ep->group, $affId));
+            $ep->forceFill(['affiliation_id' => $amId])->save();
+            $audit->update(['http_status' => 201, 'response' => $am,]);
+            event(new ExpertPanelAffiliationIdUpdated($ep->group, $amId));
+
             return response()->json([
-                'affiliation_id' => $affId,
-                'message' => 'Affiliation created successfully.',
+                'affiliation_id' => $amId,
+                'message'        => 'Affiliation created successfully.',
             ], 201);
 
         } catch (\Throwable $e) {
-            $http = $this->normalizeStatusCode((int) $e->getCode());
+            $status = $this->normalizeStatus((int) $e->getCode());
             $audit->markFailed($http, $e->getMessage());
-            return response()->json(['message' => $e->getMessage()], $http);
+            return response()->json(['message' => $e->getMessage()], $status);
         }
+    }    
+
+    private function buildCreatePayload(ExpertPanel $ep): array
+    {        
+        $cdwgId = (int) ($ep->group->parent->parent_id ?? 1); // Default CDWG to parent_id (or 1 = “None”)
+
+        return [
+            'uuid'        => (string) $ep->uuid,
+            'full_name'   => $ep->long_base_name  ?: $ep->group?->name,
+            'short_name'  => $ep->short_base_name ?: $ep->group?->name,
+            'clinical_domain_working_group' => $cdwgId,
+            'type'        => $this->deriveType($ep),   // GCEP | VCEP | SC_VCEP
+            'status'      => $this->deriveStatus($ep), // APPLYING | ACTIVE | INACTIVE | RETIRED | REMOVED
+        ];
     }
 
     private function deriveType(ExpertPanel $ep): string
     {
-        $groupType = strtoupper($ep->type?->display_name ?? '');
-        if ($groupType === 'SCVCEP') return 'SC_VCEP';
-        return ($groupType === 'VCEP') ? 'VCEP' : 'GCEP';
+        $label = strtoupper($ep->type?->display_name ?? '');
+        return $label === 'SCVCEP' ? 'SC_VCEP' : ($label === 'VCEP' ? 'VCEP' : 'GCEP');
     }
 
     private function deriveStatus(ExpertPanel $ep): string
@@ -112,11 +119,8 @@ class AffiliationCreate
 
     private function normalizeClientResponse(mixed $res): array
     {
-        // If AffilsClient already returns arrays, this just passes through.
-        if (is_array($res)) {
-            return $res;
-        }
-        // If it's an HTTP response object with ->json() or ->body()
+        if (is_array($res)) return $res;
+
         if (is_object($res)) {
             if (method_exists($res, 'json')) {
                 return (array) $res->json();
@@ -129,7 +133,22 @@ class AffiliationCreate
         return [];
     }
 
-    private function normalizeStatusCode(int $code): int
+    private function extractMessage(array $am): ?string
+    {
+        if (!empty($am['message']) && is_string($am['message'])) {
+            return $am['message'];
+        }
+        if (!empty($am['details']) && is_array($am['details'])) {
+            $flat = collect($am['details'])->flatten()->implode(' ');
+            if ($flat !== '') return $flat;
+        }
+        if (!empty($am['error']) && is_string($am['error'])) {
+            return $am['error'];
+        }
+        return null;
+    }
+
+    private function normalizeStatus(int $code): int
     {
         return ($code >= 400 && $code <= 599) ? $code : 500;
     }

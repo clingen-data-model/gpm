@@ -46,7 +46,7 @@ class AffiliationsController extends Controller
     /** Detail proxy to AM */
     public function show(int $affiliationId)
     {
-        $detail = $this->client->detail($affiliationId);
+        $detail = $this->client->detail("", $affiliationId);
         return response()->json($detail);
     }
 

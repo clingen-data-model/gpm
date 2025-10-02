@@ -30,8 +30,9 @@ export default {
 			this.creatingAffil = true
 			this.affilError = null
 
-			try {				
-				const { data } = await api.post(`/api/applications/${this.group.uuid}/affiliation`)
+			try {
+        const epUuid = this.group?.expert_panel?.uuid
+				const { data } = await this.$store.dispatch('groups/createAffiliationId', { epUuid })
 				const affiliationID = data?.affiliation_id
 				if (! affiliationID) { throw new Error(data?.message || 'Request failed to create Affiliation ID') }
 				this.application.affiliation_id = affiliationID
@@ -65,14 +66,8 @@ export default {
 
     <dictionary-row label-class="font-bold w-40" label="Affiliation ID">
       <span>{{ application.affiliation_id || '--' }}</span>
-      <button
-        v-if="canRequestAffil"
-        class="btn btn-xs ml-2"
-        :disabled="creatingAffil"
-        @click="createAffiliationId"
-      >
-        <span v-if="creatingAffil">Creating…</span>
-        <span v-else>Create</span>
+      <button v-if="canRequestAffil" class="btn btn-xs ml-2" :disabled="creatingAffil" @click="createAffiliationId">
+        <span v-if="creatingAffil">Creating…</span><span v-else>Create</span>
       </button>
       <note v-if="affilError" class="ml-2 text-red-600">{{ affilError }}</note>
     </dictionary-row>

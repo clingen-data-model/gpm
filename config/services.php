@@ -38,14 +38,13 @@ return [
         'paths'    => [
             'list'   => env('AFFILS_LIST_PATH',   '/api/affiliations_list/'),
             'create' => env('AFFILS_CREATE_PATH', '/api/affiliation/create/'),
-            'detail' => env('AFFILS_DETAIL_PATH', '/api/affiliation_detail/'), // affiliation_detail/?affil_id={affiliation_id}            
+            'detail' => env('AFFILS_DETAIL_PATH', '/api/affiliation_detail/'), // affiliation_detail/?affil_id={affiliation_id}
             // 'update_affiliation' => env('AFFILS_UPDATE_BY_AFFID_PREFIX', '/api/affiliation/update/affiliation_id/'), // We don't use this, Affiliation ID on Affiliation Microservice (AM) is the one with format 10xxx
             'update_by_epid'  => env('AFFILS_UPDATE_BY_EPID_PREFIX', '/api/affiliation/update/expert_panel_id/'),
             'update_by_uuid'  => env('AFFILS_UPDATE_BY_UUID_PREFIX', '/api/affiliation/update/uuid/'),
-        ],
-        'endpoints' => [ // used in console commands app\Console\Commands\Dev\SyncGroupParentsFromAffils.php
             'cdwg_list'   => '/api/cdwg_list/',
             'cdwg_create' => '/api/cdwg/create/',
+            'cdwg_update' => '/api/cdwg/id/%d/update/',
         ],
         'list_ttl' => (int) env('AFFILS_LIST_TTL', 900),
     ],
