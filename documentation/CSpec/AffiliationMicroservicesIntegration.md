@@ -1,10 +1,11 @@
 
 # Affiliation ID Creation & Status Sync — Implementation Notes
 
-**Owner:** (you)  
 **Module(s):** ExpertPanel, Groups, Frontend (Vue)  
 **Date:** 2025‑10‑03  
-**Ticket:** Create/Sync Affiliation IDs in AM; surface “Create” button in UI; sync status on group status change
+**Ticket:** CGSP-820 Create/Sync Affiliation IDs in AM; surface “Create” button in UI; sync status on group status change  
+**AM Reference Guides:** [API docs](https://github.com/ClinGen/affiliations-service/blob/main/doc/reference.md#affiliations-service-api), [Tutorial](https://github.com/ClinGen/affiliations-service/blob/main/doc/tutorial.md#using-the-affiliations-service-api)  
+**PIC for AM:** Liam Mulhall (Stanford Team)
 
 ---
 
