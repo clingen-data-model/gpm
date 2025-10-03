@@ -84,8 +84,10 @@ class AffiliationUpdate
 
     private function deriveStatus(ExpertPanel $ep): string
     {
-        $n = strtoupper($ep->group?->status?->name ?? '');
-        return in_array($n, ['APPLYING','ACTIVE','INACTIVE','RETIRED','REMOVED'], true) ? $n : 'INACTIVE';
+        $n = trim(strtoupper($ep->group?->status?->name ?? ''));
+        if($n == 'REMOVED') { $n = 'ARCHIVED'; } // AM DONT HAVE REMOVED, BUT HAVE ARCHIVED
+
+        return in_array($n, ['APPLYING','ACTIVE','INACTIVE','ARCHIVED','RETIRED'], true) ? $n : 'INACTIVE';
     }
 
     private function normalizeClientResponse(mixed $res): array

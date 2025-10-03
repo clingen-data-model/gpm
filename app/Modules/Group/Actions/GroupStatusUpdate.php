@@ -10,11 +10,18 @@ use Lorisleiva\Actions\Concerns\AsController;
 use App\Modules\Group\Events\GroupStatusUpdated;
 use App\Modules\Group\Http\Resources\GroupResource;
 use App\Modules\ExpertPanel\Events\ApplicationCompleted;
+use App\Modules\ExpertPanel\Actions\AffiliationUpdate;
+use App\Modules\ExpertPanel\Models\ExpertPanel;
 
 class GroupStatusUpdate
 {
     use AsController;
     use AsListener;
+
+    public function __construct(
+        private AffiliationUpdate $affiliationUpdate
+    ) {
+    }
 
     public function handle(Group $group, GroupStatus $groupStatus): Group
     {
@@ -27,6 +34,24 @@ class GroupStatusUpdate
         $group->update(['group_status_id' => $groupStatus->id]);
 
         event(new GroupStatusUpdated($group, $groupStatus, $oldStatus));
+
+        $ep = $group->expertPanel ?? null;
+        if ($ep instanceof ExpertPanel) {
+             $affId = (int) $ep->affiliation_id;
+            if ($affId > 0) {
+                try {
+                    $this->affiliationUpdate->handle($ep);
+                } catch (\Throwable $e) {
+                    Log::warning('AM sync on status change failed', [
+                        'group_uuid'        => $group->uuid,
+                        'expert_panel_uuid' => (string)$ep->uuid,
+                        'new_status_id'     => $groupStatus->name,
+                        'message'           => $e->getMessage(),
+                        'code'              => $e->getCode(),
+                    ]);
+                }
+            }
+        }
 
         return $group;
     }
