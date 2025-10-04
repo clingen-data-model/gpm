@@ -288,7 +288,7 @@ const clearSelection = () => {
               <div>
                 <div class="flex flex-wrap items-center gap-2">
                   <span class="text-base font-semibold text-gray-900">{{ gene.gene_symbol }}</span>
-                  <span v-if="(gene.statuses || []).length" class="text-xs rounded-full bg-gray-100 px-2 py-0.5 text-gray-700">
+                  <span v-if="(gene.statuses || []).length" class="text-xs rounded-full px-2 py-0.5 text-gray-700" :class="(gene.details || []).length ? 'border border-amber-400 bg-amber-50' : 'border border-gray-400 bg-gray-50'">
                     {{ (gene.statuses || []).join(', ') }}
                   </span>
                 </div>
