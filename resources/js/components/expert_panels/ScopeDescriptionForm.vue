@@ -43,6 +43,16 @@ export default {
         htmlScopeDescription() {
             return htmlFromMarkdown(this.group.expert_panel.scope_description);
         },
+        expertPanel() {
+          return this.group?.expert_panel || {};
+        },
+        genes() {
+          const g = this.expertPanel?.genes;
+          return Array.isArray(g) ? g : [];
+        },
+        curatedGenesCount() {
+          return this.genes.reduce((n, g) => n + ((Array.isArray(g.details) && g.details.length > 0) ? 1 : 0), 0);
+        },
     }
 }
 </script>
@@ -55,15 +65,31 @@ export default {
         @click="$emit('update:editing', true)"
       />
     </header>
-    <div class="mt-2">
-      <p class="text-sm">
-        Describe the scope of work of the Expert Panel including
-        the disease area(s), genes being addressed, and any
-        specific rationale for choosing the condition(s). See the
-        <VcepProtocolLink v-if="group.is_vcep_or_scvcep" />
-        <GcepQuickGuideLink v-if="group.is_gcep" /> for more
-        information.
+    <div class="mt-2 text-sm">
+      <p v-if="group.is_vcep_or_scvcep">
+        Describe the scope of work of the Expert Panel including the disease area(s), genes being addressed, and any specific rationale for choosing the condition(s). See the
+        <VcepProtocolLink /> for more information.
       </p>
+      <div v-if="group.is_gcep">
+        Describe the scope of work of the expert panel including the following:
+      
+        <ul class="list-disc list-inside mt-2">
+          <li>Describe the disease area of focus</li>
+          <li>Indicate why curation efforts would benefit this disease area</li>
+          <li>Indicate how the gene list will be prioritized</li>
+          <li>Describe plans to collaborate with other GCEPs on any genes on your gene list that overlap in scope</li>
+          <li>see the <GcepQuickGuideLink /> for more information</li>
+        </ul>
+      </div>
+
+      <div v-if="curatedGenesCount > 0"
+        role="note"
+        class="mt-3 border-l-4 border-amber-400 bg-amber-50 px-3 py-2 text-sm text-amber-900
+              rounded-md dark:border-amber-400 dark:bg-amber-900/20 dark:text-amber-100"
+      >
+        <strong>You have added curated genes: {{ curatedGenesCount }}/{{ genes.length }} gene(s)</strong>
+        — Please include how you prioritized the list, your plan for overlaps (other GCEPs), the scope boundaries, and your throughput/update cadence.
+      </div>
       <transition name="fade" mode="out-in">
         <div v-if="editing" class="mt-2">
           <RichTextEditor
