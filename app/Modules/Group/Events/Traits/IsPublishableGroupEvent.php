@@ -66,6 +66,7 @@ trait IsPublishableGroupEvent
             'name' => $group->name,
             'description' => $group->description,
             'caption' => $group->caption,
+            'publications' => $group->publications->map->toExchangePayload()->all(),
             'icon_url' => $group->icon_url_raw,
             'status' => $group->groupStatus->name,
             'visibility' => optional($group->groupVisibility)->name,
