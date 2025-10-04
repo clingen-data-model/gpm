@@ -60,7 +60,6 @@ use App\Modules\Group\Http\Controllers\Api\EvidenceSummaryController;
 use App\Modules\Group\Http\Controllers\Api\GroupSubmissionsController;
 use App\Modules\Group\Http\Controllers\Api\GroupPublicationsController;
 use App\Modules\Group\Actions\PublicationStore;
-use App\Modules\Group\Actions\PublicationUpdate;
 use App\Modules\Group\Actions\PublicationDelete;
 
 Route::group([
