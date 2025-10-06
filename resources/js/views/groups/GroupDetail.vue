@@ -30,6 +30,7 @@ import SustainedCurationReviewAlert from "@/components/alerts/SustainedCurationR
 import SubgroupList from '@/components/groups/SubgroupList.vue'
 
 import { api, isValidationError } from "../../http";
+import configs from '@/configs'
 
 export default {
   name: "GroupDetail",
@@ -135,6 +136,10 @@ export default {
   },
   data() {
     return {
+      inactivationStatusIds: [
+        configs.groups.statuses.retired.id,
+        configs.groups.statuses.inactive.id
+      ],
       showInfoEdit: false,
       editingExpertise: false,
       editingDescription: false,
@@ -167,6 +172,13 @@ export default {
     this.$store.commit("groups/clearCurrentItem");
   },
   methods: {
+    async onGroupInfoSaved() {
+      this.showInfoEdit = false;
+      const newId = Number(this.group.group_status_id);
+      if (this.inactivationStatusIds.includes(newId)) {
+        await this.$store.dispatch('groups/getMembers', this.group);
+      }
+    },
     hideModal() {
       this.$router.replace({
         name: "GroupDetail",
@@ -581,7 +593,7 @@ export default {
           <GroupForm
             ref="infoForm"
             @canceled="showInfoEdit = false"
-            @saved="showInfoEdit = false"
+            @saved="onGroupInfoSaved"
           />
         </submission-wrapper>
       </modal-dialog>
