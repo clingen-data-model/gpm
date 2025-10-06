@@ -215,4 +215,20 @@ class GroupPolicy
     {
         return $user->hasAnyPermission('groups-manage', 'ep-applications-manage');
     }
+
+    public function checkpoint(User $user, ?Group $group = null): bool
+    {        
+        if ($user->hasAnyRole(['super-user', 'super-admin'])) { return true; }
+
+        if (is_null($group)) { return false; }
+
+        $personId = $user->person_id ?? null;
+        if (!$personId) { return false; }
+
+        return $group->members() // relationship to GroupMember
+            ->where('person_id', $personId)
+            ->whereHas('roles', fn ($q) => $q->whereIn('name', ['coordinator']))
+            ->exists();
+    }
+
 }
