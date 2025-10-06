@@ -58,9 +58,7 @@ use App\Modules\Group\Http\Controllers\Api\GroupRelationsController;
 use App\Modules\ExpertPanel\Http\Controllers\Api\SimpleCoiController;
 use App\Modules\Group\Http\Controllers\Api\EvidenceSummaryController;
 use App\Modules\Group\Http\Controllers\Api\GroupSubmissionsController;
-
-
-
+use App\Modules\Group\Actions\EmitGroupCheckpoints;
 
 Route::group([
     'prefix' => 'api',
@@ -88,6 +86,7 @@ Route::group([
     });
 
     Route::get('/applications', ApplicationActivityGet::class);
+    Route::post('/checkpoints', EmitGroupCheckpoints::class)->name('groups.checkpoint');
 
     Route::group(['prefix' => '/{group:uuid}'], function () {
         Route::get('/', [GroupController::class, 'show']);

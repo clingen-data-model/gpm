@@ -1,7 +1,7 @@
 <script>
 import {useStore} from 'vuex'
 import {useRouter} from 'vue-router'
-import {computed, ref} from 'vue'
+import {computed, ref, reactive} from 'vue'
 import GroupForm from '@/components/groups/GroupForm.vue'
 import SubmissionWrapper from '@/components/groups/SubmissionWrapper.vue'
 
@@ -31,7 +31,7 @@ export default {
                     typeId: 3,
                     filter: (g) => g.is_gcep,
                 },
-{
+                {
                     label: 'CDWGs',
                     typeId: 2,
                     filter: g => g.isCdwg()
@@ -76,6 +76,43 @@ export default {
                 || group.coordinators.filter(c => c.person.name.match(pattern)).length > 0
         }))
 
+        const isActive = g => g.group_status_id === 2 || g.status?.id === 2 || (g.status?.name || '').toLowerCase() === 'active';
+
+        const emittingRow = reactive({})
+        const emitting = ref(false)
+
+        const activeIdsForDef = (def) => filteredGroups.value.filter(def.filter).filter(isActive).map(g => g.id);
+
+        const emitCheckpoints = async (ids, { rowId } = {}) => {
+          if (!Array.isArray(ids) || ids.length === 0) {
+            store.commit('pushError', 'No groups to checkpoint.')
+            return
+          }
+
+          if (rowId) emittingRow[rowId] = true
+          else emitting.value = true
+
+          try {
+            const res = await store.dispatch('groups/checkpoints', { group_ids: ids, queue: true })
+            console.log('emitCheckpoints result: ', res)
+            console.log('emitCheckpoints ids: ', ids)
+            const accepted = res?.accepted ?? 0
+            const denied = (res?.denied_ids || []).length
+            const notFound = (res?.not_found_ids || []).length
+            if (accepted > 0) {
+              store.commit('pushSuccess', `Queued checkpoints: ${accepted} accepted${denied ? `, ${denied} denied` : ''}${notFound ? `, ${notFound} missing` : ''}.`)
+            } else {
+              store.commit('pushError', `No groups accepted. ${denied ? `${denied} denied. ` : ''}${notFound ? `${notFound} not found.` : ''}`)
+            }
+          } catch (e) {
+            store.commit('pushError', e?.response?.data?.message || 'Failed to queue Checkpoints.')
+          } finally {
+            if (rowId) emittingRow[rowId] = false
+            else emitting.value = false
+          }
+        }
+
+
         const goToItem = (item) => {
             router.push({
                 name: 'GroupDetail',
@@ -90,6 +127,11 @@ export default {
             tabDefinitions,
             goToItem,
             goToGroup: goToItem,
+            isActive,
+            emittingRow,
+            emitting,
+            activeIdsForDef,
+            emitCheckpoints,
         }
     },
     data() {
@@ -107,28 +149,11 @@ export default {
                 desc: false
             },
             fields: [
-                {
-                    name: 'id',
-                    label: 'ID',
-                    sortable: true
-                },
-                {
-                    name: 'name',
-                    label: 'Name',
-                    sortable: true,
-                    resolveValue: (item) => {
-                        return item.displayName
-                    }
-                },
-                {
-                    name: 'coordinators',
-                    sortable: false
-                },
-                {
-                    name: 'displayStatus',
-                    sortable: true,
-                    label: 'status'
-                },
+                { name: 'id',             label: 'ID',      sortable: true },
+                { name: 'name',           label: 'Name',    sortable: true, resolveValue: (item) => { return item.displayName } },
+                { name: 'coordinators',                     sortable: false },
+                { name: 'displayStatus',  label: 'status',  sortable: true },
+                { name: 'checkpoint',     label: '',        sortable: false },
             ]
         }
     },
@@ -165,11 +190,18 @@ export default {
           Loading...
         </div>
         <div v-else>
-          <div class="mb-2">
-            Filter: <input v-model="filterString" type="text" placeholder="name,id,status,coordinator name">
+          <div class="mb-2 flex items-center justify-between gap-3">
+            <div>
+              Filter: <input v-model="filterString" type="text" placeholder="name,id,status,coordinator name" class="input input-sm">
+            </div>
+            <div class="shrink-0">
+              <button class="btn btn-sm btn-outline" :disabled="emitting || activeIdsForDef(def).length === 0" @click.stop="emitCheckpoints(activeIdsForDef(def))" title="Emit DX Checkpoints for all active groups in this tab">
+                <span v-if="emitting">Queuing...</span>
+                <span v-else>Sync Groups to Website ({{ activeIdsForDef(def).length }})</span>
+              </button>
+            </div>
           </div>
           <data-table
-
             v-model:sort="sort"
             v-remaining-height
             :data="filteredGroups.filter(def.filter)"
@@ -197,6 +229,17 @@ export default {
                   {{ coordinator.person.name }}
                 </router-link>
               </span>
+            </template>
+            <template #cell-checkpoint="{ item }">
+              <button
+                class="btn btn-xxs btn-outline"
+                :disabled="!isActive(item) || emittingRow[item.id]"
+                @click.stop="emitCheckpoints([item.id], { rowId: item.id })"
+                :title="isActive(item) ? 'Emit Checkpoint for this group' : 'Only Active groups can be Checkpointed'"
+              >
+                <span v-if="emittingRow[item.id]">Queuing…</span>
+                <span v-else>Sync</span>
+              </button>
             </template>
           </data-table>
         </div>
