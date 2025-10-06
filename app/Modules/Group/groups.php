@@ -190,4 +190,10 @@ return [
         'coordinator' => [1001,1002,1003,1004,1005,1006, 1007, 1008],
         'grant-liaison' => [1008],
     ],
+    // Members with ANY of these roles remain active when a group is inactivated/retired. Refers to `roles`.`name`, not id.
+    'keep_roles_on_inactivation' => [
+        'coordinator',
+        'chair',
+        'grant-liaison',
+    ],
 ];

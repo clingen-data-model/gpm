@@ -10,6 +10,7 @@ use Lorisleiva\Actions\Concerns\AsController;
 use App\Modules\Group\Events\GroupStatusUpdated;
 use App\Modules\Group\Http\Resources\GroupResource;
 use App\Modules\ExpertPanel\Events\ApplicationCompleted;
+use App\Modules\Group\Actions\RetireNonCoreMembers;
 
 class GroupStatusUpdate
 {
@@ -25,6 +26,11 @@ class GroupStatusUpdate
         $oldStatus = $group->status;
 
         $group->update(['group_status_id' => $groupStatus->id]);
+
+        $targets = [ data_get(config('groups.statuses.retired'), 'id', 3), data_get(config('groups.statuses.inactive'), 'id', 5) ];
+        if (in_array($groupStatus->id, $targets, true)) {
+            app(RetireNonCoreMembers::class)->handle($group);
+        }
 
         event(new GroupStatusUpdated($group, $groupStatus, $oldStatus));
 
