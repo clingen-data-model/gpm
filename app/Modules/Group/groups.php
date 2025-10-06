@@ -210,4 +210,10 @@ return [
             'name' => 'private',
         ],
     ],
+    // Members with ANY of these roles remain active when a group is inactivated/retired. Refers to `roles`.`name`, not id.
+    'keep_roles_on_inactivation' => [
+        'coordinator',
+        'chair',
+        'grant-liaison',
+    ],
 ];
