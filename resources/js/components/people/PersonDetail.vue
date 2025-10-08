@@ -1,7 +1,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import { formatDateTime as formatDate } from '@/date_utils'
-import { logEntries, fetchEntries } from "@/adapters/log_entry_repository";
+import { logEntries, fetchEntries, saveEntry } from "@/adapters/log_entry_repository";
 
 import TabsContainer from '../TabsContainer.vue'
 import MembershipList from './MembershipList.vue'
@@ -39,6 +39,10 @@ export default {
             showMergeForm: false,
             mailLoading: false,
             logsLoading: false,
+            showRetireAllConfirmation: false,
+            retireAlsoDisableLogin: true,
+            retireReason: '',
+            retireAllBusy: false,
         }
     },
     watch: {
@@ -85,6 +89,8 @@ export default {
         },
     },
     methods: {
+        initRetireAll() { this.showRetireAllConfirmation = true },
+        cancelRetireAll() { this.showRetireAllConfirmation = false },
         initDelete() {
             this.showDeleteConfirmation = true;
         },
@@ -115,16 +121,38 @@ export default {
             this.logsLoading = true;
             await this.fetchEntries(`/api/people/${this.uuid}/activity-logs`);
             this.logsLoading = false;
-        }
+        },
+        async commitRetireAll() {
+          try {
+            this.retireAllBusy = true
+            const data = await this.saveEntry(`/api/people/${this.person.uuid}/retire`, {
+              disable_login: this.retireAlsoDisableLogin,
+              reason: this.retireReason || null
+            })
+            this.showRetireAllConfirmation = false
+            const n = Number(data?.memberships_retired ?? 0)
+            const parts = [`Retired from ${n} ${n === 1 ? 'group' : 'groups'}.`]
+            if (data?.unlinked_user) parts.push('User account unlinked.')
+
+            await this.$store.dispatch('people/getPerson', { uuid: this.uuid })
+            this.getLogEntries()
+            this.$store.commit('pushSuccess', parts.join(' '))
+          } catch (e) {
+            this.$store.commit('pushError', 'Failed to retire user — see console/logs.')
+          } finally {
+            this.retireAllBusy = false
+          }
+        },
     },
     setup() {
         return {
             formatDate,
             logEntries,
-            fetchEntries
+            fetchEntries,
+            saveEntry,
         }
     },
-    onmounted() {
+    mounted() {
         this.$store.dispatch('people/clearCurrentItem');
     }
 }
@@ -220,6 +248,13 @@ export default {
               Delete Person
             </button>
           </p>
+          <p>&nbsp;</p>
+          <p>
+            This button will remove the person from all the groups they are a member of.<br />
+            <button class="btn btn red" @click="initRetireAll">              
+              Retire Person
+            </button>
+          </p>
         </section>
       </tab-item>
     </TabsContainer>
@@ -248,6 +283,32 @@ export default {
           :obsolete="person" @saved="handleMerged"
           @canceled="handleMergeCanceled"
         />
+      </modal-dialog>
+      <modal-dialog v-model="showRetireAllConfirmation" :title="`Retire ${person.name} from all groups and disable account?`">
+        <p>This will:</p>
+        <ul class="list-disc pl-6">
+          <li>End all active group memberships</li>
+          <li>Mark the person as retired</li>
+          <li>Optionally disable login/revoke tokens</li>
+        </ul>
+
+        <div class="mt-3">
+          <label class="flex items-center space-x-2">
+            <input type="checkbox" v-model="retireAlsoDisableLogin" />
+            <span>Also disable login for this user</span>
+          </label>
+        </div>
+
+        <div class="mt-3">
+          <label class="block font-semibold mb-1">Reason (optional)</label>
+          <textarea v-model="retireReason" class="w-full border rounded p-2" rows="3" placeholder="e.g., Left ClinGen"></textarea>
+        </div>
+
+        <div class="border my-4 px-2 py-1 font-bold bg-red-100 border-red-200 rounded text-red-800">
+          This cannot be undone.
+        </div>
+
+        <button-row :submit-text="`Retire ${person.name}`" submit-variant="red" :busy="retireAllBusy" @submitted="commitRetireAll" @canceled="cancelRetireAll"/>
       </modal-dialog>
     </teleport>
   </div>

@@ -17,9 +17,17 @@ class MemberRetire
     use AsObject;
     use AsController;
 
-    public function handle(GroupMember $groupMember, Carbon $endDate): GroupMember
+    public function handle(GroupMember $groupMember, Carbon $endDate, ?string $reason = null, $actor = null): GroupMember
     {
-        $groupMember->update(['end_date' => $endDate]);
+        $retireMember = ['end_date' => $endDate];
+        if ($reason !== null) { 
+            $existing = trim((string) $groupMember->notes);
+            $stamp = now()->toDateTimeString();
+            $by = $actor?->name ? " by {$actor->name}" : '';
+            $line = "[{$stamp}] Retired{$by}: {$reason}";
+            $retireMember['notes'] = $existing ? ($existing . ". " . $line) : $line;
+        }
+        $groupMember->forceFill($retireMember)->save();
         
         Event::dispatch(new MemberRetired($groupMember));
         return $groupMember;
