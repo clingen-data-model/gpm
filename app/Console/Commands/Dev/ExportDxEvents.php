@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use ReflectionClass;
+use ReflectionMethod;
 
 class ExportDxEvents extends Command
 {
@@ -20,13 +21,13 @@ class ExportDxEvents extends Command
     protected $description = 'Export a CSV + Markdown catalog of events (Class, Parent, Recordable, Publishable, Topic guess, Default event_type, Notes, SampleMessage) and observed DX event types.';
 
     // FQCNs used for classification
-    private const RECORDABLE_BASE     = 'App\\Events\\RecordableEvent';
-    private const PUBLISHABLE_IFACE   = 'App\\Events\\PublishableEvent';
-    private const GROUP_EVENT_BASE    = 'App\\Modules\\Group\\Events\\GroupEvent';
-    private const EXPERTPANEL_EVENT_BASE = 'App\\Modules\\ExpertPanel\\Events\\ExpertPanelEvent';
-    private const PERSON_EVENT_BASE   = 'App\\Modules\\Person\\Events\\PersonEvent';
-    private const PERSON_PUBLISH_TRAIT = 'App\\Modules\\Person\\Events\\Traits\\PublishesEvent';
-    private const PUBLISHABLE_APP_IFACE = 'App\\Modules\\Group\\Events\\PublishableApplicationEvent';
+    private const RECORDABLE_BASE         = 'App\\Events\\RecordableEvent';
+    private const PUBLISHABLE_IFACE       = 'App\\Events\\PublishableEvent';
+    private const GROUP_EVENT_BASE        = 'App\\Modules\\Group\\Events\\GroupEvent';
+    private const EXPERTPANEL_EVENT_BASE  = 'App\\Modules\\ExpertPanel\\Events\\ExpertPanelEvent';
+    private const PERSON_EVENT_BASE       = 'App\\Modules\\Person\\Events\\PersonEvent';
+    private const PERSON_PUBLISH_TRAIT    = 'App\\Modules\\Person\\Events\\Traits\\PublishesEvent';
+    private const PUBLISHABLE_APP_IFACE   = 'App\\Modules\\Group\\Events\\PublishableApplicationEvent';
 
     // Heuristics for notes/hints
     private const HINTS = [
@@ -70,7 +71,7 @@ class ExportDxEvents extends Command
         $mdPath          = $this->option('md') ?: storage_path('app/dx_events_catalog.md');
         $includeAbstract = (bool)$this->option('include-abstract');
 
-        // Load observed stats + sample messages (portable table check via Schema::hasTable)
+        // Load observed stats + sample messages
         $obsRows = [];
         $samplesByType = [];
         $samplesByTopicType = [];
@@ -89,11 +90,10 @@ class ExportDxEvents extends Command
         $catalogRows[] = $catalogHeader;
 
         foreach ($classes as $fqcn) {
-            // Skip non-Events BEFORE autoloading to avoid loading unrelated classes
+            // Skip non-Events BEFORE autoloading
             if (strpos($fqcn, '\\Events\\') === false) {
                 continue;
             }
-
             if (!class_exists($fqcn)) {
                 continue;
             }
@@ -106,7 +106,7 @@ class ExportDxEvents extends Command
 
                 $parent        = $ref->getParentClass() ? $ref->getParentClass()->getName() : '';
                 $isRecordable  = $this->isSubclassOf($ref, self::RECORDABLE_BASE);
-                $isPublishable = $this->implementsInterface($ref, self::PUBLISHABLE_IFACE);
+                $isPublishable = $this->isEffectivelyPublishable($ref);
                 $topicGuess    = $this->guessTopic($ref);
 
                 $short        = $ref->getShortName();
@@ -116,14 +116,12 @@ class ExportDxEvents extends Command
                 $overrides    = $this->declaresMethod($ref, 'getEventType') ? 'yes' : 'no';
                 $notes        = self::HINTS[$fqcn] ?? '';
 
-                // Try to attach a real observed sample message:
-                // 1) exact topic+event_type
-                // 2) fallback by event_type (topic-agnostic)
+                // Attach a real observed sample message:
                 $sample = '';
-                if ($isPublishable) {
+                if ($isPublishable && $topicGuess !== '') {
                     $key = "{$topicGuess}|{$defaultType}";
-                    $sample = $samplesByTopicType[$key] ?? $samplesByType[$defaultType] ?? '';
-                    $sample = $this->truncate($this->minifyJson($sample), 220);
+                    $raw = $samplesByTopicType[$key] ?? $samplesByType[$defaultType] ?? '';
+                    $sample = $this->trimMessageValues($raw, 50); // keep structure; trim string fields to 50 chars
                 }
 
                 $catalogRows[] = [
@@ -146,7 +144,7 @@ class ExportDxEvents extends Command
         $this->writeCsv($outPath, $catalogRows);
         $this->info("Catalog written: {$outPath}");
 
-        // Observed types (from DB) — using Schema::hasTable internally
+        // Observed types (from DB)
         if (!empty($obsRows)) {
             $obsHeader = ['Topic', 'EventType', 'Count', 'LastSent'];
             $this->writeCsv($obsPath, array_merge([$obsHeader], $obsRows));
@@ -209,10 +207,9 @@ class ExportDxEvents extends Command
             $key = "{$r->topic}|{$r->event_type}";
             if (!isset($seen[$key])) {
                 $seen[$key] = true;
-                $msg = $this->minifyJson($r->message);
-                $samplesByTopicType[$key] = $msg;
+                $samplesByTopicType[$key] = $r->message;
                 // Also keep a topic-agnostic sample per event_type
-                $samplesByType[$r->event_type] = $samplesByType[$r->event_type] ?? $msg;
+                $samplesByType[$r->event_type] = $samplesByType[$r->event_type] ?? $r->message;
             }
         }
 
@@ -286,6 +283,34 @@ class ExportDxEvents extends Command
         }
         return false;
     }
+    
+    private function isEffectivelyPublishable(ReflectionClass $ref): bool
+    {
+        if (!$this->implementsInterface($ref, self::PUBLISHABLE_IFACE)) {
+            return false;
+        }
+
+        if ($ref->hasMethod('shouldPublish')) {
+            $m = $ref->getMethod('shouldPublish');
+            $declaring = $m->getDeclaringClass();
+            $file = $m->getFileName();
+            if ($file && is_file($file)) {
+                $src = file_get_contents($file);
+                if ($src !== false) {
+                    $start = $m->getStartLine();
+                    $end   = $m->getEndLine();
+                    $lines = explode("\n", $src);
+                    $body  = implode("\n", array_slice($lines, $start - 1, ($end - $start + 1)));
+
+                    if (preg_match('/return\s+false\s*;?/i', $body)) {
+                        return false;
+                    }
+                }
+            }
+        }
+
+        return true;
+    }
 
     private function guessTopic(ReflectionClass $ref): string
     {
@@ -338,7 +363,8 @@ class ExportDxEvents extends Command
         $md .= "## Summary\n\n";
         $md .= "- Total event classes scanned: **{$total}**\n";
         $md .= "- Recordable: **{$recordable}**\n";
-        $md .= "- Publishable: **{$publishable}**\n\n";
+        $md .= "- Publishable (effective): **{$publishable}**\n\n";
+        $md .= "_SampleMessage values are trimmed per-field to 50 chars for readability._\n\n";
 
         if (!empty($obsRows)) {
             $md .= "## Observed Event Types (from `stream_messages`)\n\n";
@@ -375,15 +401,36 @@ class ExportDxEvents extends Command
         return str_replace('|', '\\|', $s);
     }
 
-    private function minifyJson(?string $json): string
+    private function trimMessageValues(?string $json, int $max = 50): string
     {
         if (!$json) return '';
         try {
-            $arr = json_decode($json, true, 512, JSON_THROW_ON_ERROR);
-            return json_encode($arr, JSON_UNESCAPED_SLASHES);
+            $data = json_decode($json, true, 512, JSON_THROW_ON_ERROR);
         } catch (\Throwable $e) {
-            return $json; // if it isn't valid JSON, return raw
+            return $this->trimScalarString($json, $max);
         }
+        $trimmed = $this->trimValuesRecursive($data, $max);
+        return json_encode($trimmed, JSON_UNESCAPED_SLASHES);
+    }
+
+    private function trimValuesRecursive($value, int $max)
+    {
+        if (is_string($value)) {
+            return $this->trimScalarString($value, $max);
+        }
+        if (is_array($value)) {
+            $out = [];
+            foreach ($value as $k => $v) {
+                $out[$k] = $this->trimValuesRecursive($v, $max);
+            }
+            return $out;
+        }
+        return $value;
+    }
+
+    private function trimScalarString(string $s, int $max): string
+    {
+        return mb_strlen($s) > $max ? (mb_substr($s, 0, $max) . '…') : $s;
     }
 
     private function truncate(string $s, int $max = 220): string
