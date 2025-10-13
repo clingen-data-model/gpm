@@ -32,7 +32,7 @@ class GroupExternalResource extends JsonResource
             'status' => $this->groupStatus->name,
             'status_date' => $this->groupStatus->updated_at,
             'type' => $this->type->name,
-            'coi' => url('/coi/'.$this->uuid),
+            'coi' => url('/coi-group/'.$this->uuid),
             'members' => $this->members()->with(['person', 'person.credentials', 'person.institution', 'roles', 'latestCoi'])->get()->map(function ($member) {
                 $p = $member->person;
                 $personData = [

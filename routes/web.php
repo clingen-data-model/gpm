@@ -25,7 +25,7 @@ use App\Modules\Group\Models\Group;
 | contains the "web" middleware group. Now create something great!
 |
 */
-Route::get('/coi/{group:uuid}', function (Group $group) { return app(CoiReportMakePdf::class)->handle($group); })->whereUuid('group')->name('coi.pdf');
+Route::get('/coi-group/{group:uuid}', function (Group $group) { return app(CoiReportMakePdf::class)->handle($group); })->whereUuid('group')->name('coi.pdf');
 
 Route::get('/{any}', [ViewController::class, 'app'])
     ->where('any', '^(?!(api|sanctum|impersonate|dev|documents|downloads|clockwork|profile-photos|storage)).*$');
