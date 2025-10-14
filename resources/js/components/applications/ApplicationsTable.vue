@@ -336,9 +336,9 @@ export default {
       <template #cell-latest_log_entry="{item}">
         <popper hover arrow placement="right">
           <template #content>
-            <div v-html="item.group.latest_log_entry.description" />
+            <div v-html="item.group.latest_log_entry?.description" />
           </template>
-          {{ formatDate(item.group.latest_log_entry.created_at) }}
+          {{ formatDate(item.group.latest_log_entry?.created_at) }}
         </popper>
       </template>
       <template #cell-next_actions="{item}">

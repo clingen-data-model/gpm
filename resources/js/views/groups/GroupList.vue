@@ -31,10 +31,21 @@ export default {
                     typeId: 3,
                     filter: (g) => g.is_gcep,
                 },
-{
+                              
+                {
+                    label: 'SC-VCEPs',
+                    typeId: 5,
+                    filter: g => g.is_scvcep,
+                },
+                {
                     label: 'CDWGs',
                     typeId: 2,
                     filter: g => g.isCdwg()
+                },
+                {
+                    label: 'SC-CDWGs',
+                    typeId: 6,
+                    filter: g => g.isScCdwg()
                 },
                 {
                     label: 'WGs',

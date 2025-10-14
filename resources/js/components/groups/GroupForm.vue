@@ -61,7 +61,10 @@ export default {
             return 50000
         },
         cdwgs () {
-            return this.$store.getters['cdwgs/all']
+            return this.$store.getters['groups/cdwgs']
+        },
+        sccdwgs () {
+            return this.$store.getters['groups/sccdwgs']
         },
         namesDirty () {
             return this.group.expert_panel.isDirty('long_base_name')
@@ -70,21 +73,22 @@ export default {
         affiliationIdDirty () {
             return this.group.expert_panel.isDirty('affiliation_id');
         },
+        parentSource () {
+            const isScvcep = Number(this.group?.group_type_id) === 5;
+            const cdwgs   = this.$store.getters['cdwgs/all']   || [];
+            const sccdwgs = this.$store.getters['sccdwgs/all'] || [];
+            return isScvcep ? sccdwgs : cdwgs;
+
+        },
         parentOptions () {
-            const options = [{value: 0, label: 'None'}];
-            const parentFilter = this.group.isEp() ? g => g.isCdwg() : g => g.type.can_be_parent;
-            this.parents
-                .filter(parentFilter)
-                .sort((a, b) => a.displayName.localeCompare(b.displayName))
-                .forEach(parent => {
-                    options.push({value: parent.id, label: parent.displayName})
-                })
+            const options = [{ value: 0, label: 'None' }];
+            (this.parentSource)
+                .filter(g => g && g.id !== this.group?.id)
+                .sort((a, b) => (a.displayName || a.name || '').localeCompare(b.displayName || b.name || ''))
+                .forEach(g => options.push({ value: g.id, label: g.displayName || g.name || '' }));
             return options;
-        }
-    },
-    beforeMount() {
-        this.getParentOptions();
-        this.$store.dispatch('cdwgs/getAll');
+        },
+
     },
     methods: {
         async save() {
@@ -124,7 +128,7 @@ export default {
             if (name === null && this.group.expert_panel) {
                 name = this.group.expert_panel.long_base_name;
             }
-
+            const { website_url } = this.group;
             return this.$store.dispatch(
                 'groups/create',
                 {
@@ -132,7 +136,8 @@ export default {
                     parent_id,
                     group_type_id,
                     group_status_id,
-                    short_base_name
+                    short_base_name,
+                    website_url
                 }
             );
         },
@@ -157,6 +162,10 @@ export default {
 
             if (this.group.isDirty('group_status_id')) {
                 promises.push(this.saveStatus())
+            }
+
+            if (this.group.isDirty('website_url')) {
+                promises.push(this.saveWebsiteUrl());
             }
 
             return Promise.all(promises);
@@ -210,6 +219,14 @@ export default {
                 data: {status_id: this.group.group_status_id}
             })
         },
+        saveWebsiteUrl () {
+            return this.submitFormData({
+                method: 'put',
+                url: `/api/groups/${this.group.uuid}/website-url`,
+                data: { website_url: this.group.website_url || null }
+            });
+        },
+
         resetData () {
             if (this.group.uuid) {
                 this.$store.dispatch('groups/find', this.group.uuid);
@@ -221,23 +238,7 @@ export default {
             }
             this.$emit('canceled');
         },
-        async getParentOptions () {
-            const params = {
-                'where[group_type_id]': [1,2],
-                without: ['coordinators', 'expertPanel']
-            };
-
-            this.parents = await api.get(`/api/groups`, {params})
-                        .then(response => {
-                            return response.data
-                                .filter(group => group.id !== this.group.id)
-                                .map(g => new Group(g))
-                        });
-        },
-        emitUpdate () {
-            this.$emit('update');
-        }
-    }
+    },
 }
 </script>
 <template>
@@ -256,7 +257,7 @@ export default {
     </dictionary-row>
 
     <transition name="slide-fade-down" mode="out-in">
-      <div v-if="group.group_type_id > 2 && group.expert_panel">
+      <div v-if="[3, 4, 5].includes(Number.parseInt(group.group_type_id)) && group.expert_panel">
         <input-row
           v-model="group.expert_panel.long_base_name"
           label="Long Base Name"
@@ -272,6 +273,15 @@ export default {
           :errors="errors.short_base_name"
           input-class="w-full"
           @update:model-value="emitUpdate"
+        />
+        <input-row
+            v-if="Number.parseInt(group.group_type_id) === 5"
+            v-model="group.website_url"
+            label="Website URL"
+            placeholder="https://civicdb.org/organizations/{INT:number}}/"
+            :errors="errors.website_url"
+            input-class="w-full"
+            @update:model-value="emitUpdate"
         />
         <div v-if="hasAnyPermission(['groups-manage'])">
           <input-row
@@ -301,7 +311,7 @@ export default {
           input-class="w-full"
           :errors="errors.name"
           @update:model-value="emitUpdate"
-        />
+        />        
       </div>
     </transition>
     <div v-if="hasPermission('groups-manage')">
@@ -319,6 +329,8 @@ export default {
       </input-row>
 
       <input-row
+        :key="'parent-'+String(group.group_type_id)"
+        v-if="[1, 3, 4, 5].includes(Number.parseInt(group.group_type_id)) && group.expert_panel"
         v-model="group.parent_id"
         type="select"
         :options="parentOptions"

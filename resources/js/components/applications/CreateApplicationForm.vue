@@ -2,6 +2,8 @@
 import { mapGetters } from 'vuex'
 import { formatDate } from '@/date_utils'
 
+const EP_TYPES = { GCEP: 1, VCEP: 2, SC_VCEP: 3 }
+
 export default {
     name: 'CreateApplicationForm',
     props: {
@@ -22,16 +24,24 @@ export default {
                 date_initiated: formatDate(new Date())
             },
             epTypes: [
-                {name: 'GCEP', id: 1},
-                {name: 'VCEP', id: 2}
+                {name: 'GCEP', id: EP_TYPES.GCEP },
+                {name: 'VCEP', id: EP_TYPES.VCEP },
+                {name: 'SC-VCEP', id: EP_TYPES.SC_VCEP }
             ],
             errors: {}
         }
     },
     computed: {
         ...mapGetters({
-            cdwgs: 'cdwgs/all'
+            cdwgs: 'cdwgs/all',
+            scCdwgs: 'sccdwgs/all'
         }),
+        isScVcep() {
+          return this.app.expert_panel_type_id === EP_TYPES.SC_VCEP
+        },
+        displayedCdwgs() {
+          return this.isScVcep ? this.scCdwgs : this.cdwgs
+        },
         hasErrors() {
             return Object.keys(this.errors).length > 0;
         }
@@ -43,8 +53,11 @@ export default {
         'app.cdwg_id': function () {
             this.clearErrors('cdwg_id')
         },
-        'app.expert_panel_type_id': function () {
+        'app.expert_panel_type_id': {
+          async handler(newVal) {
             this.clearErrors('expert_panel_type_id')
+            this.app.cdwg_id = null
+          }
         }
     },
     methods: {
@@ -73,7 +86,8 @@ export default {
                 working_name: null,
                 cdwg_id: null,
                 expert_panel_type_id: null,
-                date_initiated: formatDate(new Date())
+                date_initiated: formatDate(new Date()),
+                website_url: null,
             };
         },
         clearErrors(fieldName) {
@@ -103,17 +117,6 @@ export default {
       placeholder="A recognizable name"
     />
 
-    <input-row label="CDWG" :errors="errors.cdwg_id">
-      <select v-model="app.cdwg_id">
-        <option :value="null">
-          Select...
-        </option>
-        <option v-for="cdwg in cdwgs" :key="cdwg.id" :value="cdwg.id">
-          {{ cdwg.name }}
-        </option>
-      </select>
-    </input-row>
-
     <input-row label="EP Type" :errors="errors.expert_panel_type_id">
       <div>
         <label
@@ -131,6 +134,18 @@ export default {
         </label>
       </div>
     </input-row>
+    
+    <input-row :label="isScVcep ? 'SC-CDWG' : 'CDWG'" :errors="errors.cdwg_id">
+      <select v-model="app.cdwg_id" :key="'cdwg-'+String(app.expert_panel_type_id)">
+        <option :value="null">
+          Select...
+        </option>
+        <option v-for="cdwg in displayedCdwgs" :key="cdwg.id" :value="cdwg.id">
+          {{ cdwg.name }}
+        </option>
+      </select>
+    </input-row>
+
     <input-row :errors="errors.date_initiated">
       <div>
         <div>
