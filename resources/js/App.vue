@@ -39,6 +39,7 @@ export default {
   methods: {
     getLookupResources() {
       this.$store.dispatch('cdwgs/getAll');
+      this.$store.dispatch('sccdwgs/fetchAll')
     },
     refreshCurrentRoute() {
       this.$router.push(this.$route)

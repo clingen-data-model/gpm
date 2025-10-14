@@ -3,6 +3,7 @@ import { createStore } from 'vuex'
 import Alerts from '@/store/alerts'
 import ApplicationStore from '@/store/applications.js'
 import CdwgStore from '@/store/cdwgs.js'
+import ScCdwgStore from '@/store/sccdwgs.js'
 import COIStore from '@/store/coi_store.js'
 import GroupStore from '@/store/groups.js'
 import PeopleStore from '@/store/people.js'
@@ -12,7 +13,6 @@ import axios from '@/http/api'
 import isAuthError from '@/http/is_auth_error'
 import module_factory from '@/store/module_factory';
 import User from '@/domain/user'
-// import router from '../router'
 
 const docTypeStore = module_factory({
     baseUrl: '/api/document-types',
@@ -153,6 +153,7 @@ const store = createStore({
         applications: ApplicationStore,
         coiStore: COIStore,
         cdwgs: CdwgStore,
+        sccdwgs: ScCdwgStore,
         credentials: CredentialStore,
         groups: GroupStore,
         doctypes: docTypeStore,

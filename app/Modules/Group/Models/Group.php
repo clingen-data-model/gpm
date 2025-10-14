@@ -72,6 +72,7 @@ class Group extends Model implements HasMembers, RecordsEvents, HasDocuments, Ha
         'coi_code',
         'caption',
         'icon_path',
+        'website_url'
     ];
 
     /**
@@ -190,6 +191,11 @@ class Group extends Model implements HasMembers, RecordsEvents, HasDocuments, Ha
         return $query->ofType(config('groups.types.cdwg.id'));
     }
 
+    public function scopeSccdwg($query)
+    {
+        return $query->ofType(config('groups.types.sccdwg.id'));
+    }
+
     public function scopeWorkingGroup($query)
     {
         return $query->ofType(config('groups.types.wg.id'));
@@ -279,6 +285,7 @@ class Group extends Model implements HasMembers, RecordsEvents, HasDocuments, Ha
     public function getDisplayNameAttribute()
     {
         $typeName = $this->type ? $this->type->name : '';
+        $typeName = $typeName == 'sccdwg' ? 'SC-CDWG' : $typeName;
         return $this->name.' '.strtoupper($typeName);
     }
 

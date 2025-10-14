@@ -88,12 +88,13 @@ class GroupAttributesUpdate
             'description' => 'string|nullable',
             'parent_id' => 'nullable|exists:groups,id',
             'group_status_id' => 'exists:group_statuses,id',
+            'website_url' => 'nullable|url',
         ];
     }
 
     public function asController(ActionRequest $request, Group $group)
     {
-        $data = $request->only('name', 'description', 'parent_id', 'group_status_id');
+        $data = $request->only('name', 'description', 'parent_id', 'group_status_id', 'website_url');
         return $this->handle($group, $data);
     }
 
