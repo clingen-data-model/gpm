@@ -104,7 +104,7 @@
       Profile
     </h3>
     <div v-if="(hasPermission('people-manage') || userIsPerson(person))" class="float-right">
-      <ProfilePhotoForm :person="person" style="width: 100px; height: 100px;" />
+      <ProfilePhotoForm :person="person" @uploaded="p => person = {...p}" style="width: 100px; height: 100px;" />
     </div>
 
     <input-row

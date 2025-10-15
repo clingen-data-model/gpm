@@ -114,14 +114,14 @@ export default {
             const formData = new FormData();
 
             formData.append('profile_photo', blob);
-
-            api.postForm(`/api/people/${this.person.uuid}/profile-photo`, formData)
-                .then(() => {
-                    this.$store.dispatch('people/getPerson', { uuid: this.person.uuid });
-                    this.showForm = false;
-                    this.file = null;
-                    this.saving = false;
-                })
+                api.postForm(`/api/people/${this.person.uuid}/profile-photo`, formData)
+                    .then(async (rsp) => {                         
+                        let updated = rsp?.data;
+                        this.$emit('uploaded', updated);
+                        this.showForm = false;
+                        this.file = null;
+                        this.saving = false;
+                    })
                 .catch(error => {
                     this.saving = false;
                     if (isValidationError(error)) {
