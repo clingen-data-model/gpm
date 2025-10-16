@@ -24,13 +24,13 @@ class PublicationAdded extends GroupEvent
     public function getProperties(): array
     {
         return [
-            'publication_id' => $this->publication->id,
+            'publication_id' => $this->publication->uuid,
             'source' => $this->publication->source,
             'identifier' => $this->publication->identifier,
             'pub_type' => $this->publication->pub_type,
             'published_at' => optional($this->publication->published_at)->toDateString(),            
-            // 'meta_keys' => array_slice(array_keys($this->publication->meta ?? []), 0, 20),
-            // 'has_meta' => ! empty($this->publication->meta),
+            'meta_keys' => $this->publication->meta ?? [],
+            'has_meta' => ! empty($this->publication->meta),
         ];
     }
 }

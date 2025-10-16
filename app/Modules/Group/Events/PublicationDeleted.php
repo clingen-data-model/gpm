@@ -24,7 +24,7 @@ class PublicationDeleted extends GroupEvent
     public function getProperties(): array
     {
         return [
-            'publication_id' => $this->publication->id,
+            'publication_id' => $this->publication->uuid,
             'source' => $this->publication->source,
             'identifier' => $this->publication->identifier,
         ];

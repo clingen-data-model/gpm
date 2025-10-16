@@ -29,7 +29,7 @@ class GroupExternalResource extends JsonResource
             'name' => $this->name,
             'description' => $this->description,
             'caption' => null, // TODO here as a placeholder for now, see GPM-513
-            'publications' => $this->publications->map->toExchangePayload()->all(),
+            'publications' => $this->publications->map->toExchangePayload()->all(), // Added at GPM-470
             'status' => $this->groupStatus->name,
             'status_date' => $this->groupStatus->updated_at,
             'type' => $this->type->name,

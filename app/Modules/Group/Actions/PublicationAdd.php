@@ -5,11 +5,14 @@ namespace App\Modules\Group\Actions;
 use App\Modules\Group\Models\Group;
 use App\Modules\Group\Models\Publication;
 use App\Modules\Group\Service\PublicationLookup;
-use App\Jobs\EnrichPublication;
-use Illuminate\Http\Request;
 use App\Modules\Group\Events\PublicationAdded;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Bus;
+use Illuminate\Support\Facades\DB;
+use App\Jobs\SendPublicationAdded;
+use App\Jobs\EnrichPublication;
 
-class PublicationStore
+class PublicationAdd
 {
     public function __invoke(Request $request, Group $group)
     {
@@ -31,9 +34,15 @@ class PublicationStore
                 ['group_id' => $group->id, 'source' => $source, 'identifier' => $identifier],
                 ['added_by_id' => optional($request->user())->id, 'status' => 'pending']
             );            
-            EnrichPublication::dispatch($pub->id)->afterCommit();
+            
+            DB::afterCommit(function () use ($pub, $group) {
+                Bus::chain([
+                    new EnrichPublication($pub->id),
+                    new SendPublicationAdded($group->id, $pub->id),
+                ])->dispatch();
+            });
 
-            event(new PublicationAdded($group, $pub));
+            
             $ids[] = $pub->id;
         }        
         return response()->json(['ids' => $ids], 202);
