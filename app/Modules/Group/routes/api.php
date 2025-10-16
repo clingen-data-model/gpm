@@ -61,7 +61,7 @@ use App\Modules\Group\Http\Controllers\Api\EvidenceSummaryController;
 use App\Modules\Group\Http\Controllers\Api\GroupSubmissionsController;
 use App\Modules\Group\Actions\EmitGroupCheckpoints;
 use App\Modules\Group\Http\Controllers\Api\GroupPublicationsController;
-use App\Modules\Group\Actions\PublicationStore;
+use App\Modules\Group\Actions\PublicationAdd;
 use App\Modules\Group\Actions\PublicationDelete;
 
 Route::group([
@@ -217,7 +217,7 @@ Route::group([
         // PUBLICATIONS
         Route::group(['prefix' => '/publications'], function () {
             Route::get('/', [GroupPublicationsController::class, 'index']);
-            Route::post('/', PublicationStore::class);
+            Route::post('/', PublicationAdd::class);
             Route::delete('/{publication}', PublicationDelete::class);
         });
 
