@@ -22,13 +22,13 @@ return new class extends Migration {
             $t->string('pub_type', 250)->nullable()->index();
             $t->date('published_at')->nullable()->index();
 
-            $t->enum('status', ['pending','enriched','failed'])->default('pending')->index();
+            $t->string('status', 50)->default('pending')->index();
             $t->string('error')->nullable();
+            $t->timestamp('sent_to_dx_at')->nullable()->index();
 
             $t->timestamps();
             $t->softDeletes();
 
-            $t->unique(['group_id','source','identifier']);
             $t->index(['group_id','published_at']);
         });
     }
