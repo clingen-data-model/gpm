@@ -27,6 +27,7 @@ class Publication extends Model
 
     protected $casts = [
         'meta' => 'array',
+        'sent_to_dx_at' => 'datetime',
         'published_at' => 'date',
     ];
 
@@ -121,6 +122,18 @@ class Publication extends Model
                 fn($a) => $a['name'] ?? trim(implode(' ', array_filter([$a['first'] ?? null, $a['last'] ?? null]))),
                 $m['authors']
             )));
+        }
+        if (isset($m['authorString'])) {
+            if (is_array($m['authorString'])) {
+                return array_values(array_filter(array_map(
+                    fn($a) => $a['name'] ?? trim(implode(' ', array_filter([$a['first'] ?? null, $a['last'] ?? null]))),
+                    $m['authorString']
+                )));
+            }
+            if(is_string($m['authorString'])) {
+                $authorString = explode(",", $m['authorString']);
+                return array_map('trim', $authorString);
+            }
         }
         if (isset($m['author']) && is_array($m['author'])) {
             return array_values(array_filter(array_map(
