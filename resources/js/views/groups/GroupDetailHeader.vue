@@ -1,5 +1,6 @@
 <script>
 import Group from '@/domain/group'
+import EmitCheckpointsButton from '@/components/groups/EmitCheckpointsButton.vue'
 
 export default {
     name: 'GroupDetailHeader',
@@ -9,6 +10,7 @@ export default {
             required: true,
         }
     },
+    components: { EmitCheckpointsButton },
     emits: [
         'showEdit'
     ],
@@ -53,6 +55,7 @@ export default {
           <span v-if="group.is_ep"> | expertPanel.id: {{ group.expert_panel.id }}</span>
         </note>
       </div>
+      <div class="flex items-center gap-2">
       <button 
         v-if="hasAnyPermission(['groups-manage', ['info-edit', group]])" 
         class="btn btn-xs"
@@ -60,6 +63,18 @@ export default {
       >
         Edit Group Info
       </button>
+      <EmitCheckpointsButton
+        v-if="hasRole('coordinator') || hasRole('super-user') || hasRole('super-admin')"
+        :group="group"
+        :ids="[group.id]" 
+        :only-active="true"
+        :row-id="group.id"
+        size="btn-xs"
+        label="Emit to DX"
+        processing-label="Queuing..."
+        :queue="true"
+      />
+      </div>
     </h1>
     <dictionary-row label="Chairs:">
       <template #label>
