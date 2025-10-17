@@ -10,6 +10,7 @@ import FundingForm from '@/components/annual_update/FundingForm.vue'
 import ExternalFundingForm from '@/components/annual_update/ExternalFundingForm.vue'
 import MemberDesignationUpdate from '@/components/annual_update/MemberDesignationUpdate.vue'
 import MembershipUpdate from '@/components/annual_update/MembershipUpdate.vue'
+import PublicationsForm from '@/components/annual_update/PublicationsForm.vue'
 
 // GCEP Components
 import GciGtUse from '@/components/annual_update/GciGtUse.vue'
@@ -50,6 +51,7 @@ export default {
         // VcepPlansForSpecifications,
         // VariantCurationWorkflow,
         MembershipUpdate,
+        PublicationsForm,
     },
     props: {
         uuid: {
@@ -357,6 +359,10 @@ export default {
 
       <AppSection v-if="expertPanel.is_vcep && year < 2024" title="Use of Variant Curation Interface (VCI)">
         <VciUse v-model="annualUpdate" :errors="errors" />
+      </AppSection>
+
+      <AppSection title="Publications">
+        <PublicationsForm v-model="annualUpdate" :version="year" :errors="errors" :group-uuid="uuid" :shape-exchange="true" />
       </AppSection>
 
       <AppSection title="Goals for next year">
