@@ -108,6 +108,10 @@ class AnnualUpdateSave
             'difficulty_adhering_to_vcep_policies',
             // MemberDesignationUpdate (VCEP with sustained curation)
             'member_designation_changed',
+
+            // --- NEW: Publications snapshot GPM-470 ---
+            'publications',
+            'publications_note',
         ];
     }
 }
