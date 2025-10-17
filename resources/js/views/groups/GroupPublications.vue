@@ -5,6 +5,7 @@ import { api } from "@/http";
 const props = defineProps({ group: { type: Object, required: true } });
 
 const loading = ref(false);
+const loadedFor = ref(null);
 const items = ref([]);
 const addOpen = ref(false);
 const addText = ref("");
@@ -13,12 +14,13 @@ const error = ref("");
 const groupUuid = computed(() => props.group?.uuid);
 
 async function fetchPublications() {
-    if (!groupUuid.value) return; else console.log("No group UUID; skipping fetch.");
+    if (!groupUuid.value) return;
     loading.value = true;
     error.value = "";
     try {
         const { data } = await api.get(`/api/groups/${groupUuid.value}/publications`, { });
-        items.value = Array.isArray(data?.data) ? data.data : data;
+        items.value = data;
+        loadedFor.value = groupUuid.value
     } catch (e) {
         error.value = "Failed to load publications.";
     } finally {
@@ -100,13 +102,9 @@ function detailsLink(){
     return row?.meta?.url || null;
 }
 
-onMounted(() => {
-    if (groupUuid.value) fetchPublications();
-    else console.log("No group UUID; skipping fetch.");
-});
 watch(groupUuid, (val, old) => { if (val && val !== old) fetchPublications(); }, { immediate: true });
 onActivated(() => {
-    if (groupUuid.value && items.value.length === 0) fetchPublications();
+    if (groupUuid.value && loadedFor.value !== groupUuid.value && items.value.length === 0) fetchPublications();
 });
 
 function titleOf(p) {
