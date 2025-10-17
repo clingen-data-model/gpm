@@ -20,7 +20,9 @@ class GroupPublicationsController extends Controller
         if($start = $request->query('start')) { $q->whereDate('published_at', '>=', $start); }
         if($end = $request->query('end')) { $q->whereDate('published_at', '<=', $end); }
 
-        // Return paginator to match other list endpoints
-        return $q->paginate($request->integer('per_page', 50));
+        if ($request->boolean('shape_exchange')) { // For Annual Updates
+            return $q->get()->map->toExchangePayload();
+        }
+        return $q->get();
     }
 }
