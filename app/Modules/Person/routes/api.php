@@ -66,7 +66,7 @@ Route::group([
         // No post route b/c person creation currently happens when adding members to groups.
 
         Route::get('/{person:uuid}/activity-logs', [ActivityLogsController::class, 'index']);
-        Route::get('/{person:uuid}/retire', PersonRetireAll::class);
+        Route::post('/{person:uuid}/retire', PersonRetireAll::class);
         Route::get('/{person:uuid}/email', [PersonEmailController::class, 'index']);
         Route::get('/{person:uuid}/notifications/unread', [PersonNotificationController::class, 'unread']);
 
