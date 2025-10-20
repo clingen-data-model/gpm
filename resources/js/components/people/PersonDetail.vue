@@ -295,7 +295,7 @@ export default {
         <div class="mt-3">
           <label class="flex items-center space-x-2">
             <input type="checkbox" v-model="retireAlsoDisableLogin" />
-            <span>Also disable login for this user</span>
+            <span>Also unlink Person from User account (does not disable login).</span>
           </label>
         </div>
 
