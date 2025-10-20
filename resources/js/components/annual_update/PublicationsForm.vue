@@ -63,13 +63,13 @@ const emitChange = debounce(() => {
     if (isComplete.value) return
     const next = cloneDeep(au.value) || {}
     next.data = next.data || {}
-    next.data.publications = cloneDeep(pubs.value)
+    next.data.publications = stripUiFlags(pubs.value)
     next.data.publications_note = note.value ?? ''
     emit('update:modelValue', next)
 }, 600)
 
 watch(() => props.modelValue, (val) => {
-        if (!val) return
+    if (!val) return
         const d = val.data || {}
         if (Array.isArray(d.publications) && d.publications.length > 0) {
             pubs.value = cloneDeep(d.publications)
@@ -91,24 +91,16 @@ const preloadPublications = async () => {
     if (props.shapeExchange) params.shape_exchange = 1
 
     try {
-        console.log("Send request publication UUID: " + groupUuid.value)
         const { data } = await api.get(`/api/groups/${groupUuid.value}/publications`, { params })
         const normalized = (Array.isArray(data) ? data : []).map(normalizePublication)
-        console.log("normalized: ", normalized)
         const seen = new Set()
         const unique = []
         for (const p of normalized) {
             if (!p.uuid || seen.has(p.uuid)) continue
             seen.add(p.uuid)
             unique.push({ ...p, included: false })
-        }
-        console.log("unique: ", unique)
-        
-        if (!Array.isArray(au.value?.data?.publications) || !au.value.data.publications.length) {
-            pubs.value = unique
-            emitChange()
-        }
-        console.log("pubs: ", pubs.value.length)
+        }        
+        mergePublications(unique);
     } catch (e) {    
     } finally {
         loading.value = false
@@ -138,8 +130,66 @@ const onToggleRow = (idx, value) => {
     if (isComplete.value) return
     pubs.value = pubs.value.map((p, i) => i === idx ? { ...p, included: !!value } : p);
     emitChange()
-}
+    }
 const onNoteInput = () => { if (! isComplete.value) emitChange() }
+
+const latestUuids = ref(new Set());
+const newUuids = ref(new Set());
+
+const isMissing = (p) => latestUuids.value.size > 0 && !latestUuids.value.has(p.uuid);
+const isNew = (p) => newUuids.value.has(p.uuid);
+
+const stripUiFlags = (arr) => arr.map(({ _new, _missing, ...rest }) => rest);
+
+const mergePublications = (latestRaw) => {
+    const latest = (latestRaw || []).map(normalizePublication);
+
+    latestUuids.value = new Set(latest.map(p => p.uuid));
+
+    const byUuid = (arr) => {
+        const m = new Map();
+        for (const p of arr) if (p?.uuid) m.set(p.uuid, p);
+        return m;
+    };
+
+    const saved = Array.isArray(pubs.value) ? pubs.value : [];
+    const savedMap  = byUuid(saved);
+    const latestMap = byUuid(latest);
+
+    newUuids.value = new Set(latest.filter(p => !savedMap.has(p.uuid)).map(p => p.uuid));
+
+    const mergedMap = new Map(saved.map(p => [p.uuid, { ...p }]));
+    for (const l of latest) {
+        if (!mergedMap.has(l.uuid)) {
+        mergedMap.set(l.uuid, { ...l, included: false });
+        } else {
+        const prev = mergedMap.get(l.uuid);
+        mergedMap.set(l.uuid, { ...prev, ...l, included: prev.included });
+        }
+    }
+    const merged = Array.from(mergedMap.values());
+    
+    merged.sort((a, b) => {
+        const da = a.published || '';
+        const db = b.published || '';
+        if (da !== db) return db.localeCompare(da);
+        return (a.title || '').localeCompare(b.title || '');
+    });
+
+    pubs.value = merged;
+    emitChange();
+};
+
+const refresh = async () => {
+    if (isComplete.value || loading.value) return;
+    await preloadPublications(); // it now merges
+};
+
+const removeRow = (idx) => {
+    if (isComplete.value) return;
+    pubs.value = pubs.value.filter((_, i) => i !== idx);
+    emitChange();
+};
 </script>
 
 <template>
@@ -153,6 +203,7 @@ const onNoteInput = () => { if (! isComplete.value) emitChange() }
             </div>
 
             <div class="flex items-center gap-2">
+                <button type="button" class="btn sm" @click="refresh" :disabled="isComplete || loading"> Refresh list</button>
                 <button type="button" class="btn sm" @click="toggleAll(true)" :disabled="isComplete || loading || totalCount === 0">Include all</button>
                 <button type="button" class="btn sm" @click="toggleAll(false)" :disabled="isComplete || loading || totalCount === 0">Exclude all</button>
             </div>
@@ -200,7 +251,12 @@ const onNoteInput = () => { if (! isComplete.value) emitChange() }
                             </div>
                         </td>
                         <td class="px-3 py-2">
-                            <div class="text-sm font-medium leading-snug line-clamp-2">{{ p.title }}</div>
+                            <div class="text-sm font-medium leading-snug line-clamp-2">
+                                {{ p.title }}
+                                <span v-if="isNew(p)" class="ml-2 text-[10px] px-1.5 py-0.5 rounded bg-green-100 text-green-800 align-middle">New</span>
+                                <span v-if="isMissing(p)" class="ml-2 text-[10px] px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 align-middle">Not in latest</span>
+                                <button v-if="isMissing(p)" type="button" class="ml-2 text-[10px] px-1.5 py-0.5 rounded border" :disabled="isComplete" @click="removeRow(idx)">Remove</button>
+                            </div>
                             <div class="text-xs text-gray-600">
                                 <span v-if="p.type">{{ p.type }}</span>
                                 <span v-if="p.type && p.journal"> · </span>
