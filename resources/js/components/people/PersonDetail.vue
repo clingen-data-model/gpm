@@ -40,7 +40,7 @@ export default {
             mailLoading: false,
             logsLoading: false,
             showRetireAllConfirmation: false,
-            retireAlsoDisableLogin: true,
+            retireAlsoDisableLogin: false,
             retireReason: '',
             retireAllBusy: false,
         }
@@ -132,7 +132,7 @@ export default {
             this.showRetireAllConfirmation = false
             const n = Number(data?.memberships_retired ?? 0)
             const parts = [`Retired from ${n} ${n === 1 ? 'group' : 'groups'}.`]
-            if (data?.unlinked_user) parts.push('User account unlinked.')
+            if (data?.disable_login) parts.push('Login has been disabled for this member.')
 
             await this.$store.dispatch('people/getPerson', { uuid: this.uuid })
             this.getLogEntries()
@@ -295,7 +295,7 @@ export default {
         <div class="mt-3">
           <label class="flex items-center space-x-2">
             <input type="checkbox" v-model="retireAlsoDisableLogin" />
-            <span>Also unlink Person from User account (does not disable login).</span>
+            <span>Also disable login for this user.</span>
           </label>
         </div>
 

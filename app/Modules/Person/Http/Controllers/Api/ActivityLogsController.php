@@ -33,7 +33,10 @@ class ActivityLogsController extends Controller
         }
         
         $personLogs = $person->logEntries()->with('causer')->get();
-        $userLogs = ($person->user_id) ? $person->user->logEntries()->with('causer')->get() : collect();
+
+        $user = $person->user()->withTrashed()->first();
+        $userLogs = $user ? $user->logEntries()->with('causer')->get() : collect();
+        // $userLogs = ($person->user_id) ? $person->user->logEntries()->with('causer')->get() : collect();
 
         $logEntries = $personLogs->merge($userLogs);
         

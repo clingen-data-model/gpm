@@ -10,6 +10,7 @@ use App\Modules\Person\Models\Person;
 use App\Modules\Group\Actions\MemberRetire;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use App\Modules\User\Actions\UserDelete;
 
 class PersonRetireAll
 {
@@ -17,10 +18,10 @@ class PersonRetireAll
 
     public function __construct(
         private MemberRetire $memberRetire,
-        private ?PersonUnlinkUser $unlinkUser = null 
+        private UserDelete $deleteUser
     ) {}
 
-    public function handle(Person $person, bool $unlinkUser = false, ?string $reason = null): array
+    public function handle(Person $person, bool $disableLogin = false, ?string $reason = null): array
     {
         $actor = Auth::user();
         $endAt = Carbon::now();
@@ -39,38 +40,34 @@ class PersonRetireAll
             }
         }
 
-        $didUnlink = false;
-        if ($unlinkUser && $person->user) {
-            if ($this->unlinkUser) {
-                $this->unlinkUser->handle($person);
-            } else {
-                app(PersonUnlinkUser::class)->handle($person);
-            }
+        $loginDisabled  = false;
+        if ($person->user && $disableLogin) {
+            $this->deleteUser->handle($person->user);
             $didUnlink = true;
         }
 
         return [
             'person_id' => $person->id,
             'memberships_retired' => $retired,
-            'unlinked_user' => $didUnlink,
+            'disable_login' => $loginDisabled,
         ];
     }
 
     public function asController(ActionRequest $request, Person $person)
     {
         $data = $request->validated();
-        $unlinkUser = $request->boolean('unlink_user', true);
+        $disableLogin = $request->boolean('disable_login', false);
         $reason = $data['reason'] ?? null;
         return response()->json(
-            $this->handle($person, $unlinkUser, $reason)
+            $this->handle($person, $disableLogin, $reason)
         );
     }
 
     public function rules(): array
     {
         return [
-            'unlink_user' => ['boolean'],
-            'reason'      => ['nullable','string','max:5000'],
+            'disable_login' => ['boolean'],
+            'reason'        => ['nullable','string','max:5000'],
         ];
     }
 

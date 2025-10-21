@@ -22,6 +22,7 @@ class MemberUnretire
     public function handle(GroupMember $groupMember): GroupMember
     {
         $groupMember->update(['end_date' => null]);
+        $groupMember->person?->user()->withTrashed()->first()?->restore(); // IN CASE THIS USER'S MEMBER ACCOUNT ALREADY SOFT DELETED
         
         Event::dispatch(new MemberUnretired($groupMember));
         return $groupMember;
