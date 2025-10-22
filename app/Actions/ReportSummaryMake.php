@@ -9,6 +9,7 @@ use App\Modules\Person\Models\Person;
 use App\Modules\Person\Models\Country;
 use App\Modules\ExpertPanel\Models\Gene;
 use App\Modules\Group\Models\GroupMember;
+use App\Modules\Group\Models\Publication;
 use App\Modules\Person\Models\Institution;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Support\Facades\Cache;
@@ -203,6 +204,11 @@ class ReportSummaryMake extends ReportMakeAbstract
     {
         return Person::whereDate('demographics_completed_date', '>=', Carbon::now()->subYear())
             ->count();
+    }
+
+    private function getNumberOfPublications(): int
+    {
+        return Publication::where('status', '=', 'enriched')->count();
     }
 
 }
