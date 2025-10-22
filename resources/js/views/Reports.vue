@@ -47,10 +47,10 @@ const reports = [
     url: '/api/report/people-in-multiple-eps',
     name: 'People in >1 EP',
   },
-  // {
-  //   url: '/api/report/publications',
-  //   name: 'Publications',
-  // },
+  {
+    url: '/api/report/publications',
+    name: 'Publications',
+  },
 ]
 
 const toNumber = (value) => {
@@ -100,11 +100,11 @@ const kpis = computed(() => [
     value: getMetric('Countries represented'),
     note: `${formatNumber(getMetric('Institutions represented'))} institutions represented`,
   },
-  // {
-  //   label: 'Publications',
-  //   value: getMetric('Number of Publications'),
-  //   note: `${formatNumber(getMetric("Individuals has taken Code of Conduct attestation and not expire per today's date"))} individuals have current Code of Conduct attestation`,
-  // },
+  {
+    label: 'Publications',
+    value: getMetric('Number of Publications'),
+    note: `${formatNumber(getMetric("Individuals has taken Code of Conduct attestation and not expire per today's date"))} individuals have current Code of Conduct attestation`,
+  },
 ])
 
 const groupPortfolio = computed(() => [
@@ -204,11 +204,11 @@ const qualityRows = computed(() => [
     value: getMetric("Individuals has taken Code of Conduct attestation and not expire per today's date"),
     meta: 'Valid as of today',
   },
-  // {
-  //   label: 'Publications',
-  //   value: getMetric('Number of Publications'),
-  //   meta: 'Consider adding a reporting period label later',
-  // },
+  {
+    label: 'Publications',
+    value: getMetric('Number of Publications'),
+    meta: 'Consider adding a reporting period label later',
+  },
 ])
 
 const getSummaryReport = async () => {
@@ -273,7 +273,7 @@ onMounted(() => {
         </div>
 
         <template v-else>
-          <section class="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+          <section class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
             <article
               v-for="card in kpis"
               :key="card.label"
