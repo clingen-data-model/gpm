@@ -11,6 +11,7 @@ use Lorisleiva\Actions\ActionRequest;
 use App\Modules\Person\Models\Country;
 use App\Modules\ExpertPanel\Models\Gene;
 use App\Modules\Group\Models\GroupMember;
+use App\Modules\Group\Models\Publication;
 use App\Modules\Person\Models\Institution;
 use Lorisleiva\Actions\Concerns\AsCommand;
 use App\Actions\Utils\TransformArrayForCsv;
@@ -51,6 +52,7 @@ class ReportSummaryMake extends ReportMakeAbstract
             ['People in 2+ EPs', $this->getPeopleInManyEpsCount()],
             ['Individuals with demographics info', $this->getEverFilledDemographics()],
             ['Individuals with current demographics info (within last year)', $this->getFilledDemographicsInLastYear()],
+            ['Number of Publications', $this->getNumberOfPublications()],
         ];
     }
 
@@ -184,6 +186,11 @@ class ReportSummaryMake extends ReportMakeAbstract
     {
         return Person::whereDate('demographics_completed_date', '>=', Carbon::now()->subYear())
             ->count();
+    }
+
+    private function getNumberOfPublications(): int
+    {
+        return Publication::where('status', '=', 'enriched')->count();
     }
 
 }
