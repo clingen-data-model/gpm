@@ -15,10 +15,10 @@ const reports = [
     url: '/api/report/vcep-application-summary',
     name: 'VCEP Application',
   },
-  // {
-  //   url: '/api/report/scvcep-application-summary',
-  //   name: 'SC-VCEP Application',
-  // },
+  {
+    url: '/api/report/scvcep-application-summary',
+    name: 'SC-VCEP Application',
+  },
   {
     url: '/api/report/gcep-genes',
     name: 'GCEP Genes',
@@ -27,10 +27,10 @@ const reports = [
     url: '/api/report/vcep-genes',
     name: 'VCEP Genes',
   },
-  // {
-  //   url: '/api/report/scvcep-genes',
-  //   name: 'SC-VCEP Genes',
-  // },
+  {
+    url: '/api/report/scvcep-genes',
+    name: 'SC-VCEP Genes',
+  },
   {
     url: '/api/report/countries',
     name: 'Countries',
@@ -47,10 +47,10 @@ const reports = [
     url: '/api/report/people-in-multiple-eps',
     name: 'People in >1 EP',
   },
-  // {
-  //   url: '/api/report/publications',
-  //   name: 'Publications',
-  // },
+  {
+    url: '/api/report/publications',
+    name: 'Publications',
+  },
 ]
 
 const toNumber = (value) => {
@@ -87,7 +87,7 @@ const kpis = computed(() => [
   {
     label: 'Total groups',
     value: getMetric('Groups'),
-    // note: 'Across WG, CDWG, SC-CDWG, VCEP, SC-VCEP, and GCEP',
+    note: 'Across WG, CDWG, SC-CDWG, VCEP, SC-VCEP, and GCEP',
     note: 'Across WG, CDWG, VCEP, and GCEP',
   },
   {
@@ -100,19 +100,19 @@ const kpis = computed(() => [
     value: getMetric('Countries represented'),
     note: `${formatNumber(getMetric('Institutions represented'))} institutions represented`,
   },
-  // {
-  //   label: 'Publications',
-  //   value: getMetric('Number of Publications'),
-  //   note: `${formatNumber(getMetric("Individuals has taken Code of Conduct attestation and not expire per today's date"))} individuals have current Code of Conduct attestation`,
-  // },
+  {
+    label: 'Publications',
+    value: getMetric('Number of Publications'),
+    note: `${formatNumber(getMetric("Individuals has taken Code of Conduct attestation and not expire per today's date"))} individuals have current Code of Conduct attestation`,
+  },
 ])
 
 const groupPortfolio = computed(() => [
   { label: 'Working Groups', value: getMetric('Working Groups') },
   { label: 'CDWGs', value: getMetric('CDWGs') },
-  // { label: 'SC-CDWGs', value: getMetric('SC-CDWGs') },
+  { label: 'SC-CDWGs', value: getMetric('SC-CDWGs') },
   { label: 'VCEPs', value: getMetric('VCEPs') },
-  // { label: 'SC-VCEPs', value: getMetric('SC-VCEPs') },
+  { label: 'SC-VCEPs', value: getMetric('SC-VCEPs') },
   { label: 'GCEPs', value: getMetric('GCEPS') },
   { label: 'Total groups', value: getMetric('Groups'), total: true },
 ])
@@ -121,44 +121,44 @@ const pipelineRows = computed(() => [
   {
     status: 'Definition',
     vcep: getMetric('VCEP applications in definition'),
-    // scvcep: getMetric('SC-VCEP applications in definition'),
+    scvcep: getMetric('SC-VCEP applications in definition'),
     gcep: null,
   },
   {
     status: 'Draft Specifications',
     vcep: getMetric('VCEP applications in draft specifications'),
-    // scvcep: getMetric('SC-VCEP applications in draft specifications'),
+    scvcep: getMetric('SC-VCEP applications in draft specifications'),
     gcep: null,
   },
   {
     status: 'Pilot Specifications',
     vcep: getMetric('VCEP applications in pilot specifications'),
-    // scvcep: getMetric('SC-VCEP applications in pilot specifications'),
+    scvcep: getMetric('SC-VCEP applications in pilot specifications'),
     gcep: null,
   },
   {
     status: 'Sustained Curation',
     vcep: getMetric('VCEP applications in sustained curation'),
-    // scvcep: getMetric('SC-VCEP applications in sustained curation'),
+    scvcep: getMetric('SC-VCEP applications in sustained curation'),
     gcep: null,
   },
   {
     status: 'Applying',
     vcep: getMetric('VCEPs applying'),
-    // scvcep: getMetric('SC-VCEPs applying'),
+    scvcep: getMetric('SC-VCEPs applying'),
     gcep: getMetric('GCEPs applying'),
   },
   {
     status: 'Approved',
     vcep: getMetric('VCEPs approved'),
-    // scvcep: getMetric('SC-VCEPs approved'),
+    scvcep: getMetric('SC-VCEPs approved'),
     gcep: getMetric('GCEPs approved'),
   },
 ])
 
 const geneRows = computed(() => [
   { label: 'VCEP', value: getMetric('VCEP genes') },
-  // { label: 'SC-VCEP', value: getMetric('SC-VCEP genes') },
+  { label: 'SC-VCEP', value: getMetric('SC-VCEP genes') },
   { label: 'GCEP', value: getMetric('GCEP genes') },
 ])
 
@@ -177,10 +177,10 @@ const membershipRows = computed(() => [
   { label: 'Individuals in 1+ EPs', value: getMetric('Individuals in 1+ EPs') },
   { label: 'Individuals in 1+ GCEPs', value: getMetric('Individuals in 1+ GCEPs') },
   { label: 'Individuals in 1+ VCEPs', value: getMetric('Individuals in 1+ VCEps') },
-  // { label: 'Individuals in 1+ SC-VCEPs', value: getMetric('Individuals in 1+ SC-VCEps') },
+  { label: 'Individuals in 1+ SC-VCEPs', value: getMetric('Individuals in 1+ SC-VCEps') },
   { label: 'Individuals in 1+ WGs', value: getMetric('Individuals in 1+ WGs') },
   { label: 'Individuals in 1+ CDWGs', value: getMetric('Individuals in 1+ CDWGs') },
-  // { label: 'Individuals in 1+ SC-CDWGs', value: getMetric('Individuals in 1+ SC-CDWGs') },
+  { label: 'Individuals in 1+ SC-CDWGs', value: getMetric('Individuals in 1+ SC-CDWGs') },
   { label: 'People in 2+ EPs', value: getMetric('People in 2+ EPs') },
 ])
 
@@ -204,11 +204,11 @@ const qualityRows = computed(() => [
     value: getMetric("Individuals has taken Code of Conduct attestation and not expire per today's date"),
     meta: 'Valid as of today',
   },
-  // {
-  //   label: 'Publications',
-  //   value: getMetric('Number of Publications'),
-  //   meta: 'Consider adding a reporting period label later',
-  // },
+  {
+    label: 'Publications',
+    value: getMetric('Number of Publications'),
+    meta: 'Consider adding a reporting period label later',
+  },
 ])
 
 const getSummaryReport = async () => {
