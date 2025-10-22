@@ -10,6 +10,7 @@ use App\Actions\ReportMultipleEpsMake;
 use App\Actions\ReportInstitutionsMake;
 use App\Http\Controllers\ViewController;
 use App\Actions\ReportVcepApplicationMake;
+use App\Actions\ReportPublicationsMake;
 use App\Http\Controllers\DocumentController;
 use App\Modules\Group\Actions\GroupMembersMakeCsv;
 use App\Modules\ExpertPanel\Actions\CoiReportMakePdf;
@@ -44,6 +45,7 @@ Route::group(['prefix' => '/api/report'], function () {
     Route::get('/countries', ReportCountriesMake::class);
     Route::get('/people', ReportPeopleMake::class);
     Route::get('/people-in-multiple-eps', ReportMultipleEpsMake::class);
+    Route::get('/publications', ReportPublicationsMake::class);
 
     Route::group(['prefix' => '/groups/{group:uuid}'], function () {
         Route::get('/coi-report', CoiReportMakePdf::class);
