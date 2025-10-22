@@ -190,6 +190,10 @@ const removeRow = (idx) => {
     pubs.value = pubs.value.filter((_, i) => i !== idx);
     emitChange();
 };
+
+const groupPublicationsUrl = computed(() =>
+    groupUuid.value ? `/groups/${groupUuid.value}?tab=publications` : null
+)
 </script>
 
 <template>
@@ -207,6 +211,19 @@ const removeRow = (idx) => {
                 <button type="button" class="btn sm" @click="toggleAll(true)" :disabled="isComplete || loading || totalCount === 0">Include all</button>
                 <button type="button" class="btn sm" @click="toggleAll(false)" :disabled="isComplete || loading || totalCount === 0">Exclude all</button>
             </div>
+        </div>
+
+        <div class="rounded-md border-l-4 border-blue-300 bg-blue-50 px-3 py-2 text-sm text-blue-900">
+            To add new publications, go to your Group'spage and open the <strong>Publications</strong> tab.
+            <template v-if="groupPublicationsUrl">
+                You can open it here: <a :href="groupPublicationsUrl" class="underline hover:no-underline font-medium" target="_blank" rel="noopener">Group Detail page &gt; Publications</a>.
+            </template>
+            <template v-else>
+                (Use the gray breadcrumb at the top: <em>Group &gt; EP</em>.)
+            </template>
+            <template v-if="isComplete">
+                <span class="ml-2 italic">(This Annual Update is read-only.)</span>
+            </template>
         </div>
 
         <div class="text-sm text-gray-700" v-if="totalCount > 0">
