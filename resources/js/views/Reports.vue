@@ -44,6 +44,11 @@
             url: '/api/report/people-in-multiple-eps',
             name: 'People in >1 EP'
         }
+        ,
+        {
+            url: '/api/report/publications',
+            name: 'Publications'
+        }
     ])
 
     const getSummaryReport = async () => {

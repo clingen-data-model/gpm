@@ -9,6 +9,7 @@ use App\Modules\Person\Models\Person;
 use App\Modules\Person\Models\Country;
 use App\Modules\ExpertPanel\Models\Gene;
 use App\Modules\Group\Models\GroupMember;
+use App\Modules\Group\Models\Publication;
 use App\Modules\Person\Models\Institution;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Support\Facades\Cache;
@@ -93,7 +94,7 @@ class ReportSummaryMake extends ReportMakeAbstract
         yield 'People in 2+ EPs' => $this->getPeopleInManyEpsCount();
         yield 'Individuals with demographics info' => $this->getEverFilledDemographics();
         yield 'Individuals with current demographics info (within last year)' => $this->getFilledDemographicsInLastYear();
-
+        yield 'Number of Publications' => $this->getNumberOfPublications();
         yield 'Individuals has taken Code of Conduct attestation and not expire per today\'s date' => $this->getPeopleWithCocCount();
     }
 
@@ -207,5 +208,10 @@ class ReportSummaryMake extends ReportMakeAbstract
         return Person::whereDate('demographics_completed_date', '>=', Carbon::now()->subYear())
             ->count();
     }
-    
+
+    private function getNumberOfPublications(): int
+    {
+        return Publication::where('status', '=', 'enriched')->count();
+    }
+
 }
