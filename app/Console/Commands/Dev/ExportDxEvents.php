@@ -116,12 +116,19 @@ class ExportDxEvents extends Command
                 $overrides    = $this->declaresMethod($ref, 'getEventType') ? 'yes' : 'no';
                 $notes        = self::HINTS[$fqcn] ?? '';
 
-                // Attach a real observed sample message:
                 $sample = '';
                 if ($isPublishable && $topicGuess !== '') {
-                    $key = "{$topicGuess}|{$defaultType}";
-                    $raw = $samplesByTopicType[$key] ?? $samplesByType[$defaultType] ?? '';
-                    $sample = $this->trimMessageValues($raw, 50); // keep structure; trim string fields to 50 chars
+                    $raw = '';
+
+                    $eventTypes = array_map('trim', explode('|', preg_replace('/\s*\(.*?\)\s*/', '', (string)$defaultType)));
+                    $eventTypes = array_values(array_unique(array_filter(array_map('strtolower', $eventTypes))));
+
+                    foreach ($eventTypes as $et) {
+                        $raw = $samplesByTopicType["{$topicGuess}|{$et}"] ?? ($samplesByType[$et] ?? '');
+                        if ($raw) break;
+                    }
+
+                    $sample = $this->trimMessageValues($raw, 50);
                 }
 
                 $catalogRows[] = [
