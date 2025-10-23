@@ -414,17 +414,28 @@ class ExportDxEvents extends Command
         try {
             $data = json_decode($json, true, 512, JSON_THROW_ON_ERROR);
         } catch (\Throwable $e) {
-            return $this->trimScalarString($json, $max);
+            $masked = $this->maskEmailsInString($json);
+            $masked = $this->maskUuidsInString($masked);
+            return $this->trimScalarString($masked, $max);
         }
+
         $trimmed = $this->trimValuesRecursive($data, $max);
-        return json_encode($trimmed, JSON_UNESCAPED_SLASHES);
+        $out = json_encode($trimmed, JSON_UNESCAPED_SLASHES);
+
+        $out = $this->maskEmailsInString($out);
+        $out = $this->maskUuidsInString($out);
+
+        return $out;
     }
 
     private function trimValuesRecursive($value, int $max)
     {
         if (is_string($value)) {
-            return $this->trimScalarString($value, $max);
+            $masked = $this->maskEmailsInString($value);
+            $masked = $this->maskUuidsInString($masked);
+            return $this->trimScalarString($masked, $max);
         }
+
         if (is_array($value)) {
             $out = [];
             foreach ($value as $k => $v) {
@@ -443,5 +454,33 @@ class ExportDxEvents extends Command
     private function truncate(string $s, int $max = 220): string
     {
         return mb_strlen($s) > $max ? (mb_substr($s, 0, $max - 1) . '…') : $s;
+    }
+
+    private function maskEmailsInString(string $s): string
+    {
+        return preg_replace_callback('/([A-Z0-9._%+\-])([A-Z0-9._%+\-]*)(@)([A-Z0-9.\-])([A-Z0-9.\-]*)(\.[A-Z]{2,})/i', function ($m) {
+                $localFirst = $m[1];
+                $domainFirst = $m[4];
+                return $localFirst . '***' . $m[3] . $domainFirst . '***' . $m[6];
+            }, $s);
+    }
+    private function maskUuidsInString(string $s): string
+    {
+        $s = preg_replace_callback('/(?<![A-Fa-f0-9])[A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{12}(?![A-Fa-f0-9])/u', function ($m) {
+                $t = $m[0];
+                return substr($t, 0, 3) . '-...-' . substr($t, -3);
+            }, $s);
+
+        $s = preg_replace_callback('/(?<![A-Fa-f0-9])[A-Fa-f0-9]{32}(?![A-Fa-f0-9])/u', function ($m) {
+                $t = $m[0];
+                return substr($t, 0, 3) . '-...-' . substr($t, -3);
+            }, $s);
+
+        $s = preg_replace_callback('/uuid:([A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{12})/u', function ($m) {
+                $t = $m[1];
+                $masked = substr($t, 0, 3) . '-...-' . substr($t, -3);
+                return 'uuid:' . $masked;
+            }, $s);
+        return $s;
     }
 }
