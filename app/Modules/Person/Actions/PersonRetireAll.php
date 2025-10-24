@@ -42,8 +42,9 @@ class PersonRetireAll
 
         $loginDisabled  = false;
         if ($person->user && $disableLogin) {
-            $this->deleteUser->handle($person->user);
-            $didUnlink = true;
+            $person->update(['user_id' => null]);
+            $person->user->delete();
+            $loginDisabled = true;
         }
 
         return [

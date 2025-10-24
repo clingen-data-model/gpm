@@ -101,7 +101,10 @@ $groupMember->person?->user()->withTrashed()->first()?->restore();
 - On confirm, UI calls `POST /api/people/{uuid}/retire` and shows a success alert:  
   "**Retired from N group(s).**".
 - All active memberships for that person have `end_date` set.
-- If "Disable Login" was chosen, the system soft delete the `user` of that `Person`.
+  - **Meeting Notes - 10/24/2025:**
+We decided to continue using hard delete for the `User` data, but keep the `Person` data. In the future, if the same `User` return, we can create a new user and link it to the existing `Person` record via the `user_id` field in the `people` table.
+- If "Disable Login" was chosen, the system hard delete the `user` of that `Person`.
+
 - Action logs warnings for any membership failures but continues the loop (partial progress).
 
 ---
@@ -110,31 +113,4 @@ $groupMember->person?->user()->withTrashed()->first()?->restore();
 
 ```json
 {"person_id": 3321, "memberships_retired": 2, "disable_login": false}
-```
-
-
----
-
-## Soft delete enablement
-
-To support **Disable Login** without removing user and an option in case user wants to unretire the member, we added soft delete to `users` (the current doesn't implemented this yet).
-
-**Migration (required)**
-```php
-database\migrations\2025_10_21_000000_add_soft_deletes_to_users.php
-```
-
-**User model**
-```php
-use Illuminate\Database\Eloquent\SoftDeletes;
-
-class User extends Authenticatable
-{
-    use SoftDeletes;
-}
-```
-
-**Deploy note:** After deploying this branch, run the migration:
-```bash
-php artisan migrate:refresh --path=database/migrations/2025_10_21_000000_add_soft_deletes_to_users.php
 ```
