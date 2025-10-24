@@ -89,28 +89,14 @@ export default {
         },
     },
     methods: {
-        initRetireAll() { this.showRetireAllConfirmation = true },
-        cancelRetireAll() { this.showRetireAllConfirmation = false },
-        initDelete() {
-            this.showDeleteConfirmation = true;
-        },
         async commitDelete() {
             await this.$store.dispatch('people/deletePerson', this.person);
             this.showDeleteConfirmation = false;
             this.$router.go(-1);
         },
-        cancelDelete() {
-            this.showDeleteConfirmation = false;
-        },
-        initMerge() {
-            this.showMergeForm = true;
-        },
         handleMerged() {
             this.showMergeForm = false;
             this.$router.go(-1);
-        },
-        handleMergeCanceled() {
-            this.showMergeForm = false;
         },
         async getMailLog() {
             this.mailLoading = true;
@@ -239,19 +225,19 @@ export default {
             Here be dragons. Proceed with caution.
           </h2>
           <p>
-            <button class="btn btn red" @click="initMerge">
+            <button class="btn btn red" @click="showMergeForm = true">
               Merge Person into another
             </button>
           </p>
           <p>
-            <button class="btn btn red" @click="initDelete">
+            <button class="btn btn red" @click="showDeleteConfirmation = true">
               Delete Person
             </button>
           </p>
           <p>&nbsp;</p>
           <p>
             This button will remove the person from all the groups they are a member of.<br />
-            <button class="btn btn red" @click="initRetireAll">              
+            <button class="btn btn red" @click="showRetireAllConfirmation = true">
               Retire Person
             </button>
           </p>
@@ -275,13 +261,13 @@ export default {
         </div>
         <button-row
           :submit-text="`Delete ${person.name}`" submit-variant="red" @submitted="commitDelete"
-          @canceled="cancelDelete"
+          @canceled="showDeleteConfirmation = false"
         />
       </modal-dialog>
       <modal-dialog v-model="showMergeForm" :title="`Merge ${person.name} into another person`">
         <PersonMergeForm
           :obsolete="person" @saved="handleMerged"
-          @canceled="handleMergeCanceled"
+          @canceled="showMergeForm = false"
         />
       </modal-dialog>
       <modal-dialog v-model="showRetireAllConfirmation" :title="`Retire ${person.name} from all groups and disable account?`">
@@ -314,7 +300,7 @@ export default {
           This cannot be undone.
         </div>
 
-        <button-row :submit-text="`Retire ${person.name}`" submit-variant="red" :busy="retireAllBusy" @submitted="commitRetireAll" @canceled="cancelRetireAll"/>
+        <button-row :submit-text="`Retire ${person.name}`" submit-variant="red" :busy="retireAllBusy" @submitted="commitRetireAll" @canceled="showRetireAllConfirmation = false"/>
       </modal-dialog>
     </teleport>
   </div>
