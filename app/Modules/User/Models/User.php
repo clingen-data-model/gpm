@@ -21,14 +21,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use App\Models\Traits\HasLogEntries as HasLogEntriesTrait;
 use Illuminate\Auth\Passwords\CanResetPassword as CanResetPasswordTrait;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 class User extends Authenticatable implements CanResetPassword, HasLogEntries
 {
     use HasFactory, Notifiable, CanResetPasswordTrait, HasApiTokens, HasEmail, HasRoles;
     use Impersonate;
     use HasLogEntriesTrait;
-    use SoftDeletes;
 
     /**
      * The attributes that are mass assignable.

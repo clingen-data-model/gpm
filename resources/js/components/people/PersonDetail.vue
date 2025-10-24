@@ -293,9 +293,15 @@ export default {
         </ul>
 
         <div class="mt-3">
-          <label class="flex items-center space-x-2">
-            <input type="checkbox" v-model="retireAlsoDisableLogin" />
-            <span>Also disable login for this user.</span>
+          <label class="flex items-start space-x-2">
+            <input type="checkbox" v-model="retireAlsoDisableLogin" class="mt-1" />
+            <span>
+              Also disable login for this user.<br />
+              <small class="text-gray-500">
+                This will delete the user's account data but keep their member record for reference.
+                Contact an administrator if you need to restore their access later.
+              </small>
+            </span>
           </label>
         </div>
 
