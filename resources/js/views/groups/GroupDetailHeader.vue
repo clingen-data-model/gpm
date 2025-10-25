@@ -70,7 +70,7 @@ export default {
         :only-active="true"
         :row-id="group.id"
         size="btn-xs"
-        label="Emit to DX"
+        label="Send Website Updates"
         processing-label="Queuing..."
         :queue="true"
       />

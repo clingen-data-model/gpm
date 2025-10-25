@@ -1,19 +1,15 @@
 <script>
 import {useStore} from 'vuex'
 import {useRouter} from 'vue-router'
-import {computed, ref, reactive} from 'vue'
+import {computed, ref} from 'vue'
 import GroupForm from '@/components/groups/GroupForm.vue'
 import SubmissionWrapper from '@/components/groups/SubmissionWrapper.vue'
-import useEmitCheckpoints from '@/composables/useEmitCheckpoints'
-import EmitCheckpointsButton from '@/components/groups/EmitCheckpointsButton.vue'
 
 export default {
     name: 'ComponentName',
     components: {
         GroupForm,
-        SubmissionWrapper,
-        SubmissionWrapper,
-        EmitCheckpointsButton,
+        SubmissionWrapper
     },
     props: {
 
@@ -21,7 +17,7 @@ export default {
     setup() {
         const store = useStore();
         const router = useRouter();
-        const { isActive } = useEmitCheckpoints();
+
 
         const tabDefinitions = computed( () => {
             const tabs = [
@@ -35,7 +31,7 @@ export default {
                     typeId: 3,
                     filter: (g) => g.is_gcep,
                 },
-                {
+{
                     label: 'CDWGs',
                     typeId: 2,
                     filter: g => g.isCdwg()
@@ -79,9 +75,6 @@ export default {
                     )
                 || group.coordinators.filter(c => c.person.name.match(pattern)).length > 0
         }))
-        
-        const activeIdsForDef = (def) => filteredGroups.value.filter(def.filter).filter(isActive).map(g => g.id)
-        const countActiveForDef = (def) => filteredGroups.value.filter(def.filter).filter(isActive).length
 
         const goToItem = (item) => {
             router.push({
@@ -97,9 +90,6 @@ export default {
             tabDefinitions,
             goToItem,
             goToGroup: goToItem,
-            isActive, 
-            activeIdsForDef, 
-            countActiveForDef,
         }
     },
     data() {
@@ -117,11 +107,28 @@ export default {
                 desc: false
             },
             fields: [
-                { name: 'id',             label: 'ID',      sortable: true },
-                { name: 'name',           label: 'Name',    sortable: true, resolveValue: (item) => { return item.displayName } },
-                { name: 'coordinators',                     sortable: false },
-                { name: 'displayStatus',  label: 'status',  sortable: true },
-                { name: 'checkpoint',     label: '',        sortable: false },
+                {
+                    name: 'id',
+                    label: 'ID',
+                    sortable: true
+                },
+                {
+                    name: 'name',
+                    label: 'Name',
+                    sortable: true,
+                    resolveValue: (item) => {
+                        return item.displayName
+                    }
+                },
+                {
+                    name: 'coordinators',
+                    sortable: false
+                },
+                {
+                    name: 'displayStatus',
+                    sortable: true,
+                    label: 'status'
+                },
             ]
         }
     },
@@ -158,13 +165,11 @@ export default {
           Loading...
         </div>
         <div v-else>
-          <div class="mb-2 flex items-center justify-between gap-3">
-            <div>
-              Filter: <input v-model="filterString" type="text" placeholder="name,id,status,coordinator name" class="input input-sm">
-            </div>
-            <EmitCheckpointsButton :ids="activeIdsForDef(def)" :label="`Emit Groups to DX (${countActiveForDef(def)})`" size="btn-sm" :queue="true" />
+          <div class="mb-2">
+            Filter: <input v-model="filterString" type="text" placeholder="name,id,status,coordinator name">
           </div>
           <data-table
+
             v-model:sort="sort"
             v-remaining-height
             :data="filteredGroups.filter(def.filter)"
@@ -192,9 +197,6 @@ export default {
                   {{ coordinator.person.name }}
                 </router-link>
               </span>
-            </template>
-            <template #cell-checkpoint="{ item }">
-              <EmitCheckpointsButton :group="item" :ids="[item.id]" :only-active="true" class="whitespace-nowrap" size="btn-xs" label="Emit to DX" processing-label="Queuing..." :queue="true" />
             </template>
           </data-table>
         </div>

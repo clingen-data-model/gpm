@@ -1,6 +1,6 @@
 # `checkpoint:groups {groups?*}` + HTTP/UI trigger
 
-Latest Update: 2025-10-06 (yyyy-mm-dd)
+Latest Update: 2025-10-25 (yyyy-mm-dd)
 
 Emit a **snapshot (“checkpoint”)** of one or more `Group`s to the Data Exchange so downstream systems can resync from the current source of truth.
 
@@ -64,13 +64,6 @@ POST /api/groups/checkpoints
 ```
 (Defined in `app/Modules/Group/routes/api.php` under the `groups` prefix.)
 
-### Auth & Policy
-- Route is behind `auth:sanctum`.
-- **Allowed**:
-  - **Super Admin** / **Super User**: may emit for any group and for “ALL groups” (no `group_ids` provided).
-  - **Coordinator** (and optionally Chair, need to enable it in the policy): may emit **only for their group(s)**.
-- The endpoint authorizes **per-group**; unauthorized IDs are returned in `denied_ids`.
-
 ### Request body
 ```json
 {
@@ -98,32 +91,44 @@ POST /api/groups/checkpoints
 
 ---
 
-## UI triggers (new)
+## UI trigger (GPM-518)
 
-### Bulk button (toolbar)
-- Appears on the **Groups list** page, on the same row as “Filter”.
-- Labeled **Sync Groups to Website (N)”** where `N` is the count of **visible** groups in the current tab that are **Active**.
-- Sends `group_ids` of the **currently visible + Active** rows to the API:
-  - “Active” means `group_status_id === 2` or `status.id === 2` or `status.name === 'active'` (case-insensitive).
-- Calls Vuex action: `store.dispatch('groups/checkpoints', { group_ids, queue: true })`.
+### File
+- resources/js/composables/useEmitCheckpoints.js
+  - isActive(group): `true` **IF** `g.group_status_id === 2` or `g.status.id === 2` or `g.status.name === 'active'`
 
-### Per-row button
-- A rightmost **“Sync”** button appears for each row **only when the group is Active**.
-- Clicking it posts a single ID: `group_ids: [<that id>]`.
-- Both bulk and per-row route through the same `emitCheckpoints(ids)` function in `GroupList.vue`.
+- Reusable button: resources/js/components/groups/EmitCheckpointsButton.vue
+  - Accepts IDs or a group prop
+  - Auto-disables for non-Active groups (optional)
+  - Shows “Queuing…” while in flight
+  - Calls the `useEmitCheckpoints`
 
-### Vuex & component notes
 - **Vuex action** (`resources/js/store/groups.js`):
   ```js
-  async emitCheckpoints(_, { group_ids = [], queue = true, dry_run = false }) {
+  async checkpoints(_, { group_ids = [], queue = true, dry_run = false }) {
     const { data } = await api.post('/api/groups/checkpoints', { group_ids, queue, dry_run })
-    return data;
+    return data; // { status, accepted, batch_id, ids, denied_ids, not_found_ids }
   }
   ```
-- **Component** `emitCheckpoints(ids)` handles both single and many:
-  - Shows per-row spinner when called with `{ rowId }`.
-  - Displays a toast based on `{ accepted, denied_ids, not_found_ids }`.
+- Component used at Group Detail Header `resources\js\views\groups\GroupDetailHeader.vue`
 
+### Group Detail Header
+- "Send Website Updates" button, located at the top right of the page and next to `Edit Group Info` button. THe button is disabled **unless  the group is Active**.
+- Clicking it posts a single ID: `group_ids: [<that id>]` via `emitCheckpoints(ids)` function in `GroupList.vue`.
+- Conditions are added to limit the access to trigger the action emitting data to DX ``` v-if="hasRole('coordinator') || hasRole('super-user') || hasRole('super-admin')"```
+```js 
+<EmitCheckpointsButton
+        v-if="hasRole('coordinator') || hasRole('super-user') || hasRole('super-admin')"
+        :group="group"
+        :ids="[group.id]" 
+        :only-active="true"
+        :row-id="group.id"
+        size="btn-xs"
+        label="Send Website Updates"
+        processing-label="Queuing..."
+        :queue="true"
+      />
+```
 ---
 
 ## What the Action/Command do now (no batching)
@@ -171,16 +176,6 @@ return ['accepted' => $groups->count(), 'ids' => $groups->pluck('id')->all()];
 
 ## Event details: `GroupCheckpointEvent`
 
-Key overrides vs the base `GroupEvent`:
-
-| Concern | Base `GroupEvent` | **`GroupCheckpointEvent`** |
-|---|---|---|
-| **Topic** | `gpm-general-events` | **`gpm-checkpoint-events`** |
-| **Schema** | `1.9.9` | **`2.0.0`** |
-| **Publish gate** | EP publish gated by approval | **Always publish** |
-| **Payload** | Minimal `groupRepresentation` | **Full** via `GroupExternalResource` (`gpm_group`) |
-| **Log entry** | derived | `"Checkpoint event for group: {name}"` |
-
 Methods of interest (abridged):
 ```php
 public function getSchemaVersion(): string { return '2.0.0'; }
@@ -203,7 +198,7 @@ public function getPublishableMessage(): array {
     "status": "string",
     "status_date": "ISO-8601",
     "type": "string",
-    "coi": "https://.../coi/{uuid}",
+    "coi": "https://.../coi-group/{uuid}",
     "members": [ { ... } ],
     "expert_panel": { ... },
     "parent": { ... }
@@ -218,7 +213,7 @@ Members include `roles` and (only for Coordinator/Chair) `email`. EP blocks are 
 ## End-to-end flow (HTTP + UI)
 
 ```
-[UI] GroupList.vue
+[UI] GroupDetailHeader.vue
   → dispatch('groups/checkpoints', { group_ids, queue })
   → POST /api/groups/checkpoints
 
@@ -241,7 +236,7 @@ Members include `roles` and (only for Coordinator/Chair) `email`. EP blocks are 
   → payload = GroupExternalResource(...)
   → persist to stream_messages
   → Kafka produce
-  → log "Checkpoint event for group: ..."
+  → Log "Checkpoint event for group: ..."
 ```
 
 ---
@@ -265,21 +260,3 @@ Members include `roles` and (only for Coordinator/Chair) `email`. EP blocks are 
 - **CSRF/Sanctum**: the UI posts with Sanctum; ensure XSRF cookie/header are set in the `api` service.
 
 ---
-
-## Troubleshooting
-
-1. **UI says success but no `stream_messages`**
-   - Inspect API JSON: if `accepted === 0`, check `denied_ids` (policy) and `not_found_ids`.
-   - Ensure the route is authenticated and your user has the required role(s).
-   - Try `{ "queue": false }` to force inline and verify the publisher path.
-
-2. **CLI works but UI doesn’t**
-   - Policy likely denying the web user; the CLI bypasses per-group authorization.
-   - Also confirm the web and CLI use the same `.env` / DB / DX flags (`php artisan optimize:clear`).
-
-3. **Nothing publishes even with `queue:false`**
-   - Listener registration: `GroupCheckpointEvent` must be discovered by the module provider and bound to the DX publisher.
-   - Check logs for the “Checkpoint event for group: …” line.
-
----
-
