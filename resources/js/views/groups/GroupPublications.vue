@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onMounted, watch, computed, onActivated, defineExpose } from "vue";
 import { api } from "@/http";
+import PublicationForm from "@/components/forms/PublicationForm.vue";
 
 const props = defineProps({ group: { type: Object, required: true } });
 
@@ -217,6 +218,9 @@ function urlOf(p) {
                     </tr>
                 </tbody>
             </table>
+        </div>
+        <div>
+            <PublicationForm />
         </div>
 
         <!-- Add modal -->
