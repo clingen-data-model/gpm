@@ -125,4 +125,5 @@ return [
     ],
     'workinggroups_icon' => env('WORKINGGROUPS_ICON_DIR', 'groups-icon'),
     'wg_icon_exts' => ['png', 'jpg', 'jpeg', 'gif'],
+    'invitation_ttl_days' => env('INVITATION_TTL_DAYS', 30),
 ];
