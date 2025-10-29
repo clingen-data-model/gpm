@@ -29,6 +29,9 @@ class GroupResource extends JsonResource
         $data['is_gcep'] = $this->isGcep;
         $data['is_scvcep'] = $this->isScvcep;
         $data['is_vcep_or_scvcep'] = $this->isVcepOrScvcep;
+        $data['caption'] = $this->caption;
+        $data['icon_url'] = $this->icon_url;
+        $data['is_working_group'] = $this->is_working_group ?? false;
         // $data['parent'] = $this->whenLoaded('parent', GroupResource::collection($this->parent));
 
 

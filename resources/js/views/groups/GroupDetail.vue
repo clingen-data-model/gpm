@@ -28,6 +28,7 @@ import StepTabs from "@/components/applications/StepTabs.vue";
 import ProgressChart from "@/components/applications/ProgressChart.vue";
 import SustainedCurationReviewAlert from "@/components/alerts/SustainedCurationReviewAlert.vue";
 import SubgroupList from '@/components/groups/SubgroupList.vue'
+import WGCaptionIconForm from '@/components/groups/WGCaptionIconForm.vue';
 
 import { api, isValidationError } from "../../http";
 
@@ -57,7 +58,8 @@ export default {
     StepTabs,
     ProgressChart,
     SustainedCurationReviewAlert,
-    SubgroupList
+    SubgroupList,
+    WGCaptionIconForm,
   },
   props: {
     uuid: {
@@ -476,6 +478,10 @@ export default {
             <AttestationNhgri class="pb-2 mb-4 border-b" :disabled="true" />
           </tab-item>
 
+          <tab-item label="Website Label &amp; Icon" :visible="group.is_working_group || group.group_type_id === 1">
+            <WGCaptionIconForm :group="group" />
+          </tab-item>
+
           <tab-item label="Log" :visible="hasPermission('groups-manage') || userInGroup(group)">
             <ActivityLog
               :log-entries="logEntries"
@@ -485,7 +491,7 @@ export default {
             <button class="btn btn-xs mt-1" @click="getLogEntries">
               Refresh
             </button>
-          </tab-item>
+          </tab-item>          
 
           <tab-item label="Admin" :visible="hasPermission('groups-manage')">
             <div v-if="group.isApplying && group.is_ep">

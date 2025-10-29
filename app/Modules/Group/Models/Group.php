@@ -70,7 +70,9 @@ class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDoc
         'group_type_id',
         'group_status_id',
         'parent_id',
-        'coi_code'
+        'coi_code',
+        'caption',
+        'icon_path',
     ];
 
     /**
@@ -301,4 +303,22 @@ class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDoc
     {
         return new GroupFactory();
     }
+
+    public function getIconUrlAttribute(): ?string
+    {
+        if (!$this->icon_path) return null;
+
+        $disk = \Illuminate\Support\Facades\Storage::disk('public');
+        if (!$disk->exists($this->icon_path)) return null;
+
+        $url = $disk->url($this->icon_path);
+        $ver = $disk->lastModified($this->icon_path);
+        return "{$url}?v={$ver}";
+    }
+
+    public function isWorkingGroup(): bool
+    {
+        return (int) $this->group_type_id === config('groups.types.wg.id');
+    }
+
 }

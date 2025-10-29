@@ -52,6 +52,7 @@ use App\Modules\Group\Actions\CurationReviewProtocolUpdate;
 use App\Modules\Group\Http\Controllers\Api\GroupController;
 use App\Modules\Group\Actions\ExpertPanelAffiliationIdUpdate;
 use App\Modules\Group\Actions\SustainedCurationReviewComplete;
+use App\Modules\Group\Actions\CaptionIconUpdate;
 use App\Modules\Group\Http\Controllers\Api\GeneListController;
 use App\Modules\Group\Http\Controllers\Api\ActivityLogsController;
 use App\Modules\Group\Http\Controllers\Api\GroupRelationsController;
@@ -208,6 +209,7 @@ Route::group([
         Route::get('/tasks', [GroupRelationsController::class, 'tasks']);
         Route::get('/specifications', SpecificationsGet::class);
         Route::put('/status', GroupStatusUpdate::class);
+        Route::put('/caption-icon', CaptionIconUpdate::class);
 
     });
 
