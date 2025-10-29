@@ -5,20 +5,19 @@ import { api, isValidationError } from '@/http'
 
 const store = useStore()
 
-const group = computed(() => store.getters['groups/currentItemOrNew'])
+const emit = defineEmits(['saved'])
+const props = defineProps({ group: { type: Object, required: true } })
 
 const caption = ref('')
 const errors = ref({})
 const saving = ref(false)
 const iconInput = ref(null)
 
-watch(group, (g) => {
-  	caption.value = g?.caption ?? ''
-}, { immediate: true })
+watch(() => props.group, g => { caption.value = g?.caption ?? '' }, { immediate: true })
 
 async function save(e) {
 	e?.preventDefault?.()
-	if (!group.value?.uuid || saving.value) return
+	if (!props.group?.uuid || saving.value) return
 
 	errors.value = {}
 	saving.value = true
@@ -35,9 +34,10 @@ async function save(e) {
 		}
 		data.append('_method', 'PUT')
 
-		await api.post(`/api/groups/${group.value.uuid}/caption-icon`, data , {
+		await api.post(`/api/groups/${props.group.uuid}/caption-icon`, data , {
 			headers: { 'Content-Type': 'multipart/form-data' },
 		})
+		emit('saved')
 		store.commit('pushSuccess', 'Caption/Icon updated.')
 		if (iconInput.value) iconInput.value.value = null
 	} catch (err) {

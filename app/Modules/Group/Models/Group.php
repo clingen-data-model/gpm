@@ -31,6 +31,7 @@ use App\Models\Contracts\HasComments as ContractsHasComments;
 use App\Modules\Group\Enums\CurationProduct;
 use App\Modules\Group\Models\Traits\HasMembers as HasMembersTrait;
 use App\Modules\Group\Models\Traits\HasSubmissions as HasSubmissionsTrait;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 /**
  * @property int $id
@@ -304,7 +305,7 @@ class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDoc
         return new GroupFactory();
     }
 
-    public function getIconUrlAttribute(): ?string
+    protected function computeIconUrl(bool $withVersion = true): ?string
     {
         if (!$this->icon_path) return null;
 
@@ -312,9 +313,23 @@ class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDoc
         if (!$disk->exists($this->icon_path)) return null;
 
         $url = $disk->url($this->icon_path);
-        $ver = $disk->lastModified($this->icon_path);
-        return "{$url}?v={$ver}";
+        return $withVersion ? "{$url}?v=".$disk->lastModified($this->icon_path) : $url;
     }
+
+    protected function iconUrl(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->computeIconUrl(true)
+        );
+    }
+
+    protected function iconUrlRaw(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->computeIconUrl(false)
+        );
+    }
+
 
     public function isWorkingGroup(): bool
     {

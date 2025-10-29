@@ -28,7 +28,7 @@ class CaptionIconUpdated extends GroupEvent
     {
         return [
             'caption'   => $this->group->caption,
-            'icon_url'  => $this->group->icon_url,
+            'icon_url'  => $this->group->icon_url_raw,
         ];
     }
 }

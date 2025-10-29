@@ -478,8 +478,8 @@ export default {
             <AttestationNhgri class="pb-2 mb-4 border-b" :disabled="true" />
           </tab-item>
 
-          <tab-item label="Website Label &amp; Icon" :visible="group.is_working_group || group.group_type_id === 1">
-            <WGCaptionIconForm :group="group" />
+          <tab-item v-if="userInGroup(group) || hasPermission('groups-manage')" label="Website Label &amp; Icon" :visible="group.is_working_group || group.group_type_id === 1">
+            <WGCaptionIconForm :group="group" @saved="getGroup" />
           </tab-item>
 
           <tab-item label="Log" :visible="hasPermission('groups-manage') || userInGroup(group)">

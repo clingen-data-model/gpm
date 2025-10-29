@@ -55,7 +55,8 @@ trait IsPublishableGroupEvent
             'uuid' => $group->uuid,
             'name' => $group->name,
             'description' => $group->description,
-            'caption' => null, // TODO here as a placeholder for now, see GPM-513
+            'caption' => $group->caption,
+            'icon_url' => $group->icon_url_raw,
             'status' => $group->groupStatus->name,
             'status_date' => $group->groupStatus->updated_at->toISO8601String(),
             'type' => $group->type->name,
