@@ -122,5 +122,6 @@ return [
         'specification_upload' => env('FEATURE_SPEC_UPLOAD', true),
         'cspec_summary' => env('FEATURE_CSPEC_SUMMARY', true),
         'chair_review' => env('FEATURE_CHAIR_REVIEW', true),
-    ]
+    ],
+    'invitation_ttl_days' => env('INVITATION_TTL_DAYS', 30),
 ];
