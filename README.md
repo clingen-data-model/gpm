@@ -244,6 +244,16 @@ The application image is deployed by three separate DeploymentConfigs to use the
 
 The `CMD` for the image runs `.docker/start.sh` which runs the appropriate command based on the `CONTAINER_ROLE` environment variable.  Valid container roles include  `app`, `queue`, and `scheduler`.
 
+### Caveats for scheduling on openshift/kubernetes
+There are distinct advantages to running the scheduler as a kubernetes CronJob resource instead of a constantly-running container triggering on a minute-by-minute basis. The main
+ones being that the scheduler rarely does anything, so we don't need to waste allocation of CPU all of the time, but can give the scheduler "burst" amounts as might be needed
+for large batch processes.
+
+But there's also no point in running the scheduler as a CronJob every minute-- that's spinning up a lot of pods that would end right away and someone in ops would probably notice and
+get unhappy. Unfortunately, Laravel does not keep track of "scheduler jobs scheduled but not run", so we have to be sure to schedule things when we expect the scheduler to run.
+
+**Currently, the openshift setup on the prod instance only runs the scheduler at the top of the hour and 10 minutes past.** This is probably still way more than we need...
+
 ### SSL 
 * [Updating SSL Certificates](documentation/ssl-cert-updated.md)
 
