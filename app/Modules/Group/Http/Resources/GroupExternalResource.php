@@ -6,9 +6,12 @@ use Illuminate\Support\Facades\URL;
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Modules\Group\Models\Group;
 use Illuminate\Support\Facades\DB;
+use App\Modules\Group\Events\Traits\IsPublishableApplicationEvent;
 
 class GroupExternalResource extends JsonResource
 {
+    use IsPublishableApplicationEvent;
+
     public static $wrap = 'gpm_group';
 
     function __construct(Group $group)
@@ -32,7 +35,7 @@ class GroupExternalResource extends JsonResource
             'status' => $this->groupStatus->name,
             'status_date' => $this->groupStatus->updated_at,
             'type' => $this->type->name,
-            'coi' => url('/coi-group/'.$this->uuid),
+            'coi' => url('/coi/'.$this->uuid),
             'members' => $this->members()->with(['person', 'person.credentials', 'person.institution', 'roles', 'latestCoi'])->get()->map(function ($member) {
                 $p = $member->person;
                 $personData = [
@@ -71,6 +74,7 @@ class GroupExternalResource extends JsonResource
                 'date_completed' => $ep->date_completed,
                 'inactive_date' => $this->group_status_id === 5 ? $this->deriveInactiveDate($this->id) : null,
                 'current_step' => $ep->current_step,
+                'genes' => $ep->genes->map(function ($gene) { return $this->mapGeneForMessage($gene); })->toArray()
             ];
 
             if ($this->isVcep || $this->isScvcep) {
