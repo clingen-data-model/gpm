@@ -56,7 +56,7 @@ class Kernel extends ConsoleKernel
                 app()->make(SendSubmissionDigestNotifications::class)->handle();
             });
 
-        $schedule->command('invites:expire-group')->weeklyOn(6, '02:15')->withoutOverlapping();
+        $schedule->command('invites:expire-group')->weeklyOn(6, '02:10')->withoutOverlapping();
     }
 
     /**
