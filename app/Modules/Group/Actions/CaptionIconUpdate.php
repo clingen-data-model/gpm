@@ -37,18 +37,21 @@ class CaptionIconUpdate
             $ext = $ext === 'jpeg' ? 'jpg' : $ext;
 
             $filename = $group->uuid . '.' . $ext;
-            $dir = 'workinggroups';
+            $dir = config('app.workinggroups_icon');
 
             // BEFORE STORING, DELETE EXISTING FILE WITH THE SAME UUID DIFF EXT. JUST IN CASE
-            foreach (['png','jpg','jpeg','gif'] as $e) {
+            foreach (config('app.wg_icon_exts') as $e) {
                 if ($e === $ext) continue;
                 Storage::disk('public')->delete($dir . '/' . $group->uuid . '.' . $e);
             }
 
             $path = $iconFile->storeAs($dir, $filename, 'public');
-            
-            if ($group->icon_path !== $path) {
-                $group->icon_path = $path;
+            if (!$path || !Storage::disk('public')->exists($path)) {
+                abort(500, 'Failed to store icon file.');
+            }
+
+            if ($group->icon_path !== $filename) {
+                $group->icon_path = $filename;
                 $group->touch();
                 $changes['icon_url'] = $group->icon_url;
             }

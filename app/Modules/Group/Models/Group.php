@@ -310,16 +310,18 @@ class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDoc
     {
         if (!$this->icon_path || !$this->uuid) return null;
 
+        $dir  = config('app.workinggroups_icon');
+        $rel  = "{$dir}/{$this->icon_path}";
         $disk = Storage::disk('public');
-        if (!$disk->exists($this->icon_path)) return null;
+        if (!$disk->exists($rel)) return null;
 
-        $url = route('wg.icon', ['uuid' => $this->uuid]);
+        $url = route('wg.icon', ['icon_path' => $this->icon_path]);
 
         if (!$withVersion) return $url;
 
-        $ver = $disk->lastModified($this->icon_path);
+        $ver = $disk->lastModified($rel);
         return "{$url}?v={$ver}";
-    }
+    }    
 
     protected function iconUrl(): Attribute
     {

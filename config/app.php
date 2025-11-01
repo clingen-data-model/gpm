@@ -122,5 +122,7 @@ return [
         'specification_upload' => env('FEATURE_SPEC_UPLOAD', true),
         'cspec_summary' => env('FEATURE_CSPEC_SUMMARY', true),
         'chair_review' => env('FEATURE_CHAIR_REVIEW', true),
-    ]
+    ],
+    'workinggroups_icon' => env('WORKINGGROUPS_ICON_DIR', 'groups-icon'),
+    'wg_icon_exts' => ['png', 'jpg', 'jpeg', 'gif'],
 ];

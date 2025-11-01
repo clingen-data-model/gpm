@@ -27,7 +27,7 @@ use App\Http\Controllers\PublicIconController;
 |
 */
 Route::get('/coi-group/{group:uuid}', function (Group $group) { return app(CoiReportMakePdf::class)->handle($group); })->whereUuid('group')->name('coi.pdf');
-Route::get('/workinggroups/icon/{uuid}', [PublicIconController::class, 'show'])->name('wg.icon');
+Route::get('/workinggroups/icon/{icon_path}', [PublicIconController::class, 'show'])->where('icon_path', '^[A-Fa-f0-9-]+\.(png|jpg|jpeg|gif)$')->name('wg.icon');
 Route::get('/{any}', [ViewController::class, 'app'])
     ->where('any', '^(?!(api|sanctum|impersonate|dev|documents|downloads|clockwork|profile-photos|storage)).*$');
 
