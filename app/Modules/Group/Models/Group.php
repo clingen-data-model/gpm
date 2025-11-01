@@ -32,6 +32,7 @@ use App\Modules\Group\Enums\CurationProduct;
 use App\Modules\Group\Models\Traits\HasMembers as HasMembersTrait;
 use App\Modules\Group\Models\Traits\HasSubmissions as HasSubmissionsTrait;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * @property int $id
@@ -305,31 +306,30 @@ class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDoc
         return new GroupFactory();
     }
 
-    protected function computeIconUrl(bool $withVersion = true): ?string
+    protected function computePublicIconUrl(bool $withVersion = true): ?string
     {
-        if (!$this->icon_path) return null;
+        if (!$this->icon_path || !$this->uuid) return null;
 
-        $disk = \Illuminate\Support\Facades\Storage::disk('public');
+        $disk = Storage::disk('public');
         if (!$disk->exists($this->icon_path)) return null;
 
-        $url = $disk->url($this->icon_path);
-        return $withVersion ? "{$url}?v=".$disk->lastModified($this->icon_path) : $url;
+        $url = route('wg.icon', ['uuid' => $this->uuid]);
+
+        if (!$withVersion) return $url;
+
+        $ver = $disk->lastModified($this->icon_path);
+        return "{$url}?v={$ver}";
     }
 
     protected function iconUrl(): Attribute
     {
-        return Attribute::make(
-            get: fn () => $this->computeIconUrl(true)
-        );
+        return Attribute::make(get: fn () => $this->computePublicIconUrl(true));
     }
 
     protected function iconUrlRaw(): Attribute
     {
-        return Attribute::make(
-            get: fn () => $this->computeIconUrl(false)
-        );
+        return Attribute::make(get: fn () => $this->computePublicIconUrl(false));
     }
-
 
     public function isWorkingGroup(): bool
     {
