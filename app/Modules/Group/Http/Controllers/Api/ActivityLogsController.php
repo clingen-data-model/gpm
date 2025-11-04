@@ -17,6 +17,7 @@ use App\Http\Requests\UpdateLogEntryRequest;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\DB;
 
 class ActivityLogsController extends Controller
 {
@@ -26,49 +27,42 @@ class ActivityLogsController extends Controller
         private LogEntryDelete $deleteEntry
     ) {
     }
-
+    
     public function index(Request $request, $groupUuid)
     {
         $group = Group::where('uuid', $groupUuid)->sole();
+        $this->authorize('viewGroupLogs', $group);
+        $base = $group->logEntries()
+            ->where(function ($q) {
+                $q->whereNotIn('activity_type', ['coi-completed','next-action-updated'])
+                ->orWhereNull('activity_type');
+            });
+        $modelClass = get_class($group->logEntries()->getModel());
 
-        //Extract to policy the next time this is an issue
-        if (Auth::user()->cannot('viewGroupLogs', $group)) {
-            throw new AuthorizationException('You do not have access to view this groups activity logs.');
-        }
+        $customLogs = (clone $base)
+            ->whereNull('activity_type')
+            ->with(['causer:id,name'])
+            ->orderByDesc('created_at')->orderByDesc('id')
+            ->get();
 
-        $query = $group->logEntries()->select([
-                            'id',
-                            'activity_type',
-                            'description',
-                            'causer_id',
-                            'causer_type',
-                            'created_at',
-                            'subject_id',
-                            'properties',
-                        ])
-                        ->with(['causer' => function ($q) {
-                            return $q->select(['id', 'name']);
-                        }])
-                        ->where(function($q) {
-                            $q->whereNotIn('activity_type', ['coi-completed','next-action-updated'])
-                            ->orWhereNull('activity_type');
-                        })
-                        ->orderBy('created_at', 'desc');
+        $autoInner = (clone $base)
+            ->whereNotNull('activity_type')
+            ->selectRaw("id, activity_type,
+                        TRIM(REGEXP_REPLACE(IFNULL(description,''), '\\s+', ' ')) AS norm_desc,
+                        DATE_FORMAT(created_at, '%Y-%m-%d %H') AS minute_key");
 
-        $allLogs = $query->get();
+        $keepIds = DB::query()->fromSub($autoInner->selectRaw("ROW_NUMBER() OVER (PARTITION BY activity_type, norm_desc, minute_key ORDER BY id DESC) AS rn"),'x')
+                                ->where('rn', 1)
+                                ->select('id')
+                                ->pluck('id');
 
-        $customLogs = $allLogs->filter(function ($entry) {
-            return $entry->activity_type == null;
-        });
+        $autoLogs = $group->logEntries()
+                            ->whereIn('id', $keepIds)
+                            ->with(['causer:id,name'])
+                            ->orderByDesc('created_at')->orderByDesc('id')
+                            ->get();
 
-        $autoLogs = $allLogs->filter(function ($entry) {
-            return $entry->activity_type !== null;
-        })
-        ->unique(function ($i) {
-            return $i->activity_type.'-'.$i->created_at->format('Y-m-d_H:i');
-        });
-
-        $logEntries = $autoLogs->merge($customLogs)->sortByDesc('created_at');
+        $logEntries = $autoLogs->merge($customLogs)->sortByDesc(fn ($i) => [$i->created_at, $i->id])->values();
 
         return LogEntryResource::collection($logEntries);
     }
