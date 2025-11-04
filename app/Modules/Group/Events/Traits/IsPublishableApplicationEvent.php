@@ -4,6 +4,7 @@ namespace App\Modules\Group\Events\Traits;
 
 use Illuminate\Support\Str;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\URL;
 
 trait IsPublishableApplicationEvent
 {
@@ -30,16 +31,20 @@ trait IsPublishableApplicationEvent
 
     public function mapMemberForMessage($member, $withEmail = true): array
     {
-        $person = $person;
+        $person = $member->person;
         $roles = $member->roles->pluck('name')->toArray();
-        $email = array_intersect(roles, ['Coordinator', 'Chair']) || $withEmail ? $person->email : null;
-        return [
+        $data = [
             'uuid' => $person->uuid,
             'first_name' => $person->first_name,
             'last_name' => $person->last_name,
-            'email' => $email,
             'roles' => $roles,
-            // 'additional_permissions' => $member->permissions->pluck('name')->toArray(),
+            'institution' => $person->institution->name ?? null,
+            'credentials' => $person->credentials->map(function ($credential) {
+                                return $credential->name;
+                            })->toArray(),            
         ];
+        if($person->profile_photo) { $data['profile_photo'] = URL::to('/profile-photos/' . $person->profile_photo); }
+        if(array_intersect($roles, ['Coordinator', 'Chair']) || $withEmail) { $data['email'] = $person->email; }
+        return $data;
     }
 }
