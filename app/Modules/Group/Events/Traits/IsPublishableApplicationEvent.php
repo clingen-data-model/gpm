@@ -28,15 +28,18 @@ trait IsPublishableApplicationEvent
         return $messageGene;
     }
 
-    public function mapMemberForMessage($member): array
+    public function mapMemberForMessage($member, $withEmail = true): array
     {
+        $person = $person;
+        $roles = $member->roles->pluck('name')->toArray();
+        $email = array_intersect(roles, ['Coordinator', 'Chair']) || $withEmail ? $person->email : null;
         return [
-            'id' => $member->person->uuid,
-            'first_name' => $member->person->first_name,
-            'last_name' => $member->person->last_name,
-            'email' => $member->person->email,
-            'group_roles' => $member->roles->pluck('name')->toArray(),
-            'additional_permissions' => $member->permissions->pluck('name')->toArray(),
+            'uuid' => $person->uuid,
+            'first_name' => $person->first_name,
+            'last_name' => $person->last_name,
+            'email' => $email,
+            'roles' => $roles,
+            // 'additional_permissions' => $member->permissions->pluck('name')->toArray(),
         ];
     }
 }

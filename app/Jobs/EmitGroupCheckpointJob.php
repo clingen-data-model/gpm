@@ -25,7 +25,7 @@ class EmitGroupCheckpointJob implements ShouldQueue, ShouldBeUniqueUntilProcessi
 
     public function middleware(): array
     {
-        return [(new ThrottlesExceptions(3, 60))->backoff([30, 60])];
+        return [(new ThrottlesExceptions(3, 60))->backoff(60)];
     }
 
     public function handle(): void

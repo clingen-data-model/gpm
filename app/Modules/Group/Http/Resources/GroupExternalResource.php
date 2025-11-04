@@ -36,28 +36,7 @@ class GroupExternalResource extends JsonResource
             'status_date' => $this->groupStatus->updated_at,
             'type' => $this->type->name,
             'coi' => url('/coi-group/'.$this->uuid),
-            'members' => $this->members()->with(['person', 'person.credentials', 'person.institution', 'roles', 'latestCoi'])->get()->map(function ($member) {
-                $p = $member->person;
-                $personData = [
-                    'first_name'  => $p->first_name,
-                    'last_name'   => $p->last_name,
-                    'institution' => $p->institution->name ?? null,
-                    'credentials' => $p->credentials->map(function ($credential) {
-                        return $credential->name;
-                    })->toArray(),
-                    'uuid' => $p->uuid,
-                    'roles' => $member->roles->map(function ($role) {
-                        return $role->display_name;
-                    })->toArray(),
-                ];
-                if (array_intersect($personData['roles'], ['Coordinator', 'Chair'])) {
-                    $personData['email'] = $p->email; // show email for coordinators and chairs. TODO: confirm this is desired, maybe include Grant Liasons, too?
-                }
-                if ($p->profile_photo) {
-                    $personData['profile_photo'] = URL::to('/profile-photos/' . $p->profile_photo);
-                }
-                return $personData;
-            }),
+            'members' => $this->members()->with(['person', 'roles', 'latestCoi'])->get()->map(function ($member) { return $this->mapMemberForMessage($member, false); })->toArray(),
         ];
 
         if ($this->isEp) {

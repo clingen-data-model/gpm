@@ -8,10 +8,12 @@ use Illuminate\Broadcasting\PrivateChannel;
 use App\Modules\Group\Events\GroupMemberEvent;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
+use App\Modules\Group\Events\Traits\IsPublishableApplicationEvent;
 
 class MemberAdded extends GroupMemberEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
+    use IsPublishableApplicationEvent;
 
     /**
      * CONSTRUCTOR of parent sets group instance var to $groupMember->group;
@@ -29,7 +31,8 @@ class MemberAdded extends GroupMemberEvent
 
     public function getProperties(): ?array
     {
-        return $this->groupMember->person->only('id', 'uuid', 'name', 'email', 'is_contact');
+        $member = $this->groupMember;
+        return $this->mapMemberForMessage($member);
     }
 
 }
