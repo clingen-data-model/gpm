@@ -57,7 +57,7 @@ trait IsPublishableGroupEvent
             'description' => $group->description,
             'caption' => null, // TODO here as a placeholder for now, see GPM-513
             'status' => $group->groupStatus->name,
-            'status_date' => $group->groupStatus->updated_at,
+            'status_date' => $group->groupStatus->updated_at->toISO8601String(),
             'type' => $group->type->name,
             'coi' => url('/coi-group/'.$group->uuid),
         ];
@@ -85,7 +85,7 @@ trait IsPublishableGroupEvent
                 $epData['all_genes'] = $ep->genes->map(function ($gene) { return $group->mapGeneForMessage($gene); })->toArray();
             }
 
-            if ($group->isVcep || $this->isScvcep) {
+            if ($group->isVcep || $group->isScvcep) {
                 $epData['vcep_define_group']         = $ep->step_1_approval_date;
                 $epData['vcep_classification_rules'] = $ep->step_2_approval_date;
                 $epData['vcep_pilot_rules']          = $ep->step_3_approval_date;

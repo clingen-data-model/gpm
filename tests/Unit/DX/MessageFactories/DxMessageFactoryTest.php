@@ -134,7 +134,12 @@ class DxMessageFactoryTest extends TestCase
      */
     public function it_creates_a_member_removed_event()
     {
-        $event = new MemberRemoved($this->expertPanel->group->members->first());
+        $groupMember = $this->expertPanel->group->members->first();
+        $removeTime = Carbon::now();
+        $groupMember->update(['end_date' => $removeTime->toISOString()]);
+        $groupMember->delete();
+
+        $event = new MemberRemoved($groupMember);
 
         $message = $this->factory->makeFromEvent($event);
         $this->assertEquals('member_removed', $message['event_type']);
@@ -147,12 +152,15 @@ class DxMessageFactoryTest extends TestCase
      */
     public function it_creates_a_member_retired_event()
     {
-        $event = new MemberRetired($this->expertPanel->group->members->first());
+        $groupMember = $this->expertPanel->group->members->first();
+        $retireTime = Carbon::now();
+        $groupMember->update(['end_date' => $retireTime->toISOString()]);
+        $event = new MemberRetired($groupMember);
 
         $message = $this->factory->makeFromEvent($event);
         $this->assertEquals('member_retired', $message['event_type']);
         $this->assertExpertPanelInMessage($message);
-        $this->assertMembersInMessage([$this->expertPanel->group->members->first()], $message);
+        $this->assertMembersInMessage([$groupMember], $message);
     }
 
     /**
@@ -214,12 +222,12 @@ class DxMessageFactoryTest extends TestCase
     {
         $membersMsg = array_map(function ($member) {
             return [
-                'id' => $member->person->uuid,
+                'uuid' => $member->person->uuid,
                 'first_name' => $member->person->first_name,
                 'last_name' => $member->person->last_name,
-                'email' => $member->person->email,
-                'group_roles' => $member->roles->pluck('name')->toArray(),
-                'additional_permissions' => $member->permissions->pluck('name')->toArray(),
+                'roles' => $member->roles->pluck('name')->toArray(),
+                'institution' => $member->person->institution->name ?? null,
+                'credentials' => $member->person->credentials->pluck('name')->toArray(),
             ];
         }, $members);
         $this->assertArrayHasKey('members', $message['data']);
@@ -230,15 +238,28 @@ class DxMessageFactoryTest extends TestCase
     private function assertExpertPanelInMessage($message)
     {
         $this->assertEquals([
-            'id' => $this->expertPanel->group->uuid,
+            'uuid' => $this->expertPanel->group->uuid,
             'name' => $this->expertPanel->group->name,
             'description' => $this->expertPanel->group->description,
             'status' => $this->expertPanel->group->groupStatus->name,
             'type' => $this->expertPanel->group->fullType->name,
-            'ep_id' => $this->expertPanel->uuid,
-            'affiliation_id' => $this->expertPanel->affiliation_id,
-            'scope_description' => $this->expertPanel->scope_description,
-            'short_name' => $this->expertPanel->short_base_name,
+            'caption' => $this->expertPanel->group->caption,
+            'coi' => url('/coi-group/'.$this->expertPanel->group->uuid),
+            'expert_panel' => [
+                'uuid' => $this->expertPanel->uuid,
+                'affiliation_id' => (string) $this->expertPanel->affiliation_id,
+                'name' => $this->expertPanel->long_base_name,
+                'short_name' => $this->expertPanel->short_base_name,
+                'scope_description' => $this->expertPanel->scope_description,
+                'membership_description' => $this->expertPanel->membership_description,
+                'type' => $this->expertPanel->type->name,
+                'date_completed' => $this->expertPanel->date_completed,
+                'current_step' => $this->expertPanel->current_step,
+                'gcep_define_group' => $this->expertPanel->step_1_received_date,
+                'gcep_approval' => $this->expertPanel->step_4_approval_date,
+                'inactive_date' => null,
+            ],
+            'status_date' => $this->expertPanel->group->groupStatus->updated_at->toISO8601String(),
         ], $message['data']['group']);
     }
 }
