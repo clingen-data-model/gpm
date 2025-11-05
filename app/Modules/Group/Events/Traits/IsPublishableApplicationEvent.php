@@ -32,7 +32,7 @@ trait IsPublishableApplicationEvent
     public function mapMemberForMessage($member, $withEmail = true): array
     {
         $person = $member->person;
-        $roles = $member->roles->pluck('name')->toArray();
+        $roles = $member->roles->pluck('display_name')->toArray();
         $data = [
             'uuid' => $person->uuid,
             'first_name' => $person->first_name,
@@ -41,7 +41,7 @@ trait IsPublishableApplicationEvent
             'institution' => $person->institution->name ?? null,
             'credentials' => $person->credentials->map(function ($credential) {
                                 return $credential->name;
-                            })->toArray(),            
+                            })->toArray(),
         ];
         if($person->profile_photo) { $data['profile_photo'] = URL::to('/profile-photos/' . $person->profile_photo); }
         if(array_intersect($roles, ['Coordinator', 'Chair']) || $withEmail) { $data['email'] = $person->email; }
