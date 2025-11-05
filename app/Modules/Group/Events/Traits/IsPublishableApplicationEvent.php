@@ -29,7 +29,7 @@ trait IsPublishableApplicationEvent
         return $messageGene;
     }
 
-    public function mapMemberForMessage($member, $withEmail = true): array
+    public function mapMemberForMessage($member, $withEmail = false): array
     {
         $person = $member->person;
         $roles = $member->roles->pluck('display_name')->toArray();
