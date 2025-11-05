@@ -86,12 +86,16 @@ function cancelEdit(e) {
 		</input-row>
 
 		<input-row label="Icon" :errors="errors.icon">
-			<input v-if="editing" ref="iconInput" type="file" accept="image/png" />
-			<small v-if="editing" class="block text-gray-600">Prefer PNG with a transparent background (recommended 600×600). Max 3 MB. Allowed: PNG, JPG/JPEG, GIF.</small>
+			<template v-if="! editing"></template>
+			<template v-else>
+				<input ref="iconInput" type="file" accept="image/png" />
+				<small class="block text-gray-600">Prefer PNG with a transparent background (recommended 600×600). Max 3 MB. Allowed: PNG, JPG/JPEG, GIF.</small>
+			</template>
 
 			<div v-if="group?.icon_url" class="mt-2">
 				<img :src="group.icon_url" alt="Current icon" style="max-width:120px;height:auto;" />
 			</div>
+			<div v-else class="text-gray-600 italic">No icon uploaded yet.</div>
 		</input-row>
 
 		<button-row v-if="editing">
