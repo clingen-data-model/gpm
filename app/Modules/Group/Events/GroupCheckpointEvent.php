@@ -7,11 +7,11 @@ use App\Modules\Group\Models\Group;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use App\Modules\Group\Http\Resources\GroupExternalResource;
+use App\Modules\Group\Events\Traits\IsPublishableGroupEvent;
 
 class GroupCheckpointEvent extends GroupEvent implements PublishableEvent
 {
-    use Dispatchable, InteractsWithSockets, SerializesModels;
+    use Dispatchable, InteractsWithSockets, SerializesModels, IsPublishableGroupEvent;
 
     /**
      * Create a new event instance.
@@ -33,7 +33,7 @@ class GroupCheckpointEvent extends GroupEvent implements PublishableEvent
     }
 
     public function getPublishableMessage(): array {
-        return (new GroupExternalResource($this->group))->toArray(null);
+        return $this->mapGroupForMessage($this->group);
     }
 
     public function getLogEntry() :string

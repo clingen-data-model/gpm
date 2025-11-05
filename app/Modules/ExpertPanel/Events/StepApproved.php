@@ -9,12 +9,12 @@ use Illuminate\Foundation\Events\Dispatchable;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Modules\Group\Events\PublishableApplicationEvent;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use App\Modules\Group\Events\Traits\IsPublishableApplicationEvent;
+use App\Modules\Group\Events\Traits\IsPublishableGroupEvent;
 
 class StepApproved extends ExpertPanelEvent implements PublishableApplicationEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
-    use IsPublishableApplicationEvent;
+    use IsPublishableGroupEvent;
 
     public function __construct(public ExpertPanel  $application, public int $step, public Carbon $dateApproved)
     {

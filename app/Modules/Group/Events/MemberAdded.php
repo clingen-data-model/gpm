@@ -8,12 +8,12 @@ use Illuminate\Broadcasting\PrivateChannel;
 use App\Modules\Group\Events\GroupMemberEvent;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use App\Modules\Group\Events\Traits\IsPublishableApplicationEvent;
+use App\Modules\Group\Events\Traits\IsPublishableGroupEvent;
 
 class MemberAdded extends GroupMemberEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
-    use IsPublishableApplicationEvent;
+    use IsPublishableGroupEvent;
 
     /**
      * CONSTRUCTOR of parent sets group instance var to $groupMember->group;

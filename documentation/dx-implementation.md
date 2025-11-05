@@ -421,7 +421,7 @@ Note: Our DX payloads are not diffs. They reflect the current state at publish t
     - App\Modules\ExpertPanel\Events\ExpertPanelEvent
     - App\Modules\Person\Events\PersonEvent
 - Publishable interface: App\Events\PublishableEvent
-- Member/Gene mappers: App\Modules\Group\Events\Traits\IsPublishableApplicationEvent
+- Member/Gene mappers: App\Modules\Group\Events\Traits\IsPublishableGroupEvent
 Person topic trait: App\Modules\Person\Events\Traits\PublishesEven
 
 ## Changelog

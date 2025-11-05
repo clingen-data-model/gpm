@@ -6,13 +6,13 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Foundation\Events\Dispatchable;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Modules\Group\Events\PublishableApplicationEvent;
-use App\Modules\Group\Events\Traits\IsPublishableApplicationEvent;
+use App\Modules\Group\Events\Traits\IsPublishableGroupEvent;
 use Illuminate\Broadcasting\InteractsWithSockets;
 
 class StepDateApprovedUpdated extends ExpertPanelEvent implements PublishableApplicationEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
-    use IsPublishableApplicationEvent;
+    use IsPublishableGroupEvent;
 
     /**
      * Create a new event instance.

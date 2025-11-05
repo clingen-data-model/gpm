@@ -2,12 +2,12 @@
 
 namespace App\Modules\Group\Events;
 
-use App\Modules\Group\Events\Traits\IsPublishableApplicationEvent;
+use App\Modules\Group\Events\Traits\IsPublishableGroupEvent;
 use App\Modules\Group\Models\GroupMember;
 
 abstract class GroupMemberEvent extends GroupEvent
 {
-    use IsPublishableApplicationEvent;
+    use IsPublishableGroupEvent;
 
     public function __construct(public GroupMember $groupMember)
     {

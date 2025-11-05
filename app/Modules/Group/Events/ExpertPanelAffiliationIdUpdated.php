@@ -6,11 +6,11 @@ use App\Modules\Group\Models\Group;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use App\Modules\Group\Events\Traits\IsPublishableApplicationEvent;
+use App\Modules\Group\Events\Traits\IsPublishableGroupEvent;
 
 class ExpertPanelAffiliationIdUpdated extends GroupEvent implements PublishableApplicationEvent
 {
-    use Dispatchable, InteractsWithSockets, SerializesModels, IsPublishableApplicationEvent;
+    use Dispatchable, InteractsWithSockets, SerializesModels, IsPublishableGroupEvent;
 
     public function __construct(
         public Group $group,
