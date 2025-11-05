@@ -30,11 +30,9 @@ class MemberPermissionRevoked extends GroupMemberEvent
 
     public function getProperties(): array
     {
-        return [
-            'group_member_id' => $this->groupMember->id,
-            'permission' => $this->permission->only('id', 'name'),
-            'person' => $this->groupMember->person->only('id', 'name', 'email')
-        ];
+        $props = parent::getProperties();
+        $props['permission'] = $this->permission->only('id', 'name');
+        return $props;
     }
 
 }

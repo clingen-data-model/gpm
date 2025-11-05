@@ -28,11 +28,9 @@ class MemberPermissionGranted extends GroupMemberEvent
 
     public function getProperties(): array
     {
-        return [
-            'group_member_id' => $this->groupMember->id,
-            'person' => $this->groupMember->person->only('id', 'name', 'email'),
-            'permissions' => $this->permissions->map(fn($p) => $p->only('id', 'name'))
-        ];
+        $props = parent::getProperties();
+        $props['permissions'] = $this->permissions->map(fn($p) => $p->only('id', 'name'));
+        return $props;
     }
 
     public function getSubject(): Model

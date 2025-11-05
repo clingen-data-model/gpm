@@ -19,15 +19,14 @@ class MemberRoleAssigned extends GroupMemberEvent
 
     public function getLogEntry(): string
     {
-        return $this->groupMember->name . ' given roles ' . $this->roles->pluck('name')->join(',', ', and');
+        return $this->groupMember->name . ' given roles ' . $this->roles->pluck('name')->join(',', ', and ');
     }
 
     public function getProperties(): ?array
     {
-        return [
-            'member' => $this->groupMember->person->only('id', 'name', 'email'),
-            'roles' => $this->roles->pluck('name')->toArray()
-        ];
+        $props = parent::getProperties();
+        $props['roles'] = $this->roles->pluck('name')->toArray();
+        return $props;
     }
 
 }

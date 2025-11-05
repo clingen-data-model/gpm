@@ -26,11 +26,9 @@ class MemberRoleRemoved extends GroupMemberEvent
 
     public function getProperties(): ?array
     {
-        return [
-            'group_member_id' => $this->groupMember->id,
-            'role' => $this->role->only('id', 'name'),
-            'person' => $this->groupMember->person->only('id', 'name', 'email'),
-        ];
+        $props = parent::getProperties();
+        $props['role'] = $this->role->only('id', 'name');
+        return $props;
     }
 
 }

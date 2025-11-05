@@ -29,10 +29,6 @@ class MemberAdded extends GroupMemberEvent
         return Carbon::now();
     }
 
-    public function getProperties(): ?array
-    {
-        $member = $this->groupMember;
-        return $this->mapMemberForMessage($member);
-    }
+    // No additional properties beyond those in GroupMemberEvent
 
 }

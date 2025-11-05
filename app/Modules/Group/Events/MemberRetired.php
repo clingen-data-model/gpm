@@ -23,11 +23,9 @@ class MemberRetired extends GroupMemberEvent
 
     public function getProperties(): array
     {
-        return [
-            'group_member_id' => $this->groupMember->id,
-            'person' => $this->groupMember->person->only('id', 'name', 'email'),
-            'end_date' => $this->groupMember->end_date->toAtomString()
-        ];
+        $props = parent::getProperties();
+        $props['end_date'] = $this->groupMember->end_date->toAtomString();
+        return $props;
     }
 
 }

@@ -21,13 +21,5 @@ class MemberUnretired extends GroupMemberEvent
         return $this->groupMember->group;
     }
 
-    public function getProperties(): array
-    {
-        return [
-            'group_member' => $this->groupMember,
-            'person' => $this->groupMember->person->only('id', 'name', 'email'),
-            'group' => $this->groupMember->group
-        ];
-    }
-
+    // No additional properties beyond those in GroupMemberEvent
 }
