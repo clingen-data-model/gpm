@@ -8,6 +8,7 @@ use App\Events\RecordableEvent;
 use App\Modules\Group\Models\Group;
 use Illuminate\Queue\SerializesModels;
 use App\Events\PublishableEvent;
+use App\Modules\Group\Events\Traits\IsPublishableGroupEvent;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Foundation\Events\Dispatchable;
@@ -15,7 +16,7 @@ use Illuminate\Broadcasting\InteractsWithSockets;
 
 abstract class GroupEvent extends RecordableEvent implements PublishableEvent
 {
-    use Dispatchable, InteractsWithSockets, SerializesModels;
+    use Dispatchable, InteractsWithSockets, SerializesModels, IsPublishableGroupEvent;
 
     /**
      * Create a new event instance.
@@ -67,37 +68,9 @@ abstract class GroupEvent extends RecordableEvent implements PublishableEvent
         return Str::snake((new \ReflectionClass($this))->getShortName());
     }
 
-    private function groupRepresentation(Group $g): array {
-        // FIXME: this will stack overflow if someone is foolish enough to create a circular reference
-        $item = [
-            'id' => $g->uuid,
-            'name' => $g->name,
-            'description' => $g->description,
-            'status' => $g->groupStatus->name,
-            'type' => $g->type->name,
-        ];
-        if ($g->parent != null) {
-            $item['parent_group'] = $this->groupRepresentation($g->parent);
-        }
-        if ($g->isEp) {
-            $item['ep_id'] = $g->expertPanel->uuid;
-            $item['affiliation_id'] = $g->expertPanel->affiliation_id;
-            $item['scope_description'] = $g->expertPanel->scope_description;
-            $item['short_name'] = $g->expertPanel->short_base_name;
-            // TODO: not sure about these fields, they appear to be unused
-            // $item['long_base_name'] = $this->group->expertPanel->long_base_name;
-            // $item['hypothesis_group'] = $this->group->expertPanel->hypothesis_group;
-            // $item['membership_description'] = $this->group->expertPanel->membership_description;
-            if ($this->group->fullType->name === 'vcep') {
-                $item['cspec_url'] = $g->expertPanel->affiliation_id;
-            }
-        }
-        return $item;
-    }
-
     public function getPublishableMessage(): array {
         $message = $this->getProperties() ?? [];
-        $message['group'] = $this->groupRepresentation($this->group);
+        $message['group'] = $this->mapGroupForMessage($this->group, false, false);
         return $message;
     }
 
