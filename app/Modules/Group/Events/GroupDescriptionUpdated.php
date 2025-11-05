@@ -24,8 +24,8 @@ class GroupDescriptionUpdated extends GroupEvent
     public function getProperties(): ?array
     {
         return [
-            'old_status' => $this->oldDescription,
-            'new_status' => $this->newDescription
+            'old_description' => $this->oldDescription,
+            'new_description' => $this->newDescription
         ];
     }
 

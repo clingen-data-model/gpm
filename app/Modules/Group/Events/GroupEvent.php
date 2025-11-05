@@ -70,7 +70,7 @@ abstract class GroupEvent extends RecordableEvent implements PublishableEvent
 
     public function getPublishableMessage(): array {
         $message = $this->getProperties() ?? [];
-        $message['group'] = $this->mapGroupForMessage($this->group, false, false);
+        $message['group'] = $this->mapGroupForMessage(false, false);
         return $message;
     }
 

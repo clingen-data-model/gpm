@@ -26,10 +26,9 @@ class ExpertPanelAffiliationIdUpdated extends GroupEvent implements PublishableA
 
     public function getProperties(): ?array
     {
-        $properties = [
+        return [
             'affiliation_id' => $this->affiliationId
         ];
-        return count($properties) > 0 ? $properties : null;
     }
 
     public function getEventType(): string

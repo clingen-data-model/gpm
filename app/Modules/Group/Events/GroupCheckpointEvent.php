@@ -33,7 +33,7 @@ class GroupCheckpointEvent extends GroupEvent implements PublishableEvent
     }
 
     public function getPublishableMessage(): array {
-        return $this->mapGroupForMessage($this->group);
+        return $this->mapGroupForMessage(true, true);
     }
 
     public function getLogEntry() :string

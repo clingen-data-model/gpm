@@ -23,14 +23,7 @@ class GenesAdded extends GeneEvent
 
     public function getProperties(): ?array
     {
-        return ['genes' => $this->genes];
-    }
-
-    public function getPublishableMessage(): array
-    {
-        $message = parent::getPublishableMessage();
-        $message['genes'] = $this->genes->map(fn ($gene) => $this->mapGeneForMessage($gene))->toArray();
-        return $message;
+        return ['genes' => $this->genes->map(fn ($gene) => $this->mapGeneForMessage($gene))->toArray()];
     }
 
     public function __get($key)

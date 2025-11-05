@@ -16,8 +16,7 @@ abstract class GroupMemberEvent extends GroupEvent
 
     public function getProperties(): ?array
     {
-        $member = $this->groupMember;
-        return ['member' => $this->mapMemberForMessage($member)];
+        return ['member' => $this->mapMemberForMessage($this->groupMember)];
     }
 
 }

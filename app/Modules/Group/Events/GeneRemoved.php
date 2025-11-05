@@ -23,15 +23,7 @@ class GeneRemoved extends GeneEvent
 
     public function getProperties(): ?array
     {
-        return $this->gene->toArray(0);
-    }
-
-    public function getPublishableMessage(): array
-    {
-        $message = parent::getPublishableMessage();
-        $message['genes'] = [$this->mapGeneForMessage($this->gene)];
-
-        return $message;
+        return ['genes' => [$this->mapGeneForMessage($this->gene)]];
     }
 
 }

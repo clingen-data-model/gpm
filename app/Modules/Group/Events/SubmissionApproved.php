@@ -33,6 +33,13 @@ class SubmissionApproved extends GroupEvent
         return 'Step ' . $this->getStep() . ' approved';
     }
 
+    // override to include members and genes
+    public function getPublishableMessage(): array {
+        $message = $this->getProperties() ?? [];
+        $message['group'] = $this->mapGroupForMessage( true, true);
+        return $message;
+    }
+
     public function getStep()
     {
         return max(($this->group->expertPanel->current_step - 1), 1);
