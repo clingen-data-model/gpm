@@ -2,6 +2,7 @@
 import { ref, computed, watch } from 'vue'
 import { useStore } from 'vuex'
 import { api, isValidationError } from '@/http'
+import EditIconButton from '@/components/buttons/EditIconButton.vue'
 
 const store = useStore()
 
@@ -9,11 +10,16 @@ const emit = defineEmits(['saved'])
 const props = defineProps({ group: { type: Object, required: true } })
 
 const caption = ref('')
+const editing = ref(false)
 const errors = ref({})
 const saving = ref(false)
 const iconInput = ref(null)
 
 watch(() => props.group, g => { caption.value = g?.caption ?? '' }, { immediate: true })
+
+function toggleEditing() {
+  editing.value = !editing.value
+}
 
 async function save(e) {
 	e?.preventDefault?.()
@@ -39,6 +45,7 @@ async function save(e) {
 		})
 		emit('saved')
 		store.commit('pushSuccess', 'Caption/Icon updated.')
+		editing.value = false
 		if (iconInput.value) iconInput.value.value = null
 	} catch (err) {
 		if (isValidationError(err)) {
@@ -50,31 +57,45 @@ async function save(e) {
 		saving.value = false
 	}
 }
+
+function cancelEdit(e) {
+	e?.preventDefault?.()
+	editing.value = false
+	errors.value = {}
+	if (iconInput.value) iconInput.value.value = null
+	caption.value = props.group?.caption ?? ''
+}
 </script>
 
 <template>
+	<header class="flex justify-between items-center">
+      <h4>Working Group Caption and Icon </h4>
+      <EditIconButton v-if="hasAnyPermission(['groups-manage', ['application-edit', group]]) && ! editing" @click="toggleEditing" />
+    </header>
 	<form-container>
-		<input-row label="Caption (max 250 chars)" :errors="errors.caption">
-			<textarea
+		<input-row label="Caption" :errors="errors.caption">
+			<template v-if="! editing">{{ caption }}</template>
+			<textarea v-else
 				v-model="caption"
 				maxlength="250"
 				rows="3"
 				class="w-full"
 				placeholder="Short description (plain text only)"
 			/>
-			<small>{{ (caption?.length || 0) }}/250</small>
+			<small v-if="editing">Max. 250 chars. {{ (caption?.length || 0) }}/250.</small>
 		</input-row>
 
 		<input-row label="Icon" :errors="errors.icon">
-			<input ref="iconInput" type="file" accept="image/png" />
-			<small class="block text-gray-600">Prefer PNG with a transparent background (recommended 600×600). Max 3 MB. Allowed: PNG, JPG/JPEG, GIF.</small>
+			<input v-if="editing" ref="iconInput" type="file" accept="image/png" />
+			<small v-if="editing" class="block text-gray-600">Prefer PNG with a transparent background (recommended 600×600). Max 3 MB. Allowed: PNG, JPG/JPEG, GIF.</small>
 
 			<div v-if="group?.icon_url" class="mt-2">
 				<img :src="group.icon_url" alt="Current icon" style="max-width:120px;height:auto;" />
 			</div>
 		</input-row>
 
-		<button-row>
+		<button-row v-if="editing">
+			<button type="button" class="btn white" @click="cancelEdit">Cancel</button>
 			<button type="button" class="btn blue" :disabled="saving || !group?.uuid" @click="save">
 				<span v-if="saving">Saving…</span>
 				<span v-else>Save</span>
