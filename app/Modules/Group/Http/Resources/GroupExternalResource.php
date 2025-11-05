@@ -25,7 +25,7 @@ class GroupExternalResource extends JsonResource
      * @param  \Illuminate\Http\Request  $request
      * @return array
      */
-    public function toArray($request)
+    public function toArray($request, $withMembers = true, $withGenes = true)
     {
         $data = [
             'uuid' => $this->uuid,
@@ -36,8 +36,11 @@ class GroupExternalResource extends JsonResource
             'status_date' => $this->groupStatus->updated_at,
             'type' => $this->type->name,
             'coi' => url('/coi-group/'.$this->uuid),
-            'members' => $this->members()->with(['person', 'person.credentials', 'person.institution', 'roles', 'latestCoi'])->get()->map(function ($member) { return $this->mapMemberForMessage($member, false); })->toArray(),
         ];
+
+        if ($withMembers) {
+            $data['members'] = $this->members()->with(['person', 'person.credentials', 'person.institution', 'roles', 'latestCoi'])->get()->map(function ($member) { return $this->mapMemberForMessage($member, false); })->toArray();
+        }
 
         if ($this->isEp) {
             $ep = $this->expertPanel;
@@ -53,8 +56,10 @@ class GroupExternalResource extends JsonResource
                 'date_completed' => $ep->date_completed,
                 'inactive_date' => $this->group_status_id === 5 ? $this->deriveInactiveDate($this->id) : null,
                 'current_step' => $ep->current_step,
-                'genes' => $ep->genes->map(function ($gene) { return $this->mapGeneForMessage($gene); })->toArray()
             ];
+            if ($withGenes) {
+                $epData['all_genes'] = $ep->genes->map(function ($gene) { return $this->mapGeneForMessage($gene); })->toArray();
+            }
 
             if ($this->isVcep || $this->isScvcep) {
                 $epData['vcep_define_group']         = $ep->step_1_approval_date;
