@@ -13,13 +13,14 @@ class EmitGroupCheckpoints
 {
     use AsAction;
 
-    public function handle(Collection $groups, bool $queue = true): array
+    public function handle(Collection $groups, bool $queue = false): array
     {
         if ($groups->isEmpty()) {
             return ['accepted' => 0, 'ids' => []];
         }
 
         if ($queue) {
+            \Illuminate\Support\Facades\Log::warning('Queueing '. $groups->count() .' group checkpoint jobs, but this may be broken');
             foreach ($groups as $g) {
                 EmitGroupCheckpointJob::dispatch($g->id);
             }
@@ -66,7 +67,9 @@ class EmitGroupCheckpoints
             ]);
         }
 
-        $res = $this->handle($allowed, $request->boolean('queue', true));
+        // TODO: maybe put this back to queue when queuing works...
+        // $res = $this->handle($allowed, $request->boolean('queue', true));
+        $res = $this->handle($allowed, false);
 
         return response()->json([
             'status'        => $request->boolean('queue', true) ? 'queued' : 'emitted',
