@@ -79,7 +79,7 @@ trait IsPublishableGroupEvent
                 'type' => $ep->type->name,
 
                 'date_completed' => $ep->date_completed,
-                'inactive_date' => $group->group_status_id === 5 ? $this->deriveInactiveDate($this->id) : null,
+                'inactive_date' => $group->group_status_id === 5 ? $this->deriveInactiveDate($group->id) : null,
                 'current_step' => $ep->current_step,
             ];
             if ($withGenes) {
