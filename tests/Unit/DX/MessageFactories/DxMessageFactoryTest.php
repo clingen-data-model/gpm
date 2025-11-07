@@ -260,6 +260,7 @@ class DxMessageFactoryTest extends TestCase
                 'inactive_date' => null,
             ],
             'status_date' => $this->expertPanel->group->groupStatus->updated_at->toISO8601String(),
+            'icon_url' => $this->expertPanel->group->iconUrl,
         ], $message['data']['group']);
     }
 }
