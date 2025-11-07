@@ -38,6 +38,7 @@ trait IsPublishableGroupEvent
             'first_name' => $person->first_name,
             'last_name' => $person->last_name,
             'roles' => $roles,
+            'additional_permissions' => $member->permissions->pluck('name')->toArray(),
             'institution' => $person->institution->name ?? null,
             'credentials' => $person->credentials->map(function ($credential) {
                                 return $credential->name;
