@@ -10,11 +10,14 @@ use Lorisleiva\Actions\Concerns\AsController;
 use Illuminate\Validation\ValidationException;
 use App\Modules\Group\Events\MemberRoleAssigned;
 use App\Modules\Group\Http\Resources\MemberResource;
+use App\Services\CoreMemberAttestation;
 
 class MemberAssignRole
 {
     use AsController;
     use AsObject;
+
+    public function __construct(private CoreMemberAttestation $attestation) {}
 
     public function handle(GroupMember $groupMember, $roles)
     {
@@ -34,7 +37,7 @@ class MemberAssignRole
         });
 
         $groupMember->assignRole($roles);
-
+        $this->attestation->handle($groupMember, $roles);
         Event::dispatch(new MemberRoleAssigned($groupMember, $roles));
 
         return $groupMember;

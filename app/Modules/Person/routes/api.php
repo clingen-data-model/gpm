@@ -26,6 +26,8 @@ use App\Modules\Person\Actions\InstitutionDelete;
 use App\Modules\Person\Actions\InstitutionsMerge;
 use App\Modules\Person\Actions\InstitutionUpdate;
 use App\Modules\Person\Actions\InviteValidateCode;
+use App\Modules\Person\Actions\AttestationUpdate;
+use App\Modules\Person\Actions\AttestationShow;
 use App\Http\Controllers\Api\InstitutionController;
 use App\Http\Controllers\CountryController;
 use App\Modules\Person\Actions\MarkNotificationRead;
@@ -39,10 +41,7 @@ use App\Modules\Person\Http\Controllers\Api\PersonEmailController;
 use App\Modules\Person\Http\Controllers\Api\ActivityLogsController;
 use App\Modules\Person\Http\Controllers\Api\PersonNotificationController;
 
-Route::group([
-    'prefix' => 'api/people',
-    'middleware' => ['api']
-], function () {
+Route::group(['prefix' => 'api/people', 'middleware' => ['api'] ], function () {
     Route::get('/institutions', [InstitutionController::class, 'index']);
 
     Route::get('/timezones', function (Request $request) {
@@ -54,27 +53,31 @@ Route::group([
     ], function () {
         Route::get('/', [PeopleController::class, 'index']);
         Route::get('/invites/', [InviteController::class, 'index']);
-
         Route::put('/merge', PersonMerge::class);
 
-        Route::get('/{person:uuid}', [PeopleController::class, 'show']);
-        Route::delete('/{person:uuid}', PersonDelete::class);
-        Route::put('/{person:uuid}/profile', ProfileUpdate::class);
-        Route::put('/{person:uuid}/demographics', DemographicsUpdate::class);
-        Route::get('/{person:uuid}/demographics', [PeopleController::class, 'showDemographics']);
-        // No post route b/c person creation currently happens when adding members to groups.
+        Route::prefix('/{person:uuid}')->group(function () {
+                
+            Route::get('/', [PeopleController::class, 'show']);
+            Route::delete('/', PersonDelete::class);
+            Route::put('/profile', ProfileUpdate::class);
+            Route::put('/demographics', DemographicsUpdate::class);
+            Route::get('/demographics', [PeopleController::class, 'showDemographics']);
+            // No post route b/c person creation currently happens when adding members to groups.
 
-        Route::get('/{person:uuid}/activity-logs', [ActivityLogsController::class, 'index']);
-        Route::get('/{person:uuid}/email', [PersonEmailController::class, 'index']);
-        Route::get('/{person:uuid}/notifications/unread', [PersonNotificationController::class, 'unread']);
+            Route::get('/activity-logs', [ActivityLogsController::class, 'index']);
+            Route::get('/email', [PersonEmailController::class, 'index']);
+            Route::get('/notifications/unread', [PersonNotificationController::class, 'unread']);
 
-        Route::post('/{person:uuid}/profile-photo', PersonPhotoStore::class);
-        Route::get('/{person:uuid}/profile-photo', function (Person $person) {
-            if (!\Storage::disk('profile-photos')->exists($person->profile_photo)) {
-                return response()->file(public_path('images/default_profile.jpg'));
-            }
+            Route::post('/profile-photo', PersonPhotoStore::class);
+            Route::get('/profile-photo', function (Person $person) {
+                if (!\Storage::disk('profile-photos')->exists($person->profile_photo)) {
+                    return response()->file(public_path('images/default_profile.jpg'));
+                }
+                return \Storage::disk('profile-photos')->get($person->profile_photo);
+            });
 
-            return \Storage::disk('profile-photos')->get($person->profile_photo);
+            Route::get('/attestation', AttestationShow::class);
+            Route::put('/attestation', AttestationUpdate::class);
         });
     });
 

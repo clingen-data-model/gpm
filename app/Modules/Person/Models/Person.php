@@ -14,6 +14,7 @@ use App\Modules\Person\Models\Race;
 use App\Modules\Person\Models\Gender;
 use Database\Factories\PersonFactory;
 use App\Modules\Person\Models\Country;
+use App\Modules\Person\Models\Attestation;
 use App\Models\Contracts\HasLogEntries;
 use Illuminate\Database\Eloquent\Model;
 use App\Modules\Person\Models\Ethnicity;
@@ -29,6 +30,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use App\Models\Traits\HasLogEntries as HasLogEntriesTrait;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class Person extends Model implements HasLogEntries
 {
@@ -150,6 +152,9 @@ class Person extends Model implements HasLogEntries
 
     protected $appends = [
         'name',
+        'attestation_pending',
+        'requires_core_member_attestation',
+        'has_core_member_attestation',
     ];
 
     public function __construct(array $attributes = [])
@@ -465,4 +470,46 @@ class Person extends Model implements HasLogEntries
     {
         return new PersonFactory();
     }
+
+    public function attestation(): HasOne
+    {
+        return $this->hasOne(Attestation::class, 'person_id', 'id')->whereNull('revoked_at')->whereNull('deleted_at');
+    }
+
+    public function coreApprovalAttestation()
+    {
+        return $this->hasOne(Attestation::class)->whereNull('revoked_at');
+    }
+
+    protected function hasCoreMemberAttestation(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                $attestation = $this->relationLoaded('attestation') ? $this->attestation : $this->attestation()->first();
+                return $attestation !== null;
+            }
+        );
+    }
+
+    protected function attestationPending(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                $attestation = $this->relationLoaded('attestation') ? $this->attestation : $this->attestation()->first();
+                return $attestation !== null && $attestation->attested_at === null;
+            }
+        );
+    }
+
+    protected function requiresCoreMemberAttestation(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                $roleId = config('groups.roles.core-approval-member.id', 105);
+                $isCoreNow = $this->activeMemberships()->whereHas('roles', fn($q) => $q->where('id', $roleId)->orWhere('name', 'core-approval-member'))->exists();
+                return $isCoreNow && $this->attestation_pending;
+            }
+        );
+    }
+
 }

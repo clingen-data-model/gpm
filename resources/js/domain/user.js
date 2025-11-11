@@ -51,6 +51,15 @@ class User extends Entity {
         return this.person.hasPendingCois;
     }
 
+    get hasPendingCoreMemberAttestation() {
+        return !!(this.person && this.person.requires_core_member_attestation === true);
+    }
+
+    get attestationPending() {
+        return !!(this.person && this.person.attestation_pending === true);
+    }
+
+
     hasRole (role, group = null)
     {
         return arrayContains(role, this.roles)

@@ -12,6 +12,7 @@ import ApplicationActivity from '../components/dashboard/ApplicationActivity.vue
 import DashboardAlerts from '@/components/dashboard/DashboardAlerts.vue'
 import NotificationList from '../components/NotificationList.vue'
 import DemographicsForm from '../components/people/DemographicsForm.vue';
+import CoreMemberAttestationForm from '@/components/people/CoreMemberAttestationForm.vue'
 import { featureIsEnabled } from '@/utils.js'
 import { hasAnyPermission, hasPermission } from '@/auth_utils.js'
 
@@ -153,6 +154,10 @@ const navigateToGroup = (item) => {
 
       <tab-item label="Demographics">
         <DemographicsForm :uuid="user.person.uuid" />
+      </tab-item>
+      
+      <tab-item v-if="user.person.has_core_member_attestation" label="Attestation">
+        <CoreMemberAttestationForm :person-uuid="user.person.uuid" :editing="user.person.requires_core_member_attestation" />
       </tab-item>
     </tabs-container>
   </div>

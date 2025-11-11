@@ -153,6 +153,12 @@ const routes = [
         },
         // beforeEnter: (to) => hasPermission(to, 'reports-pull')
     },
+    {
+        name: 'CoreMemberAttestation',
+        path: '/core-approval-member-attestation',
+        component: () => import('@/views/PendingCoreMemberAttestation.vue'),
+        meta: { protected: true }
+    }
 ]
 
 const router = createRouter({
@@ -215,6 +221,7 @@ router.beforeEach(async (to, from, next) => {
         || to.name === 'InitialProfileForm'
         || to.name === 'PendingCoiList'
         || to.name === 'coi'
+        || to.name === 'CoreMemberAttestation'
     ) {
         next();
         return;
@@ -245,6 +252,12 @@ router.beforeEach(async (to, from, next) => {
     if (store.getters.currentUser.person.demographics_completed_date === null && !store.getters.currentUser.is_impersonating) {
         //  console.log('redirecting to demographics form');
         router.replace({ name: 'RequiredDemographicsUpdateForm', params: { redirectTo: to } });
+        next();
+        return;
+    }
+
+    if (store.getters.currentUser.person.requires_core_member_attestation && !store.getters.currentUser.is_impersonating) {
+        router.replace({ name: 'CoreMemberAttestation', params: { redirectTo: to } });
         next();
         return;
     }
