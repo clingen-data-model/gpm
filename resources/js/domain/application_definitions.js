@@ -146,9 +146,6 @@ export const VcepApplication = applicationDefinitionFactory({
                         requirements.longName,
                         requirements.shortName
                     ],
-                    // components: [
-                    //     GroupForm,
-                    // ]
                 },
                 membership: {
                     name: 'Membership',
@@ -160,10 +157,6 @@ export const VcepApplication = applicationDefinitionFactory({
                         requirements.expertiseDescription,
                         requirements.memberExpertise
                     ],
-                    // components: [
-                        // MemberList,
-                        // MembershipDescriptionForm
-                    // ]
                 },
                 websiteDescription: {
                     name: 'Website Decription',
@@ -177,28 +170,18 @@ export const VcepApplication = applicationDefinitionFactory({
                         requirements.genes,
                         requirements.scopeDescription
                     ],
-                    // components: [
-                        // ScopeDescriptionForm,
-                        // VcepGeneList
-                    // ]
                 },
                 reanalysis: {
                     name: 'Reanalysis & Discrepency Resolution',
                     requirements: [
                         requirements.reanalysisAttestation
                     ],
-                    // components: [
-                        // AttestationReanalysis,
-                    // ]
                 },
                 nhgri: {
                     name: 'NHGRI Data Availability',
                     requirements: [
                         requirements.nhgri
                     ],
-                    // components: [
-                        // AttestationNhgri
-                    // ]
                 }
 
             },
@@ -215,9 +198,6 @@ export const VcepApplication = applicationDefinitionFactory({
                         requirements.draftApprovedSpecifications
                     ],
                 }
-                // components: [
-                    // CspecSummary
-                // ]
             },
             completed: group => {
                 return group.expert_panel.draftSpecificationsIsApproved
@@ -233,9 +213,6 @@ export const VcepApplication = applicationDefinitionFactory({
                         requirements.pilotedApprovedSpecifications
                     ],
                 }
-                // components: [
-                    // CspecSummary
-                // ]
             },
             completed: group => group.expert_panel.pilotSpecificationsIsApproved,
             disabled: group => !group.expert_panel.draftSpecificationsIsApproved,
@@ -249,29 +226,21 @@ export const VcepApplication = applicationDefinitionFactory({
                         requirements.meetingFrequency,
                         requirements.curationProcess
                     ],
-                    // components: [
-                        // VcepOngoingPlansForm
-                    // ]
                 },
                 evidenceSummaries: {
                     name: 'Example Evidence Summaries',
                     requirements: [
                         requirements.exampleSummaries
                     ],
-                    // components: [
-                        // EvidenceSummaryList
-                    // ]
                 },
                 designations: {
                     name: 'Member Designation',
                     requirements: [
                         requirements.minimumBiocurators,
                         requirements.biocuratorTrainers,
-                        requirements.coreApprovalMembers
+                        requirements.coreApprovalMembers,
+                        requirements.coreApprovalMembersAttestation
                     ],
-                    // components: [
-                        // MemberDesignationForm
-                    // ]
                 },
             },
             completed: group => group.expert_panel.sustainedCurationIsApproved,

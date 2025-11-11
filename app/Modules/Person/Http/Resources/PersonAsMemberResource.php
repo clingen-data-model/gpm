@@ -28,6 +28,7 @@ class PersonAsMemberResource extends JsonResource
             'legacy_credentials' => $this->legacy_credentials,
             'institution_id' => $this->institution_id,
             'country_id' => $this->country_id,
+            'attestation_completed' => $this->attestation_completed,
         ];
         $data['institution'] = $this->whenLoaded('institution', new InstitutionResource($this->institution));
         $data['credentials'] = $this->whenLoaded('credentials', $this->credentials);

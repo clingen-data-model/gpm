@@ -24,6 +24,7 @@ class Person extends Entity {
         gender_id: null,
         gender: {},
         gender_other: null,
+        attestation_completed: false,
         created_at: null,
         updated_at: null,
         deleted_at: null
@@ -135,6 +136,11 @@ class Person extends Entity {
     get needsExpertise () {
         return !this.hasExpertise;
     }
+
+    get attestationCompleted() {
+        return !!this.attestation_completed;
+    }
+
 
     matchesKeyword(keyword) {
 

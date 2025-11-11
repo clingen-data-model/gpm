@@ -155,6 +155,7 @@ class Person extends Model implements HasLogEntries
         'attestation_pending',
         'requires_core_member_attestation',
         'has_core_member_attestation',
+        'attestation_completed',
     ];
 
     public function __construct(array $attributes = [])
@@ -479,6 +480,13 @@ class Person extends Model implements HasLogEntries
     public function coreApprovalAttestation()
     {
         return $this->hasOne(Attestation::class)->whereNull('revoked_at');
+    }
+
+    protected function attestationCompleted(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => (bool) ($this->has_core_member_attestation && !$this->attestation_pending)
+        );
     }
 
     protected function hasCoreMemberAttestation(): Attribute
