@@ -15,6 +15,7 @@ class Person extends Entity {
         profile_photo: null,
         race_id: null,
         coc: null,
+        attestation_completed: false,
         created_at: null,
         updated_at: null,
         deleted_at: null
@@ -101,8 +102,13 @@ class Person extends Entity {
     get cocStatus () {
         return this.coc?.status ?? 'missing'
     }
+
     get cocIsDue () {
         return ['missing','expired','version_mismatch'].includes(this.cocStatus)
+    }
+
+    get attestationCompleted() {
+        return !!this.attestation_completed;
     }
 
     matchesKeyword(keyword) {

@@ -64,6 +64,11 @@ export default {
                 this.toggleRole(value, 'civic-editor')
             }
         },
+        attestationStatus () {
+            if (!this.coreApprovalMember) { return null; }
+            if (this.workingCopy?.person?.attestation_completed === true) { return 'completed'; }
+            return 'pending'
+        },
         canEdit () {
             return this.hasAnyPermission([
                         'ep-applications-manage',
@@ -111,7 +116,7 @@ export default {
             promises.push(this.updateTrainingInfo());
             promises.push(this.syncRoles());
 
-            return promises;
+            return promises; // return Promise.all(promises).then(() => this.emitUpdated())
         },
 
         updateTrainingInfo () {
@@ -163,8 +168,13 @@ export default {
     <td>
       <input v-model="biocuratorTrainer" type="checkbox" :disabled="!canEdit" @input="debounceSave">
     </td>
-    <td>
-      <input v-model="coreApprovalMember" type="checkbox" :disabled="!canEdit" @input="debounceSave">
+    <td class="align-middle">
+      <div class="flex items-center gap-2">
+        <input v-model="coreApprovalMember" type="checkbox" :disabled="!canEdit" @input="debounceSave" class="align-middle" />
+        <span v-if="attestationStatus" class="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs" :class="{ 'bg-green-100 text-green-800': attestationStatus === 'completed', 'bg-amber-100 text-amber-800': attestationStatus === 'pending'}" :title="attestationStatus === 'completed' ? 'Attestation Completed' : 'Attestation Required'">
+            {{ attestationStatus === 'completed' ? 'Attestation Completed' : 'Attestation Required' }}
+        </span>
+      </div>
     </td>
     <td v-if="isScvcep">
       <input v-model="civicEditor" type="checkbox" :disabled="!canEdit" @input="debounceSave">
