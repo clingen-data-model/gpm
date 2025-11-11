@@ -125,6 +125,16 @@ export const memberExpertise = new Requirement (
                 .length === 0
 )
 
+export const coreApprovalMembersAttestation = new Requirement(
+    'Core Approval Members have completed attestation',
+    group => {
+        const members = group.coreApprovalMembers || [];        
+        if (members.length === 0) return false;
+        return members.every(m => m.person && m.person.attestation_completed === true);
+    }
+);
+
+
 export default {
     longName,
     shortName,
@@ -150,4 +160,5 @@ export default {
     biocuratorTrainers,
     coreApprovalMembers,
     memberExpertise,
+    coreApprovalMembersAttestation,
 };

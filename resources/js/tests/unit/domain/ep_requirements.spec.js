@@ -77,3 +77,35 @@ describe('coreApprovalMembers', () => {
         expect(requirements.coreApprovalMembers.isMet(testGroup)).to.be.true;
     });
 });
+
+describe('coreApprovalMembersAttestation', () => {
+    let testGroup;
+    const coreRole = groups.roles['core-approval-member'];
+
+    const coreMember = ({ completed = false } = {}) =>
+        new GroupMember({
+            roles: [coreRole],
+            person: { attestation_completed: completed, },
+        });
+
+    beforeEach(() => {
+        testGroup = new Group();
+        testGroup.members = [];
+    });
+
+    it('is NOT met when there are no core-approval members', () => {
+        expect(requirements.coreApprovalMembersAttestation.isMet(testGroup)).to.be.false;
+    });
+
+    it('is NOT met if any one core-approval member is not completed', () => {
+        testGroup.members.push(coreMember({ completed: true }));
+        testGroup.members.push(coreMember({ completed: false }));
+        expect(requirements.coreApprovalMembersAttestation.isMet(testGroup)).to.be.false;
+    });
+
+    it('is met when all core-approval members have completed attestation', () => {
+        testGroup.members.push(coreMember({ completed: true }));
+        testGroup.members.push(coreMember({ completed: true }));
+        expect(requirements.coreApprovalMembersAttestation.isMet(testGroup)).to.be.true;
+    });
+});
