@@ -67,6 +67,7 @@ export default {
         attestationStatus () {
             if (!this.coreApprovalMember) { return null; }
             if (this.workingCopy?.person?.attestation_completed === true) { return 'completed'; }
+            if (!this.coreApprovalMember) { return null; }
             return 'pending'
         },
         canEdit () {
