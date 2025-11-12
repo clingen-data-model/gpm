@@ -11,7 +11,7 @@ use Illuminate\Validation\Rule;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsController;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use App\Modules\Person\Events\AttestationCompleted;
+use App\Modules\Person\Events\AttestationUpdated;
 
 class AttestationUpdate
 {
@@ -27,13 +27,13 @@ class AttestationUpdate
             }
 
             $attestation->fill([
-                'experience_type'     => $data['experience_type'],
-                'other_text'          => $data['other_text'] ?? null,
-                'attestation_version' => Attestation::CURRENT_VERSION,
-                'attested_by'         => optional(auth()->user())->id,
-                'attested_at'         => now(),
+                'experience_types'      => $data['experience_types'],
+                'other_text'            => $data['other_text'] ?? null,
+                'attestation_version'   => Attestation::CURRENT_VERSION,
+                'attested_by'           => optional(auth()->user())->id,
+                'attested_at'           => now(),
             ])->save();
-            Event::dispatch(new AttestationCompleted($person, $attestation));
+            Event::dispatch(new AttestationUpdated($person, $attestation));
 
             return $attestation->refresh();
         });
@@ -42,15 +42,16 @@ class AttestationUpdate
     public function asController(ActionRequest $request, Person $person)
     {
         Log::info($request->only('experience_type', 'other_text'));
-        $attestation = $this->handle($person, $request->only('experience_type', 'other_text'));
+        $attestation = $this->handle($person, $request->only('experience_types', 'other_text'));
         return $attestation;
     }
 
     public function rules(): array
     {
         return [
-            'experience_type'   => ['required', Rule::in([Attestation::TYPE_DIRECT, Attestation::TYPE_REVIEW, Attestation::TYPE_FIFTY, Attestation::TYPE_OTHER])],
-            'other_text'        => 'nullable|required_if:experience_type,other|string|max:5000',
+            'experience_types'      => ['required','array','min:1'],
+            'experience_types.*'    => ['required', Rule::in([Attestation::TYPE_DIRECT, Attestation::TYPE_REVIEW, Attestation::TYPE_FIFTY, Attestation::TYPE_OTHER])],
+            'other_text'            => 'nullable|required_if:experience_type,other|string|max:1000|min:20',
         ];
     }
 

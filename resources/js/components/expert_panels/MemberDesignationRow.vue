@@ -51,9 +51,9 @@ export default {
                 this.toggleRole(value, 'core-approval-member')
             }
         },
-        attestationStatus () {
-            if (!this.coreApprovalMember) { return null; }
+        attestationStatus () {            
             if (this.workingCopy?.person?.attestation_completed === true) { return 'completed'; }
+            if (!this.coreApprovalMember) { return null; }
             return 'pending'
         },
 

@@ -8,7 +8,7 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Queue\SerializesModels;
 
-class AttestationPendingCreated extends PersonEvent
+class AttestationCreated extends PersonEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -20,7 +20,7 @@ class AttestationPendingCreated extends PersonEvent
 
     public function getLogEntry(): string
     {
-        return 'Core Member attestation stub created (pending) for ' . $this->person->first_name . ' ' . $this->person->last_name . '.';
+        return 'Core Approval Member attestation stub created for ' . $this->person->first_name . ' ' . $this->person->last_name . '.';
     }
 
     public function getProperties(): array

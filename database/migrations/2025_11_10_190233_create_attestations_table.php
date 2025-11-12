@@ -15,7 +15,7 @@ return new class extends Migration
             $table->uuid('uuid')->primary();
 
             $table->foreignId('person_id')->constrained('people')->cascadeOnDelete();
-            $table->enum('experience_type', ['direct_experience', 'detailed_review', 'fifty_variants_supervised', 'other'])->nullable();
+            $table->json('experience_types')->nullable();
             $table->text('other_text')->nullable();
 
             $table->string('attestation_version')->nullable();
