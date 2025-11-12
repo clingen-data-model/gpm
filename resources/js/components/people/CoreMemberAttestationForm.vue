@@ -14,7 +14,7 @@ const store = useStore()
 const loading = ref(true)
 const saving = ref(false)
 const errors = ref({})
-const form = ref({ experience_type: null, other_text: null})
+const form = ref({ experience_types: [], other_text: null})
 const canToggle  = computed(() => ! props.editing)
 
 onMounted(load)
@@ -27,7 +27,7 @@ async function load() {
             headers: { 'X-Ignore-Missing': '1' }
         })
         if (data) {
-            form.value.experience_type = data.experience_type ?? null
+            form.value.experience_types = (data.experience_type ? [data.experience_type] : [])
             form.value.other_text = data.other_text ?? null
             form.value.attestation_version = data.attestation_version ?? null
         }
@@ -40,8 +40,8 @@ async function submit() {
     errors.value = {}
     try {
         await api.put(`/api/people/${props.personUuid}/attestation`, {
-            experience_type: form.value.experience_type,
-            other_text: form.value.experience_type === 'other' ? form.value.other_text : null,
+            experience_types: form.value.experience_types,
+            other_text: form.value.experience_types.includes('other') ? form.value.other_text : null,
         })
         props.editing = false
         await store.dispatch('forceGetCurrentUser')
@@ -63,30 +63,31 @@ async function submit() {
         <div v-if="loading">Loading...</div>
         <form v-else @submit.prevent="submit" class="space-y-4">
             <fieldset class="space-y-2">
-                <legend class="font-medium">Core Approval Member Experience</legend>
+                <legend class="font-medium">Core Approval Member Experience (Please check all that apply)</legend>
 
                 <label class="flex items-start gap-2">
-                    <input :disabled="! editing" type="radio" v-model="form.experience_type" value="direct_experience">
+                    <input :disabled="! editing" type="checkbox" v-model="form.experience_types" value="direct_experience">
                     <span>Direct experience with collection/review of evidence and application of ACMG/AMP criteria</span>
                 </label>
                 <label class="flex items-start gap-2">
-                    <input :disabled="! editing" type="radio" v-model="form.experience_type" value="detailed_review">
+                    <input :disabled="! editing" type="checkbox" v-model="form.experience_types" value="detailed_review">
                     <span>Detailed review of collection/review of evidence and application of ACMG/AMP criteria</span>
                 </label>
                 <label class="flex items-start gap-2">
-                    <input :disabled="! editing" type="radio" v-model="form.experience_type" value="fifty_variants_supervised">
+                    <input :disabled="! editing" type="checkbox" v-model="form.experience_types" value="fifty_variants_supervised">
                     <span>At least 50 variants and 1 year of curation experience with supervision or peer review</span>
                 </label>
                 <label class="flex items-start gap-2">
-                    <input :disabled="! editing" type="radio" v-model="form.experience_type" value="other">
+                    <input :disabled="! editing" type="checkbox" v-model="form.experience_types" value="other">
                     <span>Other (describe)</span>
                 </label>
 
-                <textarea :disabled="! editing" v-if="form.experience_type === 'other'" class="w-full border rounded p-2" rows="3" v-model="form.other_text" placeholder="Describe your experience" />
+                <textarea :disabled="! editing" v-if="form.experience_types.includes('other')" class="w-full border rounded p-2" rows="3" v-model="form.other_text" placeholder="Describe your experience" />                
                 <div v-if="errors.other_text" class="text-red-600 text-sm">{{ errors.other_text[0] }}</div>
             </fieldset>
 
-            <div v-if="errors.experience_type" class="text-red-600 text-sm">{{ errors.experience_type[0] }}</div>
+            <div v-if="errors.experience_types" class="text-red-600 text-sm">{{ Array.isArray(errors.experience_types) ? errors.experience_types[0] : errors.experience_types }}</div>
+            <div v-if="errors['experience_types.*']" class="text-red-600 text-sm">{{ errors['experience_types.*'][0] }}</div>
 
             <div v-if="editing" class="flex items-center gap-2">
                 <button type="button" class="rounded border px-3 py-2" @click="editing = false">Cancel</button>

@@ -19,7 +19,7 @@ class Attestation extends Model
 
     protected $fillable = [
         'person_id',
-        'experience_type',
+        'experience_types',
         'other_text',
         'attestation_version',
         'attested_by',
@@ -31,6 +31,7 @@ class Attestation extends Model
         'attested_at' => 'datetime',
         'revoked_at'  => 'datetime',
         'deleted_at'  => 'datetime',
+        'experience_types' => 'array',
     ];
 
     public const TYPE_DIRECT = 'direct_experience';

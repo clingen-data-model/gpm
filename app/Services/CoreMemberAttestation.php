@@ -5,7 +5,7 @@ namespace App\Services;
 use App\Modules\Group\Models\GroupMember;
 use App\Modules\Person\Models\Attestation;
 use Illuminate\Support\Facades\DB;
-use App\Modules\Person\Events\AttestationPendingCreated;
+use App\Modules\Person\Events\AttestationCreated;
 use Illuminate\Support\Facades\Event;
 
 class CoreMemberAttestation
@@ -32,7 +32,7 @@ class CoreMemberAttestation
             if ($existing) return;
 
             $attestation = Attestation::create(['person_id' => $person->id]);
-            Event::dispatch(new AttestationPendingCreated($person, $attestation));
+            Event::dispatch(new AttestationCreated($person, $attestation));
 
         });
     }
