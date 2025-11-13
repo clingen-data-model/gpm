@@ -1,13 +1,14 @@
 @php
-    $name = $person->first_name ?? 'ClinGen member';
+    $name = $person->first_name . " " . $person->last_name ?? 'ClinGen member';
     $url  = $url ?? (rtrim(config('app.url'), '/') . '/core-approval-member-attestation');
+	$panelList = collect($vcepNames ?? [])->filter()->map(fn ($n) => trim($n).' VCEP')->join(', ', ', and ');
 @endphp
 
 <p>Dear {{ $name }},</p>
 
 <p>
-	@if(!empty($vcepNames))
-		You have been designated as a Core Approval member for the VCEP{{ count($vcepNames) > 1 ? 's' : '' }} {{ implode(', ', $vcepNames) }}.
+	@if($panelList)
+		You have been designated as a Core Approval member for {{ $panelList }}.
 	@else
 		You have been designated as a Core Approval member for a VCEP.
 	@endif
