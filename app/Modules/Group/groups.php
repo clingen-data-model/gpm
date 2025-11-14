@@ -185,9 +185,15 @@ return [
             'display_name' => 'Manage Annual Update',
             'description' => 'Can edit and submit an annual update.',
         ],
+        'website-content-manage' => [
+            'id' => 1009,
+            'name' => 'website-content-manage',
+            'display_name' => 'Manage Website Content',
+            'description' => 'Can manage the content that appears on the public website for this group.',
+        ],
     ],
     'role_permissions' => [
-        'coordinator' => [1001,1002,1003,1004,1005,1006, 1007, 1008],
-        'grant-liaison' => [1008],
+        'coordinator' => [1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 1009],
+        'grant-liaison' => [1008, 1009],
     ],
 ];
