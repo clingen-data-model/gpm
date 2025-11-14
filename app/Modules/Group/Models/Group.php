@@ -321,7 +321,7 @@ class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDoc
 
         $ver = $disk->lastModified($rel);
         return "{$url}?v={$ver}";
-    }    
+    }
 
     protected function iconUrl(): Attribute
     {
@@ -336,6 +336,31 @@ class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDoc
     public function isWorkingGroup(): bool
     {
         return (int) $this->group_type_id === config('groups.types.wg.id');
+    }
+
+    public function activeMemberships()
+    {
+        return $this->members()->isActive();
+    }
+
+    public function memberIsActive(int $personId): bool
+    {
+        return $this->activeMemberships()
+            ->where('person_id', $personId)
+            ->exists();
+    }
+
+    public function memberIsCoordinator(int $personId): bool
+    {
+        return $this->activeMemberships()
+            ->where('person_id', $personId)
+            ->whereHas('roles', fn ($q) => $q->where('name', 'coordinator'))
+            ->exists();
+    }
+
+    public function isApproved(): bool
+    {
+        return (int)$this->group_status_id === (int)config('groups.statuses.active.id');
     }
 
 }

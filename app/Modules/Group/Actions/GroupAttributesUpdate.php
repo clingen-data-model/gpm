@@ -99,7 +99,29 @@ class GroupAttributesUpdate
 
     public function authorize(ActionRequest $request): bool
     {
-        return Auth::user() && Auth::user()->hasPermissionTo('groups-manage');
+        $user = Auth::user();
+        if (!$user) { return false; }
+
+        $keys = collect($request->only('name','description','parent_id','group_status_id'))
+            ->filter(fn ($v) => !is_null($v))
+            ->keys();
+
+        // If only description
+        $isDescriptionOnly = $keys->count() === 1 && $keys->first() === 'description';
+        if (!$isDescriptionOnly) { return $user->hasPermissionTo('groups-manage'); }
+
+        $group = $request->route('group');
+        if ($user->hasPermissionTo('groups-manage')) return true;
+
+        $personId = optional($user->person)->id;
+        if (!$personId) return false;
+
+        if (!$group->isApproved()) { // Before Approval, any members can edit
+            return $group->memberIsActive($personId);
+        }
+
+        return $group->memberIsCoordinator($personId);
+
     }
 
     public function asListener(ApplicationCompleted $event)
