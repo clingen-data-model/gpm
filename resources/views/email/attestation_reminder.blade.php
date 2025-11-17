@@ -12,13 +12,13 @@
 	@else
 		You have been designated as a Core Approval member for a VCEP.
 	@endif
-	As part of this designation, you are required to attest to your experience with variant interpretation according to the requirements outlined in the <a href="https://www.clinicalgenome.org/docs/clingen-variant-curation-expert-panel-vcep-protocol/" target="_blank" rel="noopener">ClinGen VCEP protocol</a>.
+	As a part of this designation, you are required to attest to your experience with variant classification according to the requirement outlined in the <a href="https://www.clinicalgenome.org/docs/clingen-variant-curation-expert-panel-vcep-protocol/" target="_blank" rel="noopener">ClinGen VCEP protocol</a>.
 </p>
 <p>
-  	Please <a href="{{ $url }}">take your attestation</a> or sign into the ClinGen Group and <a href="https://gpm.clinicalgenome.org/">Personnel Management (GPM)</a> system to take your required attestation.
+  	Please follow the <a href="{{ $url }}">link</a> or sign into the ClinGen Group and Personnel Management (<a href="https://gpm.clinicalgenome.org/">GPM</a>) system to take your required attestation.
 </p>
 <p>
-  	The attestation is required only once, even if you are designated on multiple VCEPs.
+  	The attestation is required only once, even if you are designated as a Core Approval member on multiple VCEPs.
 </p>
 <p>
   	If you have questions or need to report an issue, please email <a href="mailto:gpm_support@clinicalgenome.org">gpm_support@clinicalgenome.org</a>.
