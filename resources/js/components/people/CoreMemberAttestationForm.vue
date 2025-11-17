@@ -17,7 +17,7 @@ const errors = ref({})
 const form = ref({ experience_types: [], other_text: null})
 const canToggle  = computed(() => ! props.editing)
 const localEditing = ref(props.editing)
-const showCancel = ! localEditing
+const showCancel = ! props.editing
 
 onMounted(load)
 
