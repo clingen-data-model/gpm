@@ -10,6 +10,7 @@ use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Modules\Group\Events\PublishableApplicationEvent;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use App\Modules\Group\Events\Traits\IsPublishableGroupEvent;
+use Illuminate\Support\Facades\Log;
 
 class StepApproved extends ExpertPanelEvent implements PublishableApplicationEvent
 {
@@ -45,15 +46,24 @@ class StepApproved extends ExpertPanelEvent implements PublishableApplicationEve
 
     public function getEventType(): string
     {
+        $isVcep = $this->application->is_vcep;
+        $isGcep = $this->application->is_gcep;       
+
         switch ($this->step) {
             case 1:
-                return 'ep_definition_approved';
+                if ($isVcep) {
+                    return 'vcep_definition_approval';
+                } 
+                if ($isGcep) {
+                    return 'gcep_final_approval';
+                }
+                break;
             case 2:
-                return 'vcep_draft_specifications_approved';
+                return 'vcep_draft_specification_approval';
             case 3:
-                return 'vcep_pilot_approved';
+                return 'vcep_pilot_approval';
             case 4:
-                return 'ep_final_approval';
+                return 'vcep_final_approval';
             default:
                 throw new Exception('Invalid step approved expected 1-4, received '.$this->step);
         }

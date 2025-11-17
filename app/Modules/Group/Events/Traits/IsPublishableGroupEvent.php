@@ -88,14 +88,13 @@ trait IsPublishableGroupEvent
             }
 
             if ($group->isVcep || $group->isScvcep) {
-                $epData['vcep_define_group']         = $ep->step_1_approval_date;
-                $epData['vcep_classification_rules'] = $ep->step_2_approval_date;
-                $epData['vcep_pilot_rules']          = $ep->step_3_approval_date;
-                $epData['vcep_approval']             = $ep->step_4_approval_date;
+                $epData['vcep_definition_approval']             = $ep->step_1_approval_date;
+                $epData['vcep_draft_specification_approval']    = $ep->step_2_approval_date;
+                $epData['vcep_pilot_approval']                  = $ep->step_3_approval_date;
+                $epData['vcep_final_approval']                  = $ep->step_4_approval_date;
             }
             if ($group->isGcep) {
-                $epData['gcep_define_group']         = $ep->step_1_received_date;
-                $epData['gcep_approval']             = $ep->step_4_approval_date;
+                $epData['gcep_final_approval']  = $ep->step_1_approval_date;
             }
 
             $data['expert_panel'] = $epData;

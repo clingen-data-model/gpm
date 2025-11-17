@@ -56,9 +56,9 @@ return [
      * The current schema version of messages sent to a particular topic.
      */
     'schema_versions' => [
-        'gpm-general-events' => '2.0.0',
-        'gpm-person-events' => '2.0.0',
-        'gpm-checkpoint-events' => '2.0.0'
+        'gpm-general-events' => '2.0.1',
+        'gpm-person-events' => '2.0.1',
+        'gpm-checkpoint-events' => '2.0.1'
     ]
 
 ];
