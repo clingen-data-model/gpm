@@ -24,17 +24,6 @@ class GenerateDxExamples extends Command
      */
     protected $signature = 'dx:generate-examples';
 
-    protected $factory;
-
-    public function __construct()
-    {
-        parent::__construct();
-        config(['dx.push-enable' => true]);
-        config(['dx.driver' => 'log']);
-
-        $this->factory = new DxMessageFactory();
-    }
-
     protected $description = 'Generate example messages for data exchange';
 
     public function isHidden(): bool
@@ -44,6 +33,10 @@ class GenerateDxExamples extends Command
 
     public function handle()
     {
+        config(['dx.push-enable' => true]);
+        config(['dx.driver' => 'log']);
+
+        $factory = new DxMessageFactory();
         if ($this->isHidden()) {
             $this->info('This command is only available in the local environment.');
             $this->info('It might be OK to run in production, but why chance it?');
@@ -80,6 +73,6 @@ class GenerateDxExamples extends Command
     protected function jinfo($event)
     {
         $this->info("\n// --------------------\n");
-        $this->info(json_encode($this->factory->makeFromEvent($event), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+        $this->info(json_encode($factory->makeFromEvent($event), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
     }
 }
