@@ -25,11 +25,14 @@ class GroupCreate
     public function handle($data): Group
     {
         $uuid = isset($data['uuid']) ? $data['uuid'] : Uuid::uuid4();
+        $visibilityId = $data['group_visibility_id'] ?? config('groups.visibility.public.id') ?? 1;
+
         $group = Group::create([
             'uuid' => $uuid,
             'name' => $data['name'],
             'group_type_id' => $data['group_type_id'],
             'group_status_id' => $data['group_status_id'],
+            'group_visibility_id' => $visibilityId,
             'coi_code' => $this->makeCoiCode->handle(),
             'parent_id' => $this->resolveParentId($data),
             'website_url' => $data['website_url'] ?? null,
@@ -57,8 +60,7 @@ class GroupCreate
 
     public function asController(ActionRequest $request)
     {
-        $data = $request->only('name', 'group_type_id', 'group_status_id', 'parent_id', 'long_base_name', 'short_base_name', 'website_url', 'affiliation_id');
-
+        $data = $request->only('name', 'group_type_id', 'group_status_id', 'group_visibility_id', 'parent_id', 'long_base_name', 'short_base_name', 'website_url', 'affiliation_id');
         $group = $this->handle($data);
         $group->load('expertPanel');
 
@@ -73,6 +75,7 @@ class GroupCreate
             'short_base_name' => 'max:16',
             'group_type_id' => 'required', // TODO: should check for existence when we merge vcep/gcep into group
             'group_status_id' => 'required|exists:group_statuses,id',
+            'group_visibility_id' => 'nullable|exists:group_visibilities,id',
             'parent_id' => [
                 'nullable',
                 function ($attribute, $value, $fail) {
