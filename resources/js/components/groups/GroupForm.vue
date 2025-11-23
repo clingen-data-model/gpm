@@ -14,7 +14,6 @@ export default {
 	],
   setup (props, context) {
     const {errors, submitFormData, resetErrors} = formFactory(props, context)
-
     return {
       errors,
       submitFormData,
@@ -25,6 +24,7 @@ export default {
     return {
       groupTypes: configs.groups.types,
       groupStatuses: configs.groups.statuses,
+      groupVisibilities: configs.groups.visibilities,
       newGroup: new Group(),
       parents: [],
       parentsKey: null, // prevents unnecessary refetch (ex: GCEP <-> VCEP)
@@ -51,6 +51,9 @@ export default {
     },
     statusOptions () {
       return Object.values(this.groupStatuses).map(status => ({value: status.id, label: this.titleCase(status.name)}))
+    },
+    visibilityOptions () {
+      return Object.values(this.groupVisibilities).map(visibility => ({value: visibility.id, label: this.titleCase(visibility.name)}))
     },
     typeOptions () {
       return Object.values(this.groupTypes).map(type => ({value: type.id, label: type.display_name}));
@@ -133,6 +136,7 @@ export default {
         parent_id,
         group_type_id,
         group_status_id,
+        group_visibility_id,
         website_url
       } = this.group.attributes;
 
@@ -149,6 +153,7 @@ export default {
         group_status_id,
         short_base_name,
         affiliation_id,
+        group_visibility_id,
         website_url
       })
       
@@ -186,6 +191,9 @@ export default {
 
       if (this.group.isDirty('group_status_id')) {
         promises.push(this.saveStatus())
+      }
+      if (this.group.isDirty('group_visibility_id')) {
+        promises.push(this.saveVisibility())
       }
       if (this.group.isDirty('website_url')) {
         promises.push(this.saveWebsiteUrl());
@@ -240,6 +248,13 @@ export default {
         method: 'put',
         url: `/api/groups/${this.group.uuid}/status`,
         data: {status_id: this.group.group_status_id}
+      })
+    },
+    saveVisibility () {
+      return this.submitFormData({
+        method: 'put',
+        url: `/api/groups/${this.group.uuid}/visibility`,
+        data: {visibility_id: this.group.group_visibility_id}
       })
     },
     saveWebsiteUrl () {
@@ -383,12 +398,20 @@ export default {
         :errors="errors.group_status_id"
         @update:model-value="emitUpdate"
       >
-        <template #label>
-          Status:
-          <note>admin-only</note>
-        </template>
+        <template #label>Status: <note>admin-only</note></template>
       </input-row>
 
+      <input-row
+        v-if="+group.group_type_id === 1"
+        v-model="group.group_visibility_id"
+        type="select"
+        :options="visibilityOptions"
+        :errors="errors.group_visibility_id"
+        @update:model-value="emitUpdate"
+      >
+        <template #label>Visibility: <note>admin-only</note></template>
+      </input-row>      
+      
       <input-row
         v-if="! [2, 6].includes(Number(group.group_type_id))"
         v-model="group.parent_id"
@@ -397,10 +420,7 @@ export default {
         :errors="errors.parent_id"
         @update:model-value="emitUpdate"
       >
-        <template #label>
-          Parent group:
-          <note>admin-only</note>
-        </template>
+        <template #label>Parent group: <note>admin-only</note></template>
       </input-row>
     </div>
   </div>
