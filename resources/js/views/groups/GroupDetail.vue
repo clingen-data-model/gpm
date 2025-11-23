@@ -586,7 +586,7 @@ export default {
       <modal-dialog
         v-model="showInfoEdit"
         title="Edit Group Info"
-        size="sm"
+        size="md"
         @closed="showInfoEdit = false"
       >
         <submission-wrapper
