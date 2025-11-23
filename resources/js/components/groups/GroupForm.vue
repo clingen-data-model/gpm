@@ -25,6 +25,7 @@ export default {
         return {
             groupTypes: configs.groups.types,
             groupStatuses: configs.groups.statuses,
+            groupVisibilities: configs.groups.visibilities,
             newGroup: new Group(),
             parents: []
         }
@@ -42,7 +43,6 @@ export default {
                 try {
                     this.$store.commit("groups/addItem", value);
                 } catch (e) {
-                    // eslint-disable-next-line no-console
                     console.log(`Error setting group: ${e}`);
                     this.newGroup = value;
                 }
@@ -50,6 +50,9 @@ export default {
         },
         statusOptions () {
             return Object.values(this.groupStatuses).map(status => ({value: status.id, label: this.titleCase(status.name)}))
+        },
+        visibilityOptions () {
+            return Object.values(this.groupVisibilities).map(visibility => ({value: visibility.id, label: this.titleCase(visibility.name)}))
         },
         typeOptions () {
             return Object.values(this.groupTypes).map(type => ({value: type.id, label: type.display_name}));
@@ -80,7 +83,7 @@ export default {
                     options.push({value: parent.id, label: parent.displayName})
                 })
             return options;
-        }
+        },
     },
     beforeMount() {
         this.getParentOptions();
@@ -113,7 +116,8 @@ export default {
                 name,
                 parent_id,
                 group_type_id,
-                group_status_id
+                group_status_id,
+                group_visibility_id,
             } = this.group.attributes;
 
             const {short_base_name} = this.group.expert_panel;
@@ -129,7 +133,8 @@ export default {
                     parent_id,
                     group_type_id,
                     group_status_id,
-                    short_base_name
+                    short_base_name,
+                    group_visibility_id,
                 }
             );
         },
@@ -154,6 +159,10 @@ export default {
 
             if (this.group.isDirty('group_status_id')) {
                 promises.push(this.saveStatus())
+            }
+
+            if (this.group.isDirty('group_visibility_id')) {
+                promises.push(this.saveVisibility())
             }
 
             return Promise.all(promises);
@@ -206,6 +215,18 @@ export default {
                 url: `/api/groups/${this.group.uuid}/status`,
                 data: {status_id: this.group.group_status_id}
             })
+        },
+        saveVisibility () {
+            return this.submitFormData({
+                method: 'put',
+                url: `/api/groups/${this.group.uuid}/visibility`,
+                data: {visibility_id: this.group.group_visibility_id}
+            })
+        },
+        resetData () {
+            if (this.group.uuid) {
+                this.$store.dispatch('groups/find', this.group.uuid);
+            }
         },
         cancel() {
             this.resetErrors();
@@ -306,12 +327,20 @@ export default {
         :errors="errors.group_status_id"
         @update:model-value="emitUpdate"
       >
-        <template #label>
-          Status:
-          <note>admin-only</note>
-        </template>
+        <template #label>Status: <note>admin-only</note></template>
       </input-row>
 
+      <input-row
+        v-model="group.group_visibility_id"
+        v-if="group.group_type_id == 1"
+        type="select"
+        :options="visibilityOptions"
+        :errors="errors.group_visibility_id"
+        @update:model-value="emitUpdate"
+      >
+        <template #label>Visibility: <note>admin-only</note></template>
+      </input-row>
+      
       <input-row
         v-model="group.parent_id"
         type="select"
@@ -319,10 +348,7 @@ export default {
         :errors="errors.parent_id"
         @update:model-value="emitUpdate"
       >
-        <template #label>
-          Parent group:
-          <note>admin-only</note>
-        </template>
+        <template #label>Parent group: <note>admin-only</note></template>
       </input-row>
     </div>
   </div>
