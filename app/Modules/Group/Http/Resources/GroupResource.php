@@ -35,7 +35,6 @@ class GroupResource extends JsonResource
         $data['caption'] = $this->caption;
         $data['icon_url'] = $this->icon_url;
         $data['is_working_group'] = $this->is_working_group ?? false;
-        // $data['parent'] = $this->whenLoaded('parent', fn() => GroupResource::collection($this->parent));
 
 
         unset($data['members'], $data['created_at'], $data['deleted_at']);
