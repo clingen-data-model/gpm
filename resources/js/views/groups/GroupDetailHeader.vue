@@ -36,9 +36,13 @@ export default {
     <group-breadcrumbs />
     <h1 class="flex justify-between items-start">
       <div>
-        {{ group.displayName }} <badge :color="group.statusColor" class="text-xs">
+        {{ group.displayName }} 
+        <badge :color="group.statusColor" class="text-xs">
           {{ group.status ? group.status.name : 'loading...' }}
         </badge>
+        <badge v-if="group.is_working_group" color="yellow" class="text-xs ml-1">
+          {{ group.visibility ? group.visibility.name : 'loading...' }}
+        </badge>        
         <div class="text-sm text-gray-800 mt-1 font-normal">
           <span v-if="group.isEp() && showShortName">Short Name: <strong>{{ group.expert_panel.full_short_base_name || '--' }}</strong>
             |

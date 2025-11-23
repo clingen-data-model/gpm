@@ -7,6 +7,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 use App\Modules\Group\Http\Resources\MemberResource;
 use App\Modules\Group\Http\Resources\GroupStatusResource;
 use App\Modules\Group\Http\Resources\GroupTypeResource;
+use App\Modules\Group\Http\Resources\GroupVisibilityResource;
 
 class GroupResource extends JsonResource
 {
@@ -27,6 +28,7 @@ class GroupResource extends JsonResource
         // $data['members'] = $this->whenLoaded('members', fn() => MemberResource::collection($this->members));
         // This next bit was weird, too, since it loaded "members" data as "coordinators".
         $data['coordinators'] = $this->whenLoaded('coordinators', fn() => MemberResource::collection($this->coordinators));
+        $data['visibility'] = $this->whenLoaded('groupVisibility', fn() => new GroupVisibilityResource($this->groupVisibility));
         $data['is_ep'] = $this->isEp;
         $data['is_vcep'] = $this->isVcep;
         $data['is_gcep'] = $this->isGcep;
@@ -35,6 +37,8 @@ class GroupResource extends JsonResource
         $data['caption'] = $this->caption;
         $data['icon_url'] = $this->icon_url;
         $data['is_working_group'] = $this->is_working_group ?? false;
+        $data['is_private'] = $this->is_private ?? false;
+        // $data['parent'] = $this->whenLoaded('parent', GroupResource::collection($this->parent));
 
 
         unset($data['members'], $data['created_at'], $data['deleted_at']);
