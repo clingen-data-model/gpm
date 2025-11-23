@@ -203,7 +203,7 @@ export default {
       </tab-item>
     </tabs-container>
 
-    <modal-dialog v-model="showCreateForm" title="Create a New Group" size="sm">
+    <modal-dialog v-model="showCreateForm" title="Create a New Group" size="md">
       <SubmissionWrapper @submitted="$refs.groupForm.save()" @canceled="$refs.groupForm.cancel()">
         <GroupForm ref="groupForm" @canceled="showCreateForm = false" @saved="showCreateForm = false" />
       </SubmissionWrapper>

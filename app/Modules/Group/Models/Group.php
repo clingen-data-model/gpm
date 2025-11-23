@@ -15,6 +15,7 @@ use App\Modules\ExpertPanel\Models\Coi;
 use App\Modules\Group\Models\GroupType;
 use Illuminate\Database\Eloquent\Model;
 use App\Modules\Group\Models\GroupStatus;
+use App\Modules\Group\Models\GroupVisibility;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Models\Traits\HasNotes as HasNotesTrait;
@@ -33,6 +34,8 @@ use App\Modules\Group\Models\Traits\HasMembers as HasMembersTrait;
 use App\Modules\Group\Models\Traits\HasSubmissions as HasSubmissionsTrait;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Database\Eloquent\Builder;
+use App\Modules\User\Models\User;
 
 /**
  * @property int $id
@@ -71,6 +74,7 @@ class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDoc
         'description',
         'group_type_id',
         'group_status_id',
+        'group_visibility_id',
         'parent_id',
         'coi_code',
         'caption',
@@ -86,6 +90,7 @@ class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDoc
         'id' => 'integer',
         'group_type_id' => 'integer',
         'group_status_id' => 'integer',
+        'group_visibility_id' => 'integer',
         'parent_id' => 'integer',
     ];
 
@@ -361,6 +366,33 @@ class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDoc
     public function isApproved(): bool
     {
         return (int)$this->group_status_id === (int)config('groups.statuses.active.id');
+    }
+
+     /**
+      * VISIBILITY STATUS RELATION
+      */
+    public function groupVisibility(): BelongsTo
+    {
+        return $this->belongsTo(GroupVisibility::class);
+    }
+
+    protected function isPrivate(): Attribute
+    {
+        return Attribute::get(
+            fn () => (int) $this->group_visibility_id === config('groups.visibility.private.id')
+        );
+    }
+
+    public function scopeVisibleTo(Builder $query, ?User $user): Builder
+    {
+        if ($user && $user->hasAnyRole(['super-user', 'super-admin', 'admin'])) { return $query; }
+
+        $privateId = config('groups.visibility.private.id');
+        $wgTypeId  = config('groups.types.wg.id');
+
+        return $query->where(function ($q) use ($privateId, $wgTypeId) {
+            $q->where('group_type_id', '!=', $wgTypeId)->orWhereNull('group_visibility_id')->orWhere('group_visibility_id', '!=', $privateId);
+        });
     }
 
 }

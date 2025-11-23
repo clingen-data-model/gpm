@@ -10,11 +10,13 @@ use Illuminate\Http\Resources\Json\JsonResource;
 use App\Modules\Group\Http\Resources\GroupResource;
 use App\Modules\Group\Http\Resources\MemberResource;
 use App\Modules\Group\Http\Resources\GroupSummaryResource;
+use Illuminate\Database\Eloquent\Builder;
 
 class GroupController extends Controller
 {
     public function index(Request $request)
     {
+        $user = $request->user();
         $searchService = new ModelSearchService(
             modelClass: Group::class,
             defaultSelect: [
@@ -24,6 +26,7 @@ class GroupController extends Controller
                 'description',
                 'group_type_id',
                 'group_status_id',
+                'group_visibility_id',
                 'coi_code'
             ],
             defaultWith: [
@@ -69,10 +72,23 @@ class GroupController extends Controller
                     return $query;
                 }
                 return $query->orderBy($field, $dir);
-            }
+            },
+            whereFunction: function (Builder $query, array $where) use ($user) {
+                $query->visibleTo($user);
+                foreach ($where as $key => $value) {
+                    if (is_array($value)) {
+                        $query->whereIn($key, $value);
+                        continue;
+                    }
+                    $query->where($key, $value);
+                }
+                return $query;
+            },
         );
 
-        $results = $searchService->search($request->all());
+        $params = $request->all();
+        if (!array_key_exists('where', $params)) { $params['where'] = []; }
+        $results = $searchService->search($params);
         JsonResource::withoutWrapping();
         return GroupSummaryResource::collection($results);
     }
