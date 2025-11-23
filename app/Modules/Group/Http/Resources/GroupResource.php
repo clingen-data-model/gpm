@@ -6,6 +6,7 @@ use App\Http\Resources\ExpertPanelResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Modules\Group\Http\Resources\MemberResource;
 use App\Modules\Group\Http\Resources\GroupStatusResource;
+use App\Modules\Group\Http\Resources\GroupVisibilityResource;
 
 class GroupResource extends JsonResource
 {
@@ -22,6 +23,7 @@ class GroupResource extends JsonResource
         $data['expert_panel'] = $this->whenLoaded('expertPanel', new ExpertPanelResource($this->expertPanel));
         $data['type'] = $this->whenLoaded('type', new GroupTypeResource($this->type));
         $data['status'] = $this->whenLoaded('status', new GroupStatusResource($this->status));
+        $data['visibility'] = $this->whenLoaded('groupVisibility', new GroupVisibilityResource($this->groupVisibility));
         $data['members'] = $this->whenLoaded('members', MemberResource::collection($this->members));
         $data['coordinators'] = $this->whenLoaded('coordinators', MemberResource::collection($this->members));
         $data['is_ep'] = $this->isEp;
@@ -31,7 +33,7 @@ class GroupResource extends JsonResource
         $data['is_vcep_or_scvcep'] = $this->isVcepOrScvcep;
         $data['caption'] = $this->caption;
         $data['icon_url'] = $this->icon_url;
-        $data['is_working_group'] = $this->is_working_group ?? false;
+        $data['is_working_group'] = $this->is_working_group;
         $data['is_private'] = $this->is_private ?? false;
         // $data['parent'] = $this->whenLoaded('parent', GroupResource::collection($this->parent));
 
