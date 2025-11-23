@@ -136,6 +136,7 @@ export default {
         parent_id,
         group_type_id,
         group_status_id,
+        group_visibility_id,
         website_url
       } = this.group.attributes;
 
@@ -152,6 +153,7 @@ export default {
         group_status_id,
         short_base_name,
         affiliation_id,
+        group_visibility_id,
         website_url
       })
       
