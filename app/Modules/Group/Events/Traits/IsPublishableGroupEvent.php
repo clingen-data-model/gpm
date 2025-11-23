@@ -59,6 +59,7 @@ trait IsPublishableGroupEvent
             'caption' => $group->caption,
             'icon_url' => $group->icon_url_raw,
             'status' => $group->groupStatus->name,
+            'visibility' => $group->groupVisibility->name,
             'status_date' => $group->groupStatus->updated_at->toISO8601String(),
             'type' => $group->type->name,
             'coi' => url('/coi-group/'.$group->uuid),

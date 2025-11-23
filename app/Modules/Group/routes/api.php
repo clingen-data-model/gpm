@@ -24,6 +24,7 @@ use App\Modules\Group\Actions\AnnualUpdateSave;
 use App\Modules\Group\Actions\MemberAssignRole;
 use App\Modules\Group\Actions\MemberRemoveRole;
 use App\Modules\Group\Actions\GroupStatusUpdate;
+use App\Modules\Group\Actions\GroupVisibilityUpdate;
 use App\Modules\Group\Actions\AnnualUpdateCreate;
 use App\Modules\Group\Actions\AnnualUpdateSubmit;
 use App\Modules\Group\Actions\EvidenceSummaryAdd;
@@ -209,6 +210,7 @@ Route::group([
         Route::get('/tasks', [GroupRelationsController::class, 'tasks']);
         Route::get('/specifications', SpecificationsGet::class);
         Route::put('/status', GroupStatusUpdate::class);
+        Route::put('/visibility', GroupVisibilityUpdate::class);
         Route::put('/caption-icon', CaptionIconUpdate::class);
 
     });
