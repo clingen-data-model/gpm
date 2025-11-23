@@ -27,7 +27,6 @@ class GroupVisibilityUpdate
         }
         $oldGroupVisibility = GroupVisibility::find($group->group_visibility_id);
         $group->update(['group_visibility_id' => $newGroupVisibility->id]);
-
         event(new GroupVisibilityUpdated($group, $newGroupVisibility, $oldGroupVisibility));
         return $group;
     }
