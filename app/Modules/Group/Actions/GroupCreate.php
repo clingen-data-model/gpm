@@ -31,6 +31,8 @@ class GroupCreate
         }
 
         $uuid = isset($data['uuid']) ? $data['uuid'] : Uuid::uuid4();
+        $visibilityId = $data['group_visibility_id'] ?? config('groups.visibility.public.id') ?? 1;
+
         $group = Group::create([
             'uuid' => $uuid,
             'name' => $data['name'],
@@ -65,7 +67,6 @@ class GroupCreate
     public function asController(ActionRequest $request)
     {
         $data = $request->only('name', 'group_type_id', 'group_status_id', 'group_visibility_id', 'parent_id', 'long_base_name', 'short_base_name', 'website_url', 'affiliation_id');
-
         $group = $this->handle($data);
         $group->load('expertPanel');
 
