@@ -62,6 +62,7 @@ trait IsPublishableGroupEvent
             'status_date' => $group->groupStatus->updated_at->toISO8601String(),
             'type' => $group->type->name,
             'coi' => url('/coi-group/'.$group->uuid),
+            'clinvar_id' => $group->clinvar_id,
         ];
 
         if ($withMembers) {

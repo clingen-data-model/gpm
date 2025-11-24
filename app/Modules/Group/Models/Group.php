@@ -75,6 +75,7 @@ class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDoc
         'coi_code',
         'caption',
         'icon_path',
+        'clinvar_id',
     ];
 
     /**
@@ -333,9 +334,11 @@ class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDoc
         return Attribute::make(get: fn () => $this->computePublicIconUrl(false));
     }
 
-    public function isWorkingGroup(): bool
+    public function isWorkingGroup(): Attribute
     {
-        return (int) $this->group_type_id === config('groups.types.wg.id');
+        return Attribute::get(
+            fn () => (int) $this->group_type_id === (int) config('groups.types.wg.id')
+        );
     }
 
     public function activeMemberships()

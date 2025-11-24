@@ -24,6 +24,7 @@ use App\Modules\Group\Actions\AnnualUpdateSave;
 use App\Modules\Group\Actions\MemberAssignRole;
 use App\Modules\Group\Actions\MemberRemoveRole;
 use App\Modules\Group\Actions\GroupStatusUpdate;
+use App\Modules\Group\Actions\ClinvarUpdate;
 use App\Modules\Group\Actions\AnnualUpdateCreate;
 use App\Modules\Group\Actions\AnnualUpdateSubmit;
 use App\Modules\Group\Actions\EvidenceSummaryAdd;
@@ -210,7 +211,7 @@ Route::group([
         Route::get('/specifications', SpecificationsGet::class);
         Route::put('/status', GroupStatusUpdate::class);
         Route::put('/caption-icon', CaptionIconUpdate::class);
-
+        Route::put('/clinvar', ClinvarUpdate::class);
     });
 
     Route::post('/{uuid}/invites', MemberInvite::class);
