@@ -42,7 +42,7 @@ class ClinvarUpdate
     public function rules(): array
     {
         return [
-            'clinvar_id' => ['required', 'string', 'max:50'],
+            'clinvar_id' => ['required', 'string', 'max:20'],
         ];
     }
 
@@ -50,7 +50,16 @@ class ClinvarUpdate
     {
         $user = Auth::user();
         if (! $user) { return false; }
-        return $user->hasAnyRole(['super-user', 'super-admin', 'coordinator']);
+        if ($user->hasAnyRole(['super-user', 'super-admin'])) { return true; }
+        if (! $user->person) { return false; }
+        
+        $group = $request->route('group');
+        if (! $group instanceof Group) {
+            $group = Group::find($group);
+        }
+        if (! $group) { return false; }
+        return $group->memberIsCoordinator($user->person->id);
+
     }
 
     public function getValidationMessages()

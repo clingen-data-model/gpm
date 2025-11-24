@@ -3,6 +3,7 @@ import { ref, watch } from 'vue'
 import { useStore } from 'vuex'
 import { api, isValidationError } from '@/http'
 import EditIconButton from '@/components/buttons/EditIconButton.vue'
+import { hasRole } from "@/auth_utils";
 
 const store = useStore()
 
@@ -51,21 +52,27 @@ function cancelEdit(e) {
 
 <template>
 	<header class="flex justify-between items-center">
-		<h4>ClinVar ID</h4>
-		<EditIconButton v-if="(hasRole('super-admin') || hasRole('coordinator') || hasRole('super-user')) && ! editing" @click="toggleEditing" />
+		<h4>ClinVar Organization ID</h4>
+		<EditIconButton v-if="(hasRole('super-admin') || hasRole('coordinator', group) || hasRole('super-user')) && ! editing" @click="toggleEditing" />
     </header>
+
+	<p class="mt-1 text-sm text-gray-600 max-w-2xl">
+    	The ClinVar Organization ID is assigned when a VCEP registers as a ClinVar submitter once they receive Step 4 approval. The ClinVar Organization ID will be used to create a link to the VCEP’s ClinVar submitter page.
+  	</p>
 	<form-container>
-		<input-row label="ClinVar ID" 
+		<input-row label="ClinVar Organization ID" 
 			:errors="errors.clinvar_id"
 			v-model="clinvarID"
 			:disabled="!editing"
 			placeholder="ClinVar ID"
+			:max-length="15"
+			label-width-class="w-48"
+  			input-class="w-32"
 			>
 			<template #after-input>
 				<span v-if="!editing && !clinvarID" class="text-gray-500 italic">Not set</span>
 			</template>
 		</input-row>
-
 		<button-row v-if="editing">
 			<button type="button" class="btn white" @click="cancelEdit">Cancel</button>
 			<button type="button" class="btn blue" :disabled="saving || !group?.uuid" @click="save">

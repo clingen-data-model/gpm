@@ -3,7 +3,7 @@ import { ref, computed, onMounted, watch } from "vue";
 import { useStore } from "vuex";
 
 import { logEntries, fetchEntries } from "@/adapters/log_entry_repository";
-import { hasPermission, hasRole } from "@/auth_utils";
+import { hasPermission } from "@/auth_utils";
 import configs from '@/configs.json'
 
 import ActivityLog from "@/components/log_entries/ActivityLog.vue";
@@ -342,7 +342,7 @@ export default {
           </tab-item>
           <tab-item label="Website Description">
 
-            <template v-if="(userInGroup(group) || hasRole('super-admin') || hasRole('coordinator') || hasRole('super-user')) && group.is_vcep" >
+            <template v-if="group.is_vcep" >
               <ClinvarForm :group="group" @saved="getGroup" />
               <br />
             </template>
