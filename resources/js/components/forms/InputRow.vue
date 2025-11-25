@@ -70,6 +70,10 @@ export default {
             type: Boolean,
             default: false
         },
+        required: {
+          type: Boolean,
+          default: false
+        }
     },
     emits: [
         'update:modelValue',
@@ -130,8 +134,10 @@ export default {
   >
     <div :class="{'sm:flex': !vertical}">
       <div v-show="showLabel" class="flex-none label-container flex-shrink" :class="labelContainerClass">
-        <slot v-if="hasLabel" name="label" :class="resolvedLabelClass">
-          <label>{{ label }}{{ colon }}</label>
+        <slot v-if="hasLabel" name="label">
+          <label :class="resolvedLabelClass">
+            {{ label }} <span v-if="required" class="text-red-500 ml-1">*</span>{{ colon }}
+          </label>
         </slot>
       </div>
       <div class="flex-grow flex flex-col space-y-3">
