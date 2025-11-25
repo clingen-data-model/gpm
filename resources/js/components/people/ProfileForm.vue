@@ -103,29 +103,37 @@
     <h3 v-if="showTitle">
       Profile
     </h3>
+    <p class="text-xs text-gray-500 mb-4">
+      <span class="text-red-500">*</span> indicates required field.
+    </p>
+
     <div v-if="(hasPermission('people-manage') || userIsPerson(person))" class="float-right">
       <ProfilePhotoForm :person="person" @uploaded="p => person = {...p}" style="width: 100px; height: 100px;" />
     </div>
 
     <input-row
       v-model="profile.first_name"
-      label="First Name"
+      label="First Name" 
+      required
       :errors="errors.first_name"
     />
 
     <input-row
       v-model="profile.last_name"
-      label="Last Name"
+      label="Last Name" 
+      required
       :errors="errors.last_name"
     />
     <input-row
       v-model="profile.email"
-      label="Email"
+      label="Email" 
+      required
       :errors="errors.email"
     />
 
     <input-row
-      label="Institution"
+      label="Institution" 
+      required
       :errors="errors.institution_id"
     >
       <InstitutionSearchSelect v-model="profile.institution_id" />
@@ -135,7 +143,7 @@
       :errors="errors.credential_ids"
     >
       <template #label>
-        Credentials
+        Credentials <span class="text-red-500">*</span>
         <div>
           <popover hover arrow>
             <div class="text-xs cursor-pointer text-blue-600">
@@ -165,7 +173,7 @@
       :errors="errors.expertise_ids"
     >
       <template #label>
-        Area of Expertise
+        Area of Expertise <span class="text-red-500">*</span>
         <div>
           <popover hover arrow>
             <div class="text-xs cursor-pointer text-blue-600">
@@ -202,7 +210,7 @@
 
     <input-row
       v-if="canEditAllFields" v-model="profile.country_id"
-      label="Country"
+      label="Country" required
       type="select"
       :options="countries"
       :errors="errors.country_id"
@@ -214,7 +222,7 @@
       :errors="errors.phone"
     />
 
-    <input-row v-if="canEditAllFields" label="Timezone" :errors="errors.timezone">
+    <input-row v-if="canEditAllFields" label="Timezone" required :errors="errors.timezone">
       <TimezoneSearchSelect v-model="profile.timezone" />
     </input-row>
 
