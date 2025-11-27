@@ -31,9 +31,4 @@ class ScopeDescriptionUpdated extends GroupEvent
     {
         return ['scope_description' => $this->description];
     }
-
-    public function shouldPublish(): bool
-    {
-        return true;
-    }
 }

@@ -39,6 +39,15 @@ export default {
         htmlMembershipDescription () {
             return htmlFromMarkdown(this.group.expert_panel.membership_description);
         },
+        application () {
+            return this.group.expert_panel;
+        },
+        canEdit() {
+            if (this.application.stepIsApproved(1)) {
+                return this.hasRole('super-user') || this.hasRole('super-admin') || this.hasRole('coordinator', this.group);
+            }
+            return this.hasAnyPermission(['groups-manage', ['application-edit', this.group]]);
+        }
     },
     methods: {
         emitUpdate () {
@@ -51,10 +60,7 @@ export default {
   <div>
     <header class="flex justify-between items-center">
       <h4>Description of Expertise</h4>
-      <EditIconButton
-        v-if="hasAnyPermission(['groups-manage'], ['edit-info', group]) && !editing"
-        @click="$emit('update:editing', true)"
-      />
+      <EditIconButton v-if="canEdit && !editing" @click="$emit('update:editing', true)" />
     </header>
     <div class="mt-4">
       <p class="text-sm">

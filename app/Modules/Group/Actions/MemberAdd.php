@@ -63,7 +63,15 @@ class MemberAdd
 
     public function authorize(ActionRequest $request): bool
     {
-        return $request->user()->can('inviteMembers', $request->group);
+        $user = $request->user();
+        if (!$user) { return false;}
+
+        $group = $request->route('group');
+        if ($group->isDefinitionApproved()) {
+            return ($user->hasRole('super-admin') || $user->hasRole('super-user') || $group->userIsCoordinator($user));
+        }
+
+        return $user->can('inviteMembers', $group);
     }
 
     public function cancelNotification(): static

@@ -4,6 +4,7 @@ import {useStore} from 'vuex';
 import formFactory from '@/forms/form_factory'
 import is_validation_error from '@/http/is_validation_error'
 import api from '@/http/api'
+import {hasRole, hasAnyPermission} from '@/auth_utils'
 
 export default {
     name: 'GcepGeneList',
@@ -44,7 +45,9 @@ export default {
                 store.commit('groups/addItem', value)
             }
         });
-
+        const application = computed(() => {
+            return group.value.expert_panel;
+        });
         const getGenes = async () => {
             if (!group.value.uuid) {
                 return;
@@ -116,6 +119,21 @@ export default {
             }
         };
 
+        const canEdit = computed(() => {
+            if (!props.readonly) {
+                if (application.value.stepIsApproved(1)) {
+                    return (hasRole('super-user') || hasRole('super-admin') || hasRole('coordinator', group.value));
+                }
+                return hasAnyPermission(['groups-manage', ['application-edit', group.value]]);
+            }
+            return false;
+        });
+        const canEditGene = computed(() => {
+            if (application.value.stepIsApproved(1)) {
+                return (hasRole('super-user') || hasRole('super-admin') || hasRole('coordinator', group.value)) && !props.editing && !props.readonly;
+            }
+            return hasAnyPermission(['groups-manage', ['application-edit', group.value]]) && !props.editing && !props.readonly;
+        });
 
         watch(() => store.getters['groups/currentItem'], (to, from) => {
             if (to.id && (!from || to.id !== from.id)) {
@@ -142,11 +160,13 @@ export default {
             cancel,
             syncGenesAsText,
             save,
+            canEdit,
+            canEditGene
         }
     },
     computed: {
         canEdit () {
-            return this.hasAnyPermission(['groups-manage', ['application-edit', this.group]]);
+            return hasAnyPermission(['groups-manage', ['application-edit', this.group]]);
         }
     },
     methods: {
@@ -165,7 +185,7 @@ export default {
     <h4 class="flex justify-between mb-2">
       Gene List
       <edit-icon-button 
-        v-if="hasAnyPermission(['groups-manage', ['application-edit', group]]) && !editing && !readonly"
+        v-if="canEditGene"
         @click="showForm"
       />
     </h4>

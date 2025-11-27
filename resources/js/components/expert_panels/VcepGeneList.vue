@@ -6,7 +6,7 @@ import {useStore} from 'vuex';
 import GeneSearchSelect from '@/components/forms/GeneSearchSelect.vue'
 import DiseaseSearchSelect from '@/components/forms/DiseaseSearchSelect.vue'
 import is_validation_error from '@/http/is_validation_error'
-import {hasAnyPermission} from '@/auth_utils'
+import { hasRole, hasAnyPermission } from '@/auth_utils'
 
 export default {
     name: 'VcepGeneList',
@@ -35,8 +35,7 @@ export default {
         const group = computed(() => {
             return store.getters['groups/currentItemOrNew'];
         });
-
-
+        const application = computed(() => { return group.value.expert_panel; });
         const newGene = ref({gene: null, disease: null});
 
         const loading = ref(false);
@@ -166,8 +165,13 @@ export default {
         }
 
         const canEdit = computed(() => {
-            return hasAnyPermission(['ep-applications-manage', ['application-edit', group.value]])
-                && !props.readonly
+          if(!props.readonly) {             
+            if (application.value.stepIsApproved(1)) {
+              return (hasRole('super-user') || hasRole('super-admin') || hasRole('coordinator', group.value));
+            }
+            return hasAnyPermission(['ep-applications-manage', ['application-edit', group.value]]);
+          }
+          return false;
         })
 
         onMounted(() => {

@@ -38,6 +38,16 @@ export default {
         },
         htmlDescription() {
             return htmlFromMarkdown(this.group.description);
+        },
+        application() {
+            return this.group.expert_panel;
+        },
+        canEditDescription() {
+            console.log('User roles:', this.$store.getters.currentUser.roles);
+            if (this.group.expert_panel.stepIsApproved(1)) {
+                return (this.hasRole('super-admin') || this.hasRole('super-user') || this.hasRole('coordinator', this.group)) && !this.editing;
+            }
+            return this.hasAnyPermission(['groups-manage', ['application-edit', this.group]]) && !this.editing;
         }
     },
 }
@@ -46,10 +56,7 @@ export default {
   <div>
     <header class="flex justify-between items-center">
       <h4>Website Summary Description of Group</h4>
-      <EditIconButton
-        v-if="hasAnyPermission(['groups-manage', ['application-edit', group]]) && !editing"
-        @click="$emit('update:editing', true)"
-      />
+      <EditIconButton v-if="canEditDescription" @click="$emit('update:editing', true)" />
     </header>
     <div class="mt-2">
       <p class="text-sm">

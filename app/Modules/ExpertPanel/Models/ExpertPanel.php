@@ -462,7 +462,7 @@ class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup,
     }
 
 
-    public function getApprovalDateForStep($stepNumber): Carbon
+    public function getApprovalDateForStep($stepNumber): ?Carbon
     {
         return $this->{'step_'.$stepNumber.'_approval_date'};
     }

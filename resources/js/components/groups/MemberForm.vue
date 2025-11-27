@@ -77,7 +77,14 @@ export default {
         },
         roleRequiresNotification () {
             return this.newMember.hasRole('coordinator') || this.newMember.hasRole('grant-liaison');
-        }
+        },
+        isSuperAdmin () {
+          const user = this.$store?.state?.user;
+          if (!user || typeof user.hasRole !== 'function') {
+            return false;
+          }
+          return user.hasRole('super-admin') || user.hasRole('super-user');
+        },
     },
     watch: {
         group () {
@@ -313,7 +320,10 @@ export default {
             this.newMember.person = updatedPerson;
             this.showProfileForm = false;
             this.$store.dispatch('groups/getMembers', this.group)
-        }
+        },
+        isChairRole (role) {
+          return !!role && role.name === 'chair';
+        },
     }
 }
 </script>
@@ -397,7 +407,13 @@ export default {
         <div class="border-t mt-4 pt-2">
           <h3>Group Roles</h3>
           <div class="flex flex-col h-24 flex-wrap">
-            <checkbox v-for="role in roles" :key="role.id" v-model="newMember.roles" :value="role" :label="titleCase(role.name)" @input="handleRoleChange" />
+            <checkbox v-for="role in roles" :key="role.id" 
+              v-model="newMember.roles" 
+              :value="role" 
+              :label="titleCase(role.name)" 
+              :disabled="isChairRole(role) && !isSuperAdmin"
+              :title="isChairRole(role) && !isSuperAdmin ? 'Only super-admins can change the Chair role.' : ''"
+              @input="handleRoleChange" />
           </div>
           <transition name="fade-down">
             <div

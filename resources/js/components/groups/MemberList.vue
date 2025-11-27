@@ -129,6 +129,9 @@ export default {
                         return m;
                     });
         },
+        application () {
+            return this.group.expert_panel;
+        },
         filteredEmails () {
             return this.filteredMembers.map(m => `${m.person.name} <${m.person.email}>`)
         },
@@ -154,7 +157,13 @@ export default {
             return this.hasAnyMemberPermission(['groups-manage', ['info-edit', this.group]])
         },
         showAddMemberButton () {
-            return this.hasAnyPermission([['members-invite', this.group], 'groups-manage', 'ep-applications-manage', 'annual-updates-manage']) && !this.readonly
+          if(! this.readonly) {
+            if (this.application.stepIsApproved(1)) {
+              return this.hasRole('super-user') || this.hasRole('super-admin') || this.hasRole('coordinator', this.group);
+            }
+            return this.hasAnyPermission([['members-invite', this.group], 'groups-manage', 'ep-applications-manage', 'annual-updates-manage'])
+          }
+          return false;
         },
         showMemberReportButton () {
             return this.hasAnyPermission([['members-invite', this.group], 'groups-manage', 'ep-applications-manage', 'annual-updates-manage'])
@@ -166,6 +175,15 @@ export default {
         features () {
             return this.$store.state.systemInfo.app.features
         },
+        canShowMemberActions() {
+          if(!this.readonly) {
+            if (this.application.stepIsApproved(1)) {
+              return this.hasRole('super-user') || this.hasRole('super-admin') || this.hasRole('coordinator', this.group);
+            }
+            return this.hasAnyMemberPermission();
+          }
+          return false;
+        }
     },
     watch: {
         group: {
@@ -227,13 +245,6 @@ export default {
             this.selectedMember = null;
             this.showConfirmRetire = false;
         },
-
-        // Unretire Member
-        // confirmUnretireMember (member) {
-        //     console.log('confirmUnretireMember');
-        //     // this.showConfirmUnretire = true;
-        //     // this.selectedMember = member;
-        // },
         async unretireMember () {
             try {
                 await this.$store.dispatch('groups/memberUnretire', {
@@ -249,7 +260,6 @@ export default {
             this.selectedMember = null;
             this.showConfirmUnretire = false;
         },
-
 
         // Remove Member
         confirmRemoveMember (member) {
@@ -273,7 +283,6 @@ export default {
             this.selectedMember = null;
             this.showConfirmRemove = false;
         },
-
 
         goToMember (member) {
             this.$router.push({name: 'PersonDetail', params: {uuid: member.person.uuid}})
@@ -474,7 +483,7 @@ export default {
                 </button>
               </template>
               <dropdown-item
-                v-if="hasAnyPermission([['members-update', group], 'groups-manage'])"
+                v-if="canShowMemberActions"
               >
                 <div @click="editMember(item)">
                   Update membership

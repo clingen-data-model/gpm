@@ -358,9 +358,24 @@ class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDoc
             ->exists();
     }
 
+    public function userIsCoordinator(\App\Modules\User\Models\User $user): bool
+    {
+        if (! $user) { return false; }
+        $personId = optional($user->person)->id;
+        if (!$personId) return false;
+        return $this->memberIsCoordinator($personId);
+    }
+
     public function isApproved(): bool
     {
         return (int)$this->group_status_id === (int)config('groups.statuses.active.id');
+    }
+
+    public function isDefinitionApproved(): bool
+    {
+        if(! $this->is_expert_panel) { return false; }
+        $this->loadMissing('expertPanel');
+        return (bool) optional($this->expertPanel)->definition_is_approved;
     }
 
 }

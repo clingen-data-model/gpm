@@ -43,6 +43,15 @@ export default {
         htmlScopeDescription() {
             return htmlFromMarkdown(this.group.expert_panel.scope_description);
         },
+        application () {
+            return this.group.expert_panel;
+        },
+        canEdit() {
+            if (this.application.stepIsApproved(1)) {
+                return (this.hasRole('super-user') || this.hasRole('super-admin') || this.hasRole('coordinator', this.group));
+            }
+            return this.hasAnyPermission(['groups-manage', ['application-edit', this.group]]);
+        }
     }
 }
 </script>
@@ -50,10 +59,7 @@ export default {
   <div>
     <header class="flex justify-between items-center">
       <h4>Description of Scope</h4>
-      <EditIconButton
-        v-if="hasAnyPermission(['groups-manage', ['application-edit', group]]) && !editing"
-        @click="$emit('update:editing', true)"
-      />
+      <EditIconButton v-if="canEdit && !editing" @click="$emit('update:editing', true)" />
     </header>
     <div class="mt-2">
       <p class="text-sm">

@@ -151,6 +151,8 @@ export default {
             handler (to) {
                 if (to) {
                     this.selections = Array.isArray(to) ? to : [to]
+                } else {
+                    this.selections = []
                 }
                 this.clearInput();
                 this.resetCursor();

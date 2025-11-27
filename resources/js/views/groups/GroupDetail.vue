@@ -29,6 +29,7 @@ import ProgressChart from "@/components/applications/ProgressChart.vue";
 import SustainedCurationReviewAlert from "@/components/alerts/SustainedCurationReviewAlert.vue";
 import SubgroupList from '@/components/groups/SubgroupList.vue'
 import WGCaptionIconForm from '@/components/groups/WGCaptionIconForm.vue';
+import ApplicationApprovedNote from '@/components/alerts/ApplicationApprovedNote.vue'
 
 import { api, isValidationError } from "../../http";
 
@@ -60,6 +61,7 @@ export default {
     SustainedCurationReviewAlert,
     SubgroupList,
     WGCaptionIconForm,
+    ApplicationApprovedNote,
   },
   props: {
     uuid: {
@@ -86,7 +88,9 @@ export default {
       }
       return group.value.is_vcep_or_scvcep ? VcepGeneList : GcepGeneList;
     });
-
+    const application = computed(() => {
+      return group.value.expert_panel;
+    });
     const ongoingPlansFormComponent = computed(() => {
       return group.value.is_vcep_or_scvcep ? VcepOngoingPlansForm : GcepOngoingPlansForm;
     });
@@ -126,6 +130,7 @@ export default {
 
     return {
       group,
+      application,
       groupGeneList,
       showModal,
       ongoingPlansFormComponent,
@@ -323,6 +328,7 @@ export default {
         <ApplicationSummary v-if="group.isApplying" :group="group" />
         <tabs-container @tab-changed="handleTabChange">
           <tab-item label="Members">
+            <ApplicationApprovedNote :show="application.stepIsApproved(1)" />
             <MemberList :group="group" />
             <submission-wrapper
               v-if="group.is_vcep_or_scvcep"
@@ -341,7 +347,6 @@ export default {
 
             <template v-if="(userInGroup(group) || hasPermission('groups-manage')) && (group.is_working_group || group.group_type_id === 1)" >
               <WGCaptionIconForm :group="group" @saved="getGroup" />
-
               <br />
             </template>
 
@@ -353,6 +358,7 @@ export default {
               "
               @canceled="cancelForm('editingDescription')"
             >
+              <ApplicationApprovedNote :show="application.stepIsApproved(1)" />
               <GroupDescriptionForm
                 v-model:editing="editingDescription"
                 :errors="errors"
@@ -361,6 +367,7 @@ export default {
           </tab-item>
 
           <tab-item label="Scope" :visible="group.is_ep">
+            <ApplicationApprovedNote :show="application.stepIsApproved(1)" />
             <h3>
               Plans for Ongoing Gene Review and Reanalysis and Discrepancy
               Resolution

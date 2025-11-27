@@ -43,7 +43,15 @@ class GenesAdd
 
     public function authorize(ActionRequest $request): bool
     {
-        return Auth::user()->can('addGene', $request->group);
+         $user = Auth::user();
+        if (!$user) { return false; }
+
+        $group = $request->route('group');
+        if ($group->isDefinitionApproved()) {
+            return ($user->hasRole('super-admin') || $user->hasRole('super-user') || $group->userIsCoordinator($user));
+        }
+
+        return $user->can('addGene', $request->group);
     }
     
     public function rules(ActionRequest $request): array
