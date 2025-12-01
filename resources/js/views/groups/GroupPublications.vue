@@ -1,17 +1,21 @@
 <script setup>
 import { ref, onMounted, watch, computed, onActivated, defineExpose } from "vue";
 import { api } from "@/http";
-import PublicationForm from "@/components/forms/PublicationForm.vue";
+import useRemotePublicationClient from "@/domain/remote_publication_client";
 
 const props = defineProps({ group: { type: Object, required: true } });
 
 const loading = ref(false);
 const loadedFor = ref(null);
 const items = ref([]);
-const addOpen = ref(false);
-const addText = ref("");
-const posting = ref(false);
 const error = ref("");
+const addOpen = ref(false)
+const addRaw = ref("");
+const addLoading = ref(false);
+const addError = ref("");
+const preview = ref(null);
+const pubClient = useRemotePublicationClient();
+
 const groupUuid = computed(() => props.group?.uuid);
 
 async function fetchPublications() {
@@ -32,30 +36,43 @@ async function fetchPublications() {
 function refresh() { return fetchPublications(); }
 defineExpose({ refresh });
 
-function parseEntries(raw) {
-    return raw
-        .split(/[\n,]/)
-        .map(s => s.trim())
-        .filter(Boolean);
+async function doPreview() {
+  addError.value = ""; preview.value = null; addLoading.value = true;
+  const q = addRaw.value?.trim();
+  if (!q) { addLoading.value = false; addError.value = "Please enter an identifier."; return; }
+  try {
+    const res = await pubClient.fetchFromUrl(q);
+    if (!res) throw new Error("No match found.");
+    preview.value = res;
+  } catch (e) {
+    addError.value = e?.message || "Lookup failed.";
+  } finally {
+    addLoading.value = false;
+  }
 }
 
-async function addPublications() {
-    const entries = parseEntries(addText.value);
-    if (!entries.length) return;
+async function savePublication() {
+  addError.value = ""
+  if (!preview.value) { addError.value = "Preview first."; return }
 
-    posting.value = true;
-    error.value = "";
-    try {
-        await api.post(`/api/groups/${groupUuid.value}/publications`, { entries });
-        addOpen.value = false;
-        addText.value = "";
-        await fetchPublications();
-    } catch (e) {
-        error.value = e?.response?.data?.message || "Failed to add publications.";
-    } finally {
-        posting.value = false;
-    }
+  const payload = {
+    source:      preview.value.doi ? 'doi' : (preview.value.pmid ? 'pmid' : (preview.value.pmcid ? 'pmcid' : 'url')),
+    identifier:  preview.value.doi ?? preview.value.pmid ?? preview.value.pmcid ?? addRaw.value.trim(),
+    link:        preview.value.url ?? null,
+    pub_type:    preview.value.pubType ?? null,
+    published_at: preview.value.date ?? preview.value.firstPublicationDate ?? null,
+    meta:        preview.value,
+  }
+
+  try {
+    await api.post(`/api/groups/${groupUuid.value}/publications`, payload)
+    addRaw.value = ""; preview.value = null; addOpen.value = false
+    await fetchPublications()
+  } catch (e) {
+    addError.value = e?.response?.data?.message || "Failed to add publication."
+  }
 }
+
 
 async function removePublication(pub) {
     if (!confirm("Remove this publication entry?")) return;
@@ -127,7 +144,14 @@ function idsOf(p) {
     return { pmid, pmcid, doi };
 }
 function urlOf(p) {
-    return p.meta?.url || null;
+    return p.link || p.meta?.url || null;
+}
+
+function clearAddModal() {
+  addRaw.value   = ''
+  addError.value = ''
+  preview.value  = null
+  addOpen.value = false
 }
 </script>
 
@@ -135,18 +159,11 @@ function urlOf(p) {
     <section class="space-y-3">
         <header class="flex items-center justify-between">
             <h3 class="text-xl font-semibold">Publications</h3>
-            <div class="space-x-2">
-                <button class="btn btn-primary btn-sm" @click="addOpen = true" :disabled="posting">Add publications</button>
-                <button class="btn btn-sm" @click="fetchPublications" :disabled="loading">{{ loading ? 'Loading…' : 'Refresh' }}</button>
-            </div>
+            <button class="btn btn-primary btn-sm" @click="addOpen = true">Add publication</button>
         </header>
-
         <p v-if="error" class="text-red-600">{{ error }}</p>
-
         <div v-if="!loading && items.length === 0" class="text-gray-600">No publications added yet.</div>
-
-        <div v-if="loading">Loading…</div>
-
+        <div v-if="loading">Loading...</div>
         <div v-else class="overflow-x-auto border rounded">
             <table class="min-w-full text-sm">
                 <thead class="bg-gray-50">
@@ -156,7 +173,6 @@ function urlOf(p) {
                         <th class="px-3 py-2 text-left">Journal</th>
                         <th class="px-3 py-2 text-left">Identifiers</th>
                         <th class="px-3 py-2 text-left">Published</th>
-                        <th class="px-3 py-2 text-left">Status</th>
                         <th class="px-3 py-2 text-left">Actions</th>
                     </tr>
                 </thead>
@@ -200,16 +216,6 @@ function urlOf(p) {
                         </td>
                         <td class="px-3 py-2">{{ dateOf(p) }}</td>
                         <td class="px-3 py-2">
-                            <span class="inline-block px-2 py-0.5 rounded text-xs" :class="{
-                                    'bg-gray-100 text-gray-800': p.status === 'pending',
-                                    'bg-green-100 text-green-800': p.status === 'enriched',
-                                    'bg-red-100 text-red-800': p.status === 'failed'
-                                }"
-                            >
-                                {{ p.status }}
-                            </span>
-                        </td>
-                        <td class="px-3 py-2">
                             <div class="flex flex-wrap items-center gap-x-2 gap-y-2">
                                 <button class="btn btn-xs inline-flex items-center shrink-0" @click="showDetails(p)" title="View details"> Details </button>
                                 <button class="btn btn-xs inline-flex items-center shrink-0" @click="removePublication(p)" title="Remove publication" > Remove </button>
@@ -219,20 +225,44 @@ function urlOf(p) {
                 </tbody>
             </table>
         </div>
-        <div>
-            <PublicationForm />
-        </div>
-
-        <!-- Add modal -->
-        <modal-dialog v-model="addOpen" title="Add Publications">
-            <div class="space-y-2">
-                <p class="text-sm text-gray-600">
-                    Paste <strong>PMID / PMCID / DOI / URL</strong> —
-                    one per line or comma-separated. Example: <code>PMID: 12345678</code>, <code>PMCID: PMC1234567</code>, <code>DOI: 10.1097/MD.0000000000035237</code>
-                </p>
-                <textarea v-model="addText" rows="8" class="w-full border rounded p-2" :disabled="posting" :class="posting ? 'opacity-60 cursor-not-allowed' : ''" />
-                <button-row :submit-text="posting ? 'Adding…' : 'Add'" :submitting="posting" @submitted="addPublications" @canceled="() => { if (!posting) addOpen = false }" />
+        <modal-dialog v-model="addOpen" title="Add a publication">
+          <div class="space-y-3">
+            <p class="text-sm text-gray-600">
+              Paste <strong>PMID / PMCID / DOI / URL</strong>, preview it, then save.
+            </p>
+        
+            <div class="flex gap-2">
+              <input
+                v-model="addRaw"
+                class="w-full border rounded px-3 py-2"
+                placeholder="e.g., PMID: 12345678 · PMCID: PMC1234567 · DOI: 10.1038/s41586-020-2649-2 · URL"
+                @keydown.enter.prevent="doPreview"
+              />
+              <button class="btn" :disabled="addLoading || !addRaw" @click="doPreview">
+                {{ addLoading ? 'Looking…' : 'Preview' }}
+              </button>
             </div>
+        
+            <p v-if="addError" class="text-sm text-red-600">{{ addError }}</p>
+            <div v-if="preview" class="rounded border p-3 space-y-1">
+              <div class="font-medium">{{ preview.title || 'Untitled' }}</div>
+              <div class="text-sm text-gray-600">
+                {{ preview.journalTitle || '—' }} · {{ preview.pubType || '—' }} · {{ preview.date || preview.firstPublicationDate || '—' }}
+              </div>
+              <div class="text-xs text-gray-600">
+                DOI: <span class="font-mono">{{ preview.doi || '—' }}</span>
+                <span class="mx-2">|</span>
+                PMID: <span class="font-mono">{{ preview.pmid || '—' }}</span>
+                <span class="mx-2">|</span>
+                PMCID: <span class="font-mono">{{ preview.pmcid || '—' }}</span>
+              </div>
+              <div class="flex items-center gap-2 pt-2">
+                <a v-if="preview.url" :href="preview.url" target="_blank" rel="noopener" class="underline text-sm">Open</a>
+                <button class="btn" @click="savePublication">Save</button>
+                <button class="btn" @click="clearAddModal" type="button">Clear</button>
+              </div>
+            </div>
+          </div>
         </modal-dialog>
         <modal-dialog v-model="detailsOpen" title="Publication Details" @closed="closeDetails">
             <div class="space-y-3">
@@ -240,7 +270,6 @@ function urlOf(p) {
                     <div class="text-sm text-gray-600">
                         <div><strong class="mr-1">SOURCE:</strong>{{ detailsItem?.source }}</div>
                         <div><strong class="mr-1">IDENTIFIER:</strong>{{ detailsItem?.identifier }}</div>
-                        <div><strong class="mr-1">STATUS:</strong>{{ detailsItem?.status }}</div>
                     </div>
                     <div class="flex items-center gap-2">
                         <button class="btn transition-colors" :class="copyLabel === 'JSON copied!' ? 'bg-green-100 text-green-800' : ''" @click="copyMeta">{{ copyLabel }}</button>
@@ -257,7 +286,6 @@ function urlOf(p) {
                         <div v-else class="break-words">{{ fmt(v) }}</div>
                     </div>
                 </div>
-                <!-- <button-row submit-text="Close" :show-cancel="false" @submitted="closeDetails" /> -->
             </div>
         </modal-dialog>
   </section>
