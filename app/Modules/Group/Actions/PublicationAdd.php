@@ -19,33 +19,29 @@ class PublicationAdd
         $this->authorize($request->user(), $group);
 
         $data = $request->validate([
-            'entries'   => 'required|array|min:1',
-            'entries.*' => 'string|max:512',
+            'source'        => 'required|string|in:pmid,pmcid,doi,url',
+            'identifier'    => 'required|string|max:512',
+            'link'          => 'nullable|url|max:2048',
+            'pub_type'      => 'nullable|string|max:250',
+            'published_at'  => 'nullable|date',
+            'meta'          => 'nullable|array',
         ]);
 
-        $ids = [];
-        foreach ($data['entries'] as $raw) {
-            $raw = trim($raw);
-            if ($raw === '') continue;
-
-            [$source, $identifier] = PublicationLookup::normalize($raw);
-
-            $pub = Publication::firstOrCreate(
-                ['group_id' => $group->id, 'source' => $source, 'identifier' => $identifier],
-                ['added_by_id' => optional($request->user())->id, 'status' => 'pending']
-            );            
-            
-            DB::afterCommit(function () use ($pub, $group) {
-                Bus::chain([
-                    new EnrichPublication($pub->id),
-                    new SendPublicationAdded($group->id, $pub->id),
-                ])->dispatch();
-            });
-
-            
-            $ids[] = $pub->id;
-        }        
-        return response()->json(['ids' => $ids], 202);
+        $pub = Publication::firstOrCreate(
+            ['group_id' => $group->id, 'source' => $data['source'], 'identifier' => $data['identifier']],
+            [   
+                'added_by_id' => optional($request->user())->id,
+                'link'         => $data['link'],
+                'pub_type'     => $data['pub_type'],
+                'published_at' => $data['published_at'],
+                'meta'         => $data['meta'],
+            ]
+        );
+        
+        event(new PublicationAdded($group, $pub->fresh()));
+        $pub->forceFill(['sent_to_dx_at' => now()])->save();
+        
+        return response()->json($pub, 200);
     }
 
     protected function authorize($user, Group $group): void
