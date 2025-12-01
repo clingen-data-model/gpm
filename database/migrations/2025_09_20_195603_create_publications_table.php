@@ -16,14 +16,12 @@ return new class extends Migration {
             $t->foreignId('added_by_id')->nullable()->constrained('people')->nullOnDelete();
             $t->foreignId('updated_by_id')->nullable()->constrained('people')->nullOnDelete();
 
+            $t->string('link', 250)->nullable();
             $t->enum('source', ['pmid','pmcid','doi','url'])->index();
-            $t->string('identifier'); 
+            $t->string('identifier', 250); 
             $t->json('meta')->nullable();
             $t->string('pub_type', 250)->nullable()->index();
             $t->date('published_at')->nullable()->index();
-
-            $t->string('status', 50)->default('pending')->index();
-            $t->string('error')->nullable();
             $t->timestamp('sent_to_dx_at')->nullable()->index();
 
             $t->timestamps();
