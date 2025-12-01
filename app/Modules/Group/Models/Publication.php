@@ -147,14 +147,15 @@ class Publication extends Model
     public function toExchangePayload(): array
     {
         return [
-            'uuid'        => $this->uuid,
-            'type'        => $this->display_type,
-            'title'       => $this->display_title,
-            'authors'     => $this->authorsList(),
-            'journal'     => $this->display_journal,
-            'identifiers' => $this->identifiers(),
-            'published'   => $this->display_date,
-            'url'         => $this->display_link,
+            'publication_id'    => $this->uuid,
+            'type'              => $this->display_type,
+            'title'             => $this->display_title,
+            'authors'           => $this->authorsList(),
+            'journal'           => $this->display_journal,
+            'identifiers'       => $this->identifiers(),
+            'published'         => $this->display_date,
+            'url'               => $this->display_link,
+            'meta'              => $this->meta ?? []
         ];
     }
 
