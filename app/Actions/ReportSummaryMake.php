@@ -190,7 +190,7 @@ class ReportSummaryMake extends ReportMakeAbstract
 
     private function getNumberOfPublications(): int
     {
-        return Publication::where('status', '=', 'enriched')->count();
+        return Publication::count();
     }
 
 }
