@@ -1,2 +1,0 @@
-import{q as u,r as c,p as r}from"./app-Z4xrG8US.js";const n=c([]),l=u(()=>n.value),o=async e=>{n.value=await r.get(e).then(t=>t.data.data)},v=async(e,t)=>await r.post(e,t).then(a=>(n.value.push(a.data),a.data)),y=async(e,t)=>await r.put(e,t).then(a=>{const s=n.value.findIndex(d=>d.id===a.data.id);return n.value[s]=a.data,a.data}),p=async(e,t)=>await r.delete(`${e}/${t}`).then(a=>{const s=n.value.findIndex(d=>d.id===t);return n.value.splice(s,1),a});export{p as d,o as f,l,v as s,y as u};
-//# sourceMappingURL=log_entry_repository-CP4tusJ6.js.map
