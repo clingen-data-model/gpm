@@ -52,21 +52,20 @@ services:
             XDEBUG_CONFIG: ${XDEBUG_SESSION:-client_host=host.docker.internal}
         user: ${DOCKER_USER:-501:20}
 
-    nginx:
-        container_name: ${DOCKER_NAME:-gpm}-nginx
-        image: ${DOCKER_IMAGE:-ghcr.io/clingen-data-model/cgwi-php-13.2-8.5:v1.1.11}
+    caddy:
+        container_name: ${DOCKER_NAME:-gpm}-caddy
+        image: caddy:2.10.2-alpine
         depends_on:
             - app
         ports:
             - "${APP_PORT:-8013}:8080"
         volumes:
             - .:/srv/app
-        user: ${DOCKER_USER:-501:20}
+            - ./.docker/Caddyfile:/etc/caddy/Caddyfile
+            - caddy_data:/data
+            - caddy_config:/config
         init: true
-        entrypoint:
-            - /usr/sbin/nginx
-            - -g
-            - "daemon off;"
+        user: ${DOCKER_USER:-501:20}
 
     redis:
         container_name: ${DOCKER_NAME:-gpm}-redis
@@ -142,3 +141,5 @@ services:
 volumes:
     db:
     redis:
+    caddy_data:
+    caddy_config:

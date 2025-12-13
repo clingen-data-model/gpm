@@ -1,0 +1,6 @@
+http://:8080 {
+	root * /srv/app/public
+	encode
+	php_fastcgi app:9000
+	file_server
+}
