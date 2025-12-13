@@ -54,7 +54,6 @@ export default {
       type="text"
       :errors="errors.email"
       name="email"
-      required
     />
     <input-row
       v-model="password"
@@ -62,7 +61,6 @@ export default {
       type="password"
       :errors="errors.password"
       name="password"
-      required
     />
 
     <!-- Links Section aligned to the left under the input fields -->
