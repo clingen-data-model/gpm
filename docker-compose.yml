@@ -23,7 +23,7 @@ services:
         user: ${DOCKER_USER:-501:20}
 
     app:
-        image: ${DOCKER_IMAGE:-ghcr.io/clingen-data-model/cgwi-php-11.7-8.2:v1.1.6}
+        image: ${DOCKER_IMAGE:-ghcr.io/clingen-data-model/cgwi-php-13.2-8.5:v1.1.11}
         container_name: ${DOCKER_NAME:-gpm}-app
         init: true
         entrypoint:
@@ -54,7 +54,7 @@ services:
 
     nginx:
         container_name: ${DOCKER_NAME:-gpm}-nginx
-        image: ${DOCKER_IMAGE:-ghcr.io/clingen-data-model/cgwi-php-11.7-8.2:v1.1.6}
+        image: ${DOCKER_IMAGE:-ghcr.io/clingen-data-model/cgwi-php-13.2-8.5:v1.1.11}
         depends_on:
             - app
         ports:
@@ -90,7 +90,7 @@ services:
             - '${FORWARD_MAILPIT_DASHBOARD_PORT:-8038}:8025'
 
     scheduler:
-        image: ${DOCKER_IMAGE:-ghcr.io/clingen-data-model/cgwi-php-11.7-8.2:v1.1.6}
+        image: ${DOCKER_IMAGE:-ghcr.io/clingen-data-model/cgwi-php-13.2-8.5:v1.1.11}
         container_name: ${DOCKER_NAME:-gpm}-scheduler
         depends_on:
             - app
@@ -115,7 +115,7 @@ services:
         user: ${DOCKER_USER:-501:20}
 
     queue:
-        image: ${DOCKER_IMAGE:-ghcr.io/clingen-data-model/cgwi-php-11.7-8.2:v1.1.6}
+        image: ${DOCKER_IMAGE:-ghcr.io/clingen-data-model/cgwi-php-13.2-8.5:v1.1.11}
         container_name: ${DOCKER_NAME:-gpm}-queue
         depends_on:
             - app
