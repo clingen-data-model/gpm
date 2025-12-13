@@ -18,7 +18,7 @@ class PersonRetireAll
 
     public function __construct(
         private MemberRetire $memberRetire,
-        private UserDelete $deleteUser
+        private UserDelete $userDelete
     ) {}
 
     public function handle(Person $person, bool $disableLogin = false, ?string $reason = null): array
@@ -28,10 +28,10 @@ class PersonRetireAll
         $retired = 0;
 
         foreach ($person->memberships()->isActive()->get() as $gm) {
-            try {                
+            try {
                 $this->memberRetire->handle($gm, $endAt, $reason, $actor);
                 $retired++;
-            } catch (\Throwable $e) {     
+            } catch (\Throwable $e) {
                 Log::warning('PersonRetireAll: membership retire failed', [
                     'person_id' => $person->id,
                     'group_member_id' => $gm->id,
@@ -43,7 +43,7 @@ class PersonRetireAll
         $loginDisabled  = false;
         if ($person->user && $disableLogin) {
             $person->update(['user_id' => null]);
-            $person->user->delete();
+            $this->userDelete->handle($person->user);
             $loginDisabled = true;
         }
 
