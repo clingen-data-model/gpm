@@ -87,7 +87,7 @@ const preloadPublications = async () => {
     }
     console.log('preload: prereqs OK → fetching…');
     loading.value = true
-    const params = { status: 'enriched', start: `${year.value}-01-01`, end:   `${year.value}-12-31` }
+    const params = { start: `${year.value}-01-01`, end:   `${year.value}-12-31` }
     if (props.shapeExchange) params.shape_exchange = 1
 
     try {
@@ -201,9 +201,6 @@ const groupPublicationsUrl = computed(() =>
         <div class="flex items-center justify-between">
             <div>
                 <h4 class="text-lg font-semibold">Publications from {{ year }}</h4>
-                <p class="text-sm text-gray-600">
-                These are your group’s publications with status <em>enriched</em> in {{ year }}. Check which to include.
-                </p>
             </div>
 
             <div class="flex items-center gap-2">
@@ -231,11 +228,6 @@ const groupPublicationsUrl = computed(() =>
         </div>
 
         <div v-if="loading" class="text-sm text-gray-500">Loading publications...</div>
-
-        <div v-else-if="totalCount === 0" class="rounded-md border border-dashed p-4 text-sm text-gray-600">
-            No enriched publications found for {{ year }}.
-        </div>
-
         <div v-else class="overflow-x-auto">
             <table class="min-w-full border border-gray-200 rounded-md">
                 <thead class="bg-gray-50">
