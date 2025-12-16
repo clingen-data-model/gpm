@@ -24,6 +24,7 @@ use App\Modules\ExpertPanel\Http\Controllers\Api\ApplicationLogController;
 use App\Modules\ExpertPanel\Http\Controllers\Api\ApplicationStepController;
 use App\Modules\ExpertPanel\Http\Controllers\Api\ApplicationContactController;
 use App\Modules\ExpertPanel\Http\Controllers\Api\NextActionAssigneeController;
+use App\Modules\ExpertPanel\Actions\ClinvarOrganizationUpdate;
 
 Route::get('/next-actions/assignees', [NextActionAssigneeController::class, 'index']);
 
@@ -59,9 +60,8 @@ Route::group([
         Route::post('/{expertPanel:uuid}/next-actions', NextActionCreate::class);
         Route::put('/{expertPanel:uuid}/next-actions/{nextAction:id}', NextActionUpdate::class);
         Route::delete('/{expertPanel:uuid}/next-actions/{id}', NextActionDelete::class);
-        Route::post(
-            '/{expertPanel:uuid}/next-actions/{nextAction:uuid}/complete',
-            NextActionComplete::class
-        );
+        Route::post('/{expertPanel:uuid}/next-actions/{nextAction:uuid}/complete', NextActionComplete::class);
+
+        Route::put('/{expertPanel:uuid}/clinvar', ClinvarOrganizationUpdate::class);
     });
 });

@@ -27,7 +27,10 @@ export default {
             this.visibility = this.$el && (this.$el.offsetWidth > 0 || this.$el.offsetHeight > 0);
         },
         focusFirstInput() {
-            this.$el.querySelectorAll("input, textarea, select")[0].focus()
+            if (!this.$el) return;
+            const inputs = this.$el.querySelectorAll('input, textarea, select');
+            if (!inputs.length) return;
+            inputs[0].focus();
         }
     }
 }

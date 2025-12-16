@@ -64,7 +64,7 @@ export default {
         Edit Group Info
       </button>
       <EmitCheckpointsButton
-        v-if="hasRole('coordinator') || hasRole('super-user') || hasRole('super-admin')"
+        v-if="hasRole('coordinator', group) || hasRole('super-user') || hasRole('super-admin')"
         :group="group"
         :ids="[group.id]" 
         :only-active="true"

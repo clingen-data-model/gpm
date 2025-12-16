@@ -88,6 +88,7 @@ trait IsPublishableGroupEvent
             }
 
             if ($group->isVcep || $group->isScvcep) {
+                $epData['clinvar_org_id']                       = $ep->clinvar_org_id;
                 $epData['vcep_definition_approval']             = $ep->step_1_approval_date;
                 $epData['vcep_draft_specification_approval']    = $ep->step_2_approval_date;
                 $epData['vcep_pilot_approval']                  = $ep->step_3_approval_date;

@@ -4,6 +4,7 @@ import { useStore } from "vuex";
 
 import { logEntries, fetchEntries } from "@/adapters/log_entry_repository";
 import { hasPermission } from "@/auth_utils";
+import configs from '@/configs.json'
 
 import ActivityLog from "@/components/log_entries/ActivityLog.vue";
 import ApplicationSummary from "@/components/groups/ApplicationSummary.vue";
@@ -29,6 +30,7 @@ import ProgressChart from "@/components/applications/ProgressChart.vue";
 import SustainedCurationReviewAlert from "@/components/alerts/SustainedCurationReviewAlert.vue";
 import SubgroupList from '@/components/groups/SubgroupList.vue'
 import WGCaptionIconForm from '@/components/groups/WGCaptionIconForm.vue';
+import ClinvarForm from '@/components/expert_panels/ClinvarForm.vue';
 
 import { api, isValidationError } from "../../http";
 
@@ -60,6 +62,7 @@ export default {
     SustainedCurationReviewAlert,
     SubgroupList,
     WGCaptionIconForm,
+    ClinvarForm,
   },
   props: {
     uuid: {
@@ -339,9 +342,13 @@ export default {
           </tab-item>
           <tab-item label="Website Description">
 
-            <template v-if="(userInGroup(group) || hasPermission('groups-manage')) && (group.is_working_group || group.group_type_id === 1)" >
-              <WGCaptionIconForm :group="group" @saved="getGroup" />
+            <template v-if="group.is_vcep" >
+              <ClinvarForm :group="group" @saved="getGroup" />
+              <br />
+            </template>
 
+            <template v-if="(userInGroup(group) || hasPermission('groups-manage')) && group.is_working_group" >
+              <WGCaptionIconForm :group="group" @saved="getGroup" />
               <br />
             </template>
 
