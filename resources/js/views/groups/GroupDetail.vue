@@ -4,7 +4,6 @@ import { useStore } from "vuex";
 
 import { logEntries, fetchEntries } from "@/adapters/log_entry_repository";
 import { hasPermission } from "@/auth_utils";
-import configs from '@/configs.json'
 
 import ActivityLog from "@/components/log_entries/ActivityLog.vue";
 import ApplicationSummary from "@/components/groups/ApplicationSummary.vue";
@@ -501,7 +500,7 @@ export default {
             <button class="btn btn-xs mt-1" @click="getLogEntries">
               Refresh
             </button>
-          </tab-item>          
+          </tab-item>
 
           <tab-item label="Admin" :visible="hasPermission('groups-manage')">
             <div v-if="group.isApplying && group.is_ep">
