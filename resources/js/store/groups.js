@@ -7,6 +7,9 @@ import groupBy from 'lodash/groupBy';
 const baseUrl = '/api/groups';
 const getApplicationUrl = (uuid) => `${baseUrl}/${uuid}/expert-panel`;
 
+const applicationsBaseUrl = '/api/applications';
+const getExpertPanelUrl = (expertPanelUuid) => `${applicationsBaseUrl}/${expertPanelUuid}`;
+
 export const getters = {
     groups: state => state.items,
     items: state => state.items,
@@ -323,6 +326,15 @@ export const actions = {
             commit('addItem', item)
             return response;
         })
+    },
+
+    async gcepRationaleUpdate({ commit, getters }, { uuid, expertPanelUuid, gcepRationale }) {
+        return api.put(`${getExpertPanelUrl(expertPanelUuid)}/gcep-rationale`, { gcep_rationale: gcepRationale })
+            .then(response => {
+                const item = getters.getItemByUuid(uuid);
+                commit('addItem', item);
+                return response;
+        });
     },
 
     // eslint-disable-next-line unused-imports/no-unused-vars
