@@ -20,6 +20,7 @@ import GroupDetailHeader from "./GroupDetailHeader.vue";
 import MemberList from "@/components/groups/MemberList.vue";
 import MembershipDescriptionForm from "@/components/expert_panels/MembershipDescriptionForm.vue";
 import ScopeDescriptionForm from "@/components/expert_panels/ScopeDescriptionForm.vue";
+import GcepRationaleForm from "@/components/expert_panels/GcepRationaleForm.vue";
 import VcepGeneList from "@/components/expert_panels/VcepGeneList.vue";
 import VcepOngoingPlansForm from "@/components/expert_panels/VcepOngoingPlansForm.vue";
 import GroupDocuments from "./GroupDocuments.vue";
@@ -53,6 +54,7 @@ export default {
     MemberList,
     MembershipDescriptionForm,
     ScopeDescriptionForm,
+    GcepRationaleForm,
     VcepGeneList,
     VcepOngoingPlansForm,
     AnnualUpdateAlert,
@@ -129,10 +131,6 @@ export default {
 
     watch(() => props.uuid, () => getGroup(), {immediate: true})
 
-    onMounted(async () => {
-      // getGroup();
-    });
-
     return {
       group,
       groupGeneList,
@@ -150,6 +148,7 @@ export default {
       editingExpertise: false,
       editingDescription: false,
       editingScopeDescription: false,
+      editingGcepRationale: false,
       editingGenes: false,
       showConfirmDelete: false,
       ongoingPlansErrors: {},
@@ -250,6 +249,18 @@ export default {
           return response;
         });
     },
+    saveGcepRationale() {
+      return this.$store
+        .dispatch("groups/gcepRationaleUpdate", {
+          uuid: this.group.uuid,
+          expertPanelUuid: this.group.expert_panel.uuid,
+          gcepRationale: this.group.expert_panel.gcep_rationale,
+        })
+        .then((response) => {
+          this.$store.commit("pushSuccess", "GCEP Rationale updated.");
+          return response;
+        });
+    },
     saveOngoingPlansForm() {
       const { uuid, expert_panel: expertPanel } = this.group;
       return this.$store
@@ -264,6 +275,11 @@ export default {
     revertGroupChanges() {
       this.errors = {};
       return this.$store.dispatch("groups/find", this.group.uuid).then(() => {
+        this.$store.commit("groups/setCurrentItemIndexByUuid", this.group.uuid);
+        if (this.group.is_ep) {
+          return this.$store.dispatch("groups/getGenes", this.group);
+        }
+      }).then(() => {
         this.$store.commit("pushInfo", "Update canceled.");
       });
     },
@@ -391,6 +407,20 @@ export default {
                 :is="groupGeneList"
                 ref="groupGeneListRef"
                 v-model:editing="editingGenes"
+              />
+            </submission-wrapper>
+            <br>
+            <submission-wrapper
+              :visible="group.is_ep"
+              :show-controls="editingGcepRationale"
+              @submitted="
+                submitForm('saveGcepRationale', 'editingGcepRationale')
+              "
+              @canceled="cancelForm('editingGcepRationale')"
+            >
+              <GcepRationaleForm
+                v-model:editing="editingGcepRationale"
+                :errors="errors"
               />
             </submission-wrapper>
             <br>
