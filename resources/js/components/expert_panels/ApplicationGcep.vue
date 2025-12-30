@@ -13,6 +13,7 @@ import GroupForm from '@/components/groups/GroupForm.vue'
 import MemberList from '@/components/groups/MemberList.vue';
 import GroupDescriptionForm from '@/components/groups/GroupDescriptionForm.vue';
 import ScopeDescriptionForm from '@/components/expert_panels/ScopeDescriptionForm.vue';
+import GcepRationaleForm from '@/components/expert_panels/GcepRationaleForm.vue';
 import GcepOngoingPlansForm from '@/components/expert_panels/GcepOngoingPlansForm.vue';
 
 export default {
@@ -162,6 +163,8 @@ export default {
           @geneschanged="genesChanged = true"
           @update="handleUpdate"
         />
+
+        <GcepRationaleForm @update="handleUpdate" />
 
         <hr>
 

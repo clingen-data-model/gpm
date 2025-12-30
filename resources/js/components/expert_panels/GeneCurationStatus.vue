@@ -248,10 +248,8 @@ const clearSelection = () => {
       <span class="font-semibold">Bulk Tier Update:</span>
       <select v-model="bulkTier" class="border rounded px-2 py-1 text-sm">
         <option value="">Select Tier</option>
-        <option value="1">Tier 1</option>
-        <option value="2">Tier 2</option>
-        <option value="3">Tier 3</option>
-        <option value="4">Tier 4</option>
+        <option value="1">Primary</option>
+        <option value="2">Secondary</option>
       </select>
       <button
         class="bg-blue-600 text-white px-3 py-1 rounded disabled:opacity-50"
@@ -322,10 +320,8 @@ const clearSelection = () => {
                   title="Tier"
                 >
                   <option value="">—</option>
-                  <option value="1">Tier 1</option>
-                  <option value="2">Tier 2</option>
-                  <option value="3">Tier 3</option>
-                  <option value="4">Tier 4</option>
+                  <option value="1">Primary</option>
+                  <option value="2">Secondary</option>
                 </select>
                 <span v-if="savingTierFor === gene.id" class="text-xs text-gray-500">Saving…</span>
 				<button class="rounded border px-2 py-1 text-xs bg-white hover:bg-red-50"
@@ -356,17 +352,22 @@ const clearSelection = () => {
                   class="rounded-lg border border-gray-200 bg-gray-50 p-2"
                 >
                   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
-                    <div><span class="text-[11px] uppercase text-gray-500">Status</span><div class="text-gray-900">{{ entry.curation_status || '—' }}</div></div>
-                    <div><span class="text-[11px] uppercase text-gray-500">Status Date</span><div class="text-gray-900">
+                    <div><span class="text-[11px] uppercase text-gray-500">Expert Panel</span><div class="text-gray-900">{{ entry.expert_panel || '—' }}</div></div>
+                    <div><span class="text-[11px] uppercase text-gray-500">Status</span><div class="text-gray-900">
+                      {{ entry.curation_status || '—' }}. Date:
                       {{ entry?.date_approved ? new Date(entry.date_approved).toLocaleString('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true }) : '—' }}
-                    </div></div>
-                    <div class="sm:col-span-2 lg:col-span-1"><span class="text-[11px] uppercase text-gray-500">Expert Panel</span><div class="text-gray-900">{{ entry.expert_panel || '—' }}</div></div>
+                    </div></div>                    
                     <div><span class="text-[11px] uppercase text-gray-500">Disease</span><div class="text-gray-900">{{ entry.mondo_id ? `${entry.mondo_id} ${entry.disease_name || ''}` : (entry.disease_name || '—') }}</div></div>
                     <div><span class="text-[11px] uppercase text-gray-500">Classification</span><div class="text-gray-900">{{ entry.classification || '—' }}</div></div>
-                    <div><span class="text-[11px] uppercase text-gray-500">MOI</span><div class="text-gray-900">{{ entry.moi || '—' }}</div></div>
+                    <div><span class="text-[11px] uppercase text-gray-500">MOI</span><div class="text-gray-900">{{ entry.moi_name || '—' }}</div></div>
 					          <div><span class="text-[11px] uppercase text-gray-500">Type</span><div class="text-gray-900">{{ entry.curation_type || '—' }}</div></div>
                     <div><span class="text-[11px] uppercase text-gray-500">Rationales</span><div class="text-gray-900">{{ entry.rationales || '—' }}</div></div>
-                    <div><span class="text-[11px] uppercase text-gray-500">Phenotype</span><div class="text-gray-900">{{ entry.phenotypes || '—' }}</div></div>
+                    <div class="col-span-2"><span class="text-[11px] uppercase text-gray-500">Phenotype</span>
+                      <div class="text-gray-900">
+                        <span>{{ entry.phenotypes || '—' }}</span>
+                        <span class="mx-2 font-bold">&middot;</span>
+                        <span class="font-bold">Excluded:</span> {{ entry.excluded_phenotypes }}
+                      </div></div>
                   </div>
                 </div>
               </div>
