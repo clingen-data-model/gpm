@@ -131,6 +131,11 @@ export default {
         }
 
         function openPasteModal () {
+            pasteText.value = ''
+            bulkCheckResults.value = []
+            availabilityMap.value = new Map()
+            lastReviewedSymbols.value = []
+
             showPasteModal.value = true
             nextTick(() => pasteArea.value && pasteArea.value.focus())
         }
@@ -139,6 +144,9 @@ export default {
             showPasteModal.value = false
             pasteText.value = ''
             bulkCheckResults.value = []
+
+            availabilityMap.value = new Map()
+            lastReviewedSymbols.value = []
         }
 
         const alreadyAddedSet = computed(() => {
