@@ -75,5 +75,6 @@ Route::group([
         Route::delete('/{expertPanel:uuid}/funding-awards/{fundingAward}', FundingAwardDelete::class);
         Route::get('/{expertPanel:uuid}/funding-awards/pi-options',[FundingAwardController::class, 'piOptions']
 );
+        Route::put('/{expertPanel:uuid}/gcep-rationale', GcepRationaleUpdate::class);
     });
 });
