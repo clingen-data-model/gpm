@@ -15,7 +15,8 @@ const emit = defineEmits(['removed'])
 const store = useStore()
 
 const search = ref('')
-const selectedStatus = ref('')
+const selectedStatuses = ref([])
+const statusMenuOpen = ref(false)
 const sortKey = ref('gene_symbol') 
 const sortOrder = ref('asc')
 const currentPage = ref(1)
@@ -51,6 +52,22 @@ const removeGene = async () => {
 	}
 };
 
+const toggleStatus = (s) => {
+  if (selectedStatuses.value.includes(s)) {
+    selectedStatuses.value = selectedStatuses.value.filter(x => x !== s)
+  } else {
+    selectedStatuses.value = [...selectedStatuses.value, s]
+  }
+}
+const clearStatuses = () => { selectedStatuses.value = [] }
+
+const statusLabel = computed(() => {
+  if (selectedStatuses.value.length === 0) return 'All'
+  if (selectedStatuses.value.length === 1) return selectedStatuses.value[0]
+  return `${selectedStatuses.value.length} selected`
+})
+
+
 const statusPriority = {
 	'Not Curated': 0,
 	'Uploaded': 1,
@@ -75,12 +92,10 @@ const filteredGenes = computed(() => {
 	return props.genes.filter(g => {
 		const symbolMatch = g.gene_symbol?.toLowerCase().includes(kw)
 		const epMatch = (g.expert_panels || []).some(ep => ep?.toLowerCase().includes(kw))
-		const diseaseMatch = (g.details || []).some(d =>
-		d?.disease_name?.toLowerCase().includes(kw) || d?.mondo_id?.toLowerCase().includes(kw)
-		)
+		const diseaseMatch = (g.details || []).some(d => d?.disease_name?.toLowerCase().includes(kw) || d?.mondo_id?.toLowerCase().includes(kw))
 		const statusMatch = (g.statuses || []).some(s => s?.toLowerCase().includes(kw))
 		const matchesSearch = !kw || symbolMatch || epMatch || diseaseMatch || statusMatch
-		const matchesStatus = !selectedStatus.value || (g.statuses || []).includes(selectedStatus.value)
+		const matchesStatus = selectedStatuses.value.length === 0 || (g.statuses || []).some(s => selectedStatuses.value.includes(s))
 		return matchesSearch && matchesStatus
 	})
 })
@@ -196,48 +211,78 @@ const clearSelection = () => {
 <template>
   <div class="space-y-3">
     <!-- Toolbar (search, status filter, sort, page size) -->
-    <div class="mb-3 flex items-center justify-between border rounded-lg bg-white px-3 py-2">
-      <div class="flex items-center gap-3">
-        <input type="checkbox" :checked="isAllSelected" @change="toggleSelectAll" v-if="editing" />
-        <input
-          v-model="search"
-          type="text"
-          placeholder="Search genes, statuses, diseases…"
-          class="border rounded px-2 py-1 text-sm w-64"
-        />
-        <div class="flex items-center gap-2">
-          <label class="text-xs text-gray-500">Status</label>
-          <select v-model="selectedStatus" class="border rounded px-2 py-1 text-sm">
-            <option value="">All</option>
-            <option v-for="s in allStatuses" :key="s" :value="s">{{ s }}</option>
-          </select>
-        </div>
-      </div>
+    <div class="mb-3 border rounded-lg bg-white px-3 py-2">
+      <div class="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+        <!-- LEFT: full row on narrow -->
+        <div class="flex flex-wrap items-center gap-3 w-full md:w-auto">
+          <input type="checkbox" :checked="isAllSelected" @change="toggleSelectAll" v-if="editing" />
 
-      <div class="flex items-center gap-3">
-        <div class="flex items-center gap-2">
-          <label class="text-xs text-gray-500">Sort by</label>
-          <select v-model="sortKey" class="border rounded px-2 py-1 text-sm">
-            <option value="gene_symbol">HGNC Symbol</option>
-            <option value="expert_panel">Expert Panel</option>
-            <option value="statuses">Status Priority</option>
-            <option value="tier">Tier</option>
-          </select>
-          <button
-            class="border rounded px-2 py-1 text-xs"
-            @click="sortOrder = sortOrder === 'asc' ? 'desc' : 'asc'"
-            :aria-label="`Toggle sort order (currently ${sortOrder})`"
-            title="Toggle sort order"
-          >
-            {{ sortOrder === 'asc' ? 'ASC ▲' : 'DESC ▼' }}
-          </button>
+          <input
+            v-model="search"
+            type="text"
+            placeholder="Search genes, statuses, diseases…"
+            class="border rounded px-2 py-1 text-sm w-full sm:w-64"
+          />
+
+          <!-- Status dropdown (your existing block) -->
+          <div class="flex items-center gap-2">
+            <label class="text-xs text-gray-500">Status</label>
+            <div class="flex items-center gap-2 relative">
+              <button
+                type="button"
+                class="border rounded px-2 py-1 text-sm bg-white min-w-40 flex items-center justify-between"
+                @click="statusMenuOpen = !statusMenuOpen"
+              >
+                <span class="truncate">{{ statusLabel }}</span>
+                <span class="ml-2 text-gray-400">▾</span>
+              </button>
+
+              <div
+                v-if="statusMenuOpen"
+                class="absolute top-full left-0 mt-1 w-72 border rounded bg-white shadow-lg z-50 p-2"
+              >
+                <div class="flex items-center justify-between pb-2 border-b">
+                  <button type="button" class="text-xs text-blue-600" @click="clearStatuses">Clear</button>
+                  <button type="button" class="text-xs text-gray-600" @click="statusMenuOpen = false">Done</button>
+                </div>
+
+                <div class="max-h-64 overflow-auto pt-2 space-y-1">
+                  <label v-for="s in allStatuses" :key="s" class="flex items-center gap-2 text-sm">
+                    <input type="checkbox" :checked="selectedStatuses.includes(s)" @change="toggleStatus(s)" />
+                    <span>{{ s }}</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div class="flex items-center gap-2">
-          <label class="text-xs text-gray-500">Page size</label>
-          <select v-model="pageSize" class="border rounded px-2 py-1 text-sm">
-            <option v-for="size in [20, 50, 100]" :key="size" :value="size">{{ size }}</option>
-          </select>
+        <!-- RIGHT: drops to new row on narrow -->
+        <div class="flex flex-wrap items-center gap-3 w-full md:w-auto md:justify-end">
+          <div class="flex items-center gap-2">
+            <label class="text-xs text-gray-500">Sort by</label>
+            <select v-model="sortKey" class="border rounded px-2 py-1 text-sm">
+              <option value="gene_symbol">HGNC Symbol</option>
+              <option value="expert_panel">Expert Panel</option>
+              <option value="statuses">Status Priority</option>
+              <option value="tier">Tier</option>
+            </select>
+            <button
+              class="border rounded px-2 py-1 text-xs"
+              @click="sortOrder = sortOrder === 'asc' ? 'desc' : 'asc'"
+              :aria-label="`Toggle sort order (currently ${sortOrder})`"
+              title="Toggle sort order"
+            >
+              {{ sortOrder === 'asc' ? 'ASC ▲' : 'DESC ▼' }}
+            </button>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <label class="text-xs text-gray-500">Page size</label>
+            <select v-model="pageSize" class="border rounded px-2 py-1 text-sm">
+              <option v-for="size in [20, 50, 100]" :key="size" :value="size">{{ size }}</option>
+            </select>
+          </div>
         </div>
       </div>
     </div>
@@ -274,7 +319,7 @@ const clearSelection = () => {
         <div class="rounded-2xl overflow-hidden border border-gray-200 bg-white shadow-sm hover:shadow transition-shadow">
           <!-- Top row -->
           <div class="flex items-start justify-between gap-3 p-3">
-            <div class="flex items-start gap-3">
+            <div class="flex items-start gap-3 flex-1 min-w-0">
               <div v-if="editing && !readonly" class="mt-1">
                 <input
                   type="checkbox"
@@ -283,14 +328,14 @@ const clearSelection = () => {
                   :aria-label="`Select ${gene.gene_symbol}`"
                 />
               </div>
-              <div>
+              <div class="min-w-0">
                 <div class="flex flex-wrap items-center gap-2">
                   <span class="text-base font-semibold text-gray-900">{{ gene.gene_symbol }}</span>
                   <span v-if="(gene.statuses || []).length" class="text-xs rounded-full px-2 py-0.5 text-gray-700" :class="(gene.details || []).length ? 'border border-amber-400 bg-amber-50' : 'border border-gray-400 bg-gray-50'">
                     {{ (gene.statuses || []).join(', ') }}
                   </span>
                 </div>
-                <div class="mt-0.5 text-sm text-gray-700 truncate">
+                <div class="mt-0.5 text-sm text-gray-700 truncate max-w-full">
                   <template v-if="(gene.expert_panels || []).length">
                     {{ gene.expert_panels.join(', ') }}
                   </template>
@@ -358,16 +403,22 @@ const clearSelection = () => {
                       {{ entry?.date_approved ? new Date(entry.date_approved).toLocaleString('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true }) : '—' }}
                     </div></div>                    
                     <div><span class="text-[11px] uppercase text-gray-500">Disease</span><div class="text-gray-900">{{ entry.mondo_id ? `${entry.mondo_id} ${entry.disease_name || ''}` : (entry.disease_name || '—') }}</div></div>
-                    <div><span class="text-[11px] uppercase text-gray-500">Classification</span><div class="text-gray-900">{{ entry.classification || '—' }}</div></div>
-                    <div><span class="text-[11px] uppercase text-gray-500">MOI</span><div class="text-gray-900">{{ entry.moi_name || '—' }}</div></div>
-					          <div><span class="text-[11px] uppercase text-gray-500">Type</span><div class="text-gray-900">{{ entry.curation_type || '—' }}</div></div>
+                    <template v-if="entry.classification || entry.moi_name || entry.curation_type">
+                      <div><span class="text-[11px] uppercase text-gray-500">Classification</span><div class="text-gray-900">{{ entry.classification || '—' }}</div></div>
+                      <div><span class="text-[11px] uppercase text-gray-500">MOI</span><div class="text-gray-900">{{ entry.moi_name || '—' }}</div></div>                    
+					            <div><span class="text-[11px] uppercase text-gray-500">Curation Type</span><div class="text-gray-900">{{ entry.curation_type || '—' }}</div></div>
+                    </template>
+                    <template v-if="entry.rationales || entry.phenotypes">
                     <div><span class="text-[11px] uppercase text-gray-500">Rationales</span><div class="text-gray-900">{{ entry.rationales || '—' }}</div></div>
                     <div class="col-span-2"><span class="text-[11px] uppercase text-gray-500">Phenotype</span>
                       <div class="text-gray-900">
                         <span>{{ entry.phenotypes || '—' }}</span>
-                        <span class="mx-2 font-bold">&middot;</span>
-                        <span class="font-bold">Excluded:</span> {{ entry.excluded_phenotypes }}
+                        <template v-if="entry.phenotypes">
+                          <span class="mx-2 font-bold">&middot;</span>
+                          <span class="font-bold">Excluded:</span> {{ entry.excluded_phenotypes }}
+                        </template>
                       </div></div>
+                    </template>
                   </div>
                 </div>
               </div>
