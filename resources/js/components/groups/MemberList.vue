@@ -161,7 +161,10 @@ export default {
             return `/api/report/groups/${this.group.uuid}/member-export${query}`;
         },
         features () {
-            return this.$store.state.systemInfo.app.features
+          return this.$store.state.systemInfo.app.features
+        },
+        canAdminCompleteCoi () {
+          return Boolean(this.$store.state.systemInfo.env == 'local') && this.hasRole('super-admin') && ! this.readonly
         },
     },
     watch: {
@@ -344,6 +347,22 @@ export default {
           const cocStatus = this.cocStatus(member);
           return cocStatus === 'current' || cocStatus === 'expiring_soon';
         },
+        async adminCompleteCoi (member) {
+          try {
+            await api.post(`/api/coi/${this.group.coi_code}`, {
+              group_member_id: member.id,
+              work_fee_lab: 0,
+              contributions_to_gd_in_group: 2,
+              coi: 0,
+              coi_attestation: 1,
+              data_policy_attestation: 1,
+              admin_override: 1,
+            });
+            await this.$store.dispatch('groups/getMembers', this.group);
+          } catch (e) {
+            console.error(e);
+          }
+        },
     }
 }
 </script>
@@ -473,6 +492,7 @@ export default {
         </template>
 
         <template #cell-actions="{item}">
+          <button v-if="group.has_coi_requirement && item.needsCoi && canAdminCompleteCoi" class="btn btn-xs" @click.stop="adminCompleteCoi(item)">Complete COI</button>
           <div class="flex space-x-2 items-center">
             <dropdown-menu
               v-if="hasAnyMemberPermission() && !readonly"
