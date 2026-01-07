@@ -348,7 +348,7 @@ export default {
                 </div>
 
 
-                <div v-if="bulkCheckResults.length" class="px-4 py-3">
+                <div v-if="lastReviewedSymbols.length" class="px-4 py-3">
                     <div class="flex flex-wrap gap-2 mb-3">
                         <span class="inline-flex items-center gap-2 rounded-full border px-3 py-1 text-sm">
                         Ready to add <span class="font-semibold">{{ reviewBuckets.ready.length }}</span>
@@ -359,6 +359,9 @@ export default {
                         <span class="inline-flex items-center gap-2 rounded-full border px-3 py-1 text-sm">
                         Not found in GT <span class="font-semibold">{{ reviewBuckets.notFound.length }}</span>
                         </span>
+                    </div>
+                    <div v-if="reviewBuckets.ready.length === 0 && reviewBuckets.already.length === 0" class="text-sm text-gray-600 mb-2">
+                        No pasted genes were found in GeneTracker.
                     </div>
                     <div class="space-y-2 text-sm">
                         <div>

@@ -143,10 +143,8 @@
         <span class="font-semibold">Bulk Tier Update:</span>
         <select v-model="bulkTier" class="border rounded px-2 py-1 text-sm">
             <option value="">Select Tier</option>
-            <option value="1">Tier 1</option>
-            <option value="2">Tier 2</option>
-            <option value="3">Tier 3</option>
-            <option value="4">Tier 4</option>
+            <option value="1">Current</option>
+            <option value="2">Future</option>
         </select>
         <button
             class="bg-blue-600 text-white px-3 py-1 rounded disabled:opacity-50"
@@ -236,10 +234,8 @@
                         <template v-if="editing">
                             <select v-model="gene.tier" class="border rounded px-2 py-1 text-xs" @change="updateTier(gene)" :disabled="savingTierFor === gene.id || readonly" title="Tier">
                                 <option value="null">—</option>
-                                <option value="1">Tier 1</option>
-                                <option value="2">Tier 2</option>
-                                <option value="3">Tier 3</option>
-                                <option value="4">Tier 4</option>
+                                <option value="1">Current</option>
+                                <option value="2">Future</option>
                             </select>
 
                             <button v-if="gene.is_outdated && gene.gt_data" @click="applyGtUpdate(gene)" title="Refresh from latest GT"
