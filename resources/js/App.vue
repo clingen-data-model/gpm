@@ -77,6 +77,11 @@ export default {
               class="link nav-item"
             >Groups</router-link>
             <router-link
+              v-if="hasPermission('ep-applications-manage')"
+              :to="{ name: 'FundingSourceList' }"
+              class="link nav-item"
+            >Funding Sources</router-link>
+            <router-link
               v-if="hasPermission('users-manage')"
               :to="{name: 'UserList'}"
               class="link nav-item"
