@@ -16,6 +16,7 @@ use App\Modules\ExpertPanel\Actions\CoiReportMakePdf;
 use App\Modules\Group\Actions\SubgroupMembersMakeExcel;
 use App\Modules\Group\Models\Group;
 use App\Http\Controllers\PublicIconController;
+use App\Modules\Funding\Http\Controllers\Api\FundingSourceController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -28,6 +29,8 @@ use App\Http\Controllers\PublicIconController;
 */
 Route::get('/coi-group/{group:uuid}', function (Group $group) { return app(CoiReportMakePdf::class)->handle($group); })->whereUuid('group')->name('coi.pdf');
 Route::get('/workinggroups/icon/{icon_path}', [PublicIconController::class, 'show'])->where('icon_path', '^[A-Fa-f0-9-]+\.(png|jpg|jpeg|gif)$')->name('wg.icon');
+Route::get('/funding-sources/logo/{logo_path}', [FundingSourceController::class, 'logo'])->where('logo_path', '^[A-Za-z0-9_-]+\.(png|jpg|jpeg|gif)$')->name('funding.logo');
+
 Route::get('/{any}', [ViewController::class, 'app'])
     ->where('any', '^(?!(api|sanctum|impersonate|dev|documents|downloads|clockwork|profile-photos|storage)).*$');
 

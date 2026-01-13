@@ -7,6 +7,8 @@ import cdwgRoutes from './cdwgs'
 import groupRoutes from './groups'
 import adminRoutes from './admin'
 import userRoutes from './users'
+import fundingSourceRoutes from './funding-sources'
+
 
 const routes = [
     {
@@ -91,6 +93,7 @@ const routes = [
     ...cdwgRoutes,
     ...adminRoutes,
     ...userRoutes,
+    ...fundingSourceRoutes,
     {
         name: 'CoiNoCode',
         path: '/coi',
