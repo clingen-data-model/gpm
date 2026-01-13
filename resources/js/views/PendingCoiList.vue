@@ -2,8 +2,11 @@
 import { computed } from 'vue'
 import { useStore } from 'vuex'
 import { api } from '@/http'
+import { useRoute, useRouter } from 'vue-router'
 
 const store = useStore()
+const route = useRoute()
+const router = useRouter()
 
 const memberships = computed(() =>
   store.getters.currentUser?.person?.membershipsWithPendingCois || []
@@ -30,6 +33,15 @@ async function adminCompleteCoi (membership) {
     admin_override: 1,
   })
   await store.dispatch('forceGetCurrentUser')
+  if (!store.getters.currentUser.hasPendingCois) {
+    const redirectTo = route.params.redirectTo
+
+    if (redirectTo && typeof redirectTo === 'object') {
+      router.replace(redirectTo)
+    } else {
+      router.replace({ name: 'Dashboard' })
+    }
+  }
 }
 </script>
 
