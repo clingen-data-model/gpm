@@ -167,7 +167,7 @@ export default {
           return this.$store.state.systemInfo.app.features
         },
         canAdminCompleteCoi () {
-          return Boolean(this.$store.state.systemInfo.env == 'local') && this.hasRole('super-admin') && ! this.readonly
+          return Boolean(this.$store.state.systemInfo.env == 'local' || this.$store.state.systemInfo.env == 'demo') && (this.hasRole('super-admin') || this.hasRole('super-user')) && ! this.readonly
         },
     },
     watch: {
