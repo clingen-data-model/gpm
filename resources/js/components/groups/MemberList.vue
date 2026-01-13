@@ -549,7 +549,7 @@ export default {
                 <icon-notification v-if="item.is_contact" :width="12" :height="12" icon-name="Is a group contact" @click.stop="" />
               </popover>
             </div>
-          </div>
+          </div>          
         </template>
 
         <template #cell-requirements="{item}">
