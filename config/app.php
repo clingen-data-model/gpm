@@ -67,6 +67,7 @@ return [
         App\Modules\Group\Providers\GroupModuleServiceProvider::class,
         App\Modules\Person\Providers\PersonServiceProvider::class,
         App\Modules\User\Providers\UserModuleServiceProvider::class,
+        App\Modules\Funding\Providers\FundingModuleServiceProvider::class,
         App\Tasks\Providers\TaskServiceProvider::class,
 
         App\DataExchange\KafkaServiceProvider::class,
