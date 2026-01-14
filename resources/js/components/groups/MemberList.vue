@@ -351,6 +351,18 @@ export default {
             await this.$store.dispatch('groups/getMembers', this.group);
           } catch (e) {
             console.error(e);
+            const apiMsg =
+              e?.response?.data?.message ||
+              (typeof e?.response?.data === 'string' ? e.response.data : null);
+
+            const memberName = member?.person?.name || `${member?.person?.first_name ?? ''} ${member?.person?.last_name ?? ''}`.trim() || 'this member';
+
+            this.$store.commit(
+              'pushError',
+              apiMsg
+                ? `Could not complete COI for ${memberName}: ${apiMsg}`
+                : `Could not complete COI for ${memberName}. Please try again.`
+            );
           }
         },
 
