@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace App\Modules\Group\Models;
 
@@ -21,8 +21,6 @@ class Publication extends Model
         'meta',
         'pub_type',
         'published_at',
-        'status',
-        'error',
     ];
 
     protected $casts = [
