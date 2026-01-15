@@ -1,9 +1,9 @@
-<?php 
+<?php
 
-namespace App\Modules\Publications\Http\Controllers;
+namespace App\Modules\Group\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Modules\Publications\Models\Publication;
+use App\Modules\Group\Models\Publication;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
