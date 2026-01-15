@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch, computed, onActivated, defineExpose } from "vue";
+import { ref, watch, computed, reactive, onActivated, defineExpose } from "vue";
 import { api } from "@/http";
 import usePublicationLookup from "@/composables/usePublicationLookup";
 
@@ -9,12 +9,21 @@ const loading = ref(false);
 const loadedFor = ref(null);
 const items = ref([]);
 const error = ref("");
-const addOpen = ref(false)
-const addRaw = ref("");
-const addLoading = ref(false);
-const addError = ref("");
-const preview = ref(null);
 const pubClient = usePublicationLookup();
+
+const addModal = reactive({
+  open: false,
+  raw: "",
+  loading: false,
+  error: "",
+  preview: null,
+});
+
+const detailsModal = reactive({
+  open: false,
+  item: null,
+  copyLabel: 'Copy JSON',
+});
 
 const groupUuid = computed(() => props.group?.uuid);
 
@@ -37,39 +46,50 @@ function refresh() { return fetchPublications(); }
 defineExpose({ refresh });
 
 async function doPreview() {
-  addError.value = ""; preview.value = null; addLoading.value = true;
-  const q = addRaw.value?.trim();
-  if (!q) { addLoading.value = false; addError.value = "Please enter an identifier."; return; }
+  addModal.error = "";
+  addModal.preview = null;
+  addModal.loading = true;
+  const q = addModal.raw?.trim();
+  if (!q) {
+    addModal.loading = false;
+    addModal.error = "Please enter an identifier.";
+    return;
+  }
   try {
     const res = await pubClient.fetchFromUrl(q);
     if (!res) throw new Error("No match found.");
-    preview.value = res;
+    addModal.preview = res;
   } catch (e) {
-    addError.value = e?.message || "Lookup failed.";
+    addModal.error = e?.message || "Lookup failed.";
   } finally {
-    addLoading.value = false;
+    addModal.loading = false;
   }
 }
 
 async function savePublication() {
-  addError.value = ""
-  if (!preview.value) { addError.value = "Preview first."; return }
+  addModal.error = ""
+  if (!addModal.preview) {
+    addModal.error = "Preview first.";
+    return
+  }
 
   const payload = {
-    source:      preview.value.doi ? 'doi' : (preview.value.pmid ? 'pmid' : (preview.value.pmcid ? 'pmcid' : 'url')),
-    identifier:  preview.value.doi ?? preview.value.pmid ?? preview.value.pmcid ?? addRaw.value.trim(),
-    link:        preview.value.url ?? null,
-    pub_type:    preview.value.pubType ?? null,
-    published_at: preview.value.date ?? preview.value.firstPublicationDate ?? null,
-    meta:        preview.value,
+    source:      addModal.preview.doi ? 'doi' : (addModal.preview.pmid ? 'pmid' : (addModal.preview.pmcid ? 'pmcid' : 'url')),
+    identifier:  addModal.preview.doi ?? addModal.preview.pmid ?? addModal.preview.pmcid ?? addModal.raw.trim(),
+    link:        addModal.preview.url ?? null,
+    pub_type:    addModal.preview.pubType ?? null,
+    published_at: addModal.preview.date ?? addModal.preview.firstPublicationDate ?? null,
+    meta:        addModal.preview,
   }
 
   try {
     await api.post(`/api/groups/${groupUuid.value}/publications`, payload)
-    addRaw.value = ""; preview.value = null; addOpen.value = false
+    addModal.raw = "";
+    addModal.preview = null;
+    addModal.open = false
     await fetchPublications()
   } catch (e) {
-    addError.value = e?.response?.data?.message || "Failed to add publication."
+    addModal.error = e?.response?.data?.message || "Failed to add publication."
   }
 }
 
@@ -85,15 +105,19 @@ async function removePublication(pub) {
 }
 
 /** DETAIL SECTION */
-const detailsOpen = ref(false);
-const detailsItem = ref(null);
-function showDetails(p){ detailsItem.value = p; detailsOpen.value = true; }
-function closeDetails(){ detailsOpen.value = false; detailsItem.value = null; }
+function showDetails(p){
+  detailsModal.item = p;
+  detailsModal.open = true;
+}
+function closeDetails(){
+  detailsModal.open = false;
+  detailsModal.item = null;
+}
 
-const prettyMeta = computed(() => JSON.stringify(detailsItem.value?.meta ?? {}, null, 2));
+const prettyMeta = computed(() => JSON.stringify(detailsModal.item?.meta ?? {}, null, 2));
 
 const metaEntries = computed(() => {
-    const m = detailsItem.value?.meta ?? {};
+    const m = detailsModal.item?.meta ?? {};
     return Object.entries(m).map(([k, v]) => [String(k).toUpperCase(), v]);
 });
 
@@ -109,14 +133,14 @@ let copyTimer;
 async function copyMeta(){
     try {
         await navigator.clipboard.writeText(prettyMeta.value || "{}");
-        copyLabel.value = 'JSON copied!';
+        detailsModal.copyLabel = 'JSON copied!';
         clearTimeout(copyTimer);
-        copyTimer = setTimeout(() => (copyLabel.value = 'Copy JSON'), 2200);
+        copyTimer = setTimeout(() => (detailsModal.copyLabel = 'Copy JSON'), 2200);
     } catch {}
 }
 
 function detailsLink(){
-    const row = detailsItem.value;
+    const row = detailsModal.item;
     return row?.meta?.url || null;
 }
 
@@ -148,10 +172,10 @@ function urlOf(p) {
 }
 
 function clearAddModal() {
-  addRaw.value   = ''
-  addError.value = ''
-  preview.value  = null
-  addOpen.value = false
+  addModal.raw   = ''
+  addModal.error = ''
+  addModal.preview  = null
+  addModal.open = false
 }
 </script>
 
@@ -159,7 +183,7 @@ function clearAddModal() {
     <section class="space-y-3">
         <header class="flex items-center justify-between">
             <h3 class="text-xl font-semibold">Publications</h3>
-            <button class="btn btn-primary btn-sm" @click="addOpen = true">Add publication</button>
+            <button class="btn btn-primary btn-sm" @click="addModal.open = true">Add publication</button>
         </header>
         <p v-if="error" class="text-red-600">{{ error }}</p>
         <div v-if="!loading && items.length === 0" class="text-gray-600">No publications added yet.</div>
@@ -225,7 +249,7 @@ function clearAddModal() {
                 </tbody>
             </table>
         </div>
-        <modal-dialog v-model="addOpen" title="Add a publication">
+        <modal-dialog v-model="addModal.open" title="Add a publication">
           <div class="space-y-3">
             <p class="text-sm text-gray-600">
               Paste <strong>PMID / PMCID / DOI / URL</strong>, preview it, then save.
@@ -233,46 +257,46 @@ function clearAddModal() {
 
             <div class="flex gap-2">
               <input
-                v-model="addRaw"
+                v-model="addModal.raw"
                 class="w-full border rounded px-3 py-2"
                 placeholder="e.g., PMID: 12345678 · PMCID: PMC1234567 · DOI: 10.1038/s41586-020-2649-2 · URL"
                 @keydown.enter.prevent="doPreview"
               />
-              <button class="btn" :disabled="addLoading || !addRaw" @click="doPreview">
-                {{ addLoading ? 'Looking…' : 'Preview' }}
+              <button class="btn" :disabled="addModal.loading || !addModal.raw" @click="doPreview">
+                {{ addModal.loading ? 'Looking…' : 'Preview' }}
               </button>
             </div>
 
-            <p v-if="addError" class="text-sm text-red-600">{{ addError }}</p>
-            <div v-if="preview" class="rounded border p-3 space-y-1">
-              <div class="font-medium">{{ preview.title || 'Untitled' }}</div>
+            <p v-if="addModal.error" class="text-sm text-red-600">{{ addModal.error }}</p>
+            <div v-if="addModal.preview" class="rounded border p-3 space-y-1">
+              <div class="font-medium">{{ addModal.preview.title || 'Untitled' }}</div>
               <div class="text-sm text-gray-600">
-                {{ preview.journalTitle || '—' }} · {{ preview.pubType || '—' }} · {{ preview.date || preview.firstPublicationDate || '—' }}
+                {{ addModal.preview.journalTitle || '—' }} · {{ addModal.preview.pubType || '—' }} · {{ addModal.preview.date || addModal.preview.firstPublicationDate || '—' }}
               </div>
               <div class="text-xs text-gray-600">
-                DOI: <span class="font-mono">{{ preview.doi || '—' }}</span>
+                DOI: <span class="font-mono">{{ addModal.preview.doi || '—' }}</span>
                 <span class="mx-2">|</span>
-                PMID: <span class="font-mono">{{ preview.pmid || '—' }}</span>
+                PMID: <span class="font-mono">{{ addModal.preview.pmid || '—' }}</span>
                 <span class="mx-2">|</span>
-                PMCID: <span class="font-mono">{{ preview.pmcid || '—' }}</span>
+                PMCID: <span class="font-mono">{{ addModal.preview.pmcid || '—' }}</span>
               </div>
               <div class="flex items-center gap-2 pt-2">
-                <a v-if="preview.url" :href="preview.url" target="_blank" rel="noopener" class="underline text-sm">Open</a>
+                <a v-if="addModal.preview.url" :href="addModal.preview.url" target="_blank" rel="noopener" class="underline text-sm">Open</a>
                 <button class="btn" @click="savePublication">Save</button>
                 <button class="btn" @click="clearAddModal" type="button">Clear</button>
               </div>
             </div>
           </div>
         </modal-dialog>
-        <modal-dialog v-model="detailsOpen" title="Publication Details" @closed="closeDetails">
+        <modal-dialog v-model="detailsModal.open" title="Publication Details" @closed="closeDetails">
             <div class="space-y-3">
                 <div class="flex items-center justify-between gap-2">
                     <div class="text-sm text-gray-600">
-                        <div><strong class="mr-1">SOURCE:</strong>{{ detailsItem?.source }}</div>
-                        <div><strong class="mr-1">IDENTIFIER:</strong>{{ detailsItem?.identifier }}</div>
+                        <div><strong class="mr-1">SOURCE:</strong>{{ detailsModal.item?.source }}</div>
+                        <div><strong class="mr-1">IDENTIFIER:</strong>{{ detailsModal.item?.identifier }}</div>
                     </div>
                     <div class="flex items-center gap-2">
-                        <button class="btn transition-colors" :class="copyLabel === 'JSON copied!' ? 'bg-green-100 text-green-800' : ''" @click="copyMeta">{{ copyLabel }}</button>
+                        <button class="btn transition-colors" :class="detailsModal.copyLabel === 'JSON copied!' ? 'bg-green-100 text-green-800' : ''" @click="copyMeta">{{ detailsModal.copyLabel }}</button>
                         <a v-if="detailsLink()" :href="detailsLink()" target="_blank" rel="noopener noreferrer" class="btn inline-flex items-center" title="Open link in new tab">
                             Open publication on new tab
                         </a>
