@@ -31,8 +31,6 @@ Table: `publications`
 | link           | text         | Direct link to the publication                                        |
 | meta           | json         | Enriched metadata snapshot                                            |
 | published_at   | datetime     | Publication date (nullable; parsed from metadata)                     |
-| status         | varchar(50)  | `pending`, `enriching`, `enriched`, `failed`                          |
-| error          | text         | Error message if enrichment failed                                    |
 | sent_to_dx_at  | timestamp    | **Set after `PublicationAdded` is emitted to DX** (idempotency guard) |
 | added_by_id    | bigint       | User who added the publication                                        |
 | created_at     | timestamp    |                                                                       |
@@ -53,68 +51,15 @@ protected $casts = [
 ## Backend
 
 ### Actions
-- **PublicationAdd** – authorizes + validates input, normalizes identifiers, creates records with `status=pending`, and **chains jobs** to enrich and then emit to DX.  
-  **Note:** The action **does not** fire `PublicationAdded` directly. Emission happens after enrichment in the second job.
-
+- **PublicationAdd** – authorizes + validates input, fires PublicationAdded event for message
+  transport to data exchange
 - **PublicationDelete** – removes publications and fires `PublicationDeleted` event.
-
-### Jobs
-- **EnrichPublication** – queued job that:
-  - sets `status` to `enriching`,
-  - fetches metadata from PubMed / EuropePMC / Crossref via `RemotePublicationClient`,
-  - updates `meta`, `published_at`, `pub_type`, and sets `status` to `enriched` (or `failed` on error).
-  - **Does not** emit events.
-
-- **SendPublicationAdded** – queued job that:
-  - loads the fresh `Publication` and `Group`,
-  - proceeds **only if** `status === 'enriched'` and minimal meta (e.g., `title`) is present,
-  - emits `PublicationAdded($group, $publication)`,
-  - sets `sent_to_dx_at = now()` to ensure **idempotent** single send to DX.
 
 ### Events
 - **PublicationAdded**
 - **PublicationDeleted**
 
 All events extend `GroupEvent`, so they log changes in the application log and are published to **Data Exchange**.  
-For `PublicationAdded`, the DX publish now occurs **after enrichment** via the `SendPublicationAdded` job.
-
-### Services
-- **PublicationLookup** – normalizes raw user input into `[source, identifier]` pair.
-- **RemotePublicationClient** – encapsulates calls to external APIs (PubMed, EuropePMC, Crossref, etc.), extracts metadata consistently.
-
----
-
-## Chained Job Flow
-
-We use `Bus::chain([ EnrichPublication, SendPublicationAdded ])` and dispatch **after the DB commit**.
-
-**PublicationAdd (core lines):**
-```php
-use Illuminate\\Support\\Facades\\Bus;
-use Illuminate\\Support\\Facades\\DB;
-
-DB::afterCommit(function () use ($pub, $group) {
-    Bus::chain([
-        new EnrichPublication($pub->id),
-        new SendPublicationAdded($group->id, $pub->id),
-    ])->dispatch();
-});
-```
-
-**SendPublicationAdded (guards + idempotency):**
-```php
-if ($pub->status !== 'enriched' || empty($pub->meta['title'] ?? null)) {
-    $this->release($this->backoff);
-    return;
-}
-
-if ($pub->sent_to_dx_at) {
-    return;
-}
-
-event(new PublicationAdded($group, $pub->fresh()));
-$pub->forceFill(['sent_to_dx_at' => now()])->save();
-```
 
 ---
 
@@ -148,21 +93,17 @@ $pub->forceFill(['sent_to_dx_at' => now()])->save();
 
 1. User opens the **Publications** tab in Group detail.
 2. User pastes one or more identifiers (PMID, PMCID, DOI, URL).
-3. `PublicationAdd` creates records with `status = pending` and dispatches a chained job **after commit**.
-4. `EnrichPublication` runs, sets `status = enriching`, fetches and stores metadata, then sets `status = enriched`.
-5. `SendPublicationAdded` verifies the record is enriched, emits `PublicationAdded`, and sets `sent_to_dx_at`.
-6. Events write to the application log and DX; UI refreshes to display enriched metadata.
-
----
-
-## Resilience
-
-- Jobs use retries/backoff (e.g., `tries=5`, `backoff=30`). On terminal failure, `EnrichPublication` sets `status=failed` and stores a trimmed error message in `error`.
+3. Client-side services make API calls to enrich the record representation.
+4. User submits publication after confirming accuracy of enriched record.
+5. Events write to the application log and DX; UI refreshes to display enriched metadata.
 
 ---
 
 ## DeX Message Sample
 **Publication Added**
+
+*FIXME:* This may still need to be updated before merging
+
 What's inside the meta key is define by response recevied from API.
 URL: https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi
 
