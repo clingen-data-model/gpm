@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import useRemotePublicationClient from '../../domain/remote_publication_client';
+import usePublicationLookup from "../../composables/usePublicationLookup";
 
-const publicationClient = useRemotePublicationClient();
+const publicationClient = usePublicationLookup();
 
 const pmid = ref('');
 const publicationData = ref(null as any);

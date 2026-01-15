@@ -1,7 +1,7 @@
 <script setup>
-import { ref, onMounted, watch, computed, onActivated, defineExpose } from "vue";
+import { ref, watch, computed, onActivated, defineExpose } from "vue";
 import { api } from "@/http";
-import useRemotePublicationClient from "@/domain/remote_publication_client";
+import usePublicationLookup from "@/composables/usePublicationLookup";
 
 const props = defineProps({ group: { type: Object, required: true } });
 
@@ -14,7 +14,7 @@ const addRaw = ref("");
 const addLoading = ref(false);
 const addError = ref("");
 const preview = ref(null);
-const pubClient = useRemotePublicationClient();
+const pubClient = usePublicationLookup();
 
 const groupUuid = computed(() => props.group?.uuid);
 
@@ -230,7 +230,7 @@ function clearAddModal() {
             <p class="text-sm text-gray-600">
               Paste <strong>PMID / PMCID / DOI / URL</strong>, preview it, then save.
             </p>
-        
+
             <div class="flex gap-2">
               <input
                 v-model="addRaw"
@@ -242,7 +242,7 @@ function clearAddModal() {
                 {{ addLoading ? 'Looking…' : 'Preview' }}
               </button>
             </div>
-        
+
             <p v-if="addError" class="text-sm text-red-600">{{ addError }}</p>
             <div v-if="preview" class="rounded border p-3 space-y-1">
               <div class="font-medium">{{ preview.title || 'Untitled' }}</div>
