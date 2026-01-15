@@ -1,12 +1,10 @@
 import { useFetch } from '@vueuse/core'
 
 /**
- * RemotePublicationClient (frontend)
- *
- * Mirrors the PHP RemotePublicationClient using Vue patterns and a useFetch composable.
+ * Uses Vue patterns and a useFetch composable to map to various remote publication APIs.
  * All methods return plain JS objects (mapped to a EuropePMC-ish shape) or null/empty objects on miss.
  */
-export function useRemotePublicationClient() {
+export function usePublicationLookup() {
   const TIMEOUT = 10000
 
   const getJson = async (url, params) => {
@@ -166,4 +164,4 @@ export function useRemotePublicationClient() {
   }
 }
 
-export default useRemotePublicationClient
+export default usePublicationLookup
