@@ -65,6 +65,7 @@ export default {
     WGCaptionIconForm,
     ClinvarForm,
     GroupPublications,
+    FundingAwardsTab,
   },
   props: {
     uuid: {
