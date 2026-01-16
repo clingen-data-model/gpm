@@ -15,11 +15,21 @@ class FundingAwardCreate
 
     public function handle(ExpertPanel $expertPanel, array $data): FundingAward
     {
-        $award = FundingAward::create(array_merge($data, [
+        $fundingAward = FundingAward::create(array_merge($data, [
             'expert_panel_id' => $expertPanel->id,
         ]));
 
-        return $award->fresh(['fundingSource.fundingType']);
+        $allowedPersonIds = $expertPanel->group->activeMemberships()->pluck('person_id')->unique();
+        $piIds = collect($validated['contact_pi_person_ids'] ?? [])->map(fn ($id) => (int) $id)->intersect($allowedPersonIds)->values();
+        $primaryId = isset($validated['primary_contact_pi_id']) ? (int) $validated['primary_contact_pi_id'] : null;
+        if ($primaryId && !$piIds->contains($primaryId) && $allowedPersonIds->contains($primaryId)) {
+            $piIds = $piIds->push($primaryId)->unique()->values();
+        }
+        $fundingAward->contactPis()->sync(
+            $piIds->mapWithKeys(fn ($id) => [$id => ['is_primary' => $primaryId === $id]])->all()
+        );
+
+        return $fundingAward->fresh(['fundingSource.fundingType', 'contactPis']);
     }
 
 
@@ -56,6 +66,10 @@ class FundingAwardCreate
             'contact_2_phone'   => ['nullable', 'string', 'max:255'],
 
             'notes'             => ['nullable', 'string'],
+
+            'contact_pi_person_ids'   => ['nullable', 'array'],
+            'contact_pi_person_ids.*' => ['integer', 'exists:people,id'],
+            'primary_contact_pi_id'   => ['nullable', 'integer', 'exists:people,id'],
         ];
 
     }
