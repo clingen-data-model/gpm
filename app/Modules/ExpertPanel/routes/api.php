@@ -25,6 +25,11 @@ use App\Modules\ExpertPanel\Http\Controllers\Api\ApplicationStepController;
 use App\Modules\ExpertPanel\Http\Controllers\Api\ApplicationContactController;
 use App\Modules\ExpertPanel\Http\Controllers\Api\NextActionAssigneeController;
 
+use App\Modules\ExpertPanel\Http\Controllers\Api\FundingAwardController;
+use App\Modules\ExpertPanel\Actions\FundingAwardCreate;
+use App\Modules\ExpertPanel\Actions\FundingAwardUpdate;
+use App\Modules\ExpertPanel\Actions\FundingAwardDelete;
+
 Route::get('/next-actions/assignees', [NextActionAssigneeController::class, 'index']);
 
 Route::group([
@@ -59,9 +64,11 @@ Route::group([
         Route::post('/{expertPanel:uuid}/next-actions', NextActionCreate::class);
         Route::put('/{expertPanel:uuid}/next-actions/{nextAction:id}', NextActionUpdate::class);
         Route::delete('/{expertPanel:uuid}/next-actions/{id}', NextActionDelete::class);
-        Route::post(
-            '/{expertPanel:uuid}/next-actions/{nextAction:uuid}/complete',
-            NextActionComplete::class
-        );
+        Route::post('/{expertPanel:uuid}/next-actions/{nextAction:uuid}/complete',NextActionComplete::class);
+
+        Route::get('/{expertPanel:uuid}/funding-awards', [FundingAwardController::class, 'index']);
+        Route::post('/{expertPanel:uuid}/funding-awards', FundingAwardCreate::class);
+        Route::put('/{expertPanel:uuid}/funding-awards/{fundingAward}', FundingAwardUpdate::class);
+        Route::delete('/{expertPanel:uuid}/funding-awards/{fundingAward}', FundingAwardDelete::class);
     });
 });
