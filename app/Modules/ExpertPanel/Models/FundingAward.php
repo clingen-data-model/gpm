@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Modules\Funding\Models\FundingSource;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
+use App\Modules\Person\Models\Person;
 
 class FundingAward extends Model
 {
@@ -43,5 +44,12 @@ class FundingAward extends Model
     public function fundingSource()
     {
         return $this->belongsTo(FundingSource::class);
+    }
+
+    public function contactPis()
+    {
+        return $this->belongsToMany(Person::class, 'funding_award_contact_pis')
+            ->withPivot(['is_primary'])
+            ->withTimestamps();
     }
 }

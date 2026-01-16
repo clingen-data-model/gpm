@@ -23,7 +23,17 @@ class FundingAwardUpdate
         $fundingAward->fill($data);
         $fundingAward->save();
 
-        return $fundingAward->fresh(['fundingSource.fundingType']);
+        $allowedPersonIds = $expertPanel->group->activeMemberships()->pluck('person_id')->unique();
+        $piIds = collect($validated['contact_pi_person_ids'] ?? [])->map(fn ($id) => (int) $id)->intersect($allowedPersonIds)->values();
+        $primaryId = isset($validated['primary_contact_pi_id']) ? (int) $validated['primary_contact_pi_id'] : null;
+        if ($primaryId && !$piIds->contains($primaryId) && $allowedPersonIds->contains($primaryId)) {
+            $piIds = $piIds->push($primaryId)->unique()->values();
+        }
+        $fundingAward->contactPis()->sync(
+            $piIds->mapWithKeys(fn ($id) => [$id => ['is_primary' => $primaryId === $id]])->all()
+        );
+
+        return $fundingAward->fresh(['fundingSource.fundingType', 'contactPis']);
     }
 
     public function asController(ActionRequest $request, ExpertPanel $expertPanel, FundingAward $fundingAward)
@@ -44,6 +54,9 @@ class FundingAwardUpdate
             'award_number'      => ['nullable', 'string', 'max:100'],
             'start_date'        => ['nullable', 'date'],
             'end_date'          => ['nullable', 'date', 'after_or_equal:start_date'],
+            'contact_pi_person_ids'   => ['nullable', 'array'],
+            'contact_pi_person_ids.*' => ['integer', 'exists:people,id'],
+            'primary_contact_pi_id'   => ['nullable', 'integer', 'exists:people,id'],
         ];
     }
 
