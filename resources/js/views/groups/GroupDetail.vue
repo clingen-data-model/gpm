@@ -492,6 +492,7 @@ export default {
           <tab-item v-if="(userInGroup(group) || hasPermission('groups-manage'))" label="Publications">
             <GroupPublications :key="group.uuid" :group="group" />
             <note>Publications are visible to members of this group (and admins).</note>
+            <PublicationsForm />
           </tab-item>
 
           <tab-item label="Attestations" :visible="group.is_ep">
