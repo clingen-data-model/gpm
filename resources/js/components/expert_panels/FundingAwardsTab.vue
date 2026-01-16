@@ -1,5 +1,5 @@
 <script setup>
-import { ref, reactive, computed, onMounted } from 'vue'
+import { ref, reactive, computed, onMounted, watch } from 'vue'
 import api from '@/http/api'
 import SubmissionWrapper from '@/components/groups/SubmissionWrapper.vue'
 import { hasPermission } from '@/auth_utils'
@@ -14,11 +14,23 @@ const awards = ref([])
 const fundingSourcesLoading = ref(false)
 const fundingSources = ref([])
 
+const piOptionsLoading = ref(false)
+const piOptions = ref([])
+
 const showForm = ref(false)
-const editing = ref(null) // award row or null
+const editing = ref(null)
 const errors = ref({})
 
 const canManage = computed(() => hasPermission('ep-applications-manage'))
+
+const selectedPiIds = ref([])
+const primaryPiId = ref(null)
+
+const piNameById = computed(() => {
+  const map = new Map()
+  for (const p of piOptions.value) map.set(p.id, p.name)
+  return map
+})
 
 const form = reactive({
   funding_source_id: '',
@@ -44,6 +56,7 @@ const fields = [
   { name: 'fundingSource', label: 'Funding Source', sortable: false },
   { name: 'award_number', label: 'Award #', sortable: false },
   { name: 'dates', label: 'Dates', sortable: false },
+  { name: 'contactPis', label: 'Contact PI(s)', sortable: false },
   { name: 'nih', label: 'NIH', sortable: false },
   { name: 'actions', label: '', sortable: false },
 ]
@@ -65,6 +78,9 @@ function resetForm() {
   form.contact_2_phone = ''
   form.notes = ''
   errors.value = {}
+
+  selectedPiIds.value = []
+  primaryPiId.value = null
 }
 
 function startCreate() {
@@ -100,8 +116,24 @@ function startEdit(item) {
 
   form.notes = item.notes ?? ''
 
+  const pis = item.contactPis || item.contact_pis || []
+  selectedPiIds.value = pis.map(p => Number(p.id)).filter(Boolean)
+
+  const primary = pis.find(p => p?.pivot?.is_primary)
+  primaryPiId.value = primary ? Number(primary.id) : (selectedPiIds.value[0] ?? null)
+
   showForm.value = true
 }
+
+watch(selectedPiIds, (ids) => {
+  if (!ids || ids.length === 0) {
+    primaryPiId.value = null
+    return
+  }
+  if (primaryPiId.value == null || !ids.includes(primaryPiId.value)) {
+    primaryPiId.value = ids[0]
+  }
+})
 
 async function fetchAwards() {
   loading.value = true
@@ -120,6 +152,16 @@ async function fetchFundingSources() {
     fundingSources.value = Array.isArray(res.data) ? res.data : []
   } finally {
     fundingSourcesLoading.value = false
+  }
+}
+
+async function fetchPiOptions() {
+  piOptionsLoading.value = true
+  try {
+    const res = await api.get(`/api/applications/${props.expertPanel.uuid}/funding-awards/pi-options`)
+    piOptions.value = Array.isArray(res.data) ? res.data : []
+  } finally {
+    piOptionsLoading.value = false
   }
 }
 
@@ -157,6 +199,18 @@ function sanitizeNotes(text) {
   return stripHtml(text).trim()
 }
 
+function pisDisplay(row) {
+  const pis = row?.contactPis || row?.contact_pis || []
+  if (!pis.length) return '—'
+  const names = pis.map(p => p?.name || p?.full_name).filter(Boolean)
+  const primary = pis.find(p => p?.pivot?.is_primary)
+  if (primary?.name || primary?.full_name) {
+    const primaryName = primary.name || primary.full_name
+    return `${names.join(', ')} (Primary: ${primaryName})`
+  }
+  return names.join(', ')
+}
+
 async function save() {
   errors.value = {}
 
@@ -179,6 +233,9 @@ async function save() {
     contact_2_phone: form.contact_2_phone || null,
 
     notes: sanitizeNotes(form.notes) || null,
+
+    contact_pi_person_ids: selectedPiIds.value.map(Number),
+    primary_contact_pi_id: primaryPiId.value ? Number(primaryPiId.value) : null,
   }
 
   try {
@@ -212,8 +269,11 @@ async function destroyAward(item) {
 }
 
 onMounted(async () => {
-  await fetchFundingSources()
-  await fetchAwards()
+  await Promise.all([
+    fetchFundingSources(),
+    fetchPiOptions(),
+    fetchAwards(),
+  ])
 })
 </script>
 
@@ -251,6 +311,12 @@ onMounted(async () => {
           </div>
         </template>
 
+        <template #cell-contactPis="{ item }">
+          <div class="text-sm">
+            {{ pisDisplay(item) }}
+          </div>
+        </template>
+
         <template #cell-nih="{ item }">
           <div class="text-sm">
             <template v-if="item.nih_reporter_url">
@@ -281,7 +347,7 @@ onMounted(async () => {
     <modal-dialog
       v-model="showForm"
       :title="editing ? 'Edit Funding Award' : 'Add Funding Award'"
-      size="sm"
+      size="lg"
     >
       <SubmissionWrapper @submitted="save" @canceled="showForm = false">
         <div class="space-y-4">
@@ -300,6 +366,59 @@ onMounted(async () => {
             </select>
             <div v-if="firstError('funding_source_id')" class="text-sm text-red-600 mt-1">
               {{ firstError('funding_source_id') }}
+            </div>
+          </div>
+
+          <!-- Contact PIs -->
+          <div class="border rounded p-3">
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="text-sm font-semibold m-0">Contact PI(s)</h3>
+              <div v-if="piOptionsLoading" class="text-xs text-gray-600">Loading…</div>
+            </div>
+
+            <div v-if="!piOptionsLoading && piOptions.length === 0" class="text-sm text-gray-600">
+              No active group members available.
+            </div>
+
+            <div v-else class="space-y-2">
+              <div class="text-xs text-gray-600">
+                Select PI(s) from active group members. Choose a Primary PI.
+              </div>
+
+              <div class="max-h-40 overflow-auto border rounded p-2 space-y-1">
+                <label
+                  v-for="p in piOptions"
+                  :key="p.id"
+                  class="flex items-center gap-2 text-sm"
+                >
+                  <input
+                    type="checkbox"
+                    :value="Number(p.id)"
+                    v-model="selectedPiIds"
+                  />
+                  <span class="font-medium">{{ p.name }}</span>
+                  <span v-if="p.email" class="text-gray-600">({{ p.email }})</span>
+                </label>
+              </div>
+
+              <div>
+                <label class="block text-sm">Primary PI</label>
+                <select v-model="primaryPiId" class="w-full" :disabled="selectedPiIds.length === 0">
+                  <option v-if="selectedPiIds.length === 0" :value="null">
+                    Select PI(s) first…
+                  </option>
+                  <option v-for="id in selectedPiIds" :key="id" :value="id">
+                    {{ piNameById.get(id) || `Person #${id}` }}
+                  </option>
+                </select>
+
+                <div v-if="firstError('contact_pi_person_ids')" class="text-sm text-red-600 mt-1">
+                  {{ firstError('contact_pi_person_ids') }}
+                </div>
+                <div v-if="firstError('primary_contact_pi_id')" class="text-sm text-red-600 mt-1">
+                  {{ firstError('primary_contact_pi_id') }}
+                </div>
+              </div>
             </div>
           </div>
 
@@ -353,30 +472,18 @@ onMounted(async () => {
               <div>
                 <label class="block text-sm">Role</label>
                 <input v-model="form.contact_1_role" class="w-full" type="text" maxlength="255" placeholder="(optional)">
-                <div v-if="firstError('contact_1_role')" class="text-sm text-red-600 mt-1">
-                  {{ firstError('contact_1_role') }}
-                </div>
               </div>
               <div>
                 <label class="block text-sm">Name</label>
                 <input v-model="form.contact_1_name" class="w-full" type="text" maxlength="255" placeholder="(optional)">
-                <div v-if="firstError('contact_1_name')" class="text-sm text-red-600 mt-1">
-                  {{ firstError('contact_1_name') }}
-                </div>
               </div>
               <div>
                 <label class="block text-sm">Email</label>
                 <input v-model="form.contact_1_email" class="w-full" type="email" maxlength="255" placeholder="(optional)">
-                <div v-if="firstError('contact_1_email')" class="text-sm text-red-600 mt-1">
-                  {{ firstError('contact_1_email') }}
-                </div>
               </div>
               <div>
                 <label class="block text-sm">Phone</label>
                 <input v-model="form.contact_1_phone" class="w-full" type="text" maxlength="255" placeholder="(optional)">
-                <div v-if="firstError('contact_1_phone')" class="text-sm text-red-600 mt-1">
-                  {{ firstError('contact_1_phone') }}
-                </div>
               </div>
             </div>
           </div>
