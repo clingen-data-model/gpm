@@ -31,6 +31,7 @@ import SubgroupList from '@/components/groups/SubgroupList.vue'
 import WGCaptionIconForm from '@/components/groups/WGCaptionIconForm.vue';
 import ClinvarForm from '@/components/expert_panels/ClinvarForm.vue';
 import GroupPublications from "./GroupPublications.vue";
+import FundingAwardsTab from '@/components/expert_panels/FundingAwardsTab.vue'
 
 import { api, isValidationError } from "../../http";
 
@@ -64,6 +65,7 @@ export default {
     WGCaptionIconForm,
     ClinvarForm,
     GroupPublications,
+    FundingAwardsTab,
   },
   props: {
     uuid: {
@@ -510,6 +512,11 @@ export default {
             <h3>NHGRI Data Availability</h3>
             <AttestationNhgri class="pb-2 mb-4 border-b" :disabled="true" />
           </tab-item>
+
+          <tab-item label="Funding Awards" :visible="group.is_ep">
+            <FundingAwardsTab :expert-panel="group.expert_panel" />
+          </tab-item>
+
 
           <tab-item label="Log" :visible="hasPermission('groups-manage') || userInGroup(group)">
             <ActivityLog
