@@ -25,7 +25,6 @@ return new class extends Migration
             $table->softDeletes();
 
             $table->index('name');
-            $table->index('funding_type_id');
         });
     }
 
