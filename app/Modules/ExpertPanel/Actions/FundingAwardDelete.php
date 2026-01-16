@@ -8,6 +8,7 @@ use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsController;
 use Lorisleiva\Actions\Concerns\AsObject;
 use App\Modules\ExpertPanel\Events\FundingAwardDeleted;
+
 class FundingAwardDelete
 {
     use AsObject, AsController;
@@ -32,7 +33,7 @@ class FundingAwardDelete
 
     public function authorize(ActionRequest $request): bool
     {
-        return (bool) $request->user()?->hasAnyRole(['super-user', 'super-admin']);
+        return (bool) $request->user()?->hasPermissionTo('ep-applications-manage');
     }
 
     public function rules(ActionRequest $request): array
