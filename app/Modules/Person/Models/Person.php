@@ -26,6 +26,8 @@ use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use App\Models\Traits\HasLogEntries as HasLogEntriesTrait;
 
+use App\Modules\ExpertPanel\Models\FundingAward;
+
 class Person extends Model implements HasLogEntries
 {
     use HasFactory;
@@ -418,4 +420,12 @@ class Person extends Model implements HasLogEntries
     {
         return new PersonFactory();
     }
+
+    public function fundingAwardPis()
+    {
+        return $this->belongsToMany(FundingAward::class, 'funding_award_contact_pis')
+            ->withPivot(['is_primary'])
+            ->withTimestamps();
+    }
+
 }
