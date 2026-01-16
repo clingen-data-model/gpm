@@ -8,6 +8,7 @@ use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsController;
 use Lorisleiva\Actions\Concerns\AsObject;
 use App\Modules\ExpertPanel\Events\FundingAwardDeleted;
+
 class FundingAwardDelete
 {
     use AsObject, AsController;
