@@ -73,5 +73,7 @@ Route::group([
         Route::post('/{expertPanel:uuid}/funding-awards', FundingAwardCreate::class);
         Route::put('/{expertPanel:uuid}/funding-awards/{fundingAward}', FundingAwardUpdate::class);
         Route::delete('/{expertPanel:uuid}/funding-awards/{fundingAward}', FundingAwardDelete::class);
+        Route::get('/{expertPanel:uuid}/funding-awards/pi-options',[FundingAwardController::class, 'piOptions']
+);
     });
 });
