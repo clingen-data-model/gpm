@@ -19,9 +19,9 @@ class CurrentUserResource extends JsonResource
     public function toArray($request)
     {
         $data = parent::toArray($request);
-        $data['roles'] = $this->whenLoaded('roles', RoleResource::collection($this->roles));
-        $data['memberships'] = $this->whenLoaded('person', MemberResource::collection($this->person->memberships));
-        $data['person'] = $this->whenLoaded('person', new PersonDetailResource($this->person));
+        $data['roles'] = $this->whenLoaded('roles', fn() => RoleResource::collection($this->roles));
+        $data['memberships'] = $this->whenLoaded('person', fn() => MemberResource::collection($this->person->memberships));
+        $data['person'] = $this->whenLoaded('person', fn() => new PersonDetailResource($this->person));
         $data['is_impersonating'] = $this->isImpersonating;
 
         return $data;

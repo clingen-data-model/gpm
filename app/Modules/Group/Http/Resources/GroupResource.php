@@ -19,11 +19,11 @@ class GroupResource extends JsonResource
     {
         $data = parent::toArray($request);
 
-        $data['expert_panel'] = $this->whenLoaded('expertPanel', new ExpertPanelResource($this->expertPanel));
-        $data['type'] = $this->whenLoaded('type', new GroupTypeResource($this->type));
-        $data['status'] = $this->whenLoaded('status', new GroupStatusResource($this->status));
-        $data['members'] = $this->whenLoaded('members', MemberResource::collection($this->members));
-        $data['coordinators'] = $this->whenLoaded('coordinators', MemberResource::collection($this->members));
+        $data['expert_panel'] = $this->whenLoaded('expertPanel', fn() => new ExpertPanelResource($this->expertPanel));
+        $data['type'] = $this->whenLoaded('type', fn() => new GroupTypeResource($this->type));
+        $data['status'] = $this->whenLoaded('status', fn() => new GroupStatusResource($this->status));
+        $data['members'] = $this->whenLoaded('members', fn() => MemberResource::collection($this->members));
+        $data['coordinators'] = $this->whenLoaded('coordinators', fn() => MemberResource::collection($this->members));
         $data['is_ep'] = $this->isEp;
         $data['is_vcep'] = $this->isVcep;
         $data['is_gcep'] = $this->isGcep;
@@ -32,7 +32,7 @@ class GroupResource extends JsonResource
         $data['caption'] = $this->caption;
         $data['icon_url'] = $this->icon_url;
         $data['is_working_group'] = $this->is_working_group ?? false;
-        // $data['parent'] = $this->whenLoaded('parent', GroupResource::collection($this->parent));
+        // $data['parent'] = $this->whenLoaded('parent', fn() => GroupResource::collection($this->parent));
 
 
         unset($data['members'], $data['created_at'], $data['deleted_at']);

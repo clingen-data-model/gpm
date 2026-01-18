@@ -23,7 +23,7 @@ class PersonDetailResource extends JsonResource
                 $data[$field] = $this->$field;
             }
         }
-        $data['memberships'] = $this->whenLoaded('memberships', MembershipResource::collection($this->memberships));
+        $data['memberships'] = $this->whenLoaded('memberships', fn() => MembershipResource::collection($this->memberships));
         return $data;
     }
 }

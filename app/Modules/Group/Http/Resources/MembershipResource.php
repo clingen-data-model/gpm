@@ -15,8 +15,8 @@ class MembershipResource extends JsonResource
     public function toArray($request)
     {
         $data = parent::toArray($request);
-        $data['cois'] = $this->whenLoaded('cois', $this->cois);
-        $data['latest_coi'] = $this->whenLoaded('latestCoi', $this->latestCoi);
+        $data['cois'] = $this->whenLoaded('cois');
+        $data['latest_coi'] = $this->whenLoaded('latestCoi');
         if ($this->relationLoaded('group')) {
             $data['has_coi_requirement'] = $this->hasCoiRequirement;
         }

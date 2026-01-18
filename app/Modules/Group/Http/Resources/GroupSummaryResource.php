@@ -20,9 +20,9 @@ class GroupSummaryResource extends JsonResource
     {
         $data = parent::toArray($request);
 
-        $data['expert_panel'] = $this->whenLoaded('expertPanel', new ExpertPanelResource($this->expertPanel));
-        $data['type'] = $this->whenLoaded('type', new GroupTypeResource($this->type));
-        $data['status'] = $this->whenLoaded('status', new GroupStatusResource($this->status));
+        $data['expert_panel'] = $this->whenLoaded('expertPanel', fn() => new ExpertPanelResource($this->expertPanel));
+        $data['type'] = $this->whenLoaded('type', fn() => new GroupTypeResource($this->type));
+        $data['status'] = $this->whenLoaded('status', fn() => new GroupStatusResource($this->status));
         $data['is_ep'] = $this->isEp;
         $data['is_vcep'] = $this->isVcep;
         $data['is_gcep'] = $this->isGcep;

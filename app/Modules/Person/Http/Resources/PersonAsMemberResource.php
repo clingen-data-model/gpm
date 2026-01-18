@@ -29,9 +29,9 @@ class PersonAsMemberResource extends JsonResource
             'institution_id' => $this->institution_id,
             'country_id' => $this->country_id,
         ];
-        $data['institution'] = $this->whenLoaded('institution', new InstitutionResource($this->institution));
-        $data['credentials'] = $this->whenLoaded('credentials', $this->credentials);
-        $data['expertises'] = $this->whenLoaded('expertises', $this->expertises);
+        $data['institution'] = $this->whenLoaded('institution', fn() => new InstitutionResource($this->institution));
+        $data['credentials'] = $this->whenLoaded('credentials');
+        $data['expertises'] = $this->whenLoaded('expertises');
 
         return $data;
     }

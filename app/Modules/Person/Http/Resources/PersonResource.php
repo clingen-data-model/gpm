@@ -15,7 +15,7 @@ class PersonResource extends JsonResource
     public function toArray($request)
     {
         $data = parent::toArray($request);
-        $data['institution'] = $this->whenLoaded('institution', $this->institution);
+        $data['institution'] = $this->whenLoaded('institution', fn() => $this->institution);
 
         return $data;
     }
