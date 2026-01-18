@@ -178,11 +178,7 @@ class GroupMember extends Model implements BelongsToGroup, BelongsToExpertPanel
             return false;
         }
 
-        if ($this->cois->count() == 0) {
-            return true;
-        }
-
-        if ($this->coiLastCompleted->lt(Carbon::today()->subYear())) {
+        if ($this->coiLastCompleted?->lt(Carbon::today()->subYear())) {
             return true;
         }
 
