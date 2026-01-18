@@ -31,9 +31,10 @@ class MemberResource extends JsonResource
         $data['person'] = $this->whenLoaded('person', fn() => new PersonAsMemberResource($this->person));
         $data['roles'] = $this->whenLoaded('roles', fn() => RoleResource::collection($this->roles));
         $data['permissions'] = $this->whenLoaded('permissions', fn() => PermissionResource::collection($this->permissions));
-        // FIXME: should use whenLoaded? shold directly address latestCoi?
-        $data['coi_last_completed'] = $this->when($this->relationLoaded('cois'), fn() => $this->coi_last_completed);
-        $data['latest_coi_id'] = $this->when($this->relationLoaded('cois'), fn() => $this->latestCoi ? $this->latestCoi->id : null);
+        if ($this->relationLoaded('latestCoi')) {
+            $data['coi_last_completed'] = $this->coi_last_completed;
+            $data['latest_coi_id'] = $this->latestCoi ? $this->latestCoi->id : null;
+        }
 
         if ($this->relationLoaded('person.expertises')) {
             $data['expertise'] = $this->expertise;
