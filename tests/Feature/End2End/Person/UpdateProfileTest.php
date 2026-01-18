@@ -329,9 +329,6 @@ class UpdateProfileTest extends TestCase
             'institution_id' => $this->institution->id,
             'credential_ids' => [$this->credential->id],
             'expertise_ids' => [$this->expertise->id],
-            'race_id' => $this->race->id,
-            'primary_occupation_id' => $this->primaryOcc->id,
-            'gender_id' => $this->gender->id,
             'country_id' => $this->country->id,
             'orcid_id' => 12345,
             'hypothesis_id' => 12345,
@@ -345,9 +342,6 @@ class UpdateProfileTest extends TestCase
     private function setupLookups()
     {
         $this->institution = \App\Modules\Person\Models\Institution::factory()->create();
-        $this->race = \App\Modules\Person\Models\Race::factory()->create();
-        $this->primaryOcc = \App\Modules\Person\Models\PrimaryOccupation::factory()->create();
-        $this->gender = \App\Modules\Person\Models\Gender::factory()->create();
         $this->country = \App\Modules\Person\Models\Country::factory()->create();
         $this->credential = Credential::factory()->create();
         $this->expertise = Expertise::factory()->create(['approved' => true]);

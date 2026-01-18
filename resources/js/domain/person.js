@@ -12,18 +12,8 @@ class Person extends Entity {
         institution: {},
         credentials: [],
         expertises: [],
-        primary_occupation_id: null,
-        primary_occupation: {},
         profile_photo: null,
         race_id: null,
-        race: {},
-        race_other: null,
-        ethnicity_id: null,
-        ethnicity: {},
-        ethnicity_other: null,
-        gender_id: null,
-        gender: {},
-        gender_other: null,
         created_at: null,
         updated_at: null,
         deleted_at: null
@@ -61,31 +51,6 @@ class Person extends Entity {
 
     get credentialsString () {
         return this.credentials ? this.credentials.map(c => c.name).join(', ') : null;
-    }
-
-    get primaryOccupationName () {
-        if (this.primary_occupation_id === 100) {
-            return this.primary_occupation_other;
-        }
-        return this.primary_occupation ? this.primary_occupation.name : null
-    }
-
-    get raceName () {
-        if (this.race_id === 100) {
-            return this.race_other || 'Other';
-        }
-        return this.race ? this.race.name : null
-    }
-
-    get ethnicityName () {
-        return this.ethnicity ? this.ethnicity.name : null
-    }
-
-    get genderName () {
-        if (this.gender_id === 100) {
-            return this.gender_other || 'Not specified.';
-        }
-        return this.gender ? this.gender.name : null
     }
 
     get membershipsWithPendingCois () {

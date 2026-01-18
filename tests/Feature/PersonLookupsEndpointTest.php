@@ -2,7 +2,6 @@
 
 namespace Tests\Feature;
 
-use App\Modules\Person\Models\PrimaryOccupation;
 use Tests\TestCase;
 use Laravel\Sanctum\Sanctum;
 use App\Modules\User\Models\User;
@@ -19,7 +18,7 @@ class PersonLookupsEndpointTest extends TestCase
     public function setup():void
     {
         parent::setup();
-        $this->runSeeder([CountrySeeder::class, PrimaryOccupationSeeder::class, GenderSeeder::class]);
+        $this->runSeeder([CountrySeeder::class]);
         
         $user = User::factory()->create();
         Sanctum::actingAs($user);
