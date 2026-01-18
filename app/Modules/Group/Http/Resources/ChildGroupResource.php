@@ -19,10 +19,10 @@ class ChildGroupResource extends JsonResource
             'uuid' => $this->uuid,
             'name' => $this->displayName,
             'members_count' => $this->members_count,
-            'coordinators' => $this->whenLoaded('coordinators', $this->coordinators),
-            'chairs' => $this->whenLoaded('chairs', $this->chairs),
-            'type' => $this->whenLoaded('type', $this->type),
-            'status' => $this->whenLoaded('status', $this->status),
+            'coordinators' => $this->whenLoaded('coordinators'),
+            'chairs' => $this->whenLoaded('chairs'),
+            'type' => $this->whenLoaded('type'),
+            'status' => $this->whenLoaded('status'),
         ];
     }
 }
