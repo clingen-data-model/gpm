@@ -103,9 +103,6 @@ class ProfileUpdate
             'credential_ids.*' => ['exists:credentials,id'],
             'expertise_ids' => ['array'],
             'expertise_ids.*' => ['exists:expertises,id'],
-            // 'race_id' => ['exists:races,id'],;
-            // 'primary_occupation_id' => ['exists:primary_occupations,id'],
-            // 'gender_id' => ['exists:genders,id'],
             'country_id' => ['exists:countries,id'],
             'timezone' => [Rule::in(DateTimeZone::listIdentifiers())],
             'street1' => ['nullable','max:255'],

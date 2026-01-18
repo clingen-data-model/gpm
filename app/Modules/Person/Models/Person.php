@@ -10,17 +10,13 @@ use App\Models\Traits\HasUuid;
 use App\Models\Traits\HasEmail;
 use App\Modules\User\Models\User;
 use App\Modules\Group\Models\Group;
-use App\Modules\Person\Models\Race;
-use App\Modules\Person\Models\Gender;
 use Database\Factories\PersonFactory;
 use App\Modules\Person\Models\Country;
 use App\Models\Contracts\HasLogEntries;
 use Illuminate\Database\Eloquent\Model;
-use App\Modules\Person\Models\Ethnicity;
 use Illuminate\Notifications\Notifiable;
 use App\Modules\Person\Models\Institution;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use App\Modules\Person\Models\PrimaryOccupation;
 use App\Modules\Group\Models\Traits\IsGroupMember;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -102,13 +98,6 @@ class Person extends Model implements HasLogEntries
         'hypothesis_id',
         'country_id',
         'timezone',
-        'primary_occupation_id',
-        'primary_occupation_other',
-        'race_id',
-        'race_other',
-        'ethnicity_id',
-        'gender_id',
-        'gender_other',
         /* demographics_completed_date is not a "demographics_private_field" because:
             - it is not sensitive data
             - coordinators may want to see it to know who needs to complete/update their info
@@ -123,10 +112,6 @@ class Person extends Model implements HasLogEntries
         'orcid_id' => 'integer',
         'hypothesis_id' => 'integer',
         'country_id' => 'integer',
-        'primary_occupation_id' => 'integer',
-        'race_id' => 'integer',
-        'ethnicity_id' => 'integer',
-        'gender_id' => 'integer',
         'birth_country_opt_out' => 'boolean',
         'reside_country_opt_out' => 'boolean',
         'reside_state_opt_out' => 'boolean',
@@ -232,38 +217,6 @@ class Person extends Model implements HasLogEntries
     public function expertises(): BelongsToMany
     {
         return $this->belongsToMany(Expertise::class);
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function primaryOccupation()
-    {
-        return $this->belongsTo(PrimaryOccupation::class);
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function race()
-    {
-        return $this->belongsTo(Race::class);
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function ethnicity()
-    {
-        return $this->belongsTo(Ethnicity::class);
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function gender()
-    {
-        return $this->belongsTo(Gender::class);
     }
 
     /**
