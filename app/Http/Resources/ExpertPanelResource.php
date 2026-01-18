@@ -18,7 +18,7 @@ class ExpertPanelResource extends JsonResource
         unset($data['cdwg_id'], $data['created_at'], $data['updated_at'], $data['']);
         $data['cdwg'] = $this->whenLoaded('cdwg');
         $data['working_name'] = $this->long_base_name;
-        $data['group'] = $this->whenLoaded('group', $this->group);
+        $data['group'] = $this->whenLoaded('group');
         $data['log_entries'] = $this->whenLoaded('group.logEntries');
         $data['latest_log_entry'] = $this->whenLoaded('group.latestLogEntry');
         $data['latest_submission'] = $this->whenLoaded('group.latestSubmission');
