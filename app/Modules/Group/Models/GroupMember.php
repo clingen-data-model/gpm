@@ -172,13 +172,7 @@ class GroupMember extends Model implements HasNotes, BelongsToGroup, BelongsToEx
     // ACCESSORS
     public function getCoiLastCompletedAttribute()
     {
-        $latestCoi =  $this->cois
-                        ->filter(function ($coi) {
-                            return !is_null($coi->completed_at);
-                        })
-                        ->sortByDesc('completed_at')
-                        ->first();
-        return $latestCoi ? $latestCoi->completed_at : null;
+        return $this->latestCoi?->completed_at;
     }
 
     public function getCoiNeededAttribute()
