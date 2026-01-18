@@ -25,7 +25,7 @@ class CurrentUserController extends Controller
             'person.memberships' => function ($q) {
                 $q->isActive();
             },
-            'person.memberships.cois',
+            // 'person.memberships.cois',
             'person.memberships.group',
             'person.memberships.group.expertPanel',
             'person.memberships.group.type',
