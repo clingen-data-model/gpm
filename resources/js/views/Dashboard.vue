@@ -43,7 +43,7 @@ onMounted(() => {
 // TODO: Get groups by search with TONS of info.
 // TODO: Extract that work to a module.
 const groups = computed(() => {
-    return user.value.memberships
+    return user.value.person.memberships
         .map(m => m.group)
         .filter(g => g !== null)
         .map(group => new Group(group))
