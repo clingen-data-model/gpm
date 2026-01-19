@@ -18,7 +18,8 @@ class CurrentUserResource extends JsonResource
      */
     public function toArray($request)
     {
-        $data = parent::toArray($request);
+        // we will handle person later...
+        $data = $this->makeHidden(['person'])->toArray();
         $data['roles'] = $this->whenLoaded('roles', fn() => RoleResource::collection($this->roles));
         $data['person'] = $this->whenLoaded('person', fn() => new PersonDetailResource($this->person));
         $data['is_impersonating'] = $this->isImpersonating;
