@@ -6,10 +6,8 @@ use Database\Factories\CoiFactory;
 use App\Modules\Group\Models\Group;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
-use App\Modules\ExpertPanel\CoiCaster;
 use Illuminate\Database\Eloquent\Model;
 use App\Modules\Group\Models\GroupMember;
-use App\Modules\ExpertPanel\CoiDataCaster;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -83,15 +81,23 @@ class Coi extends Model
     // ACCESSORS
     public function getResponseDocumentAttribute()
     {
+        // Cache on the model instance to avoid recomputing
+        if (isset($this->attributes['_cached_response_document'])) {
+            return unserialize($this->attributes['_cached_response_document']);
+        }
+
+        $start = microtime(true);
         $coiDef = isset($this->data->document_uuid)
                     ? static::getLegacyDefinition()
                     : static::getDefinition();
 
+        // Pre-compute the questions collection once instead of in the closure
+        $questions = collect($coiDef->questions)->keyBy('name');
+
         $responseData = collect($this->data)
-            ->map(function ($value, $key) use ($coiDef) {
-                $questions = collect($coiDef->questions)->keyBy('name');
+            ->map(function ($value, $key) use ($questions) {
                 if (!isset($questions[$key])) {
-                    return;
+                    return null;
                 }
                 return [
                     'question' => $questions->get($key)->question,
@@ -102,6 +108,11 @@ class Coi extends Model
             ->toArray();
 
         $responseData['group_id'] = $this->expertPanel_id;
+
+        Log::info('Coi#getResponseDocumentAttribute time: '.(microtime(true) - $start).' s');
+
+        // Cache the result on this instance
+        $this->attributes['_cached_response_document'] = serialize($responseData);
 
         return $responseData;
     }
