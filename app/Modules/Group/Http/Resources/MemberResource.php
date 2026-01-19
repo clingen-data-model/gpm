@@ -21,7 +21,7 @@ class MemberResource extends JsonResource
         unset(
             $data['created_at'],
             $data['updated_at'],
-            $data['createted_at'],
+            $data['created_at'],
             $data['parent_id'],
             $data['deleted_at'],
             $data['cois'] // really do need this.
