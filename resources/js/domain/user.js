@@ -10,18 +10,15 @@ class User extends Entity {
         roles: [],
         permissions: [],
         person: new Person(),
-        memberships: [],
     }
 
     constructor(attributes = {}) {
-        const {person = {}, memberships = []} = attributes;
+        const {person = {}} = attributes;
         delete(attributes.person);
-        delete(attributes.memberships);
 
         super(attributes);
 
         this.person = new Person(person);
-        this.memberships = memberships.map(m => new GroupMember(m));
     }
 
     get rolePermissions () {
@@ -65,7 +62,7 @@ class User extends Entity {
         if (!group) {
             return false;
         }
-        const membership = this.memberships.find(m => m.group_id === group.id);
+        const membership = this.person.memberships.find(m => m.group_id === group.id);
         if (membership && membership.hasRole(role)) {
             return true;
         }
@@ -117,7 +114,7 @@ class User extends Entity {
         if (!group) {
             return false;
         }
-        let membership = this.memberships.find(m => m.group_id === group.id);
+        let membership = this.person.memberships.find(m => m.group_id === group.id);
         if (!(membership instanceof GroupMember)) {
             membership = new GroupMember(membership)
         }

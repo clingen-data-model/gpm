@@ -15,7 +15,7 @@
     const sustainedCurationReviews = ref([]);
 
     const coordinatingGroups = computed(() => {
-        return props.user.memberships
+        return props.user.person.memberships
                 .filter(m => m.hasPermission('annual-update-manage'))
                 .map(m => m.group)
                 .filter(g => g !== null)
