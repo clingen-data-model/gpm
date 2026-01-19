@@ -18,30 +18,12 @@ export default {
     },
     setup (props) {
 
-        const cois = computed(() => {
-            return props.person.membershipsWithCompletedCois
-                .map(m => {
-                    return m.cois.map(coi => {
-                        coi.group = m.group;
-                        return coi;
-                    })
-                })
-                .filter(coi => coi.completed_at !== null)
-                .flat()
-        });
         const needsCoi = computed(() => {
             if (!props.person.memberships) {
                 return false;
             }
             return props.person.memberships
-                    .filter(m => {
-                        if (m.cois === null || m.cois.length === 0) {
-                            if (m.group.expert_panel) {
-                                return true
-                            }
-                        }
-                        return false;
-                    });
+                .some(m => m.coi_needed);
         });
 
         const coiFields = [
@@ -109,7 +91,7 @@ export default {
         const showResponseDialog = ref(false);
 
         const showCoiResponse = (membership) => {
-            const latestCoi = membership.cois[membership.cois.length - 1];
+            const latestCoi = membership.latest_coi;
             currentCoi.value = latestCoi;
             currentGroup.value = membership.group;
             showResponseDialog.value = true;
@@ -117,7 +99,6 @@ export default {
 
         return {
             needsCoi,
-            cois,
             coiFields,
             coiSort,
             currentCoi,

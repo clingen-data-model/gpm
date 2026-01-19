@@ -62,11 +62,7 @@ class Person extends Entity {
     }
 
     get membershipsWithOutdatedCois () {
-        return this.membershipsWithCoiRequirement.filter(m => m.coi_needed && m.cois.length > 0);
-    }
-
-    get completedCois () {
-        return this.membershipsWithCompletedCois.map(m => m.cois).flat();
+        return this.membershipsWithCoiRequirement.filter(m => m.coi_needed && m.latest_coi_id !== null);
     }
 
     get hasPendingCois () {
