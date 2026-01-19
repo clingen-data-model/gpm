@@ -13,14 +13,6 @@ export default {
             cois: [],
         }
     },
-    computed: {
-        firstResponse () {
-            if (this.cois.length > 0) {
-                return this.cois[0].resolveResponse;
-            }
-            return {}
-        }
-    },
     watch: {
         group: {
             immediate: true,

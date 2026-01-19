@@ -70,8 +70,8 @@ export default {
     },
     methods: {
         initResponseValues() {
-            if (this.membership && this.membership.cois.length > 0) {
-                const lastResponse = {...this.membership.cois[this.membership.cois.length -1]};
+            if (this.membership && this.membership.latest_coi != null) {
+                const lastResponse = {...this.membership.latest_coi};
 
                 const v2ResponseData = (lastResponse.version === '1.0.0')
                     ? this.transformV1Response(lastResponse.data)
