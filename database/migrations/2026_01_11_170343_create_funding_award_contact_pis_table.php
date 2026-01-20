@@ -16,7 +16,6 @@ return new class extends Migration
             $table->foreignId('funding_award_id')->constrained('funding_awards')->cascadeOnDelete();
             $table->foreignId('person_id')->constrained('people')->restrictOnDelete();
             $table->boolean('is_primary')->default(false);
-
             $table->timestamps();
             $table->unique(['funding_award_id', 'person_id'], 'fa_pi_unique');
             $table->index('person_id');
