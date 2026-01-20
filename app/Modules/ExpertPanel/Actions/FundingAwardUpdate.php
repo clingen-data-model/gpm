@@ -20,12 +20,42 @@ class FundingAwardUpdate
         if (array_key_exists('notes', $data)) {
             $data['notes'] = trim(strip_tags($data['notes'] ?? ''));
         }
+        $allowedPersonIds = $expertPanel->group->activeMemberships()->pluck('person_id')->unique();
+        $piIds = collect($data['contact_pi_person_ids'] ?? [])->map(fn ($id) => (int) $id)->intersect($allowedPersonIds)->values();
+        $primaryId = isset($data['primary_contact_pi_id']) ? (int) $data['primary_contact_pi_id'] : null;
+
+        $repKeys = [
+            'contact_1_role','contact_1_name','contact_1_email','contact_1_phone',
+            'contact_2_role','contact_2_name','contact_2_email','contact_2_phone',
+        ];
+
+        $hasAnyRepField = collect($repKeys)->contains(fn ($k) => array_key_exists($k, $data));
+
+        if ($hasAnyRepField) {
+            $data['rep_contacts'] = [
+                [
+                    'role'  => $data['contact_1_role']  ?? null,
+                    'name'  => $data['contact_1_name']  ?? null,
+                    'email' => $data['contact_1_email'] ?? null,
+                    'phone' => $data['contact_1_phone'] ?? null,
+                ],
+                [
+                    'role'  => $data['contact_2_role']  ?? null,
+                    'name'  => $data['contact_2_name']  ?? null,
+                    'email' => $data['contact_2_email'] ?? null,
+                    'phone' => $data['contact_2_phone'] ?? null,
+                ],
+            ];
+        }
+        unset(
+            $data['contact_1_role'], $data['contact_1_name'], $data['contact_1_email'], $data['contact_1_phone'],
+            $data['contact_2_role'], $data['contact_2_name'], $data['contact_2_email'], $data['contact_2_phone'],
+        );
+        unset($data['contact_pi_person_ids'], $data['primary_contact_pi_id']);
+
         $fundingAward->fill($data);
         $fundingAward->save();
-
-        $allowedPersonIds = $expertPanel->group->activeMemberships()->pluck('person_id')->unique();
-        $piIds = collect($validated['contact_pi_person_ids'] ?? [])->map(fn ($id) => (int) $id)->intersect($allowedPersonIds)->values();
-        $primaryId = isset($validated['primary_contact_pi_id']) ? (int) $validated['primary_contact_pi_id'] : null;
+        
         if ($primaryId && !$piIds->contains($primaryId) && $allowedPersonIds->contains($primaryId)) {
             $piIds = $piIds->push($primaryId)->unique()->values();
         }
@@ -54,6 +84,22 @@ class FundingAwardUpdate
             'award_number'      => ['nullable', 'string', 'max:100'],
             'start_date'        => ['nullable', 'date'],
             'end_date'          => ['nullable', 'date', 'after_or_equal:start_date'],
+
+            'nih_reporter_url'  => ['nullable', 'string', 'max:255', 'url'],
+            'nih_ic'            => ['nullable', 'string', 'max:255'],
+
+            'contact_1_role'    => ['nullable', 'string', 'max:255'],
+            'contact_1_name'    => ['nullable', 'string', 'max:255'],
+            'contact_1_email'   => ['nullable', 'string', 'max:255', 'email'],
+            'contact_1_phone'   => ['nullable', 'string', 'max:255'],
+
+            'contact_2_role'    => ['nullable', 'string', 'max:255'],
+            'contact_2_name'    => ['nullable', 'string', 'max:255'],
+            'contact_2_email'   => ['nullable', 'string', 'max:255', 'email'],
+            'contact_2_phone'   => ['nullable', 'string', 'max:255'],
+
+            'notes'             => ['nullable', 'string'],
+
             'contact_pi_person_ids'   => ['nullable', 'array'],
             'contact_pi_person_ids.*' => ['integer', 'exists:people,id'],
             'primary_contact_pi_id'   => ['nullable', 'integer', 'exists:people,id'],
