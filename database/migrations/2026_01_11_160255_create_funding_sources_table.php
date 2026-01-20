@@ -13,12 +13,11 @@ return new class extends Migration
     {
         Schema::create('funding_sources', function (Blueprint $table) {
             $table->id();
-
+            $table->uuid('uuid')->unique(); 
             $table->string('name');
             $table->foreignId('funding_type_id')->constrained('funding_types')->restrictOnDelete();
             $table->text('caption', 500)->nullable();
             $table->string('website_url')->nullable();
-
             $table->string('logo_path')->nullable();
 
             $table->timestamps();
