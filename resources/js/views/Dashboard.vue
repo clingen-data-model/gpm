@@ -98,7 +98,7 @@ const showApplicationActivity = computed(() => {
 })
 
 onMounted(async () => {
-    await store.dispatch('forceGetCurrentUser');
+    await store.dispatch('getCurrentUser');
 })
 
 const navigateToGroup = (item) => {
