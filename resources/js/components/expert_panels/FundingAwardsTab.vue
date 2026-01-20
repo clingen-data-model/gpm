@@ -199,23 +199,31 @@ function sanitizeNotes(text) {
   return stripHtml(text).trim()
 }
 
-function pisDisplay(row) {
+function pisParts(row) {
   const pis = row?.contactPis || row?.contact_pis || []
-  if (!pis.length) return '—'
-  const names = pis.map(p => p?.name || p?.full_name).filter(Boolean)
-  const primary = pis.find(p => p?.pivot?.is_primary)
-  if (primary?.name || primary?.full_name) {
-    const primaryName = primary.name || primary.full_name
-    return `${names.join(', ')} (Primary: ${primaryName})`
-  }
-  return names.join(', ')
+  if (!pis.length) return { primary: '', others: '' }
+  const primary = pis.find(p => Boolean(p?.pivot?.is_primary))
+  const primaryName = primary?.name || primary?.full_name || ''
+  const others = pis.filter(p => !p?.pivot?.is_primary).filter(p => !primary?.id || p?.id !== primary.id).map(p => p?.name || p?.full_name).filter(Boolean).join(', ')
+  return { primary: primaryName, others }
 }
+
+function primaryLine(row) {
+  const { primary } = pisParts(row)
+  return primary ? `Primary: ${primary}` : ''
+}
+
+function othersLine(row) {
+  const { others } = pisParts(row)
+  return others
+}
+
 
 async function save() {
   errors.value = {}
 
   const payload = {
-    funding_source_id: form.funding_source_id ? Number(form.funding_source_id) : null,
+    funding_source_id: form.funding_source_id ?? null,
     award_number: form.award_number || null,
     start_date: form.start_date || null,
     end_date: form.end_date || null,
@@ -312,9 +320,9 @@ onMounted(async () => {
         </template>
 
         <template #cell-contactPis="{ item }">
-          <div class="text-sm">
-            {{ pisDisplay(item) }}
-          </div>
+          <div v-if="primaryLine(item)" class="text-sm"><span class="font-medium">{{ primaryLine(item) }}</span></div>
+          <div v-if="othersLine(item)" class="text-sm text-gray-700">{{ othersLine(item) }}</div>
+          <div v-if="!primaryLine(item) && !othersLine(item)" class="text-gray-500">-</div>
         </template>
 
         <template #cell-nih="{ item }">

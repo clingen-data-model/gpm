@@ -6,10 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Support\Facades\Storage;
+use App\Models\Traits\HasUuid;
+use Illuminate\Support\Str;
 
 class FundingSource extends Model
 {
     use SoftDeletes;
+    use HasUuid;
 
     protected $fillable = [
         'name',
@@ -20,6 +23,17 @@ class FundingSource extends Model
     ];
 
     protected $appends = ['logo_url', 'logo_url_raw'];
+
+    protected static function booted()
+    {
+        static::creating(function ($model) {
+            if (empty($model->uuid)) {
+                $model->uuid = (string) Str::uuid();
+            }
+        });
+    }
+
+
 
     protected function computePublicLogoUrl(bool $withVersion = true): ?string
     {

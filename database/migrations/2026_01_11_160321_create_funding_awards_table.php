@@ -13,27 +13,15 @@ return new class extends Migration
     {
         Schema::create('funding_awards', function (Blueprint $table) {
             $table->id();
+            $table->uuid('uuid')->unique();
             $table->foreignId('expert_panel_id')->constrained('expert_panels')->cascadeOnDelete();
-            $table->foreignId('funding_source_id')->constrained('funding_sources')->restrictOnDelete();
-
-            $table->string('award_number', 30)->nullable();
-            
+            $table->foreignId('funding_source_id')->constrained('funding_sources')->cascadeOnDelete();
+            $table->string('award_number', 30)->nullable();            
             $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();
-
             $table->string('nih_reporter_url')->nullable();
             $table->string('nih_ic')->nullable();
-
-            $table->string('contact_1_role')->nullable();
-            $table->string('contact_1_name')->nullable();
-            $table->string('contact_1_email')->nullable();
-            $table->string('contact_1_phone')->nullable();
-
-            $table->string('contact_2_role')->nullable();
-            $table->string('contact_2_name')->nullable();
-            $table->string('contact_2_email')->nullable();
-            $table->string('contact_2_phone')->nullable();
-
+            $table->json('rep_contacts')->nullable();
             $table->text('notes')->nullable();
 
             $table->timestamps();
