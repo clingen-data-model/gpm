@@ -24,6 +24,8 @@ const countryStore = module_factory({
     namespace: 'countries'
 })
 
+let currentUserPromise = null
+
 const store = createStore({
     state: {
         hostname: import.meta.env.VITE_APP_URL,
@@ -68,32 +70,37 @@ const store = createStore({
         },
     },
     actions: {
-        async getCurrentUser({commit, dispatch, state}) {
-            if (!state.authenticated || state.user.id === null) {
+        async getCurrentUser({dispatch, state}) {
+            if (currentUserPromise) {
+                return currentUserPromise
+            }
+
+            if (state.authenticated && state.user.id !== null) {
+                return Promise.resolve();
+            }
+
+            await dispatch('forceGetCurrentUser');
+        },
+        async forceGetCurrentUser({commit, dispatch}) {
+            currentUserPromise = (async () => {
                 try {
                     await axios.get('/api/current-user')
                         .then(response => {
                             commit('setCurrentUser', response.data.data)
                         })
                         dispatch('getSystemInfo');
-                    } catch (error) {
-                        // eslint-disable-next-line no-console
-                        console.log(error);
-                        commit('clearCurrentUser');
-                    }
-            }
-        },
-        async forceGetCurrentUser({commit}) {
-            try {
-                await axios.get('/api/current-user')
-                    .then(response => {
-                        commit('setCurrentUser', response.data.data)
-                    })
-            } catch (error) {
-                // eslint-disable-next-line no-console
-                console.log(error);
-                commit('clearCurrentUser');
-            }
+                } catch (error) {
+                    // eslint-disable-next-line no-console
+                    console.log(error);
+                    commit('clearCurrentUser');
+                }
+            })()
+
+            currentUserPromise.finally(() => {
+                currentUserPromise = null
+            })
+
+            return currentUserPromise
         },
         async login({commit}, {email, password}) {
             await axios.get('/sanctum/csrf-cookie')
