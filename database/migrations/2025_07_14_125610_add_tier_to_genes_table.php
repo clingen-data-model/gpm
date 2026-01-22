@@ -11,10 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('genes', function (Blueprint $table) {
-            $table->unsignedTinyInteger('tier')->nullable()->after('gene_symbol');
-            $table->string('moi', 20)->nullable()->after('mondo_id');            
-            $table->json('plan')->nullable()->after('moi');
+        Schema::table('genes', function (Blueprint $table) {        
+            $table->string('moi', 20)->nullable()->after('disease_name');
+            $table->unsignedInteger('tier')->nullable()->after('moi');
+            $table->json('plan')->nullable()->after('tier');
+            $table->uuid('gt_curation_uuid')->nullable()->after('plan');
+            $table->index('gt_curation_uuid');
         });
     }
 
@@ -23,8 +25,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('genes', function (Blueprint $table) {
-            $table->dropColumn('tier');
+        Schema::table('genes', function (Blueprint $table) {      
+            $table->dropColumn(['moi', 'tier', 'plan', 'gt_curation_uuid']);
         });
     }
 };
