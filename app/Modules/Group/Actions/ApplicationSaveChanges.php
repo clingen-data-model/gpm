@@ -52,7 +52,7 @@ class ApplicationSaveChanges
                         );
         }
         if ($group->isGcep) {
-            $this->gcepRationale->handle($group->expertPanel, $data->get('gcep_rationale'));
+            $this->gcepRationale->handle($group->expertPanel, $data->get('prioritization_rationale'));
         }
         return $group->refresh()->load('expertPanel');
     }

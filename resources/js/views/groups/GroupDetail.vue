@@ -247,7 +247,7 @@ export default {
         .dispatch("groups/gcepRationaleUpdate", {
           uuid: this.group.uuid,
           expertPanelUuid: this.group.expert_panel.uuid,
-          gcepRationale: this.group.expert_panel.gcep_rationale,
+          gcepRationale: this.group.expert_panel.prioritization_rationale,
         })
         .then((response) => {
           this.$store.commit("pushSuccess", "GCEP Rationale updated.");

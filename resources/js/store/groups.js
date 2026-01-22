@@ -329,7 +329,7 @@ export const actions = {
     },
 
     async gcepRationaleUpdate({ commit, getters }, { uuid, expertPanelUuid, gcepRationale }) {
-        return api.put(`${getExpertPanelUrl(expertPanelUuid)}/gcep-rationale`, { gcep_rationale: gcepRationale })
+        return api.put(`${getExpertPanelUrl(expertPanelUuid)}/gcep-rationale`, { prioritization_rationale: gcepRationale })
             .then(response => {
                 const item = getters.getItemByUuid(uuid);
                 commit('addItem', item);

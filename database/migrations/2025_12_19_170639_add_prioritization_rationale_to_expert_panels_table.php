@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('expert_panels', function (Blueprint $table) {
-            $table->text('gcep_rationale')->nullable()->after('scope_description'); 
+            $table->text('prioritization_rationale')->nullable()->after('scope_description'); 
         });
     }
 
@@ -22,7 +22,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('expert_panels', function (Blueprint $table) {
-            $table->dropColumn('gcep_rationale');
+            $table->dropColumn('prioritization_rationale');
         });
     }
 };

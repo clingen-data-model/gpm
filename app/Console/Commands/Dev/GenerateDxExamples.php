@@ -14,6 +14,11 @@ use App\Modules\Group\Events\GenesAdded;
 use App\Modules\Group\Events\GroupCheckpointEvent;
 use App\Modules\Group\Events\GroupDescriptionUpdated;
 use App\Modules\Group\Events\CaptionIconUpdated;
+use App\Modules\Group\Events\SustainedCurationReviewCompleted;
+use App\Modules\ExpertPanel\Events\ExpertPanelAttributesUpdated;
+use App\Modules\ExpertPanel\Events\StepDateApprovedUpdated;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Carbon;
 
 class GenerateDxExamples extends Command
 {
@@ -23,8 +28,8 @@ class GenerateDxExamples extends Command
      * @var string
      */
     protected $signature = 'dx:generate-examples';
-
     protected $description = 'Generate example messages for data exchange';
+    protected DxMessageFactory $factory;
 
     protected DxMessageFactory $factory;
 
@@ -46,11 +51,49 @@ class GenerateDxExamples extends Command
 
         if ($this->isHidden()) {
             $this->info('This command is only available in the local environment.');
-            $this->info('It might be OK to run in production, but why chance it?');
             return Command::INVALID;
         }
 
-        // Hopefully we can find an ep that has passed step 1 but not step 2 that has members/genes defined:
+        $this->factory = new DxMessageFactory();
+
+        $vcep = ExpertPanel::query()->typeVcep()->with('group')->first();
+        $gcep = ExpertPanel::query()->typeGcep()->with('group')->first();
+
+        if ($vcep) {
+            $this->jinfo(new ExpertPanelAttributesUpdated($vcep, [
+                'short_base_name' => $vcep->short_base_name,
+                'long_base_name'  => $vcep->long_base_name,
+                'scope_description' => 'Example scope update (DX sample)',
+            ]));
+
+            $this->jinfo(new SustainedCurationReviewCompleted($vcep->group, $vcep->group->tasks()->limit(5)->get()));
+        } else {
+            $this->warn('No VCEP ExpertPanel found to emit ep_info_updated example.');
+        }
+
+        if ($gcep) {
+            $this->jinfo(new ExpertPanelAttributesUpdated($gcep, [
+                'short_base_name' => $gcep->short_base_name,
+                'long_base_name'  => $gcep->long_base_name,
+                'membership_description' => 'Example membership update (DX sample)',
+            ]));
+        } else {
+            $this->warn('No GCEP ExpertPanel found to emit ep_info_updated example.');
+        }
+
+        $this->emitStepIfPossible($vcep, 1, 'step_1_approval_date'); // vcep_definition_approval
+        $this->emitStepIfPossible($vcep, 2, 'step_2_approval_date'); // vcep_draft_specification_approval
+        $this->emitStepIfPossible($vcep, 3, 'step_3_approval_date'); // vcep_pilot_approval
+        $this->emitStepIfPossible($vcep, 4, 'step_4_approval_date'); // vcep_final_approval
+        $this->emitStepIfPossible($gcep, 1, 'step_1_approval_date'); // gcep_final_approval
+
+        $epForDateUpdate = $vcep;
+        if ($epForDateUpdate) {
+            $this->jinfo(new StepDateApprovedUpdated($epForDateUpdate, 2, now()->toDateString() ));
+        } else {
+            $this->warn('No ExpertPanel found to emit step_date_approved_updated example.');
+        }
+
         $ep = ExpertPanel::query()
             ->with(['genes', 'group', 'group.members'])
             ->whereNotNull('step_1_approval_date')
@@ -59,22 +102,38 @@ class GenerateDxExamples extends Command
             ->whereHas('group.members')
             ->first();
         $this->jinfo(new GroupCheckpointEvent($ep->group));
-        $this->jinfo(new StepApproved($ep, 1, $ep->step_1_approval_date));
+        // $this->jinfo(new StepApproved($ep, 1, $ep->step_1_approval_date));
         $this->jinfo(new MemberAdded($ep->group->members->first()));
         $this->jinfo(new MemberRoleAssigned($ep->group->members->first(), Role::where('name', 'coordinator')->get()));
         $this->jinfo(new GenesAdded($ep->group, $ep->genes));
 
-        $wg = Group::workingGroup()->first();
+        $wg = Group::workingGroup()->with('members')->first();
         $this->jinfo(new GroupCheckpointEvent($wg));
         $this->jinfo(new MemberAdded($wg->members->first()));
         $this->jinfo(new GroupDescriptionUpdated($wg, $wg->description, ''));
         $this->jinfo(new CaptionIconUpdated($wg, $wg->caption, $wg->icon_path));
 
-        $cdwg = Group::cdwg()->first();
+        $cdwg = Group::cdwg()->with('members')->first();
         $this->jinfo(new GroupCheckpointEvent($cdwg));
         $this->jinfo(new MemberAdded($cdwg->members->first()));
 
         return Command::SUCCESS;
+    }
+
+    protected function emitStepIfPossible(?ExpertPanel $ep, int $step, string $dateColumn): void
+    {
+        if (! $ep) {
+            $this->warn("No EP found (cannot emit step {$step}).");
+            return;
+        }
+
+        $date = $ep->{$dateColumn} ?? Carbon::now();
+
+        if (! $ep->{$dateColumn}) {
+            $this->warn("EP {$ep->id} has no {$dateColumn}; using now() for step {$step} example.");
+        }
+
+        $this->jinfo(new StepApproved($ep, $step, $date));
     }
 
     protected function jinfo($event)

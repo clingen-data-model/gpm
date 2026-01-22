@@ -95,7 +95,6 @@ trait IsPublishableGroupEvent
                 $epData['vcep_final_approval']                  = $ep->step_4_approval_date;
             }
             if ($group->isGcep) {
-                $epData['gcep_rationale']  = $ep->gcep_rationale;
                 $epData['gcep_final_approval']  = $ep->step_1_approval_date;
             }
 
