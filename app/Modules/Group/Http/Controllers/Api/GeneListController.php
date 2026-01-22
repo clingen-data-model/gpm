@@ -7,6 +7,7 @@ use App\Modules\Group\Models\Group;
 use App\Http\Controllers\Controller;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Services\Api\GtApiService;
+use App\Modules\ExpertPanel\Models\ScopeGeneSnapshot;
 
 class GeneListController extends Controller
 {
@@ -20,13 +21,16 @@ class GeneListController extends Controller
     {
         if (!$group->isEp) {
             throw new ModelNotFoundException('Only expert panels have gene lists.');
-        }
+        }       
 
         $genes = $group
-                ->expertPanel
-                ->genes()
-                ->select('gene_symbol', 'hgnc_id', 'mondo_id', 'disease_name', 'id', 'moi', 'tier', 'date_approved', 'plan')
-                ->get();
+            ->expertPanel
+            ->genes()
+            ->select('id', 'hgnc_id', 'gene_symbol', 'mondo_id', 'disease_name', 'moi', 'tier', 'plan', 'date_approved')
+            // ->with(['snapshots' => function ($q) {
+            //         $q->select('scope_gene_id', 'curation_uuid', 'check_key', 'payload')->orderByDesc('captured_at');
+            //     }]) FOR FUTURE USE
+            ->get();
 
         $mondoIds = $genes->pluck('mondo_id')->filter()->unique()->values()->toArray();
         $diseaseData = $mondoIds ? $this->gtApi->getDiseasesByMondoIds($mondoIds) : [];
