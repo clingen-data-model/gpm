@@ -50,9 +50,6 @@ export default {
           const g = this.expertPanel?.genes;
           return Array.isArray(g) ? g : [];
         },
-        curatedGenesCount() {
-          return this.genes.reduce((n, g) => n + ((Array.isArray(g.details) && g.details.length > 0) ? 1 : 0), 0);
-        },
     }
 }
 </script>
@@ -82,14 +79,6 @@ export default {
         </ul>
       </div>
 
-      <div v-if="curatedGenesCount > 0"
-        role="note"
-        class="mt-3 border-l-4 border-amber-400 bg-amber-50 px-3 py-2 text-sm text-amber-900
-              rounded-md dark:border-amber-400 dark:bg-amber-900/20 dark:text-amber-100"
-      >
-        <strong>You have added curated genes: {{ curatedGenesCount }}/{{ genes.length }} gene(s)</strong>
-        — Please include how you prioritized the list, your plan for overlaps (other GCEPs), the scope boundaries, and your throughput/update cadence.
-      </div>
       <transition name="fade" mode="out-in">
         <div v-if="editing" class="mt-2">
           <RichTextEditor
