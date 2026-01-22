@@ -25,6 +25,8 @@ class Gene extends Model
 {
     use HasFactory, SoftDeletes;
 
+    protected $table = 'scope_genes';
+
     /**
      * The attributes that are mass assignable.
      *
@@ -34,12 +36,13 @@ class Gene extends Model
         'hgnc_id',
         'expert_panel_id',
         'gene_symbol',
-        'tier',
         'mondo_id',
         'disease_name',
-        'date_approved',
         'moi',
+        'tier',
         'plan',
+        'gt_curation_uuid',
+        'date_approved',
     ];
 
     /**
@@ -56,12 +59,25 @@ class Gene extends Model
         'plan' => 'array',
     ];
 
+    protected static function booted()
+    {
+        static::deleting(function (self $gene) {
+            // Delete snapshots when gene is deleted (soft delete will trigger this too)
+            $gene->snapshots()->delete();
+        });
+    }
+
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function expertPanel()
     {
         return $this->belongsTo(ExpertPanel::class);
+    }
+
+    public function snapshots()
+    {
+        return $this->hasMany(ScopeGeneSnapshot::class, 'scope_gene_id');
     }
     
     /**
@@ -87,14 +103,12 @@ class Gene extends Model
     {
         return Attribute::make(
             get: function () {
-                $plan = $this->plan ?? [];
-
                 return [
-                    'hgnc_id'     => (int) ($this->hgnc_id ?? data_get($plan, 'hgnc_id')),
-                    'gene_symbol' => $this->gene_symbol ?? data_get($plan, 'gene_symbol'),
-                    'omim_id'     => $this->omim_id ?? data_get($plan, 'omim_id'),
-                    'hgnc_name'   => $this->hgnc_name ?? data_get($plan, 'hgnc_name'),
-                    'hgnc_status' => $this->hgnc_status ?? data_get($plan, 'hgnc_status'),
+                    'hgnc_id'     => (int) $this->hgnc_id,
+                    'gene_symbol' => $this->gene_symbol,
+                    // 'omim_id'     => (int) $this->omim_id,
+                    'hgnc_name'   => $this->hgnc_name,
+                    // 'hgnc_status' => $this->hgnc_status,
                 ];
             }
         );
