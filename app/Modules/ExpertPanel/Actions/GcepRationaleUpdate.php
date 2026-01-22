@@ -17,12 +17,12 @@ class GcepRationaleUpdate
 
     public function handle(ExpertPanel $expertPanel, ?string $gcepRationale): ExpertPanel
     {
-        if ($expertPanel->gcep_rationale == $gcepRationale) {
+        if ($expertPanel->prioritization_rationale == $gcepRationale) {
             return $expertPanel;
         }
 
         $expertPanel->update([
-            'gcep_rationale' => $gcepRationale
+            'prioritization_rationale' => $gcepRationale
         ]);
 
         event(new GcepRationaleUpdated($expertPanel, $gcepRationale));
@@ -42,13 +42,13 @@ class GcepRationaleUpdate
             abort(422, 'GCEP Rationale can only be set for GCEP groups.');
         }
 
-        return $this->handle($expertPanel, $data['gcep_rationale']);
+        return $this->handle($expertPanel, $data['prioritization_rationale']);
     }
 
     public function rules(): array
     {
         return [
-            'gcep_rationale' => 'required|max:66535'
+            'prioritization_rationale' => 'required|max:66535'
         ];
     }
 
