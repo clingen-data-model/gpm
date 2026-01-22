@@ -34,6 +34,6 @@ class ScopeDescriptionUpdated extends GroupEvent
 
     public function shouldPublish(): bool
     {
-        return true;
+        return false;
     }
 }
