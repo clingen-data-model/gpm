@@ -14,6 +14,7 @@ use Illuminate\Validation\ValidationException;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Collection;
+use App\Modules\ExpertPanel\Models\ScopeGeneSnapshot;
 
 class GenesAddToVcep
 {
@@ -33,8 +34,7 @@ class GenesAddToVcep
             throw ValidationException::withMessages(['genes' => 'Please provide at least one gene.']);
         }
 
-        $errors = [];
-        $models = [];
+        $errors = $models = $snapshotPayloads = [];
 
         foreach ($items as $idx => $gene) {
             $hgncId     = $gene['hgnc_id']    ?? null;
@@ -47,7 +47,6 @@ class GenesAddToVcep
                 $errors["genes.$idx.gene_symbol"] = 'Gene must have a gene symbol.';
             }
 
-            // Build model (VCEP fields allowed)
             $models[] = new Gene([
                 'hgnc_id'       => (int) $hgncId,
                 'gene_symbol'   => $geneSymbol,
@@ -55,17 +54,32 @@ class GenesAddToVcep
                 'mondo_id'      => $gene['mondo_id']      ?? null,
                 'moi'           => $gene['moi']           ?? null,
                 'date_approved' => $gene['date_approved'] ?? null,
-                'plan'          => $gene['plan']          ?? null,
+                'plan'          => $gene['plan'] ?? null,
+                'gt_curation_uuid'   => data_get($gene, 'plan.curation_id') ?? null,
             ]);
+            $snapshotPayloads[] = $gene['plan'] ?? null;
         }
 
         if (!empty($errors)) {
             throw ValidationException::withMessages($errors);
         }
 
-        DB::transaction(function () use ($group, &$models) {
-            $group->expertPanel->genes()->saveMany($models);
+        DB::transaction(function () use ($group, &$models, $snapshotPayloads) {
+            $savedModels = collect($group->expertPanel->genes()->saveMany($models))->values();            
+
+            $savedModels->each(function ($savedGene, $i) use ($snapshotPayloads) {
+                ScopeGeneSnapshot::create([
+                    'scope_gene_id'     => $savedGene->id,
+                    'curation_uuid'     => $snapshotPayloads[$i]['curation_id'] ?? null,
+                    'check_key'         => $snapshotPayloads[$i]['checkKey'] ?? null,
+                    'payload'           => $snapshotPayloads[$i] ?? [],
+                    'captured_at'       => now(),
+                    'is_outdated'       => false,
+                    'last_compared_at'  => null,
+                ]);
+            });
         });
+        
         event(new GenesAdded($group, collect($models)));       
 
         return $group;
