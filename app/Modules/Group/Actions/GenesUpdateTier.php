@@ -50,7 +50,7 @@ class GenesUpdateTier
     {
         return [
             'ids' => 'required|array|min:1',
-            'ids.*' => 'required|integer|exists:genes,id',
+            'ids.*' => 'required|integer|exists:scope_genes,id',
             'tier' => 'nullable|integer|in:1,2,3,4'
         ];
     }
