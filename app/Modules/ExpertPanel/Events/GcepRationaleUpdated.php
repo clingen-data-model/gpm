@@ -17,7 +17,7 @@ class GcepRationaleUpdated extends ExpertPanelEvent
      *
      * @return void
      */
-    public function __construct(public ExpertPanel $application, public ?string $gcep_rationale)
+    public function __construct(public ExpertPanel $application, public ?string $prioritization_rationale)
     {
         parent::__construct($application);
     }
@@ -25,11 +25,16 @@ class GcepRationaleUpdated extends ExpertPanelEvent
     public function getLogEntry(): string
     {
         $updatedBy = Auth::user() ? Auth::user()->name : 'system';
-        return 'GCEP Rationale updated by ' . $updatedBy . ', new rationale: ' . $this->gcep_rationale;
+        return 'GCEP Rationale updated by ' . $updatedBy . ', new rationale: ' . $this->prioritization_rationale;
     }
 
     public function getProperties(): array
     {
-        return ['gcep_rationale' => $this->gcep_rationale];
+        return ['prioritization_rationale' => $this->prioritization_rationale];
+    }
+
+    public function shouldPublish(): bool
+    {
+        return false;
     }
 }
