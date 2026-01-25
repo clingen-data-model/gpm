@@ -1,5 +1,6 @@
 /.openshift/secrets
 /node_modules
+/resources/app/node_modules
 /public/hot
 /public/storage
 /public/profile-photos
