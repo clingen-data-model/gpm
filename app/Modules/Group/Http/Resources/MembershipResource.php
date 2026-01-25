@@ -20,7 +20,6 @@ class MembershipResource extends JsonResource
             $data['latest_coi'] = $this->latestCoi;
             $data['latest_coi_id'] = $this->latestCoi?->id;
         }
-        $data['latest_coi'] = $this->whenLoaded('latestCoi');
         if ($this->relationLoaded('group')) {
             $data['has_coi_requirement'] = $this->hasCoiRequirement;
         }

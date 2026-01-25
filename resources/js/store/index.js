@@ -79,7 +79,7 @@ const store = createStore({
                 return Promise.resolve();
             }
 
-            await dispatch('forceGetCurrentUser');
+            return dispatch('forceGetCurrentUser');
         },
         async forceGetCurrentUser({commit, dispatch}) {
             currentUserPromise = (async () => {
