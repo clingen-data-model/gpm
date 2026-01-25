@@ -18,8 +18,9 @@ class CurrentUserResource extends JsonResource
      */
     public function toArray($request)
     {
-        // we will handle person later... using clone to avoid permanence of makeHidden
-        $data = (clone $this)->makeHidden(['person'])->toArray();
+        $data = $this->attributesToArray();
+        $data['permissions'] = $this->whenLoaded('permissions', fn() => PermissionResource::collection($this->permissions));
+        $data['preferences'] = $this->whenLoaded('preferences');
         $data['roles'] = $this->whenLoaded('roles', fn() => RoleResource::collection($this->roles));
         $data['person'] = $this->whenLoaded('person', fn() => new PersonDetailResource($this->person));
         $data['is_impersonating'] = $this->isImpersonating;

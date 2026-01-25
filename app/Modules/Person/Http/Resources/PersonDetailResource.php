@@ -16,8 +16,7 @@ class PersonDetailResource extends JsonResource
      */
     public function toArray(Request $request)
     {
-        // we will handle memberships later... Shallow clone to avoid permanence of makeHidden
-        $data = (clone $this)->makeHidden(['memberships'])->toArray();
+        $data = $this->attributesToArray();
         $user = $request->user();
         if ($user->id === $this?->user?->id || $user->hasAnyRole(['admin', 'super-admin'])) {
             foreach (Person::$contact_details_private_fields as $field) {
@@ -25,6 +24,9 @@ class PersonDetailResource extends JsonResource
             }
         }
         $data['memberships'] = $this->whenLoaded('memberships', fn() => MembershipResource::collection($this->memberships));
+        $data['institution'] = $this->whenLoaded('institution', fn() => new InstitutionResource($this->institution));
+        $data['credentials'] = $this->whenLoaded('credentials');
+        $data['expertises'] = $this->whenLoaded('expertises');
         return $data;
     }
 }
