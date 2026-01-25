@@ -6,6 +6,7 @@ use App\Http\Resources\ExpertPanelResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Modules\Group\Http\Resources\MemberResource;
 use App\Modules\Group\Http\Resources\GroupStatusResource;
+use App\Modules\Group\Http\Resources\GroupTypeResource;
 
 class GroupResource extends JsonResource
 {
@@ -22,8 +23,10 @@ class GroupResource extends JsonResource
         $data['expert_panel'] = $this->whenLoaded('expertPanel', fn() => new ExpertPanelResource($this->expertPanel));
         $data['type'] = $this->whenLoaded('type', fn() => new GroupTypeResource($this->type));
         $data['status'] = $this->whenLoaded('status', fn() => new GroupStatusResource($this->status));
-        $data['members'] = $this->whenLoaded('members', fn() => MemberResource::collection($this->members));
-        $data['coordinators'] = $this->whenLoaded('coordinators', fn() => MemberResource::collection($this->members));
+        // Noticed that this was loaded here, but unset later. Leaving commented for now.
+        // $data['members'] = $this->whenLoaded('members', fn() => MemberResource::collection($this->members));
+        // This next bit was weird, too, since it loaded "members" data as "coordinators".
+        $data['coordinators'] = $this->whenLoaded('coordinators', fn() => MemberResource::collection($this->coordinators));
         $data['is_ep'] = $this->isEp;
         $data['is_vcep'] = $this->isVcep;
         $data['is_gcep'] = $this->isGcep;
