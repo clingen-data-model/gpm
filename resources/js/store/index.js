@@ -84,11 +84,9 @@ const store = createStore({
         async forceGetCurrentUser({commit, dispatch}) {
             currentUserPromise = (async () => {
                 try {
-                    await axios.get('/api/current-user')
-                        .then(response => {
-                            commit('setCurrentUser', response.data.data)
-                        })
-                        dispatch('getSystemInfo');
+                    const response = await axios.get('/api/current-user')
+                    commit('setCurrentUser', response.data.data)
+                    dispatch('getSystemInfo')
                 } catch (error) {
                     // eslint-disable-next-line no-console
                     console.log(error);
