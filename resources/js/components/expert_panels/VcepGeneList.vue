@@ -240,7 +240,7 @@
 
                             <button v-if="gene.is_outdated && gene.gt_data" @click="applyGtUpdate(gene)" title="Refresh from latest GT"
                             class="hidden sm:inline-flex rounded border border-amber-400 bg-amber-50 px-2 py-1 text-xs font-semibold text-amber-900 hover:bg-amber-100">
-                                Refresh GT ⚠
+                                Apply latest GT changes ⚠
                             </button>
 
                             <dropdown-menu v-if="!gene.toDelete" :hide-cheveron="true" class="relative">
