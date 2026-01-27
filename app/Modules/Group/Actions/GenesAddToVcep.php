@@ -65,19 +65,7 @@ class GenesAddToVcep
         }
 
         DB::transaction(function () use ($group, &$models, $snapshotPayloads) {
-            $savedModels = collect($group->expertPanel->genes()->saveMany($models))->values();            
-
-            $savedModels->each(function ($savedGene, $i) use ($snapshotPayloads) {
-                ScopeGeneSnapshot::create([
-                    'scope_gene_id'     => $savedGene->id,
-                    'curation_uuid'     => $snapshotPayloads[$i]['curation_id'] ?? null,
-                    'check_key'         => $snapshotPayloads[$i]['checkKey'] ?? null,
-                    'payload'           => $snapshotPayloads[$i] ?? [],
-                    'captured_at'       => now(),
-                    'is_outdated'       => false,
-                    'last_compared_at'  => null,
-                ]);
-            });
+            $savedModels = collect($group->expertPanel->genes()->saveMany($models))->values();    
         });
         
         event(new GenesAdded($group, collect($models)));       
