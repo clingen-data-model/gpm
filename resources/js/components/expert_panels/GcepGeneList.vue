@@ -88,15 +88,14 @@ export default {
             }
         }
 
-
         const getGenes = async () => {
-            if (!group.value.uuid) return;
-            if (loading.value) return 
+            if (!group.value.uuid || loading.value) return 
             loading.value = true;
             try {
                 await store.dispatch('groups/getGenes', group.value);
-                genesAsText.value = group.value.expert_panel.genes.map(g => g.gene_symbol).join(", ");
-                geneCheckResults.value = group.value.expert_panel.genes;
+                const genes = Array.isArray(group.value?.expert_panel?.genes) ? group.value.expert_panel.genes : []
+                genesAsText.value = genes.map(g => g.gene_symbol).join(", ");
+                geneCheckResults.value = genes;
             } catch (error) {
                 let message = 'An unexpected error occurred.';
     
@@ -115,9 +114,9 @@ export default {
                 }
 
                 store.commit('pushError', message);
+            } finally {
+                loading.value = false;            
             }
-            loading.value = false;
-            
         }
         const hideForm = () => {
             context.emit('update:editing', false);
@@ -271,8 +270,7 @@ export default {
             group, genesAsText, loading, errors, resetErrors, hideForm, cancel,
             geneCheckResults, selectedGene, adding, addGene, onChildChange, selectKey,
             showPasteModal, pasteText, pasteArea, openPasteModal, closePasteModal, onReviewClick, reviewing, bulkCheckResults,
-            reviewBuckets, submitBulkFromReviewUI, submittingBulk
-
+            reviewBuckets, submitBulkFromReviewUI, submittingBulk, lastReviewedSymbols
         }
     },
     computed: {
