@@ -54,7 +54,9 @@ class CredentialsMerge
         $obsolete->people
             ->each(function ($person) use ($authority, $obsolete) {
                 $person->credentials()->detach($obsolete->id);
-                $person->credentials()->syncWithoutDetaching([$authority->id]);
+                $person->credentials()->syncWithoutDetaching([
+                    $authority->id => ['sort_order' => 0]
+                ]);
             });
 
     }
