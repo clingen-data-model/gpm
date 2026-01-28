@@ -27,8 +27,8 @@ AM (Affiliations Manager) returns both `affiliation_id` and `expert_panel_id`. W
 UI (Vue) ──▶ API (Laravel)
   Button       └─▶ AffiliationController@store (EP UUID)
                    └─▶ Action: AffiliationCreate@handle(ExpertPanel)
-                           └─▶ AffilsClient (AM API; fake mode in local/testing)
-                           └─▶ AmAffiliationRequest audit log
+                           └─▶ AffiliationMicroserviceClient (AM API; fake mode in local/testing)
+                           └─▶ AffiliationMicroserviceRequest audit log
                    └─▶ returns { affiliation_id, message }
 
 Group Status change ──▶ Action: GroupStatusUpdate@handle
@@ -37,8 +37,8 @@ Group Status change ──▶ Action: GroupStatusUpdate@handle
 
 **Key models/services**
 - `ExpertPanel` (stores `affiliation_id` as integer; holds names, members, coordinators)
-- `AmAffiliationRequest` (audit log of requests to AM: payload, status, response, error)
-- `AffilsClient` (HTTP client to AM; supports fake responses for local/testing)
+- `AffiliationMicroserviceRequest` (audit log of requests to AM: payload, status, response, error)
+- `AffiliationMicroserviceClient` (HTTP client to AM; supports fake responses for local/testing)
 - Actions: `AffiliationCreate`, `AffiliationUpdate`, `GroupCreate`, `GroupStatusUpdate`
 
 ---
@@ -61,9 +61,9 @@ Route::group(['prefix' => 'api/applications','middleware'=>['api']], function ()
 - If EP already has an `affiliation_id`, returns **200** with existing id.
 - Otherwise tries **AM detail by UUID** first. If found with an `expert_panel_id`, we **sync** it locally and return 200.
 - Else builds payload: names, type, status, members (flattened), coordinators (array of name/email), CDWG id.
-- Calls `AffilsClient->create($payload)`.
-- On success: stores `expert_panel_id` into `expert_panels.affiliation_id`, logs success via `AmAffiliationRequest`, returns **201**.
-- On AM error: logs failure in `AmAffiliationRequest` and returns a friendly message and proper HTTP code.
+- Calls `AffiliationMicroserviceClient->create($payload)`.
+- On success: stores `expert_panel_id` into `expert_panels.affiliation_id`, logs success via `AffiliationMicroserviceRequest`, returns **201**.
+- On AM error: logs failure in `AffiliationMicroserviceRequest` and returns a friendly message and proper HTTP code.
 
 **Normalization rule**
 > Treat **AM’s `expert_panel_id`** as the Affiliation ID we persist to `expert_panels.affiliation_id`.
@@ -71,8 +71,8 @@ Route::group(['prefix' => 'api/applications','middleware'=>['api']], function ()
 ### 3.3 AffiliationUpdate (server → AM “update”)
 - Requires local `affiliation_id` to exist (>0).
 - Builds payload (names, status, members, coordinators, CDWG).
-- Calls `AffilsClient->updateByEpID($affiliation_id, $payload)`.
-- Logs via `AmAffiliationRequest` as success/failure, returns JSON with message and (200/4xx).
+- Calls `AffiliationMicroserviceClient->updateByEpID($affiliation_id, $payload)`.
+- Logs via `AffiliationMicroserviceRequest` as success/failure, returns JSON with message and (200/4xx).
 
 ### 3.4 GroupStatusUpdate (status sync)
 - After changing the group status and firing `GroupStatusUpdated`, we best‑effort sync to AM:
@@ -88,18 +88,18 @@ Route::group(['prefix' => 'api/applications','middleware'=>['api']], function ()
 - Uses `AffiliationUpdate@handle` (no special “activate” path needed—status derives from EP/group).
 
 ### 3.5 GroupCreate (CDWG + EP flows)
-- **CDWG (group_type_id = 2):** Calls `AffilsClient->createCDWG(['name' => $group->name])`. If success, we may store the returned AM `id` if needed. On failure, throw `ValidationException` with AM’s message.
+- **CDWG (group_type_id = 2):** Calls `AffiliationMicroserviceClient->createCDWG(['name' => $group->name])`. If success, we may store the returned AM `id` if needed. On failure, throw `ValidationException` with AM’s message.
 - **EP (3/4/5):** Creates `ExpertPanel` record, then best‑effort calls `AffiliationCreate->handle($expertPanel)`.
   - Errors are logged but do not block group creation.
 
-### 3.6 AffilsClient (AM API client)
+### 3.6 AffiliationMicroserviceClient (AM API client)
 - Reads base URL, API key, paths from `config/services.php`.
 - **Fake Mode** for local/testing: configurable via `services.affils.fake` or environment detection.
   - `create`, `detail`, `createCDWG`, `updateCDWG`, `updateByEpID`, `updateByUUID` return consistent fake responses using `Http::response(...)`.
 - **Error shaping:** for real calls we surface human‑readable messages (e.g., flatten AM `details` arrays into `"This UUID already exists."`).
 
-### 3.7 AmAffiliationRequest (audit)
-- Migrated table: `am_affiliation_requests`
+### 3.7 AffiliationMicroserviceRequest (audit)
+- Migrated table: `affiliation_microservice_requests`
   - `request_uuid`, `expert_panel_id`, `payload` (json), `http_status` (smallint), `response` (json), `status` (`pending|success|failed`), `error` (text).
   - Indexes: `unique(expert_panel_id, request_uuid)`; `index(expert_panel_id, status)`.
 - Model helpers: `markSuccess`, `markFailed` for consistent logging.
@@ -134,7 +134,7 @@ Route::group(['prefix' => 'api/applications','middleware'=>['api']], function ()
     {"error":"Validation Failed","details":{"uuid":["This UUID already exists."]}}
     ```
   - We flatten `details` to a short message (“This UUID already exists.”) and return it as `message` with an appropriate HTTP status (400/422/502 depending on context).
-  - We **always** write an `AmAffiliationRequest` row: `pending` → `success` or `failed` with `http_status`, `response`, and `error` for auditability.
+  - We **always** write an `AffiliationMicroserviceRequest` row: `pending` → `success` or `failed` with `http_status`, `response`, and `error` for auditability.
   - API callers (frontend) can rely on `message` being the primary string to show.
 
 - **Frontend**
@@ -216,7 +216,7 @@ Triggered from GPM when group status changes:
 
 ### CDWG Create
 ```
-POST (internal) on GroupCreate when group_type_id == 2
+POST (internal) on GroupCreate when group_type_id == config('groups.types.cdwg.id')
 Payload to AM: { "name": "<CDWG name>" }
 Success → AM returns { "id": <int>, "name": "<CDWG name>" }
 Failure → 400 with readable message bubbled back to UI
@@ -245,10 +245,10 @@ Failure → 400 with readable message bubbled back to UI
   - `App/Modules/ExpertPanel/Http/Controllers/Api/AffiliationController.php`
 
 - **Services**
-  - `App/Modules/ExpertPanel/Service/AffilsClient.php`
+  - `App/Modules/ExpertPanel/Service/AffiliationMicroserviceClient.php`
 
 - **Models**
-  - `App/Modules/ExpertPanel/Models/AmAffiliationRequest.php`
+  - `App/Modules/ExpertPanel/Models/AffiliationMicroserviceRequest.php`
   - `App/Modules/ExpertPanel/Models/ExpertPanel.php`
 
 - **Frontend**
@@ -274,5 +274,5 @@ Failure → 400 with readable message bubbled back to UI
 - Implemented AffiliationCreate and AffiliationUpdate actions with audit logging.
 - Hooked GroupStatusUpdate to sync EP status to AM.
 - Added CDWG create/update calls during GroupCreate.
-- Introduced fake mode in AffilsClient for local/testing.
+- Introduced fake mode in AffiliationMicroserviceClient for local/testing.
 - Frontend: buttons to trigger creation; store action; improved error surfacing.

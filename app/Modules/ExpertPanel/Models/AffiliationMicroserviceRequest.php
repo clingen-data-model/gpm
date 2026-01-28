@@ -6,11 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Str;
 
-class AmAffiliationRequest extends Model
+class AffiliationMicroserviceRequest extends Model
 {
     use HasFactory;
 
-    protected $table = 'am_affiliation_requests';
+    protected $table = 'affiliation_microservice_requests';
 
     protected $fillable = [
         'request_uuid',

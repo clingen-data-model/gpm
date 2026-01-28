@@ -3,13 +3,13 @@ namespace App\Modules\ExpertPanel\Actions;
 
 use Illuminate\Http\JsonResponse;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
-use App\Modules\ExpertPanel\Service\AffilsClient;
-use App\Modules\ExpertPanel\Models\AmAffiliationRequest;
+use App\Modules\ExpertPanel\Service\AffiliationMicroserviceClient;
+use App\Modules\ExpertPanel\Models\AffiliationMicroserviceRequest;
 use Illuminate\Support\Str;
 
 class AffiliationUpdate
 {
-    public function __construct(private AffilsClient $client) {}
+    public function __construct(private AffiliationMicroserviceClient $client) {}
 
     public function handle(ExpertPanel $ep, array $overrides = []): JsonResponse
     {
@@ -32,7 +32,7 @@ class AffiliationUpdate
 
         $payload = array_replace($base, $overrides);
         
-        $audit = AmAffiliationRequest::create([
+        $audit = AffiliationMicroserviceRequest::create([
             'request_uuid'    => (string) Str::uuid(),
             'expert_panel_id' => $ep->id,
             'payload'         => $payload,

@@ -66,8 +66,7 @@ class StepApprove
         }
         $expertPanel->save();
 
-        if (((int) $approvedStep === 1 && $expertPanel->is_gcep) ||
-            ((int) $approvedStep === 4 && $expertPanel->is_vcep)) {
+        if ((int) $approvedStep === 1) {
             $this->affiliationUpdate->activate($expertPanel);
         }
 
