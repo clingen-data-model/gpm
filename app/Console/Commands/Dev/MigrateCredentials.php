@@ -61,7 +61,13 @@ class MigrateCredentials extends Command
 
             $credentials = array_merge($credentials, $synonymCredentials);
 
-            $person->credentials()->sync(collect($credentials)->pluck('id'));
+            $credentialsWithOrder = collect($credentials)
+                ->mapWithKeys(function ($credential, $index) {
+                    return [$credential->id => ['sort_order' => $index]];
+                })
+                ->toArray();
+
+            $person->credentials()->sync($credentialsWithOrder);
 
             $progressBar->advance();
         }
