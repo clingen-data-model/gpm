@@ -28,11 +28,12 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
 
 class ExpertPanel extends Model implements HasMembers, BelongsToGroup, RecordsEvents
 {
     use HasFactory;
+    use HasTimestamps;
     use SoftDeletes;
     use HasUuid;
     use TraitsBelongsToGroup;

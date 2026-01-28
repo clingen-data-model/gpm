@@ -9,16 +9,17 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use App\Modules\ExpertPanel\Actions\AffiliationCreate;
+use App\Modules\ExpertPanel\Models\AffiliationMicroserviceRequest;
 
 class AffiliationController extends Controller
 {
     /** GET /api/applications/{app_uuid}/affiliation */
     public function show(ExpertPanel $expertPanel): JsonResponse
     {
-        $hasOpen = DB::table('am_affiliation_requests')->where('request_uuid', $expertPanel->uuid)->exists();
+        $hasOpen = AffiliationMicroserviceRequest::where('request_uuid', $expertPanel->uuid)->exists();
         return response()->json([
-            'affiliation_id' => $ep->affiliation_id, // string('#####') or null
-            'status' => $ep->affiliation_id ? 'complete' : ($hasOpen ? 'pending' : 'none'),
+            'affiliation_id' => $expertPanel->affiliation_id, // string('#####') or null
+            'status' => $expertPanel->affiliation_id ? 'complete' : ($hasOpen ? 'pending' : 'none'),
         ]);
     }
 

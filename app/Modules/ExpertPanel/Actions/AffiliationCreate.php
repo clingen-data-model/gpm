@@ -2,8 +2,8 @@
 namespace App\Modules\ExpertPanel\Actions;
 
 use App\Modules\ExpertPanel\Models\ExpertPanel;
-use App\Modules\ExpertPanel\Models\AmAffiliationRequest;
-use App\Modules\ExpertPanel\Service\AffilsClient;
+use App\Modules\ExpertPanel\Models\AffiliationMicroserviceRequest;
+use App\Modules\ExpertPanel\Service\AffiliationMicroserviceClient;
 use App\Modules\Group\Events\ExpertPanelAffiliationIdUpdated;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Str;
@@ -11,29 +11,27 @@ use Illuminate\Support\Str;
 class AffiliationCreate
 {
     public function __construct(
-        private AffilsClient $client,
+        private AffiliationMicroserviceClient $client,
     ) {}
 
     public function handle(ExpertPanel $ep): JsonResponse
     {
-        // 1) Already has an ID locally → no-op
         if ($ep->affiliation_id) {
             return response()->json([
                 'affiliation_id' => (int) $ep->affiliation_id,
-                'message'        => 'Affiliation already assigned.',
+                'message'        => 'Affiliation ID already assigned.',
             ], 200);
         }
 
-        // 2) See if AM already has this UUID; if so, sync locally and return 200
         try {
-            $maybe = $this->client->detail((string) $ep->uuid);             // may be Response or array
+            $maybe = $this->client->detail((string) $ep->uuid);
             $am    = $this->normalizeClientResponse($maybe);
 
             $existingId = (int) ($am['expert_panel_id'] ?? 0);
             if ($existingId > 0) {
                 $ep->forceFill(['affiliation_id' => $existingId])->save();
 
-                AmAffiliationRequest::create([
+                AffiliationMicroserviceRequest::create([
                     'request_uuid'    => (string) Str::uuid(),
                     'expert_panel_id' => $ep->id,
                     'payload'         => ['synced_existing' => true, 'remote' => $existingId],
@@ -50,13 +48,11 @@ class AffiliationCreate
                 ], 200);
             }
         } catch (\Throwable $e) {
-            // If AM detail lookup fails, proceed to create below.
-            // We intentionally do not fail the flow here.
         }
 
         $payload = $this->buildCreatePayload($ep);
 
-        $audit = AmAffiliationRequest::create([
+        $audit = AffiliationMicroserviceRequest::create([
             'request_uuid'    => (string) Str::uuid(),
             'expert_panel_id' => $ep->id,
             'payload'         => $payload,

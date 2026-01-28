@@ -7,14 +7,14 @@ use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsController;
 use App\Modules\Group\Events\GroupNameUpdated;
 use App\Modules\Group\Http\Resources\GroupResource;
-use App\Modules\ExpertPanel\Service\AffilsClient;
+use App\Modules\ExpertPanel\Service\AffiliationMicroserviceClient;
 use Illuminate\Support\Facades\Log;
 
 class GroupNameUpdate
 {
     use AsController;
 
-    public function __construct(private AffilsClient $affils) {}
+    public function __construct(private AffiliationMicroserviceClient $client) {}
 
     public function handle(Group $group, String $name): Group
     {
@@ -25,11 +25,11 @@ class GroupNameUpdate
         $oldName = $group->name;
         $group->update(['name' => $name]);
 
-        if ($group->group_type_id == 2 && $group->parent_id > 0) {
+        if ($group->group_type_id == config('groups.types.cdwg.id') && $group->parent_id > 0) {
             try {
-                $this->affils->updateCDWG($group->parent_id, ['name' => $name]);
+                $this->client->updateCDWG($group->parent_id, ['name' => $name]);
             } catch (\RuntimeException $e) {                
-                Log::warning('Affils CDWG name update failed', [
+                Log::warning('Affiliation Microservice CDWG name update failed', [
                     'group_id' => $group->id,
                     'ext_id'   => $group->parent_id,
                     'message'  => $e->getMessage(),

@@ -6,7 +6,7 @@ use App\Http\Requests\AffilsCreateFromExpertPanelRequest;
 use App\Http\Requests\AffilsUpdateRequest;
 use App\DataTransferObjects\AffilsCreateDto;
 use App\DataTransferObjects\AffilsUpdateDto;
-use App\Services\AffilsClient;
+use App\Services\AffiliationMicroserviceClient;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Modules\Group\Models\Group;
 use Illuminate\Http\Request;
@@ -16,14 +16,14 @@ use App\Http\Requests\AffilsUpdateByExpertPanelIdRequest;
 
 class AffiliationsController extends Controller
 {
-    public function __construct(private AffilsClient $client) {}
+    public function __construct(private AffiliationMicroserviceClient $client) {}
 
     /** Search/paginate AM list for the modal (local pagination over cached data) */
     public function search(Request $request)
     {
         $q    = trim((string) $request->query('q', ''));
         $page = max(1, (int) $request->query('page', 1));
-        $per  = min(100, max(10, (int) $request->query('per_page', 25)));
+        $pageSize = min(100, max(10, (int) $request->query('page_size', 25)));
 
         $raw  = $this->client->listRaw();
         $rows = $this->flattenAffils($raw);
@@ -38,9 +38,9 @@ class AffiliationsController extends Controller
         }
 
         $total = count($rows);
-        $items = array_slice($rows, ($page - 1) * $per, $per);
+        $items = array_slice($rows, ($page - 1) * $pageSize, $pageSize);
 
-        return response()->json(new LengthAwarePaginator($items, $total, $per, $page));
+        return response()->json(new LengthAwarePaginator($items, $total, $pageSize, $page));
     }
 
     /** Detail proxy to AM */
@@ -71,11 +71,11 @@ class AffiliationsController extends Controller
         if (!$cdwgID) {
             $candidate = Group::query()->find($expertPanel->group_id);
 
-            if ($candidate && (int) $candidate->group_type_id !== 2 && $candidate->parent_id) {
+            if ($candidate && (int) $candidate->group_type_id !== config('groups.types.cdwg.id') && $candidate->parent_id) {
                 $candidate = Group::query()->find($candidate->parent_id);
             }
 
-            if (!$candidate || (int) $candidate->group_type_id !== 2 || empty($candidate->affiliation_id)) {
+            if (!$candidate || (int) $candidate->group_type_id !== config('groups.types.cdwg.id') || empty($candidate->affiliation_id)) {
                 return response()->json([
                     'message' => 'clinical_domain_working_group is required and could not be inferred from the Expert Panel group hierarchy.',
                 ], 422);
@@ -100,7 +100,7 @@ class AffiliationsController extends Controller
         );
 
         // Audit
-        $auditId = DB::table('am_affiliation_requests')->insertGetId([
+        $auditId = DB::table('affiliation_microservice_requests')->insertGetId([
             'request_uuid'    => $expertPanel->uuid,
             'expert_panel_id' => $expertPanel->id,
             'payload'         => json_encode($dto->toArray()),
@@ -112,7 +112,7 @@ class AffiliationsController extends Controller
         try {
             $resp = $this->client->create($dto);
         } catch (\Throwable $e) {
-            DB::table('am_affiliation_requests')->where('id', $auditId)->update([
+            DB::table('affiliation_microservice_requests')->where('id', $auditId)->update([
                 'status'      => 'failed',
                 'http_status' => 0,
                 'response'    => null,
@@ -127,7 +127,7 @@ class AffiliationsController extends Controller
 
         $amExpertPanelId = (int) ($resp['expert_panel_id'] ?? 0);
         if (!$amExpertPanelId) {
-            DB::table('am_affiliation_requests')->where('id', $auditId)->update([
+            DB::table('affiliation_microservice_requests')->where('id', $auditId)->update([
                 'status'      => 'failed',
                 'http_status' => 200,
                 'response'    => json_encode($resp),
@@ -139,7 +139,7 @@ class AffiliationsController extends Controller
 
         $expertPanel->forceFill(['affiliation_id' => $amExpertPanelId])->save();
 
-        DB::table('am_affiliation_requests')->where('id', $auditId)->update([
+        DB::table('affiliation_microservice_requests')->where('id', $auditId)->update([
             'status'      => 'success',
             'http_status' => 201,
             'response'    => json_encode($resp),
