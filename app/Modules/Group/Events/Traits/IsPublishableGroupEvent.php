@@ -65,7 +65,7 @@ trait IsPublishableGroupEvent
         ];
 
         if ($withMembers) {
-            $data['members'] = $group->members()->with(['person', 'person.credentials', 'person.institution', 'roles', 'latestCoi'])->get()->map(function ($member) { return $this->mapMemberForMessage($member, false); })->toArray();
+            $data['members'] = $group->members()->isActive()->with(['person', 'person.credentials', 'person.institution', 'roles', 'latestCoi'])->get()->map(function ($member) { return $this->mapMemberForMessage($member, false); })->toArray();
         }
 
         if ($group->isEp) {
