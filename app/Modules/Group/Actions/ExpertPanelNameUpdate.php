@@ -9,21 +9,29 @@ use Lorisleiva\Actions\Concerns\AsController;
 use Illuminate\Auth\Access\AuthorizationException;
 use App\Modules\Group\Http\Resources\GroupResource;
 use App\Modules\Group\Events\ExpertPanelNameUpdated;
+use App\Modules\ExpertPanel\Actions\AffiliationUpdate;
+use Illuminate\Support\Facades\Log;
 
 class ExpertPanelNameUpdate
 {
     use AsController;
 
+    public function __construct(
+        private AffiliationUpdate $affiliationUpdate
+    ) {
+    }
+
     public function handle(Group $group, ?string $longName, ?string $shortName)
     {
-        if ($longName != $group->expertPanel->long_base_name || $shortName != $group->expertPanel->short_base_name) {
-            $group->expertPanel->update([
+        $expertPanel = $group->expertPanel;
+        if ($longName != $expertPanel->long_base_name || $shortName != $expertPanel->short_base_name) {
+            $expertPanel->update([
                 'long_base_name' => $longName,
                 'short_base_name' => $shortName
             ]);
 
-            $oldLong = $group->expertPanel->long_base_name;
-            $oldShort = $group->expertPanel->short_base_name;
+            $oldLong = $expertPanel->long_base_name;
+            $oldShort = $expertPanel->short_base_name;
 
             if ($longName) {
                 $group->update([
@@ -32,6 +40,23 @@ class ExpertPanelNameUpdate
             }
 
             event(new ExpertPanelNameUpdated($group, $longName, $shortName, $oldLong, $oldShort));
+
+            if ((int) $expertPanel->affiliation_id > 0) {
+                try {
+                    $this->affiliationUpdate->handle($expertPanel);
+                } catch (\Throwable $e) {
+                    Log::warning('AM sync on status change failed', [
+                        'group_uuid'        => $group->uuid,
+                        'expert_panel_uuid' => (string) $expertPanel->uuid,
+                        'old_long_name'     => $oldLong,
+                        'old_short_name'    => $oldShort,
+                        'new_long_name'     => $longName,
+                        'new_short_name'    => $shortName,
+                        'message'           => $e->getMessage(),
+                        'code'              => $e->getCode(),
+                    ]);
+                }
+            }
         }
 
         return $group;
