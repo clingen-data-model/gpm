@@ -36,20 +36,17 @@ class GroupStatusUpdate
         event(new GroupStatusUpdated($group, $groupStatus, $oldStatus));
 
         $ep = $group->expertPanel ?? null;
-        if ($ep instanceof ExpertPanel) {
-             $affId = (int) $ep->affiliation_id;
-            if ($affId > 0) {
-                try {
-                    $this->affiliationUpdate->handle($ep);
-                } catch (\Throwable $e) {
-                    Log::warning('AM sync on status change failed', [
-                        'group_uuid'        => $group->uuid,
-                        'expert_panel_uuid' => (string)$ep->uuid,
-                        'new_status_id'     => $groupStatus->name,
-                        'message'           => $e->getMessage(),
-                        'code'              => $e->getCode(),
-                    ]);
-                }
+        if ((int) $group->expertPanel->affiliation_id > 0) {
+            try {
+                $this->affiliationUpdate->handle($ep);
+            } catch (\Throwable $e) {
+                Log::warning('AM sync on status change failed', [
+                    'group_uuid'        => $group->uuid,
+                    'expert_panel_uuid' => (string)$ep->uuid,
+                    'new_status_id'     => $groupStatus->name,
+                    'message'           => $e->getMessage(),
+                    'code'              => $e->getCode(),
+                ]);
             }
         }
 

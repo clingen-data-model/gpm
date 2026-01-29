@@ -6,6 +6,8 @@ use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Modules\ExpertPanel\Service\AffiliationMicroserviceClient;
 use App\Modules\ExpertPanel\Models\AffiliationMicroserviceRequest;
 use Illuminate\Support\Str;
+use App\Modules\ExpertPanel\Enums\AffiliationStatus;
+use Illuminate\Support\Facades\Log;
 
 class AffiliationUpdate
 {
@@ -16,10 +18,9 @@ class AffiliationUpdate
         $affId = (int) $ep->affiliation_id;
         if ($affId <= 0) {
             return response()->json([
-                'message' => 'Cannot update AM: expert panel has no affiliation_id yet.',
+                'message' => 'Cannot update Affiliation Microservice: expert panel has no affiliation_id yet.',
             ], 409);
         }
-        
         $base = [
             'uuid'        => (string) $ep->uuid,
             'full_name'   => $ep->long_base_name  ?: $ep->group?->name,
@@ -79,15 +80,12 @@ class AffiliationUpdate
     /** Convenience: set status ACTIVE and push latest names/members. */
     public function activate(ExpertPanel $ep): JsonResponse
     {
-        return $this->handle($ep, ['status' => 'ACTIVE']);
+        return $this->handle($ep, ['status' => AffiliationStatus::ACTIVE->value]);
     }
 
     private function deriveStatus(ExpertPanel $ep): string
     {
-        $n = trim(strtoupper($ep->group?->status?->name ?? ''));
-        if($n == 'REMOVED') { $n = 'ARCHIVED'; } // AM DONT HAVE REMOVED, BUT HAVE ARCHIVED
-
-        return in_array($n, ['APPLYING','ACTIVE','INACTIVE','ARCHIVED','RETIRED'], true) ? $n : 'INACTIVE';
+        return AffiliationStatus::fromGroupStatusName($ep->group?->status?->name)->value;
     }
 
     private function normalizeClientResponse(mixed $res): array

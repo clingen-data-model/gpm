@@ -7,10 +7,17 @@ use Illuminate\Support\Facades\Auth;
 use Lorisleiva\Actions\ActionRequest;
 use App\Modules\Group\Events\ParentUpdated;
 use Lorisleiva\Actions\Concerns\AsController;
+use App\Modules\ExpertPanel\Actions\AffiliationUpdate;
+use Illuminate\Support\Facades\Log;
 
 class ParentUpdate
 {
     use AsController;
+
+    public function __construct(
+        private AffiliationUpdate $affiliationUpdate
+    ) {
+    }
 
     public function handle(Group $group, ?Group $parent)
     {
@@ -28,6 +35,21 @@ class ParentUpdate
 
         event(new ParentUpdated($group, $parent, $oldParent));
 
+        if ((int) $group->expertPanel->affiliation_id > 0) {
+            try {
+                $this->affiliationUpdate->handle($group->expertPanel);
+            } catch (\Throwable $e) {
+                Log::warning('AM sync on status change failed', [
+                    'group_uuid'        => $group->uuid,
+                    'expert_panel_uuid' => (string) $group->expertPanel->uuid,
+                    'oldParent'         => $oldParent?->name ?? null,
+                    'newParent'         => $parent?->name ?? null,
+                    'message'           => $e->getMessage(),
+                    'code'              => $e->getCode(),
+                ]);
+            }
+        }
+        
         return $group;
     }
 

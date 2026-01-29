@@ -7,6 +7,8 @@ use App\Modules\ExpertPanel\Service\AffiliationMicroserviceClient;
 use App\Modules\Group\Events\ExpertPanelAffiliationIdUpdated;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Str;
+use App\Modules\ExpertPanel\Enums\AffiliationType;
+use App\Modules\ExpertPanel\Enums\AffiliationStatus;
 
 class AffiliationCreate
 {
@@ -103,16 +105,16 @@ class AffiliationCreate
 
     private function deriveType(ExpertPanel $ep): string
     {
-        $label = strtoupper($ep->type?->display_name ?? '');
-        return $label === 'SCVCEP' ? 'SC_VCEP' : ($label === 'VCEP' ? 'VCEP' : 'GCEP');
+        $label = $ep->type?->display_name;
+        return AffiliationType::fromExpertPanelLabel($label)->value;
     }
 
     private function deriveStatus(ExpertPanel $ep): string
     {
-        $n = strtoupper($ep->group?->status?->name ?? '');
-        return in_array($n, ['APPLYING','ACTIVE','INACTIVE','RETIRED','REMOVED'], true) ? $n : 'INACTIVE';
+        $gpmStatus = $ep->group?->status?->name; // e.g., 'applying', 'removed', etc.
+        return AffiliationStatus::fromGroupStatusName($gpmStatus)->value;
     }
-
+    
     private function normalizeClientResponse(mixed $res): array
     {
         if (is_array($res)) return $res;
