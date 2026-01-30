@@ -52,7 +52,7 @@ export default {
         },
         async deleteSummary () {
             try {
-                await api.delete(`/api/groups/${this.group.uuid}/application/evidence-summaries/${this.summary.id}`);
+                await api.delete(`/api/groups/${this.group.uuid}/expert-panel/evidence-summaries/${this.summary.id}`);
                 this.$emit('deleted', this.summary)
             } catch (error) {
                 console.error(error);
