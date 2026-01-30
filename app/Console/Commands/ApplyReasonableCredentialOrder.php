@@ -246,6 +246,7 @@ class ApplyReasonableCredentialOrder extends Command
      */
     public function handle(ProfileUpdate $profileUpdate): int
     {
+        $changeCount = 0;
         $this->profileUpdate = $profileUpdate;
         $personId = $this->argument('person_id');
 
@@ -258,37 +259,49 @@ class ApplyReasonableCredentialOrder extends Command
             }
 
             $people = collect([$person]);
+            $numPeople = 1;
         } else {
-            $people = Person::has('credentials')->get();
+            $people = Person::has('credentials');
+            $numPeople = $people->count();
+            $people = $people->cursor();
         }
-        $progressBar = $this->output->createProgressBar($people->count());
-        $this->info("Processing {$people->count()} people with credentials...");
+        $numPeople = $people->count();
+        $progressBar = $this->output->createProgressBar($numPeople);
+        $this->info("Processing {$numPeople} people with credentials...");
         $progressBar->start();
-
-        foreach ($people as $person) {
-            $this->applyCredentialOrder($person);
+        $people->each(function ($person) use (&$changeCount, $progressBar) {
+            if ($this->applyCredentialOrder($person)) {
+                $changeCount++;
+            }
             $progressBar->advance();
-        }
+        });
 
         $progressBar->finish();
         $this->newLine();
-        $this->info("Done!");
+        $this->info("Done! {$changeCount} of {$numPeople} people had their credential order updated.");
 
         return 0;
     }
 
-    private function applyCredentialOrder(Person $person): void
+    private function applyCredentialOrder(Person $person): bool
     {
         $credentials = $person->credentials;
+        $origIds = $credentials->pluck('id')->toArray();
 
         if ($credentials->count() <= 1) {
-            return;
+            return false;
         }
         $credentials = $credentials->sortBy(function ($credential) {
             return self::$reasonable_but_somewhat_arbitrary_rank_order[$credential->name] ?? 99;
         });
 
-        // Update the person using ProfileUpdate action
-        $this->profileUpdate->handle($person, ['credential_ids' => $credentials->pluck('id')->toArray()]);
+        $newIds = $credentials->pluck('id')->toArray();
+        if ($origIds === $newIds) {
+            return false;
+        } else {
+            $this->info("Updating credential order for person ID {$person->id} ({$person->full_name})");
+            $this->profileUpdate->handle($person, ['credential_ids' => $credentials->pluck('id')->toArray()]);
+            return true;
+        }
     }
 }
