@@ -2,10 +2,9 @@
 
 namespace App\Modules\Group\Http\Resources;
 
-use App\Http\Resources\RoleResource;
 use App\Http\Resources\ExpertPanelResource;
 use Illuminate\Http\Resources\Json\JsonResource;
-use App\Modules\Group\Http\Resources\MemberResource;
+use App\Modules\Group\Http\Resources\GroupTypeResource;
 use App\Modules\Group\Http\Resources\GroupStatusResource;
 
 class GroupSummaryResource extends JsonResource
