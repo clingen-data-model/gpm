@@ -69,11 +69,6 @@ class User extends Authenticatable implements CanResetPassword, HasLogEntries
         return $this->hasOne(Person::class);
     }
 
-    public function preferences()
-    {
-        return $this->belongsToMany(Preference::class, 'user_preference');
-    }
-    
     public function routeNotificationForSlack()
     {
         return config('logging.channels.slack.url');
@@ -105,7 +100,7 @@ class User extends Authenticatable implements CanResetPassword, HasLogEntries
     {
         return $this->person && $this->person->hasGroupPermissionTo($permission, $group);
     }
-    
+
 
     /**
      * DOMAIN
@@ -162,7 +157,7 @@ class User extends Authenticatable implements CanResetPassword, HasLogEntries
         return app(ImpersonateManager::class)->isImpersonating();
     }
 
-    
+
     protected function getDefaultGuardName(): string { return 'web'; }
 
 

@@ -9,7 +9,6 @@ class User extends Entity {
         name: null,
         roles: [],
         permissions: [],
-        preferences: [],
         person: new Person(),
         memberships: [],
     }

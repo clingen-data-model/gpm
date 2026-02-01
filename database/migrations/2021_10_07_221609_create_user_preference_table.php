@@ -22,7 +22,7 @@ class CreateUserPreferenceTable extends Migration
             $table->foreignId('preference_id')
                 ->constrained('preferences')
                 ->cascadeOnDelete()
-                ->cascahdeOnUpdate();
+                ->cascadeOnUpdate();
             $table->timestamps();
         });
     }

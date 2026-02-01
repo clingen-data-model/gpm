@@ -42,7 +42,6 @@ class CurrentUserController extends Controller
             'person.credentials',
             'person.expertises',
             'person.country',
-            'preferences'
         ]);
 
         return new CurrentUserResource($user);
