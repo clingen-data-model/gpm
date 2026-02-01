@@ -94,8 +94,12 @@ const store = createStore({
                 }
             })()
 
-            currentUserPromise.finally(() => {
-                currentUserPromise = null
+            const localPromise = currentUserPromise
+
+            localPromise.finally(() => {
+                if (currentUserPromise === localPromise) {
+                    currentUserPromise = null
+                }
             })
 
             return currentUserPromise
