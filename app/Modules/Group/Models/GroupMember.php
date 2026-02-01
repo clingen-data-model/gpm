@@ -202,6 +202,9 @@ class GroupMember extends Model implements BelongsToGroup, BelongsToExpertPanel
 
     public function getExpertiseAttribute(): ?string
     {
+        if (!$this->person) {
+            return $this->legacy_expertise ?? '';
+        }
         return $this->person->expertises->count() > 0
             ? $this->person->expertises->pluck('name')->join(', ')
             : $this->legacy_expertise ?? '';
