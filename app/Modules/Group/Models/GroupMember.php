@@ -4,7 +4,6 @@ namespace App\Modules\Group\Models;
 
 use Carbon\Carbon;
 use App\Models\Traits\HasRoles;
-use App\Models\Contracts\HasNotes;
 use App\Modules\Group\Models\Group;
 use App\Modules\Person\Models\Person;
 use App\Modules\ExpertPanel\Models\Coi;
@@ -12,7 +11,6 @@ use Illuminate\Database\Eloquent\Model;
 use Database\Factories\GroupMemberFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
-use App\Models\Traits\HasNotes as HasNotesTrait;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\Relation;
@@ -33,12 +31,11 @@ use App\Modules\ExpertPanel\Models\Traits\BelongsToExpertPanel as BelongsToExper
  * @property \Carbon\Carbon $updated_at
  * @property \Carbon\Carbon $coi_last_completed
  */
-class GroupMember extends Model implements HasNotes, BelongsToGroup, BelongsToExpertPanel
+class GroupMember extends Model implements BelongsToGroup, BelongsToExpertPanel
 {
     use HasFactory;
     use SoftDeletes;
     use HasRoles;
-    use HasNotesTrait;
     use BelongstToGroupTrait;
     use BelongsToExpertPanelTrait;
 
@@ -203,19 +200,17 @@ class GroupMember extends Model implements HasNotes, BelongsToGroup, BelongsToEx
         return $this->group->has_coi_requirement;
     }
 
-     public function getExpertiseAttribute(): ?string
-     {
-         return $this->person->expertises->count() > 0
+    public function getExpertiseAttribute(): ?string
+    {
+        return $this->person->expertises->count() > 0
             ? $this->person->expertises->pluck('name')->join(', ')
             : $this->legacy_expertise ?? '';
-     }
+    }
 
-         public function getRolesAsStringAttribute()
-         {
-             return $this->roles->pluck('name')->join(', ');
-         }
-
-
+    public function getRolesAsStringAttribute()
+    {
+        return $this->roles->pluck('name')->join(', ');
+    }
 
     protected static function newFactory()
     {

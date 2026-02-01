@@ -3,7 +3,6 @@
 namespace App\Modules\Group\Models;
 
 use App\Models\Traits\HasUuid;
-use App\Models\Contracts\HasNotes;
 use App\Models\Traits\HasComments;
 use App\Models\Contracts\HasMembers;
 use Database\Factories\GroupFactory;
@@ -17,7 +16,6 @@ use Illuminate\Database\Eloquent\Model;
 use App\Modules\Group\Models\GroupStatus;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
-use App\Models\Traits\HasNotes as HasNotesTrait;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -46,11 +44,10 @@ use Illuminate\Support\Facades\Storage;
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  */
-class Group extends Model implements HasNotes, HasMembers, RecordsEvents, HasDocuments, HasLogEntries, HasSubmissions, TaskAssignee, ContractsHasComments
+class Group extends Model implements HasMembers, RecordsEvents, HasDocuments, HasLogEntries, HasSubmissions, TaskAssignee, ContractsHasComments
 {
     use HasFactory;
     use SoftDeletes;
-    use HasNotesTrait;
     use HasMembersTrait;
     use RecordsEventsTrait;
     use HasUuid;

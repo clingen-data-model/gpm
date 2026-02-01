@@ -5,7 +5,6 @@ namespace App\Modules\ExpertPanel\Models;
 use App\Models\AnnualUpdate;
 use App\Models\Traits\HasUuid;
 use Illuminate\Support\Carbon;
-use App\Models\Contracts\HasNotes;
 use App\Modules\Group\Models\Group;
 use App\Models\Contracts\HasMembers;
 use App\Models\Contracts\RecordsEvents;
@@ -15,7 +14,6 @@ use App\Modules\Group\Models\GroupMember;
 use Database\Factories\ExpertPanelFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Modules\ExpertPanel\Models\NextAction;
-use App\Models\Traits\HasNotes as TraitsHasNotes;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use App\Modules\ExpertPanel\Models\EvidenceSummary;
 use App\Modules\ExpertPanel\Models\ExpertPanelType;
@@ -30,13 +28,12 @@ use App\Models\Traits\RecordsEvents as TraitsRecordsEvents;
 use App\Modules\Group\Models\Traits\HasMembers as TraitsHasMembers;
 use App\Modules\Group\Models\Traits\BelongsToGroup as TraitsBelongsToGroup;
 
-class ExpertPanel extends Model implements HasNotes, HasMembers, BelongsToGroup, RecordsEvents
+class ExpertPanel extends Model implements HasMembers, BelongsToGroup, RecordsEvents
 {
     use HasFactory;
     use HasTimestamps;
     use SoftDeletes;
     use HasUuid;
-    use TraitsHasNotes;
     use TraitsBelongsToGroup;
     use TraitsRecordsEvents;
     use TraitsHasMembers;

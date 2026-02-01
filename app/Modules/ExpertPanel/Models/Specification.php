@@ -2,12 +2,10 @@
 
 namespace App\Modules\ExpertPanel\Models;
 
-use App\Models\Contracts\HasNotes;
 use Illuminate\Database\Eloquent\Model;
 use App\Modules\ExpertPanel\Models\Ruleset;
 use Database\Factories\SpecificationFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use App\Models\Traits\HasNotes as HasNotesTrait;
 use App\Modules\Group\Models\Traits\BelongsToGroup;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Modules\ExpertPanel\Models\SpecificationStatus;
@@ -25,11 +23,10 @@ use App\Modules\ExpertPanel\Models\Traits\BelongsToExpertPanel as TraitsBelongsT
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  */
-class Specification extends Model implements HasNotes, BelongsToExpertPanel, ContractsBelongsToGroup
+class Specification extends Model implements BelongsToExpertPanel, ContractsBelongsToGroup
 {
     use HasFactory;
     use SoftDeletes;
-    use HasNotesTrait;
     use BelongsToGroup;
     use TraitsBelongsToExpertPanel;
 
