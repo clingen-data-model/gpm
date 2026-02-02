@@ -34,13 +34,6 @@ const editor = useEditor<EditorExtension>({ update: true })
     </Button>
 
     <Button
-      :pressed="editor.marks.underline.isActive()" :disabled="!editor.commands.toggleUnderline.canExec()"
-      @click="() => editor.commands.toggleUnderline()"
-    >
-      <div class="i-lucide-underline h-5 w-5" />
-    </Button>
-
-    <Button
       :pressed="editor.nodes.horizontalRule.isActive()" :disabled="!editor.commands.insertHorizontalRule.canExec()"
       @click="() => editor.commands.insertHorizontalRule()"
     >
