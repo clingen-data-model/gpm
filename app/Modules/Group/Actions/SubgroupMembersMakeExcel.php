@@ -42,34 +42,53 @@ class SubgroupMembersMakeExcel {
     {
         $groupsById = $group->children->keyBy('id');
         $groupsById->put($group->id, $group);
-        $members = $group->members->all();
 
-        foreach($group->children as $subgroup) {
-            $members[] = $subgroup->members;
-        }
-        $groupedMembers = collect($members)->flatten()->groupBy('person_id');
+        $allMemberships = collect()->merge($group->members)->merge($group->children->flatMap(fn ($sg) => $sg->members));
+        $byPersonThenGroup = $allMemberships->groupBy(['person_id', 'group_id']);
 
-        $headerRow = WriterEntityFactory::createRowFromArray(['Name', 'Email', 'Institution', 'Memberships'], $this->getHeaderStyle());
+        // The 'Any active?' column is included to allow for easy filtering in Excel, but it redundant to whether the 'Active Memberships' column is empty or not.
+        $headerRow = WriterEntityFactory::createRowFromArray(
+            ['Name', 'Email', 'Institution', 'Active Memberships', 'Retired Memberships', 'Any active?'],
+            $this->getHeaderStyle()
+        );
         $writer->addRow($headerRow);
 
-        $rows = $groupedMembers->map(function ($memberships) use ($groupsById) {
-            $person = $memberships->first()->person;
+        $rows = collect($byPersonThenGroup)->map(function ($groupsForPerson) use ($groupsById) {
+            $firstMembership = collect($groupsForPerson)->flatten()->first();
+            $person = $firstMembership->person;
+
+            $active = [];
+            $retired = [];
+
+            foreach ($groupsForPerson as $groupId => $memberships) {
+                $g = $groupsById[$groupId] ?? null;
+                if (!$g) continue;
+
+                $hasActive = $memberships->contains(fn ($m) => is_null($m->end_date));
+
+                if ($hasActive) {
+                    $active[] = $g->display_name;
+                } else {
+                    $latestEnd = $memberships->pluck('end_date')->filter()->max();
+                    $retired[] = $latestEnd ? $g->display_name.' (retired '.$latestEnd->format('Y-m-d').')' : $g->display_name;
+                }
+            }
+
+            $active = collect($active)->unique()->values();
+            $retired = collect($retired)->unique()->values();
+
             return WriterEntityFactory::createRowFromArray([
                 $person->name,
                 $person->email,
-                ($person->institution) ? $person->institution->name : null,
-                $memberships->map(function ($mem) use ($groupsById) {
-                    return (isset($groupsById[$mem->group_id]))
-                        ? $groupsById[$mem->group_id]->display_name
-                        : null;
-                })->filter()->join(', ')
+                ($person->institution) ? $person->institution?->name : null,
+                $active->join(', '),
+                $retired->join(', '),
+                $active->isEmpty() ? 'No' : 'Yes',
             ], (new StyleBuilder())->setShouldWrapText(false)->build());
         })->all();
 
         $writer->addRows($rows);
     }
-
-
 
     private function writeGroupSheet($writer, $group) {
         $sheet = $writer->addNewSheetAndMakeItCurrent();
