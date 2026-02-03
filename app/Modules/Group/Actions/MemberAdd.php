@@ -14,6 +14,7 @@ use Lorisleiva\Actions\Concerns\AsController;
 use App\Modules\Group\Actions\MemberAssignRole;
 use App\Modules\Group\Http\Resources\MemberResource;
 use App\Modules\Group\Notifications\AddedToGroupNotification;
+use Illuminate\Validation\Rule;
 
 class MemberAdd
 {
@@ -34,6 +35,19 @@ class MemberAdd
             'person_id' => $person->id
         ], $data);
 
+        $existing = GroupMember::query()
+                    ->where('group_id', $group->id)
+                    ->where('person_id', $person->id)
+                    ->first();
+
+        if ($existing) {
+            $existing->fill($data ?? []);
+            if ($existing->isDirty()) {
+                $existing->save();
+            }
+            return $existing;
+        }
+
         $groupMember = GroupMember::create($memberData);
 
         Event::dispatch(new MemberAdded($groupMember));
@@ -50,7 +64,12 @@ class MemberAdd
         $person = Person::findOrFail($request->person_id);
         $roles = config('permission.models.role')::find($request->role_ids);
 
-        $member = $this->handle(group: $group, person: $person, data: ['is_contact' => $request->is_contact]);
+        $data = $request->only(['is_contact', 'notes']);
+
+        if ($group->is_vcep_or_scvcep) {
+            $data = array_merge($data, $request->only(['training_level_1', 'training_level_2']));
+        }
+        $member = $this->handle(group: $group, person: $person, data: $data);
 
         if ($roles->count() > 0) {
             $member = $this->assignRoleAction->handle($member, $roles);
@@ -79,10 +98,26 @@ class MemberAdd
     }
 
 
-    public function rules(): array
+    public function rules(ActionRequest $request): array
+    {
+        $groupId = $request->group->id;
+        return [
+            'person_id' => [
+                            'required',
+                            'exists:people,id',
+                            Rule::unique('group_members', 'person_id')
+                                ->where(fn ($q) => $q
+                                    ->where('group_id', $groupId)
+                                    ->whereNull('deleted_at')
+                                ),
+                            ]
+        ];
+    }
+
+    public function messages(): array
     {
         return [
-            'person_id' => 'required|exists:people,id'
+            'person_id.unique' => 'This person is already a member of this group.',
         ];
     }
 }

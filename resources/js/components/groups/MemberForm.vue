@@ -57,7 +57,8 @@ export default {
             suggestedPeople: [],
             legendValues: [1,2],
             showProfileForm: false,
-            addAnother: false
+            addAnother: false,
+            saving: false, // state for saving
         }
     },
     computed: {
@@ -135,23 +136,41 @@ export default {
             this.$emit('canceled');
         },
         async saveAndExit () {
-            if (this.roleRequiresNotification) {
-                this.newMember.is_contact = true;
-            }
-            await this.save();
-            this.clearForm();
-            this.suggestedPeople = [];
-            if (!this.addAnother) {
-                this.$emit('saved');
-            }
-            if (this.newMember.id) {
-                this.$router.replace({name: 'AddMember'})
+            if (this.saving) return;
+            this.saving = true;
+
+            try {
+              if (this.roleRequiresNotification) {
+                  this.newMember.is_contact = true;
+              }
+              const saved = await this.save();
+              if (!saved) return;
+              
+              this.clearForm();
+              this.suggestedPeople = [];
+              if (!this.addAnother) {
+                  this.$emit('saved');
+              }
+              if (this.newMember.id) {
+                  this.$router.replace({name: 'AddMember'})
+              }
+            } finally {
+              this.saving = false;
             }
         },
         async saveAndEditProfile () {
-            const groupMember = await this.save();
-            this.newMember = new GroupMember(groupMember);
-            this.showProfileForm = true;
+            if (this.saving) return;
+            this.saving = true;
+
+            try {
+              const groupMember = await this.save();
+              if (!groupMember) return;
+
+              this.newMember = new GroupMember(groupMember);
+              this.showProfileForm = true;
+            } finally {
+              this.saving = false;
+            }            
         },
         async save () {
             try {
@@ -208,6 +227,11 @@ export default {
             return response.data;
         },
         async addPersonAsMember(group, member) {
+          const alreadyMember = this.group.members.find(m => m.person.id === member.person.id);
+          if (alreadyMember) {
+            this.errors = { person_id: ['This person is already a member of this group.'] };
+            return;
+          }
             const data = {
                 uuid: group.uuid,
                 personId: member.person_id,
@@ -477,13 +501,14 @@ export default {
                 </label>
             </div> -->
       <button-row
-        submit-text="Save"
+        :disabled="saving"
+        :submit-text="saving ? 'Saving...' : 'Save'"
         style="margin-top: 0"
         @submit="saveAndExit"
         @cancel="cancel"
       >
         <template #extra-buttons>
-          <button v-if="!newMember.id" class="btn blue" @click="saveAndEditProfile">
+          <button v-if="!newMember.id" type="button" class="btn blue" :disabled="saving" @click="saveAndEditProfile">
             Save and edit profle
           </button>
         </template>
