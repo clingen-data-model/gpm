@@ -145,6 +145,9 @@ export default {
             await this.$store.dispatch('groups/getItems', {where: {group_type_id: typeTab.typeId}});
             this.loadedFor[tabLabel] = true;
             this.loading = false;
+        },
+        filteredCoordinators(value) {
+          return value.filter(c => c.end_date == null)
         }
 
     }
@@ -186,8 +189,8 @@ export default {
               </badge>
             </template>
             <template #cell-coordinators="{value}">
-              <div v-if="value.length == 0" />
-              <span v-for="(coordinator, idx) in value" :key="coordinator.id">
+              <div v-if="filteredCoordinators(value).length == 0" />
+              <span v-for="(coordinator, idx) in filteredCoordinators(value)" :key="coordinator.id">
                 <span v-if="idx > 0">, </span>
                 <router-link
                   :to="{name: 'PersonDetail', params: {uuid: coordinator.person.uuid}}"

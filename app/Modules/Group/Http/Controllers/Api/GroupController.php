@@ -48,7 +48,7 @@ class GroupController extends Controller
                 'expertPanel.group',
                 'expertPanel.group.type',
                 'coordinators' => function ($query) {
-                    $query->select(['person_id', 'group_id', 'id']);
+                    $query->select(['person_id', 'group_id', 'id', 'end_date']);
                 },
                 'coordinators.roles' => function ($query) {
                     $query->select(['id', 'name']);
