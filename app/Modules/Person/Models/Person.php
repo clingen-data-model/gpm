@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 use App\Modules\Person\Models\Institution;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Modules\Person\Models\CocAttestation;
 use App\Modules\Group\Models\Traits\IsGroupMember;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -389,33 +390,40 @@ class Person extends Model implements HasLogEntries
         return true;
     }
 
-        public function getCredentialsAsStringAttribute()
-        {
-            if ($this->credentials->count() == 0) {
-                return $this->legacy_credentials;
-            }
-            return $this->credentials->pluck('name')->join(', ');
+    public function getCredentialsAsStringAttribute()
+    {
+        if ($this->credentials->count() == 0) {
+            return $this->legacy_credentials;
         }
+        return $this->credentials->pluck('name')->join(', ');
+    }
 
-        public function getExpertisesAsStringAttribute()
-        {
-            if ($this->expertises->count() == 0) {
-                return $this->memberships->pluck('legacy_expertise')->filter()->join(', ');
-            }
-            return $this->expertises->pluck('name')->join(', ');
+    public function getExpertisesAsStringAttribute()
+    {
+        if ($this->expertises->count() == 0) {
+            return $this->memberships->pluck('legacy_expertise')->filter()->join(', ');
         }
+        return $this->expertises->pluck('name')->join(', ');
+    }
 
-        public function getExpertiseAsStringAttribute()
-        {
-            return $this->getExpertisesAsStringAttribute();
-        }
-
-
-
+    public function getExpertiseAsStringAttribute()
+    {
+        return $this->getExpertisesAsStringAttribute();
+    }
 
     // Factory
     protected static function newFactory()
     {
         return new PersonFactory();
+    }
+
+    public function cocAttestations(): HasMany
+    {
+        return $this->hasMany(CocAttestation::class);
+    }
+
+    public function latestCocAttestation(): HasOne
+    {
+        return $this->hasOne(CocAttestation::class)->latestOfMany();
     }
 }
