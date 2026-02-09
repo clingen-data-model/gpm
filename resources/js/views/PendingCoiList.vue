@@ -46,7 +46,7 @@ async function adminCompleteCoi (membership) {
 </script>
 
 <template>
-  <card title="You have Conflict of Interest Disclosures to Complete">
+  <card title="You have Conflict of Interest Disclosures to Complete SETH">
     <h3>You must complete a Conflict of Interest Disclosure for the following memberships:</h3>
     <div class="my-2">
       <div

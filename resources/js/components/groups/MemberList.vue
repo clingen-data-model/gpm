@@ -87,6 +87,18 @@ export default {
                     sortable: true,
                 },
                 {
+                    name: 'coc',
+                    label: 'CoC',
+                    type: Date,
+                    sortable: true,
+                    sortFunction (a, b) {
+                      const aExp = a.person?.coc?.expires_at ? new Date(a.person.coc.expires_at).getTime() : -Infinity;
+                      const bExp = b.person?.coc?.expires_at ? new Date(b.person.coc.expires_at).getTime() : -Infinity;
+                      if (aExp === bExp) return 0;
+                      return aExp > bExp ? 1 : -1;
+                    }
+                },
+                {
                     name: 'requirements',
                     label: 'Reqs',
                     type: String,
