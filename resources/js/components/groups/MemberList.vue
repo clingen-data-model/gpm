@@ -87,6 +87,18 @@ export default {
                     sortable: true,
                 },
                 {
+                    name: 'coc',
+                    label: 'CoC',
+                    type: Date,
+                    sortable: true,
+                    sortFunction (a, b) {
+                      const aExp = a.person?.coc?.expires_at ? new Date(a.person.coc.expires_at).getTime() : -Infinity;
+                      const bExp = b.person?.coc?.expires_at ? new Date(b.person.coc.expires_at).getTime() : -Infinity;
+                      if (aExp === bExp) return 0;
+                      return aExp > bExp ? 1 : -1;
+                    }
+                },
+                {
                     name: 'requirements',
                     label: 'Reqs',
                     type: String,
@@ -314,7 +326,7 @@ export default {
             if (this.group.isEp() && !member.hasAnyExpertise) {
                 return false;
             }
-
+            if (!this.cocRequirementMet(member)) { return false; }
             return true;
         },
         getRequirements (member) {
@@ -331,9 +343,33 @@ export default {
                     met: member.hasAnyExpertise,
                 };
             }
+            requirements.coc = {
+              label: 'Code of Conduct is current',
+              met: this.cocRequirementMet(member),
+            };
 
             return requirements
-        }
+        },
+        cocStatus(member) {
+          return member.person.coc?.status ?? 'missing';
+        },
+        cocIsCurrent(member) {
+          return this.cocStatus(member) === 'current';
+        },
+        cocIsExpiringSoon(member) {
+          return this.cocStatus(member) === 'expiring_soon';
+        },
+        cocIsRecentlyExpired(member) {
+          // "expired already within 30 days" -> days_remaining is negative, >= -30
+          const status = this.cocStatus(member);
+          const dayRemaining = member.person?.coc?.days_remaining;
+          return status === 'expired' && typeof dayRemaining === 'number' && dayRemaining >= -30;
+        },
+        cocRequirementMet(member) {
+          // For requirements: treat expiring_soon as met (still completed)
+          const cocStatus = this.cocStatus(member);
+          return cocStatus === 'current' || cocStatus === 'expiring_soon';
+        },
     }
 }
 </script>
@@ -456,11 +492,56 @@ export default {
               <icon-view />
             </button>
             <icon-exclamation
-              v-if="!item.coi_last_completed === null || (item.coi_last_completed < yearAgo())"
+              v-if="item.coi_last_completed === null || (item.coi_last_completed < yearAgo())"
               :class="getCoiDateStyle(item)"
             />
           </div>
         </template>
+        <template #cell-coc="{item}">
+          <popover hover arrow placement="top">
+            <template #default>
+              <!-- Green check == current -->
+              <icon-checkmark
+                v-if="cocIsCurrent(item)"
+                :width="12" :height="12"
+                class="text-green-600"
+              />
+
+              <!-- Yellow check == expiring soon -->
+              <icon-checkmark
+                v-else-if="cocIsExpiringSoon(item)"
+                :width="12" :height="12"
+                class="text-yellow-500"
+              />
+
+              <!-- Yellow/orange exclamation == expired within last 30 days -->
+              <icon-exclamation
+                v-else-if="cocIsRecentlyExpired(item)"
+                :width="12" :height="12"
+                class="text-yellow-600"
+              />
+
+              <!-- Red exclamation = expired > 30 days OR missing/version_mismatch -->
+              <icon-exclamation
+                v-else
+                :width="12" :height="12"
+                class="text-red-700"
+              />
+            </template>
+
+            <template #content>
+              <div class="text-sm">
+                <div><strong>Status:</strong> {{ item.person?.coc?.status ?? 'missing' }}</div>
+                <div v-if="item.person?.coc?.completed_at"><strong>Completed:</strong> {{ formatDate(item.person.coc.completed_at) }}</div>
+                <div v-if="item.person?.coc?.expires_at"><strong>Expires:</strong> {{ formatDate(item.person.coc.expires_at) }}</div>
+                <div v-if="item.person?.coc?.days_remaining !== null && item.person.coc?.days_remaining !== undefined">
+                  <strong>Days remaining:</strong> {{ item.person.coc.days_remaining }}
+                </div>
+              </div>
+            </template>
+          </popover>
+        </template>
+
         <template #cell-actions="{item}">
           <div class="flex space-x-2 items-center">
             <dropdown-menu

@@ -153,6 +153,12 @@ const routes = [
         },
         // beforeEnter: (to) => hasPermission(to, 'reports-pull')
     },
+    {
+        name: 'PendingCocAttestation',
+        path: '/onboarding/coc',
+        component: () => import('@/views/PendingCocAttestation.vue'),
+        meta: { protected: true }
+    },
 ]
 
 const router = createRouter({
@@ -215,9 +221,15 @@ router.beforeEach(async (to, from, next) => {
         || to.name === 'InitialProfileForm'
         || to.name === 'PendingCoiList'
         || to.name === 'coi'
+        || to.name === 'PendingCocAttestation'
     ) {
         next();
         return;
+    }
+
+     const cocStatus = store.getters.currentUser?.person?.coc?.status
+    if (['missing', 'expired', 'version_mismatch'].includes(cocStatus)) {
+        return next({ name: 'PendingCocAttestation', query: { redirect: to.fullPath } })
     }
 
     // Check to see if the user's profile is incomplete

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Modules\Person\Http\Resources\InstitutionResource;
 use App\Modules\Group\Http\Resources\MembershipResource;
 use App\Modules\Person\Models\Person;
+use App\Services\CocService;
 
 class PersonDetailResource extends JsonResource
 {
@@ -28,6 +29,10 @@ class PersonDetailResource extends JsonResource
         $data['institution'] = $this->whenLoaded('institution', fn() => new InstitutionResource($this->institution));
         $data['credentials'] = $this->whenLoaded('credentials');
         $data['expertises'] = $this->whenLoaded('expertises');
+        $data['coc'] = $this->when(
+            $this->resource->relationLoaded('latestCocAttestation'),
+            fn () => app(CocService::class)->statusFor($this->resource)
+        );
         return $data;
     }
 }
