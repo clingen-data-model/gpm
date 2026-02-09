@@ -526,4 +526,13 @@ class Person extends Model implements HasLogEntries
             ->withTimestamps();
     }
 
+    public function cocAttestations(): HasMany
+    {
+        return $this->hasMany(CocAttestation::class);
+    }
+
+    public function latestCocAttestation(): HasOne
+    {
+        return $this->hasOne(CocAttestation::class)->latestOfMany();
+    }
 }
