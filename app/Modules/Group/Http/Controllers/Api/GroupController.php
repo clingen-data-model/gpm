@@ -108,6 +108,7 @@ class GroupController extends Controller
             'person.credentials',
             'person.expertises',
             'person.country',
+            'person.latestCocAttestation',
         );
         return MemberResource::collection($members);
     }

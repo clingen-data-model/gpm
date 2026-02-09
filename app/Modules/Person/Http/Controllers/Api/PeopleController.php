@@ -100,6 +100,7 @@ class PeopleController extends Controller
             'invite',
             'credentials',
             'expertises',
+            'person.latestCocAttestation',
         ]);
 
         return new PersonDetailResource($person);

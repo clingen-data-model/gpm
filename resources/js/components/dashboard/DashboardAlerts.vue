@@ -4,6 +4,7 @@
     import Group from '@/domain/group'
     import AnnualUpdateAlert from '@/components/groups/AnnualUpdateAlert.vue';
     import CoiAlert from '@/components/alerts/CoiAlert.vue';
+    import CocAlert from '@/components/alerts/CocAlert.vue';
     import SustainedCurationReviewAlert from '@/components/alerts/SustainedCurationReviewAlert.vue';
 
     const props = defineProps({
@@ -75,5 +76,7 @@
       :membership="membership"
       class="mb-2"
     />
+
+    <CocAlert :coc="user.person.coc" class="mb-2" />
   </div>
 </template>

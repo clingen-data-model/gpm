@@ -24,6 +24,7 @@ class Person extends Entity {
         gender_id: null,
         gender: {},
         gender_other: null,
+        coc: null,
         created_at: null,
         updated_at: null,
         deleted_at: null
@@ -134,6 +135,13 @@ class Person extends Entity {
 
     get needsExpertise () {
         return !this.hasExpertise;
+    }
+
+    get cocStatus () {
+        return this.coc?.status ?? 'missing'
+    }
+    get cocIsDue () {
+        return ['missing','expired','version_mismatch'].includes(this.cocStatus)
     }
 
     matchesKeyword(keyword) {

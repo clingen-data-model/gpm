@@ -121,6 +121,25 @@ export default {
         </section>
 
         <section v-if="hasPermission('people-manage')" class="mt-4 border-t pt-4">
+          <h3>Code of Conduct Attestation Status</h3>
+          <dictionary-row class="pb-2" label-class="w-40" label="Status">
+            {{ person?.coc?.status }}
+          </dictionary-row>
+          <dictionary-row class="pb-2" label-class="w-40" label="Version">
+            {{ person?.coc?.version || 'N/A' }}
+          </dictionary-row>
+          <dictionary-row class="pb-2" label-class="w-40" label="Completed At">
+            {{ person?.coc?.completed_at ? formatDate(person.coc.completed_at) : 'Not completed' }}
+          </dictionary-row>
+          <dictionary-row class="pb-2" label-class="w-40" label="Expires At">
+            {{ person?.coc?.expires_at ? formatDate(person.coc.expires_at) : 'Not completed' }}
+          </dictionary-row>
+          <dictionary-row class="pb-2" label-class="w-40" label="Days Remaining">
+            {{ person?.coc?.days_remaining !== null && person?.coc?.days_remaining !== undefined ? person.coc.days_remaining : 'N/A' }}
+          </dictionary-row>
+        </section>
+
+        <section v-if="hasPermission('people-manage')" class="mt-4 border-t pt-4">
           <h3>Metadata</h3>
           <dictionary-row class="pb-2" label-class="w-40" label="Uuid">
             {{ person.uuid }}

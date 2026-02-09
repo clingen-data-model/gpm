@@ -39,6 +39,8 @@ use App\Modules\Person\Http\Controllers\Api\PersonEmailController;
 use App\Modules\Person\Http\Controllers\Api\ActivityLogsController;
 use App\Modules\Person\Http\Controllers\Api\PersonNotificationController;
 use App\Modules\Person\Actions\PersonRetireAll;
+use App\Modules\Person\Http\Controllers\Api\CocController;
+use App\Modules\Person\Actions\CocAttest;
 
 Route::group([
     'prefix' => 'api/people',
@@ -49,6 +51,9 @@ Route::group([
     Route::get('/timezones', function (Request $request) {
         return Institution::select('name', 'abbreviation', 'id')->get();
     });
+
+    Route::get('/coc', [CocController::class, 'show']);
+    Route::post('/coc/attest', CocAttest::class);
 
     Route::group([
         'middleware' => ['auth:sanctum']

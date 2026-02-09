@@ -6,6 +6,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Request;
 use App\Modules\Group\Http\Resources\MembershipResource;
 use App\Modules\Person\Models\Person;
+use App\Services\CocService;
 
 class PersonDetailResource extends JsonResource
 {
@@ -23,6 +24,10 @@ class PersonDetailResource extends JsonResource
                 $data[$field] = $this->$field;
             }
         }
+        $data['coc'] = $this->when(
+            $this->resource->relationLoaded('latestCocAttestation'),
+            fn () => app(CocService::class)->statusFor($this->resource)
+        );
         $data['memberships'] = $this->whenLoaded('memberships', MembershipResource::collection($this->memberships));
         return $data;
     }
