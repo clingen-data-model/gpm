@@ -33,5 +33,14 @@ class InitialApprovalMailTemplate extends AbstractUserDefinedMailTemplate
         ];
     }
 
+    public function getBCC(): array
+    {
+        return [
+            ['address' => 'hrehm@mgh.harvard.edu', 'name' => 'Heidi Rehm'],
+            ['address' => 'jonathan_berg@med.unc.edu', 'name' => 'Jonathon Berg'],
+            ['address' => 'splon@bcm.edu', 'name' => 'Sharon Plon'],
+        ];
+    }
+
 
 }
