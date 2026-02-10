@@ -36,7 +36,7 @@ export default {
             return this.workingCopy.expert_panel.group.members.filter(m => m !== null);
         },
         coordinators () {
-            return this.workingCopy.expert_panel.group.coordinators;
+            return this.workingCopy.expert_panel.group.coordinators.filter(coordinator => coordinator.end_date == null);
         },
         isComplete () {
             return Boolean(this.modelValue.completed_at);
