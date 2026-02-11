@@ -189,7 +189,6 @@ export default {
               </badge>
             </template>
             <template #cell-coordinators="{value}">
-              <div v-if="filteredCoordinators(value).length == 0" />
               <span v-for="(coordinator, idx) in filteredCoordinators(value)" :key="coordinator.id">
                 <span v-if="idx > 0">, </span>
                 <router-link
