@@ -269,7 +269,7 @@ onMounted(async () => {
     <h1 class="flex justify-between items-center">
       Funding Sources
       <button
-        v-if="hasPermission('ep-applications-manage')"
+        v-if="hasRole('super-user') || hasRole('super-admin')"
         class="btn btn-xs"
         @click="startCreate"
       >
@@ -319,7 +319,7 @@ onMounted(async () => {
       </template>
 
       <template #cell-actions="{ item }">
-        <div class="flex items-center gap-2 whitespace-nowrap">
+        <div v-if="hasRole('super-user') || hasRole('super-admin')" class="flex items-center gap-2 whitespace-nowrap">
           <button class="btn btn-xs" @click.stop="startEdit(item)">Edit</button>
           <button class="btn btn-xs" @click.stop="destroy(item)">Delete</button>
         </div>

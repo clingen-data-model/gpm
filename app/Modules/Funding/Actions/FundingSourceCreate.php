@@ -10,7 +10,7 @@ class FundingSourceCreate
 {
     public function __invoke(Request $request)
     {
-        abort_unless($request->user()?->hasPermissionTo('ep-applications-manage'), 403);
+        abort_unless($request->user()?->can('create', FundingSource::class), 403);
 
         $validated = $request->validate([
             'name'        => ['required', 'string', 'max:255'],
@@ -24,9 +24,7 @@ class FundingSourceCreate
             $validated['caption'] = mb_substr(trim(strip_tags($validated['caption'] ?? '')), 0, 500);
         }
 
-        $source = new FundingSource();
-        $source->fill($validated);
-        $source->save();
+        $source = FundingSource::create($validated);
 
         if ($request->hasFile('logo')) {
             $dir = config('app.funding_sources_logo_dir', 'funding_sources/logos');
