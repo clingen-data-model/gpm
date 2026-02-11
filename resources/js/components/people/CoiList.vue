@@ -203,7 +203,7 @@ export default {
           </template>
         </data-table>
       </section>
-      <div v-if="!person.hasPending && !person.completedCois" class="well">
+      <div v-if="!person.hasPending && !person.hasCompletedCois" class="well">
         None of your memberships require a conflict of interest disclosure
       </div>
     </div>
