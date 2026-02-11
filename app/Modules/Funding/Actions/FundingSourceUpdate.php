@@ -10,7 +10,7 @@ class FundingSourceUpdate
 {
     public function __invoke(Request $request, FundingSource $fundingSource)
     {
-        abort_unless($request->user()?->hasPermissionTo('ep-applications-manage'), 403);
+        abort_unless($request->user()?->can('update', $fundingSource), 403);
 
         $validated = $request->validate([
             'name'        => ['sometimes', 'required', 'string', 'max:255'],

@@ -2,7 +2,8 @@
 import { ref, reactive, computed, onMounted, watch } from 'vue'
 import api from '@/http/api'
 import SubmissionWrapper from '@/components/groups/SubmissionWrapper.vue'
-import { hasPermission } from '@/auth_utils'
+import PersonTypeaheadMultiSelect from '@/components/people/PersonTypeaheadMultiSelect.vue'
+import { hasRole } from '@/auth_utils'
 
 const props = defineProps({
   expertPanel: { type: Object, required: true },
@@ -15,30 +16,54 @@ const fundingSourcesLoading = ref(false)
 const fundingSources = ref([])
 
 const piOptionsLoading = ref(false)
-const piOptions = ref([])
+const piOptions = ref([]) 
 
 const showForm = ref(false)
 const editing = ref(null)
 const errors = ref({})
 
-const canManage = computed(() => hasPermission('ep-applications-manage'))
+const canManage = computed(() => hasRole('super-user') || hasRole('super-admin'))
 
 const selectedPiIds = ref([])
 const primaryPiId = ref(null)
+const piById = reactive({})
+const groupMemberIdSet = computed(() => new Set((piOptions.value || []).map(p => Number(p.id))))
 
-const piNameById = computed(() => {
-  const map = new Map()
-  for (const p of piOptions.value) map.set(p.id, p.name)
-  return map
-})
+function cachePeople(list) {
+  for (const p of (list || [])) {
+    if (!p?.id) continue
+    piById[Number(p.id)] = p
+  }
+}
+
+function cachePerson(payload) {
+  if (Array.isArray(payload)) {
+    cachePeople(payload)
+    return
+  }
+  if (payload?.id) {
+    piById[Number(payload.id)] = payload
+    return
+  }
+}
+
+function isGroupMember(id) {
+  return groupMemberIdSet.value.has(Number(id))
+}
+
+function piLabel(id) {
+  const p = piById[Number(id)]
+  const name = p?.name || p?.full_name || `Person #${id}`
+  return isGroupMember(id) ? `${name} (Group member)` : name
+}
 
 const form = reactive({
   funding_source_id: '',
   award_number: '',
   start_date: '',
   end_date: '',
-  nih_reporter_url: '',
-  nih_ic: '',
+  award_url: '',
+  funding_source_division: '',
   contact_1_role: '',
   contact_1_name: '',
   contact_1_email: '',
@@ -66,8 +91,8 @@ function resetForm() {
   form.award_number = ''
   form.start_date = ''
   form.end_date = ''
-  form.nih_reporter_url = ''
-  form.nih_ic = ''
+  form.award_url = ''
+  form.funding_source_division = ''
   form.contact_1_role = ''
   form.contact_1_name = ''
   form.contact_1_email = ''
@@ -93,7 +118,6 @@ function startEdit(item) {
   editing.value = item
   errors.value = {}
 
-  // support either naming style from backend
   form.funding_source_id = String(
     item.funding_source_id ?? item.fundingSource?.id ?? item.funding_source?.id ?? ''
   )
@@ -101,8 +125,8 @@ function startEdit(item) {
   form.award_number = item.award_number ?? ''
   form.start_date = item.start_date ?? ''
   form.end_date = item.end_date ?? ''
-  form.nih_reporter_url = item.nih_reporter_url ?? ''
-  form.nih_ic = item.nih_ic ?? ''
+  form.award_url = item.award_url ?? ''
+  form.funding_source_division = item.funding_source_division ?? ''
 
   form.contact_1_role = item.contact_1_role ?? ''
   form.contact_1_name = item.contact_1_name ?? ''
@@ -117,29 +141,45 @@ function startEdit(item) {
   form.notes = item.notes ?? ''
 
   const pis = item.contactPis || item.contact_pis || []
+  cachePeople(pis)
+
   selectedPiIds.value = pis.map(p => Number(p.id)).filter(Boolean)
 
-  const primary = pis.find(p => p?.pivot?.is_primary)
+  const primary = pis.find(p => Boolean(p?.pivot?.is_primary))
   primaryPiId.value = primary ? Number(primary.id) : (selectedPiIds.value[0] ?? null)
 
   showForm.value = true
 }
 
-watch(selectedPiIds, (ids) => {
-  if (!ids || ids.length === 0) {
-    primaryPiId.value = null
-    return
-  }
-  if (primaryPiId.value == null || !ids.includes(primaryPiId.value)) {
-    primaryPiId.value = ids[0]
-  }
-})
+watch(
+  selectedPiIds,
+  (ids) => {
+    const normalized = (ids || []).map(v => Number(v)).filter(v => Number.isFinite(v))
+    if (normalized.length !== (ids || []).length || normalized.some((v, i) => v !== ids[i])) {
+      selectedPiIds.value = normalized
+      return
+    }
+
+    if (!normalized.length) {
+      primaryPiId.value = null
+      return
+    }
+    if (primaryPiId.value == null || !normalized.includes(Number(primaryPiId.value))) {
+      primaryPiId.value = normalized[0]
+    }
+  },
+  { deep: true }
+)
 
 async function fetchAwards() {
   loading.value = true
   try {
     const res = await api.get(`/api/applications/${props.expertPanel.uuid}/funding-awards`)
-    awards.value = Array.isArray(res.data) ? res.data : []
+    const rows = Array.isArray(res.data) ? res.data : []
+    awards.value = rows
+
+    const people = rows.flatMap(r => r.contactPis || r.contact_pis || [])
+    cachePeople(people)
   } finally {
     loading.value = false
   }
@@ -160,6 +200,7 @@ async function fetchPiOptions() {
   try {
     const res = await api.get(`/api/applications/${props.expertPanel.uuid}/funding-awards/pi-options`)
     piOptions.value = Array.isArray(res.data) ? res.data : []
+    cachePeople(piOptions.value)
   } finally {
     piOptionsLoading.value = false
   }
@@ -195,16 +236,23 @@ function stripHtml(text) {
 }
 
 function sanitizeNotes(text) {
-  // notes column is TEXT; keep text-only to avoid HTML
   return stripHtml(text).trim()
 }
 
 function pisParts(row) {
   const pis = row?.contactPis || row?.contact_pis || []
   if (!pis.length) return { primary: '', others: '' }
+
   const primary = pis.find(p => Boolean(p?.pivot?.is_primary))
   const primaryName = primary?.name || primary?.full_name || ''
-  const others = pis.filter(p => !p?.pivot?.is_primary).filter(p => !primary?.id || p?.id !== primary.id).map(p => p?.name || p?.full_name).filter(Boolean).join(', ')
+
+  const others = pis
+    .filter(p => !p?.pivot?.is_primary)
+    .filter(p => !primary?.id || p?.id !== primary.id)
+    .map(p => p?.name || p?.full_name)
+    .filter(Boolean)
+    .join(', ')
+
   return { primary: primaryName, others }
 }
 
@@ -218,7 +266,6 @@ function othersLine(row) {
   return others
 }
 
-
 async function save() {
   errors.value = {}
 
@@ -227,8 +274,8 @@ async function save() {
     award_number: form.award_number || null,
     start_date: form.start_date || null,
     end_date: form.end_date || null,
-    nih_reporter_url: form.nih_reporter_url || null,
-    nih_ic: form.nih_ic || null,
+    award_url: form.award_url || null,
+    funding_source_division: form.funding_source_division || null,
 
     contact_1_role: form.contact_1_role || null,
     contact_1_name: form.contact_1_name || null,
@@ -253,10 +300,7 @@ async function save() {
         payload
       )
     } else {
-      await api.post(
-        `/api/applications/${props.expertPanel.uuid}/funding-awards`,
-        payload
-      )
+      await api.post(`/api/applications/${props.expertPanel.uuid}/funding-awards`, payload)
     }
 
     showForm.value = false
@@ -277,11 +321,7 @@ async function destroyAward(item) {
 }
 
 onMounted(async () => {
-  await Promise.all([
-    fetchFundingSources(),
-    fetchPiOptions(),
-    fetchAwards(),
-  ])
+  await Promise.all([fetchFundingSources(), fetchAwards()])
 })
 </script>
 
@@ -320,23 +360,23 @@ onMounted(async () => {
         </template>
 
         <template #cell-contactPis="{ item }">
-          <div v-if="primaryLine(item)" class="text-sm"><span class="font-medium">{{ primaryLine(item) }}</span></div>
+          <div v-if="primaryLine(item)" class="text-sm">
+            <span class="font-medium">{{ primaryLine(item) }}</span>
+          </div>
           <div v-if="othersLine(item)" class="text-sm text-gray-700">{{ othersLine(item) }}</div>
           <div v-if="!primaryLine(item) && !othersLine(item)" class="text-gray-500">-</div>
         </template>
 
         <template #cell-nih="{ item }">
           <div class="text-sm">
-            <template v-if="item.nih_reporter_url">
-              <a class="link" :href="item.nih_reporter_url" target="_blank" rel="noopener">
+            <template v-if="item.award_url">
+              <a class="link" :href="item.award_url" target="_blank" rel="noopener">
                 NIH Reporter
               </a>
             </template>
             <template v-else>—</template>
           </div>
-          <div v-if="item.nih_ic" class="text-xs text-gray-600">
-            IC: {{ item.nih_ic }}
-          </div>
+          <div v-if="item.funding_source_division" class="text-xs text-gray-600">IC: {{ item.funding_source_division }}</div>
         </template>
 
         <template #cell-actions="{ item }">
@@ -372,60 +412,54 @@ onMounted(async () => {
                 </template>
               </option>
             </select>
+
+            <div class="text-xs text-gray-600 mt-1">
+              Don't see the funding source you need?
+              <a class="link" href="mailto:partnership@clinicalgenome.org">partnership@clinicalgenome.org</a>
+              or
+              <a class="link" href="mailto:gpm_support@clinicalgenome.org">gpm_support@clinicalgenome.org</a>
+            </div>
+
             <div v-if="firstError('funding_source_id')" class="text-sm text-red-600 mt-1">
               {{ firstError('funding_source_id') }}
             </div>
           </div>
 
-          <!-- Contact PIs -->
           <div class="border rounded p-3">
             <div class="flex items-center justify-between mb-2">
               <h3 class="text-sm font-semibold m-0">Contact PI(s)</h3>
-              <div v-if="piOptionsLoading" class="text-xs text-gray-600">Loading…</div>
+              <div v-if="piOptionsLoading" class="text-xs text-gray-600">Loading...</div>
             </div>
 
-            <div v-if="!piOptionsLoading && piOptions.length === 0" class="text-sm text-gray-600">
-              No active group members available.
+            <div class="text-xs text-gray-600 mb-2">
+              Search active ClinGen members. Group members will be labeled “(Group member)” in the Primary PI dropdown.
             </div>
 
-            <div v-else class="space-y-2">
-              <div class="text-xs text-gray-600">
-                Select PI(s) from active group members. Choose a Primary PI.
+            <PersonTypeaheadMultiSelect
+              v-model="selectedPiIds"
+              :expert-panel-uuid="expertPanel.uuid"
+              :disabled="!canManage"
+              :people-by-id="piById"
+              placeholder="Search people…"
+              @selected="cachePerson"
+            />
+
+            <div class="mt-3">
+              <label class="block text-sm">Primary PI</label>
+              <select v-model="primaryPiId" class="w-full" :disabled="selectedPiIds.length === 0">
+                <option v-if="selectedPiIds.length === 0" :value="null">
+                  Select PI(s) first…
+                </option>
+                <option v-for="id in selectedPiIds" :key="id" :value="id">
+                  {{ piLabel(id) }}
+                </option>
+              </select>
+
+              <div v-if="firstError('contact_pi_person_ids')" class="text-sm text-red-600 mt-1">
+                {{ firstError('contact_pi_person_ids') }}
               </div>
-
-              <div class="max-h-40 overflow-auto border rounded p-2 space-y-1">
-                <label
-                  v-for="p in piOptions"
-                  :key="p.id"
-                  class="flex items-center gap-2 text-sm"
-                >
-                  <input
-                    type="checkbox"
-                    :value="Number(p.id)"
-                    v-model="selectedPiIds"
-                  />
-                  <span class="font-medium">{{ p.name }}</span>
-                  <span v-if="p.email" class="text-gray-600">({{ p.email }})</span>
-                </label>
-              </div>
-
-              <div>
-                <label class="block text-sm">Primary PI</label>
-                <select v-model="primaryPiId" class="w-full" :disabled="selectedPiIds.length === 0">
-                  <option v-if="selectedPiIds.length === 0" :value="null">
-                    Select PI(s) first…
-                  </option>
-                  <option v-for="id in selectedPiIds" :key="id" :value="id">
-                    {{ piNameById.get(id) || `Person #${id}` }}
-                  </option>
-                </select>
-
-                <div v-if="firstError('contact_pi_person_ids')" class="text-sm text-red-600 mt-1">
-                  {{ firstError('contact_pi_person_ids') }}
-                </div>
-                <div v-if="firstError('primary_contact_pi_id')" class="text-sm text-red-600 mt-1">
-                  {{ firstError('primary_contact_pi_id') }}
-                </div>
+              <div v-if="firstError('primary_contact_pi_id')" class="text-sm text-red-600 mt-1">
+                {{ firstError('primary_contact_pi_id') }}
               </div>
             </div>
           </div>
@@ -433,7 +467,7 @@ onMounted(async () => {
           <div class="grid grid-cols-2 gap-2">
             <div>
               <label class="block text-sm">Award Number</label>
-              <input v-model="form.award_number" class="w-full" type="text" maxlength="30" placeholder="(optional)">
+              <input v-model="form.award_number" class="w-full" type="text" maxlength="30" placeholder="(optional)" />
               <div v-if="firstError('award_number')" class="text-sm text-red-600 mt-1">
                 {{ firstError('award_number') }}
               </div>
@@ -441,25 +475,31 @@ onMounted(async () => {
 
             <div>
               <label class="block text-sm">NIH IC</label>
-              <input v-model="form.nih_ic" class="w-full" type="text" maxlength="255" placeholder="(optional)">
-              <div v-if="firstError('nih_ic')" class="text-sm text-red-600 mt-1">
-                {{ firstError('nih_ic') }}
+              <input v-model="form.funding_source_division" class="w-full" type="text" maxlength="255" placeholder="(optional)" />
+              <div v-if="firstError('funding_source_division')" class="text-sm text-red-600 mt-1">
+                {{ firstError('funding_source_division') }}
               </div>
             </div>
           </div>
 
           <div>
             <label class="block text-sm">NIH Reporter URL</label>
-            <input v-model="form.nih_reporter_url" class="w-full" type="text" maxlength="255" placeholder="https://reporter.nih.gov/... (optional)">
-            <div v-if="firstError('nih_reporter_url')" class="text-sm text-red-600 mt-1">
-              {{ firstError('nih_reporter_url') }}
+            <input
+              v-model="form.award_url"
+              class="w-full"
+              type="text"
+              maxlength="255"
+              placeholder="https://reporter.nih.gov/... (optional)"
+            />
+            <div v-if="firstError('award_url')" class="text-sm text-red-600 mt-1">
+              {{ firstError('award_url') }}
             </div>
           </div>
 
           <div class="grid grid-cols-2 gap-2">
             <div>
               <label class="block text-sm">Start Date</label>
-              <input v-model="form.start_date" class="w-full" type="date">
+              <input v-model="form.start_date" class="w-full" type="date" />
               <div v-if="firstError('start_date')" class="text-sm text-red-600 mt-1">
                 {{ firstError('start_date') }}
               </div>
@@ -467,7 +507,7 @@ onMounted(async () => {
 
             <div>
               <label class="block text-sm">End Date</label>
-              <input v-model="form.end_date" class="w-full" type="date">
+              <input v-model="form.end_date" class="w-full" type="date" />
               <div v-if="firstError('end_date')" class="text-sm text-red-600 mt-1">
                 {{ firstError('end_date') }}
               </div>
@@ -479,19 +519,19 @@ onMounted(async () => {
             <div class="grid grid-cols-2 gap-2">
               <div>
                 <label class="block text-sm">Role</label>
-                <input v-model="form.contact_1_role" class="w-full" type="text" maxlength="255" placeholder="(optional)">
+                <input v-model="form.contact_1_role" class="w-full" type="text" maxlength="255" placeholder="(optional)" />
               </div>
               <div>
                 <label class="block text-sm">Name</label>
-                <input v-model="form.contact_1_name" class="w-full" type="text" maxlength="255" placeholder="(optional)">
+                <input v-model="form.contact_1_name" class="w-full" type="text" maxlength="255" placeholder="(optional)" />
               </div>
               <div>
                 <label class="block text-sm">Email</label>
-                <input v-model="form.contact_1_email" class="w-full" type="email" maxlength="255" placeholder="(optional)">
+                <input v-model="form.contact_1_email" class="w-full" type="email" maxlength="255" placeholder="(optional)" />
               </div>
               <div>
                 <label class="block text-sm">Phone</label>
-                <input v-model="form.contact_1_phone" class="w-full" type="text" maxlength="255" placeholder="(optional)">
+                <input v-model="form.contact_1_phone" class="w-full" type="text" maxlength="255" placeholder="(optional)" />
               </div>
             </div>
           </div>
@@ -501,28 +541,28 @@ onMounted(async () => {
             <div class="grid grid-cols-2 gap-2">
               <div>
                 <label class="block text-sm">Role</label>
-                <input v-model="form.contact_2_role" class="w-full" type="text" maxlength="255" placeholder="(optional)">
+                <input v-model="form.contact_2_role" class="w-full" type="text" maxlength="255" placeholder="(optional)" />
                 <div v-if="firstError('contact_2_role')" class="text-sm text-red-600 mt-1">
                   {{ firstError('contact_2_role') }}
                 </div>
               </div>
               <div>
                 <label class="block text-sm">Name</label>
-                <input v-model="form.contact_2_name" class="w-full" type="text" maxlength="255" placeholder="(optional)">
+                <input v-model="form.contact_2_name" class="w-full" type="text" maxlength="255" placeholder="(optional)" />1
                 <div v-if="firstError('contact_2_name')" class="text-sm text-red-600 mt-1">
                   {{ firstError('contact_2_name') }}
                 </div>
               </div>
               <div>
                 <label class="block text-sm">Email</label>
-                <input v-model="form.contact_2_email" class="w-full" type="email" maxlength="255" placeholder="(optional)">
+                <input v-model="form.contact_2_email" class="w-full" type="email" maxlength="255" placeholder="(optional)" />
                 <div v-if="firstError('contact_2_email')" class="text-sm text-red-600 mt-1">
                   {{ firstError('contact_2_email') }}
                 </div>
               </div>
               <div>
                 <label class="block text-sm">Phone</label>
-                <input v-model="form.contact_2_phone" class="w-full" type="text" maxlength="255" placeholder="(optional)">
+                <input v-model="form.contact_2_phone" class="w-full" type="text" maxlength="255" placeholder="(optional)" />
                 <div v-if="firstError('contact_2_phone')" class="text-sm text-red-600 mt-1">
                   {{ firstError('contact_2_phone') }}
                 </div>
@@ -532,15 +572,8 @@ onMounted(async () => {
 
           <div class="border-t pt-3">
             <label class="block text-sm font-semibold">Notes</label>
-            <textarea
-              v-model="form.notes"
-              class="w-full"
-              rows="4"
-              placeholder="(optional)"
-            />
-            <div class="text-xs text-gray-600 mt-1">
-              Text-only. HTML will be stripped.
-            </div>
+            <textarea v-model="form.notes" class="w-full" rows="4" placeholder="(optional)" />
+            <div class="text-xs text-gray-600 mt-1">Text-only. HTML will be stripped.</div>
             <div v-if="firstError('notes')" class="text-sm text-red-600 mt-1">
               {{ firstError('notes') }}
             </div>
