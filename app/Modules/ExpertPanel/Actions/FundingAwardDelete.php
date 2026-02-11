@@ -26,7 +26,7 @@ class FundingAwardDelete
 
     public function authorize(ActionRequest $request): bool
     {
-        return (bool) $request->user()?->hasPermissionTo('ep-applications-manage');
+        return (bool) $request->user()?->hasAnyRole(['super-user', 'super-admin']);
     }
 
     public function rules(ActionRequest $request): array

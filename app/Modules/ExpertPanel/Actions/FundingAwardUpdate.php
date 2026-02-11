@@ -20,8 +20,7 @@ class FundingAwardUpdate
         if (array_key_exists('notes', $data)) {
             $data['notes'] = trim(strip_tags($data['notes'] ?? ''));
         }
-        $allowedPersonIds = $expertPanel->group->activeMemberships()->pluck('person_id')->unique();
-        $piIds = collect($data['contact_pi_person_ids'] ?? [])->map(fn ($id) => (int) $id)->intersect($allowedPersonIds)->values();
+        $piIds = collect($data['contact_pi_person_ids'] ?? []);
         $primaryId = isset($data['primary_contact_pi_id']) ? (int) $data['primary_contact_pi_id'] : null;
 
         $repKeys = [
@@ -56,7 +55,7 @@ class FundingAwardUpdate
         $fundingAward->fill($data);
         $fundingAward->save();
         
-        if ($primaryId && !$piIds->contains($primaryId) && $allowedPersonIds->contains($primaryId)) {
+        if ($primaryId && !$piIds->contains($primaryId)) {
             $piIds = $piIds->push($primaryId)->unique()->values();
         }
         $fundingAward->contactPis()->sync(
@@ -74,7 +73,7 @@ class FundingAwardUpdate
 
     public function authorize(ActionRequest $request): bool
     {
-        return (bool) $request->user()?->hasPermissionTo('ep-applications-manage');
+        return (bool) $request->user()?->hasAnyRole(['super-user', 'super-admin']);
     }
 
     public function rules(ActionRequest $request): array

@@ -10,7 +10,7 @@ class FundingSourceDelete
 {
     public function __invoke(Request $request, FundingSource $fundingSource)
     {
-        abort_unless($request->user()?->hasPermissionTo('ep-applications-manage'), 403);
+        abort_unless($request->user()?->can('delete', $fundingSource), 403);
         
         if ($fundingSource->logo_path) {
             Storage::disk('public')->delete($fundingSource->logo_path);
