@@ -94,7 +94,8 @@ class Group extends Model implements HasMembers, RecordsEvents, HasDocuments, Ha
     protected $appends = [
         'has_coi_requirement',
         'coi_url',
-        'display_name'
+        'display_name',
+        'icon_url_raw'
     ];
 
     public static function booted()
