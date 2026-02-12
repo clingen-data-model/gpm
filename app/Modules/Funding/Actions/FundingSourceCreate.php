@@ -5,6 +5,7 @@ namespace App\Modules\Funding\Actions;
 use App\Modules\Funding\Models\FundingSource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use App\Modules\Funding\Events\FundingSourceCreated;
 
 class FundingSourceCreate
 {
@@ -32,6 +33,8 @@ class FundingSourceCreate
             $source->logo_path = basename($storedPath);
             $source->save();
         }
+
+        event(new FundingSourceCreated($source));
 
         return $source->fresh();
     }
