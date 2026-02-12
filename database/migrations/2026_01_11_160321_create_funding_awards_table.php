@@ -19,8 +19,8 @@ return new class extends Migration
             $table->string('award_number', 30)->nullable();            
             $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();
-            $table->string('nih_reporter_url')->nullable();
-            $table->string('nih_ic')->nullable();
+            $table->string('award_url')->nullable();
+            $table->string('funding_source_division')->nullable();
             $table->json('rep_contacts')->nullable();
             $table->text('notes')->nullable();
 

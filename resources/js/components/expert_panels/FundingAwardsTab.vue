@@ -548,7 +548,7 @@ onMounted(async () => {
               </div>
               <div>
                 <label class="block text-sm">Name</label>
-                <input v-model="form.contact_2_name" class="w-full" type="text" maxlength="255" placeholder="(optional)" />1
+                <input v-model="form.contact_2_name" class="w-full" type="text" maxlength="255" placeholder="(optional)" />
                 <div v-if="firstError('contact_2_name')" class="text-sm text-red-600 mt-1">
                   {{ firstError('contact_2_name') }}
                 </div>
