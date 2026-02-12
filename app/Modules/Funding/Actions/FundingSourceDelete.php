@@ -5,6 +5,7 @@ namespace App\Modules\Funding\Actions;
 use App\Modules\Funding\Models\FundingSource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use App\Modules\Funding\Events\FundingSourceDeleted;
 
 class FundingSourceDelete
 {
@@ -15,8 +16,9 @@ class FundingSourceDelete
         if ($fundingSource->logo_path) {
             Storage::disk('public')->delete($fundingSource->logo_path);
         }
-
+        $oldFundingSource = $fundingSource;
         $fundingSource->delete();
+        event(new FundingSourceDeleted($oldFundingSource));
 
         return response()->json(['deleted' => true]);
     }
