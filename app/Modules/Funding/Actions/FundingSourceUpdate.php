@@ -5,6 +5,7 @@ namespace App\Modules\Funding\Actions;
 use App\Modules\Funding\Models\FundingSource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use App\Modules\Funding\Events\FundingSourceUpdated;
 
 class FundingSourceUpdate
 {
@@ -62,6 +63,8 @@ class FundingSourceUpdate
         }
 
         $fundingSource->save();
+
+        event(new FundingSourceUpdated($fundingSource));
 
         return $fundingSource->fresh();
     }

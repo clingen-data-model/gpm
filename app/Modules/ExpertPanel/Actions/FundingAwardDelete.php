@@ -7,15 +7,21 @@ use App\Modules\ExpertPanel\Models\FundingAward;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsController;
 use Lorisleiva\Actions\Concerns\AsObject;
-
+use App\Modules\ExpertPanel\Events\FundingAwardDeleted;
 class FundingAwardDelete
 {
     use AsObject, AsController;
 
     public function handle(ExpertPanel $expertPanel, FundingAward $fundingAward): void
     {
-        abort_unless((int) $fundingAward->expert_panel_id === (int) $expertPanel->id, 404);
+        abort_unless((int) $fundingAward->expert_panel_id === (int) $expertPanel->id, 404);       
+        $oldFundingAward = [
+            'uuid' => (string) $fundingAward->uuid,
+            'name' => $fundingAward->fundingSource->name,
+        ];
         $fundingAward->delete();
+
+        event(new FundingAwardDeleted($expertPanel, $oldFundingAward));
     }
 
     public function asController(ActionRequest $request, ExpertPanel $expertPanel, FundingAward $fundingAward)

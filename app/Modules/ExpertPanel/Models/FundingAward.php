@@ -21,8 +21,8 @@ class FundingAward extends Model
         'start_date',
         'end_date',
         'award_number',
-        'nih_reporter_url',
-        'nih_ic',
+        'award_url',
+        'funding_source_division',
         'rep_contacts',
         'notes',
     ];
