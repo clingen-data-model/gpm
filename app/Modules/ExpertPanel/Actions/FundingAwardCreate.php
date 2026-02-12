@@ -8,6 +8,8 @@ use Illuminate\Validation\Rule;
 use Lorisleiva\Actions\Concerns\AsController;
 use Lorisleiva\Actions\Concerns\AsObject;
 use Lorisleiva\Actions\ActionRequest;
+use Illuminate\Support\Facades\Event;
+use App\Modules\ExpertPanel\Events\FundingAwardCreated;
 
 class FundingAwardCreate
 {
@@ -59,6 +61,8 @@ class FundingAwardCreate
             $piIds->mapWithKeys(fn ($id) => [$id => ['is_primary' => $primaryId === $id]])->all()
         );
 
+        Event::dispatch(new FundingAwardCreated($expertPanel, $fundingAward));
+
         return $fundingAward->fresh(['fundingSource.fundingType', 'contactPis']);
     }
 
@@ -82,8 +86,8 @@ class FundingAwardCreate
             'start_date'        => ['nullable', 'date'],
             'end_date'          => ['nullable', 'date', 'after_or_equal:start_date'],
 
-            'nih_reporter_url'  => ['nullable', 'string', 'max:255', 'url'],
-            'nih_ic'            => ['nullable', 'string', 'max:255'],
+            'award_url'  => ['nullable', 'string', 'max:255', 'url'],
+            'funding_source_division'            => ['nullable', 'string', 'max:255'],
 
             'contact_1_role'    => ['nullable', 'string', 'max:255'],
             'contact_1_name'    => ['nullable', 'string', 'max:255'],
