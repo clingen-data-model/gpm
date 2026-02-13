@@ -43,6 +43,13 @@ export default {
         htmlScopeDescription() {
             return htmlFromMarkdown(this.group.expert_panel.scope_description);
         },
+        expertPanel() {
+          return this.group?.expert_panel || {};
+        },
+        genes() {
+          const g = this.expertPanel?.genes;
+          return Array.isArray(g) ? g : [];
+        },
     }
 }
 </script>
@@ -55,15 +62,23 @@ export default {
         @click="$emit('update:editing', true)"
       />
     </header>
-    <div class="mt-2">
-      <p class="text-sm">
-        Describe the scope of work of the Expert Panel including
-        the disease area(s), genes being addressed, and any
-        specific rationale for choosing the condition(s). See the
-        <VcepProtocolLink v-if="group.is_vcep_or_scvcep" />
-        <GcepQuickGuideLink v-if="group.is_gcep" /> for more
-        information.
+    <div class="mt-2 text-sm">
+      <p v-if="group.is_vcep_or_scvcep">
+        Describe the scope of work of the Expert Panel including the disease area(s), genes being addressed, and any specific rationale for choosing the condition(s). See the
+        <VcepProtocolLink /> for more information.
       </p>
+      <div v-if="group.is_gcep">
+        Describe the scope of work of the expert panel including the following:
+      
+        <ul class="list-disc list-inside mt-2">
+          <li>Describe the disease area of focus</li>
+          <li>Indicate why curation efforts would benefit this disease area</li>
+          <li>Indicate how the gene list will be prioritized</li>
+          <li>Describe plans to collaborate with other GCEPs on any genes on your gene list that overlap in scope</li>
+          <li>see the <GcepQuickGuideLink /> for more information</li>
+        </ul>
+      </div>
+
       <transition name="fade" mode="out-in">
         <div v-if="editing" class="mt-2">
           <RichTextEditor

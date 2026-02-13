@@ -62,13 +62,6 @@ function handleLinkUpdate(href?: string) {
     </Button>
 
     <Button
-      :pressed="editor.marks.underline.isActive()" :disabled="!editor.commands.toggleUnderline.canExec()"
-      tooltip="Underline" @click="() => editor.commands.toggleUnderline()"
-    >
-      <div class="i-lucide-underline h-5 w-5" />
-    </Button>
-
-    <Button
       v-if="editor.commands.addLink.canExec({ href: '' })" :pressed="editor.marks.link.isActive()"
       tooltip="Link" @click="
         () => {

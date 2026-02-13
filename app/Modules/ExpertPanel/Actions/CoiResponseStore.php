@@ -12,6 +12,7 @@ use App\Modules\ExpertPanel\Models\Coi;
 use App\Modules\Group\Models\GroupMember;
 use Lorisleiva\Actions\Concerns\AsAction;
 use App\Modules\ExpertPanel\Events\CoiCompleted;
+use Illuminate\Support\Facades\Auth;
 
 class CoiResponseStore
 {
@@ -20,7 +21,7 @@ class CoiResponseStore
     public function handle(String $coiCode, ?int $groupMemberId, array $responseData)
     {
         $group = Group::findByCoiCodeOrFail($coiCode);
-        $groupMember = GroupMember::findOrFail($groupMemberId);
+        $groupMember = GroupMember::with('person')->where('id', $groupMemberId)->where('group_id', $group->id)->firstOrFail();
 
         $coi = Coi::create([
             'uuid'=>Uuid::uuid4()->toString(),
@@ -72,5 +73,26 @@ class CoiResponseStore
             ]
         );
     }
+
+    public function authorize(ActionRequest $request): bool
+    {
+        $user = Auth::user();
+        if (!$user) { return false; }
+
+        if ($user->hasAnyRole(['super-user', 'super-admin'])) {
+            return true;
+        }
+        $coiCode = (string) $request->route('code');
+        $group = Group::findByCoiCodeOrFail($coiCode);
+
+        $groupMemberId = (int) $request->input('group_member_id');
+        $groupMember = GroupMember::with('person')->where('id', $groupMemberId)->where('group_id', $group->id)->first();
+        if (!$groupMember) {
+            return false;
+        }
+        
+        return (int) ($groupMember->person?->user_id) === (int) $user->id;
+    }
+
 
 }

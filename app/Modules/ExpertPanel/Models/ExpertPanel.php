@@ -56,6 +56,7 @@ class ExpertPanel extends Model implements HasMembers, BelongsToGroup, RecordsEv
         'hypothesis_group',
         'membership_description',
         'scope_description',
+        'prioritization_rationale',
         'nhgri_attestation_date',
         'preprint_attestation_date',
         'curation_review_protocol_id',

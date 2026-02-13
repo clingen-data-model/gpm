@@ -1,13 +1,18 @@
 <script setup>
     import {useStore} from 'vuex';
-    import { computed} from 'vue'
+    import { computed, ref } from 'vue'
     import ReviewSection from '@/components/expert_panels/ReviewSection.vue'
     import ReviewMembership from '@/components/expert_panels/ReviewMembership.vue'
     import { formatDate } from '@/date_utils'
+    import GeneCurationStatus from '@/components/expert_panels/GeneCurationStatus.vue'
+    import VcepGeneList from '@/components/expert_panels/VcepGeneList.vue';
 
     const store = useStore();
     const group = computed(() => store.getters['groups/currentItemOrNew'])
     const expertPanel = computed(() => group.value.expert_panel);
+
+    const activeTab = ref('published');
+
     const members = computed( () => {
         if (!group.value) {
             return [];
@@ -52,22 +57,12 @@
         <p v-if="group.is_gcep">
           {{ expertPanel.genes.map(g => g.gene_symbol).join(', ') }}
         </p>
-        <simple-table
-          v-if="group.is_vcep_or_scvcep"
-          :data="
-            expertPanel.genes.map((g) => ({
-              id: g.id,
-              gene: g.gene_symbol,
-              disease: g.disease_name,
-            }))
-          "
-          key-by="id"
-          :hide-columns="['id']"
-        />
+        <GeneCurationStatus v-if="group.is_gcep" :genes="expertPanel.genes" :readonly="true" :editing="false" />
+        <VcepGeneList v-if="group.is_vcep_or_scvcep" :group="group" :editing="false" />
       </div>
 
       <h3>Description of scope</h3>
-      <blockquote v-html="expertPanel.scope_description"></blockquote>
+      <blockquote v-html="expertPanel.scope_description" />
     </ReviewSection>
 
     <ReviewSection v-if="group.is_gcep" title="Plans" name="plans">
