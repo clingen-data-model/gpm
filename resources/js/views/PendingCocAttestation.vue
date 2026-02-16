@@ -3,6 +3,7 @@ import { ref, computed, onMounted } from 'vue'
 import { useStore } from 'vuex'
 import { useRoute, useRouter } from 'vue-router'
 import { api } from '@/http'
+import { marked } from 'marked'
 
 const store = useStore()
 const router = useRouter()
@@ -57,26 +58,39 @@ onMounted(fetchCoc)
 </script>
 
 <template>
-  <card title="Code of Conduct Attestation">
+  <card :title="payload?.content?.definition?.title || 'ClinGen Code of Conduct'">
     <div v-if="loading" class="py-2">Loading…</div>
 
     <div v-else>
       <static-alert v-if="error" variant="danger" class="mb-3">
         {{ error }}
       </static-alert>
-
-      <!-- Abbreviated CoC text -->
-      <div class="prose max-w-none whitespace-pre-wrap border border-gray-200 rounded p-3 bg-white">
-        {{ payload?.content?.content }}
+      
+      <p class="text-center font-semibold whitespace-pre-line">{{ payload?.content?.definition?.subtitle }}</p>
+      <p class="whitespace-pre-line">{{ payload?.content?.definition?.intro }}</p>
+      <p>
+        The full Code of Conduct can be found <a :href="payload?.content?.links?.full" target="_blank">here</a> and a one-page, 
+        high-level summary of the Code can be found <a :href="payload?.content?.links?.summary" target="_blank">here</a>.
+      </p>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div v-for="(section, idx) in payload?.content?.definition?.sections" :key="idx">
+          <div class="coc-pill">{{ section.title }}</div>
+          <ul class="mt-4 list-disc pl-6 space-y-2">
+            <li v-for="(b, i) in section.bullets" :key="i">{{ b }}</li>
+          </ul>
+        </div>
       </div>
-
+      <p>
+        Have questions or want to report? Contact DAPC at <a href="mailto:dapc@clinicalgenome.org">dapc@clinicalgenome.org</a><br />
+        Report anonymously at <a href="https://tinyurl.com/clingenreporting" target="_blank">https://tinyurl.com/clingenreporting</a>
+      </p>
       <div class="mt-4">
-        <checkbox v-model="agreed" label="I have read and agree" />
+        <checkbox v-model="agreed" label="I understand and will abide by the ClinGen Code of Conduct." />
       </div>
 
       <div class="mt-4 flex items-center space-x-2">
         <button class="btn btn-primary" :disabled="!agreed || loading" @click="submit">
-          Submit
+          I accept the Code of Conduct
         </button>
       </div>
     </div>
