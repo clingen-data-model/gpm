@@ -30,7 +30,7 @@ trait IsPublishableGroupEvent
         return $messageGene;
     }
 
-    public function mapMemberForMessage($member, $withEmail = false): array
+    public function mapMemberForMessage($member, $withEmail = false, ?CocService $cocService = null): array
     {
         $person = $member->person;
         $roles = $member->roles->pluck('display_name')->toArray();
