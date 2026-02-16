@@ -4,6 +4,7 @@ namespace App\Modules\Group\Events;
 
 use App\Modules\Group\Events\Traits\IsPublishableGroupEvent;
 use App\Modules\Group\Models\GroupMember;
+use App\Services\CocService;
 
 abstract class GroupMemberEvent extends GroupEvent
 {
