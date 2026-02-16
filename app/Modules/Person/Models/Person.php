@@ -535,4 +535,31 @@ class Person extends Model implements HasLogEntries
     {
         return $this->hasOne(CocAttestation::class)->latestOfMany();
     }
+
+    public function scopeWithLatestCoc(Builder $q): Builder
+    {
+        return $q->with('latestCocAttestation');
+    }
+
+    public function scopeHasCocExpiringSoon(Builder $q, int $days = 30): Builder
+    {
+        return $q->whereHas('latestCocAttestation', function ($att) use ($days) {
+            $att->whereNotNull('expires_at')
+                ->where('expires_at', '>', now())
+                ->where('expires_at', '<=', now()->addDays($days));
+        });
+    }
+
+    public function scopeHasCocExpired(Builder $q): Builder
+    {
+        return $q->whereHas('latestCocAttestation', function ($att) {
+            $att->whereNotNull('expires_at')
+                ->where('expires_at', '<=', now());
+        });
+    }
+
+    public function scopeMissingCoc(Builder $q): Builder
+    {
+        return $q->whereDoesntHave('latestCocAttestation');
+    }
 }
