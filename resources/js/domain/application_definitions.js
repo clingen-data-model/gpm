@@ -156,6 +156,7 @@ export const VcepApplication = applicationDefinitionFactory({
                         requirements.chairs,
                         requirements.coordinators,
                         requirements.coisComplete,
+                        requirements.cocsComplete,
                         requirements.institutions,
                         requirements.expertiseDescription,
                         requirements.memberExpertise
@@ -300,6 +301,7 @@ export const GcepApplication = applicationDefinitionFactory({
                     requirements: [
                         requirements.chairs,
                         requirements.coisComplete,
+                        requirements.cocsComplete,
                         requirements.coordinators,
                         requirements.institutions,
                         requirements.memberExpertise

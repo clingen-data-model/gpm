@@ -35,6 +35,15 @@ export const chairs = new Requirement('1+ Co-chairs', group => !isEmpty(group.ch
 export const coordinators = new Requirement('1+ Coordinator', group => !isEmpty(group.coordinators));
 
 export const coisComplete = new Requirement('All members completed COI', group => isEmpty(group.members.filter(member => member.isActive && member.needsCoi)));
+export const cocsComplete = new Requirement(
+    'All members completed CoC', 
+    group => isEmpty(group.members.filter(member => {
+      if (!member.isActive) return false
+      const status = member.person?.coc?.status ?? 'missing'
+      return !['current', 'expiring_soon'].includes(status)
+    })
+  )
+);
 // export const diversityOfExpertise = new Requirement('Diveristy of Expertise (need def)', group => (true));
 export const institutions = new Requirement(
     '3+ institutions represented',
@@ -121,6 +130,7 @@ export default {
     chairs,
     coordinators,
     coisComplete,
+    cocsComplete,
     institutions,
     expertiseDescription,
     genes,
