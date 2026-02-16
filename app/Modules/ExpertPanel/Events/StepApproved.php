@@ -11,6 +11,7 @@ use App\Modules\Group\Events\PublishableApplicationEvent;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use App\Modules\Group\Events\Traits\IsPublishableGroupEvent;
 use Illuminate\Support\Facades\Log;
+use App\Services\CocService;
 
 class StepApproved extends ExpertPanelEvent implements PublishableApplicationEvent
 {
@@ -73,9 +74,15 @@ class StepApproved extends ExpertPanelEvent implements PublishableApplicationEve
     {
         $message = parent::getPublishableMessage();
         if ($this->step == 1) {
+
+            $this->group->loadMissing([
+                'members.person.latestCocAttestation',
+            ]);
+            $cocService = app(CocService::class);
+
             $message['members'] = $this->group->members
-                                    ->map(function ($member) {
-                                        return $this->mapMemberForMessage($member);
+                                    ->map(function ($member) use ($cocService) {
+                                        return $this->mapMemberForMessage($member, false, $cocService);
                                     })
                                     ->toArray();
 

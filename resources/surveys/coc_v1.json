@@ -1,0 +1,28 @@
+{
+  "title": "ClinGen Code of Conduct",
+  "subtitle": "Applies to any member of the ClinGen community, including but not limited to staff, volunteers, invited experts, and participants in ClinGen activities.",
+  "intro": "ClinGen's Code of Conduct aims to define and promote high standards of professional practice. The Code of Conduct applies to any member of the ClinGen community, including but not limited to staff, volunteers, invited experts, and participants in ClinGen activities. These policies cover participant conduct both internal and external to ClinGen that is currently affecting or highly likely to affect ClinGen efforts. ClinGen expects all of its participants to adhere to the expected behaviors detailed in the Code of Conduct and to not engage in prohibited behaviors.",
+  "sections": [
+    {
+      "title": "Help us create a professional environment:",
+      "bullets": [
+        "Give others fair, professional consideration",
+        "Communicate with respect",
+        "Acknowledge peer contributions",
+        "Commit to high standards of objectivity and transparency",
+        "Comply with ClinGen policies"
+      ]
+    },
+    {
+      "title": "Avoid hostile and unprofessional behavior:",
+      "bullets": [
+        "Any form of harassment",
+        "Disregard for others' safety",
+        "Violation of previously communicated boundaries",
+        "Reproducing materials, photographing, or recording without consent",
+        "Repeated disruptive or disrespectful behavior"
+      ]
+    }
+  ],
+  "outro": "\nHave questions or want to report? Contact DAPC at dapc@clinicalgenome.org \n\nReport anonymously at https://tinyurl.com/clingenreporting"
+}

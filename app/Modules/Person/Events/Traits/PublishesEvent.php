@@ -4,6 +4,7 @@ namespace App\Modules\Person\Events\Traits;
 
 use Illuminate\Support\Str;
 use Illuminate\Support\Carbon;
+use App\Services\CocService;
 
 /**
  * Base methods for making a person event publishable
@@ -32,6 +33,12 @@ trait PublishesEvent
 
     public function getPublishableMessage(): array
     {
+        $this->person->loadMissing([
+            'latestCocAttestation',
+        ]);
+
+        $coc = app(CocService::class)->statusFor($this->person);
+
         return [
             'person' => [
                 'id' => $this->person->uuid,
@@ -46,7 +53,8 @@ trait PublishesEvent
                 'profile_photo' => $this->person->ProfilePhotoUrl,
                 'orcid_id' => $this->person->orcid_id,
                 'hypothesis_id' => $this->person->hypothesis_id,
-                'timezone' => $this->person->timezone
+                'timezone' => $this->person->timezone,
+                'code_of_conduct' => $coc,
             ]
         ];
     }

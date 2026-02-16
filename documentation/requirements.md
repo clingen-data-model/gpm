@@ -14,6 +14,7 @@ The requirements below are based on interviews with multiple stakeholders repres
 * COI - Conflict of interest`
 * Expert Panel (EP) - 
 * EP Members - Members of an expert panel  
+* CoC - Code of Conduct
 Members include:
   * Coordinator - An EP member who coordinates the activities of the expert panel.  This is usually the point person on the EP for the application process
   * Biocurator - Does biocuration for the EP
@@ -23,6 +24,7 @@ Members include:
 * SVI - Sequence Variant Interpretation
   * Rule Specification Review Committee - Reviews and approves VCEP ACMG specifications 
 * VCEP - Variant Curation Expert Panel
+* SC-VCEP - Somatic Cancer - Variant Curation Expert Panel
 
 
 ## Expert Panel Application Management
@@ -58,7 +60,9 @@ The EP application process differs between GCEPs and VCEPs.  GCEPs only need to 
 * A coordinator should be able to delete EP members
 * A coordinator should be able to define the scope of the EP including
   * disease focus
-  * gene/variant list
+  * gene list
+    * GCEP: Gene list is integrated with GT
+    * VCEP: is using GDM instead of Gene, the data is also fetched from GeneTracker and only for Classification: Limited, Moderate, Definitive, and Strong.
 * A coordinator needs information about how to complete the application
   * A coordinator would like "gold-standard" examples of an application
 * GCEP (also VCEPs?) leadership members must be able to submit an attestation to the OC including the following:
@@ -118,7 +122,7 @@ The EP application process differs between GCEPs and VCEPs.  GCEPs only need to 
 
 ## Expert panel maintainence
 * A coordinator should be able to see a list of EP members including the following information:
-  * Name, email, COI status, role
+  * Name, email, COI and CoC status, role
 * A coordinator should be able to add publications produced by the EP.
   * publication record should include at least the title, authors, and PMID.
 * A coordinator should be able to indicate that the EP would like to expand it's scope of work to inclue new genes.

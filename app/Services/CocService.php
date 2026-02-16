@@ -27,30 +27,29 @@ class CocService
     public function renderContent(?string $version = null): array
     {
         $version ??= $this->currentVersion();
-        $path = config("coc.definitions.$version");
-
+        $path = config("coc.definitions")[$version] ?? null;
+        $links = config('coc.links', []);
         if (!$path) {
             return [
                 'version' => $version,
-                'content' => '',
-                'links'   => config('coc.links', []),
+                'content' => 'Content not available for this version.',
+                'links'   => $links,
             ];
         }
 
-        $content = file_get_contents(resource_path($path)) ?: '';
+        $raw = file_get_contents(resource_path($path)) ?: '';
+        $definition = json_decode($raw, true);
+        if (!is_array($definition)) {
+            $definition = null;
+        }
 
-        // Optional: substitute links into markdown
-        $links = config('coc.links', []);
-        $content = str_replace(
-            ['{{full_link}}', '{{summary_link}}'],
-            [$links['full'] ?? '', $links['summary'] ?? ''],
-            $content
-        );
-
+        if ($definition && isset($definition['intro'])) {
+            $definition['intro'] = str_replace(['{{full_link}}', '{{summary_link}}'],[$links['full'] ?? '', $links['summary'] ?? ''],$definition['intro']);
+        }
         return [
             'version' => $version,
-            'content' => $content,
-            'links'   => $links,
+            'definition' => $definition,
+            'links' => $links,
         ];
     }
 

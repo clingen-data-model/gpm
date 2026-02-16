@@ -5,6 +5,7 @@ namespace App\Modules\Group\Events\Traits;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\DB;
+use App\Services\CocService;
 
 trait IsPublishableGroupEvent
 {
@@ -29,10 +30,17 @@ trait IsPublishableGroupEvent
         return $messageGene;
     }
 
-    public function mapMemberForMessage($member, $withEmail = false): array
+    public function mapMemberForMessage($member, $withEmail = false, ?CocService $cocService = null): array
     {
         $person = $member->person;
         $roles = $member->roles->pluck('display_name')->toArray();
+
+        $coc = null;
+        if ($person && $person->relationLoaded('latestCocAttestation')) {
+            $cocService ??= app(CocService::class);
+            $coc = $cocService->statusFor($person);
+        }
+
         $data = [
             'uuid' => $person->uuid,
             'first_name' => $person->first_name,
@@ -43,6 +51,7 @@ trait IsPublishableGroupEvent
             'credentials' => $person->credentials->map(function ($credential) {
                                 return $credential->name;
                             })->toArray(),
+            'code_of_conduct' => $coc,
         ];
         if($person->profile_photo) { $data['profile_photo'] = URL::to('/profile-photos/' . $person->profile_photo); }
         if(array_intersect($roles, ['Coordinator', 'Chair']) || $withEmail) { $data['email'] = $person->email; }
@@ -65,7 +74,8 @@ trait IsPublishableGroupEvent
         ];
 
         if ($withMembers) {
-            $data['members'] = $group->members()->isActive()->with(['person', 'person.credentials', 'person.institution', 'roles', 'permissions'])->get()->map(function ($member) { return $this->mapMemberForMessage($member, false); })->toArray();
+            $cocService = app(CocService::class);
+            $data['members'] = $group->members()->isActive()->with(['person', 'person.credentials', 'person.institution', 'roles', 'permissions', 'latestCoi', 'person.latestCocAttestation'])->get()->map(function ($member) use ($cocService) { return $this->mapMemberForMessage($member, false, $cocService); })->toArray();
         }
 
         if ($group->isEp) {
