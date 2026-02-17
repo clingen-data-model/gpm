@@ -4,7 +4,7 @@ namespace App\Modules\Person\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Request;
-use App\Modules\Group\Http\Resources\InstitutionResource;
+use App\Modules\Person\Http\Resources\InstitutionResource;
 use App\Modules\Group\Http\Resources\MembershipResource;
 use App\Modules\Person\Models\Person;
 
