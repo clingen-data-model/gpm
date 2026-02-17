@@ -10,7 +10,6 @@ use Database\Seeders\UsersTableSeeder;
 use Database\Seeders\GroupStatusSeeder;
 use Database\Seeders\InstitutionSeeder;
 use Database\Seeders\DocumentTypesTableSeeder;
-use Database\Seeders\SpecificationStatusSeeder;
 use Database\Seeders\GroupRoleAndPermissionsSeeder;
 use Database\Seeders\NextActionAssigneesTableSeeder;
 
@@ -32,16 +31,12 @@ class DatabaseSeeder extends Seeder
             DocumentTypesTableSeeder::class,
             ExpertiseSeeder::class,
             EpTypesTableSeeder::class,
-            EthnicitySeeder::class,
-            GenderSeeder::class,
             GroupRoleAndPermissionsSeeder::class,
             GroupStatusSeeder::class,
             GroupTypeSeeder::class,
             InstitutionSeeder::class,
             NextActionAssigneesTableSeeder::class,
             NextActionTypesTableSeeder::class,
-            PrimaryOccupationSeeder::class,
-            RaceSeeder::class,
             RolesAndPermissionsSeeder::class,
             SubmissionTypeAndStatusSeeder::class,
             TaskTypeSeeder::class,

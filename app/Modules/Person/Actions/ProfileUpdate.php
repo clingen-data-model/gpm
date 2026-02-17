@@ -65,10 +65,6 @@ class ProfileUpdate
             'institution',
             'credentials',
             'expertises',
-            'primaryOccupation',
-            'race',
-            'ethnicity',
-            'gender',
             'memberships',
             'memberships.group',
             'country'

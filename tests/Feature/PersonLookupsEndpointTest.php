@@ -6,9 +6,6 @@ use Tests\TestCase;
 use Laravel\Sanctum\Sanctum;
 use App\Modules\User\Models\User;
 use Database\Seeders\CountrySeeder;
-use Database\Seeders\GenderSeeder;
-use Database\Seeders\PrimaryOccupationSeeder;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class PersonLookupsEndpointTest extends TestCase
@@ -19,11 +16,11 @@ class PersonLookupsEndpointTest extends TestCase
     {
         parent::setup();
         $this->runSeeder([CountrySeeder::class]);
-        
+
         $user = User::factory()->create();
         Sanctum::actingAs($user);
     }
-    
+
 
     /**
      * @test
@@ -56,7 +53,7 @@ class PersonLookupsEndpointTest extends TestCase
         $response->assertJsonFragment([['id' => 5, 'name' => 'Variant Scientist']]);
         $response->assertJsonFragment([['id' => 1, 'name' => 'Clinical Laboratory Director']]);
     }
-    
+
     /**
      * @test
      */
