@@ -102,6 +102,7 @@ Route::get('/cdwgs', [CdwgController::class, 'index']);
 Route::get('/diseases/search', [DiseaseLookupController::class, 'search']);
 Route::get('/diseases/{mondo_id}', [DiseaseLookupController::class, 'show']);
 
+Route::post('/genes/check-genes', [GeneLookupController::class, 'check']);
 Route::get('/genes/search', [GeneLookupController::class, 'search']);
 Route::get('/genes/{hgnc_id}', [GeneLookupController::class, 'show']);
 
