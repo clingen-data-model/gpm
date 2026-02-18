@@ -20,46 +20,37 @@ class ExpireGroupInvites extends Command
         $ttlDays = (int) config('app.invitation_ttl_days', 30);
         $cutoff  = CarbonImmutable::now()->subDays($ttlDays);
 
-        $expiredInvites = DB::table('invites')
-                            ->whereNull('deleted_at')
-                            ->whereNull('redeemed_at')
-                            ->where('created_at', '<=', $cutoff)
-                            ->select(['id', 'person_id', 'email', 'created_at'])
-                            ->orderBy('id')
-                            ->get()
-                            ->groupBy('person_id');
+        // STEP 1: Find pending prospective memberships (person.user_id IS NULL) older than TTL
+        $expiredMemberships = GroupMember::query()
+            ->whereNull('end_date')
+            ->whereNull('deleted_at')
+            ->where('created_at', '<=', $cutoff)
+            ->whereHas('person', fn ($q) => $q->whereNull('user_id'))
+            ->with([
+                'group:id,uuid,name,caption,group_status_id,group_type_id',
+                'group.groupStatus:id,name,updated_at',
+                'group.type:id,name',
+                'person:id,first_name,last_name,email,user_id',
+            ])
+            ->get();
 
-        $this->info("Found {$expiredInvites->count()} expired invitee(s).");
+        $this->info("Found {$expiredMemberships->count()} expired membership(s) to remove (TTL={$ttlDays} days).");
 
         $removedByGroup = [];
         $errors = 0;
 
-        foreach ($expiredInvites as $personId => $invitesForPerson) {
+        foreach ($expiredMemberships as $gm) {
             try {
-                $memberships = GroupMember::query()
-                                ->with([
-                                    'group:id,uuid,name,caption,group_status_id,group_type_id',
-                                    'group.groupStatus:id,name,updated_at',
-                                    'group.type:id,name',
-                                    'person:id,first_name,last_name,email',
-                                ])
-                                ->where('person_id', $personId)
-                                ->whereNull('deleted_at')
-                                ->whereNull('end_date')
-                                ->get();
+                $gm->loadMissing('group.groupStatus', 'group.type', 'person');
 
-                foreach ($memberships as $gm) {
-                    MemberRemove::run($gm, now()->startOfDay());
+                MemberRemove::run($gm, now()->startOfDay());
 
-                    $removedByGroup[$gm->group_id][] = [
-                        'person_id' => $gm->person_id,
-                        'name'      => trim(($gm->person->first_name ?? '').' '.($gm->person->last_name ?? '')) ?: "Person #{$gm->person_id}",
-                        'email'     => $gm->person->email ?? '(no email)',
-                        'invite_created_at' => optional($invitesForPerson->min('created_at'))->toDateTimeString(),
-                    ];
-                }
-                DB::table('invites')->whereIn('id', $invitesForPerson->pluck('id'))->update(['deleted_at' => now()]);
-
+                $removedByGroup[$gm->group_id][] = [
+                    'person_id' => $gm->person_id,
+                    'name'      => trim(($gm->person->first_name ?? '').' '.($gm->person->last_name ?? '')) ?: "Person #{$gm->person_id}",
+                    'email'     => $gm->person->email ?? '(no email)',
+                    'invite_created_at' => optional($gm->created_at)?->toDateTimeString(),
+                ];
             } catch (\Throwable $e) {
                 $errors++;
                 report($e);
@@ -73,34 +64,57 @@ class ExpireGroupInvites extends Command
             }
 
             $groupName = optional(GroupMember::query()
-                ->with('group:id,name')
-                ->where('group_id', $groupId)
-                ->first())->group->name ?? "Group #{$groupId}";
+                    ->with('group:id,name')
+                    ->where('group_id', $groupId)
+                    ->first())->group->name ?? "Group #{$groupId}";
 
             Notification::send($coordinators, new InviteExpirySummaryForCoordinators(
-                                                    groupId: $groupId,
-                                                    groupName: $groupName,
-                                                    removedRows: $rows,
-                                                    expiredAt: now()->toDateTimeString(),
-                                                    ttlDays: $ttlDays
-                                                )
+                    groupId: $groupId,
+                    groupName: $groupName,
+                    removedRows: $rows,
+                    expiredAt: now()->toDateTimeString(),
+                    ttlDays: $ttlDays
+                )
             );
         }
 
+        // STEP 2: Soft-delete invites only for people who still haven't redeemed AND have NO remaining pending memberships
+        $peopleTouched = $expiredMemberships->pluck('person_id')->unique()->values();
+
+        if ($peopleTouched->isNotEmpty()) {
+            $peopleStillPending = GroupMember::query()
+                ->whereIn('person_id', $peopleTouched)
+                ->whereNull('deleted_at')
+                ->whereNull('end_date')
+                ->whereHas('person', fn ($q) => $q->whereNull('user_id'))
+                ->pluck('person_id')
+                ->unique();
+
+            $peopleToInviteCleanup = $peopleTouched->diff($peopleStillPending)->values();
+
+            if ($peopleToInviteCleanup->isNotEmpty()) {
+                DB::table('invites')
+                    ->whereIn('person_id', $peopleToInviteCleanup)
+                    ->whereNull('redeemed_at')
+                    ->whereNull('deleted_at')
+                    ->update(['deleted_at' => now()]);
+            }
+        }
+
         $removedCount = collect($removedByGroup)->flatten(1)->count();
-        $this->info("Done. People processed: {$expiredInvites->count()}, Memberships removed: {$removedCount}, Errors: {$errors}");
+        $this->info("Done. Memberships removed: {$removedCount}, Groups emailed: ".count($removedByGroup).", Errors: {$errors}");
 
         return self::SUCCESS;
     }
-    
+
     private function coordinatorUsersForGroup(int $groupId)
     {
         return GroupMember::query()->isActive()
-                    ->where('group_id', $groupId)                
-                    ->whereHas('roles', fn($q) => $q->where('name', 'coordinator'))
-                    ->with(['person.user'])
-                    ->get()
-                    ->map(fn($gm) => $gm->person?->user)
-                    ->filter();
+            ->where('group_id', $groupId)
+            ->whereHas('roles', fn($q) => $q->where('name', 'coordinator'))
+            ->with(['person.user'])
+            ->get()
+            ->map(fn($gm) => $gm->person?->user)
+            ->filter();
     }
 }

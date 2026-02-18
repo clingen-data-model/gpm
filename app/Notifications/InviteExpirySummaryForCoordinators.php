@@ -30,7 +30,7 @@ class InviteExpirySummaryForCoordinators extends Notification implements ShouldQ
         $count = count($this->removedRows);
 
         $mail = (new MailMessage)
-            ->subject("Expired GPM invites — {$this->groupName}")
+            ->subject("Expired GPM invites - {$this->groupName}")
             ->greeting("Hello Coordinator,")
             ->line("This notification is to inform you that the following individuals within your {$this->groupName} have been removed from membership due to an expiration of their GPM invite.")
             ->line('All members have **30 days** to redeem invites before they expire. If the individual(s) are still important for group membership, you can add them back as a member and the 30 day expiration cycle starts again.')
