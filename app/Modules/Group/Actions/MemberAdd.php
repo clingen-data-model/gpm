@@ -15,6 +15,8 @@ use App\Modules\Group\Actions\MemberAssignRole;
 use App\Modules\Group\Http\Resources\MemberResource;
 use App\Modules\Group\Notifications\AddedToGroupNotification;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
+use App\Notifications\Alerts\DuplicateGroupMemberAddAttempt;
 
 class MemberAdd
 {
@@ -41,11 +43,16 @@ class MemberAdd
                     ->first();
 
         if ($existing) {
-            $existing->fill($data ?? []);
-            if ($existing->isDirty()) {
-                $existing->save();
-            }
-            return $existing;
+            Notification::route('slack', config('logging.channels.slack.url'))
+                ->notify(new DuplicateGroupMemberAddAttempt(
+                    group: $group,
+                    person: $person,
+                    actor: auth()->user(),
+                    payload: $data
+                ));
+            throw ValidationException::withMessages([
+                'person_id' => ['This person is already a member of this group.'],
+            ]);
         }
 
         $groupMember = GroupMember::create($memberData);
