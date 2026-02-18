@@ -3,7 +3,7 @@
 namespace App\Modules\Person\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
-use App\Modules\Group\Http\Resources\InstitutionResource;
+use App\Modules\Person\Http\Resources\InstitutionResource;
 
 class PersonAsMemberResource extends JsonResource
 {
