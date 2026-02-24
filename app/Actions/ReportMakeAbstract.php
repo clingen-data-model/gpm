@@ -7,7 +7,6 @@ use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsCommand;
 use Lorisleiva\Actions\Concerns\AsController;
 use Symfony\Component\HttpFoundation\StreamedResponse;
-use Illuminate\Support\Facades\DB;
 
 abstract class ReportMakeAbstract
 {
@@ -27,40 +26,7 @@ abstract class ReportMakeAbstract
         }
     }
 
-    public function asController(ActionRequest $request)
-    {
-        if ($request->header('accept') === 'application/json') {
-            return $this->handle();
-        }
-
-        return new StreamedResponse(function () {
-            DB::connection()->disableQueryLog();
-            $out = fopen('php://output', 'w');
-
-            $headers = $this->csvHeaders();
-            $wroteHeader = false;
-            if ($headers) {
-                fputcsv($out, $headers);
-                $wroteHeader = true;
-            }
-
-            $this->streamRows(function (array $row) use ($out, &$wroteHeader) {
-                foreach ($row as $k => $v) {
-                    if (is_string($v)) $row[$k] = preg_replace('/\R/u', '; ', $v);
-                }
-                if (!$wroteHeader) { fputcsv($out, array_keys($row)); $wroteHeader = true; }
-                fputcsv($out, $row);
-            });
-
-            fclose($out);
-        }, 200, ['Content-Type' => 'text/csv']);
-    }
-
-    public function asCommand(Command $command)
-    {
-        DB::connection()->disableQueryLog();
-        $out = fopen('php://output', 'w');
-
+    private function outputCsv($out) {
         $headers = $this->csvHeaders();
         $wroteHeader = false;
         if ($headers) {
@@ -75,7 +41,25 @@ abstract class ReportMakeAbstract
             if (!$wroteHeader) { fputcsv($out, array_keys($row)); $wroteHeader = true; }
             fputcsv($out, $row);
         });
+    }
 
+    public function asController(ActionRequest $request)
+    {
+        if ($request->header('accept') === 'application/json') {
+            return $this->handle();
+        }
+
+        return new StreamedResponse(function () {
+            $out = fopen('php://output', 'w');
+            $this->outputCsv($out);
+            fclose($out);
+        }, 200, ['Content-Type' => 'text/csv']);
+    }
+
+    public function asCommand(Command $command)
+    {
+        $out = fopen('php://output', 'w');
+        $this->outputCsv($out);
         fclose($out);
     }
 }
