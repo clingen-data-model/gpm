@@ -5,7 +5,6 @@ namespace App\Actions;
 use Illuminate\Console\Command;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsCommand;
-use App\Actions\Utils\TransformArrayForCsv;
 use Lorisleiva\Actions\Concerns\AsController;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Illuminate\Support\Facades\DB;
@@ -15,8 +14,6 @@ abstract class ReportMakeAbstract
     use AsController, AsCommand;
 
     public $commandSignature = null;
-
-    public function __construct(private TransformArrayForCsv $csvTransformer) {}
 
     abstract public function handle();
 
