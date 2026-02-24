@@ -16,17 +16,24 @@ class ReportMultipleEpsMake extends ReportMakeAbstract
 
     public function streamRows(callable $push): void
     {
-        DB::connection()->disableQueryLog();
-
-        $this->baseQuery()
-            ->orderBy('id')
-            ->chunkById(1000, function ($people) use ($push) {
-                foreach ($people as $p) {
-                    $push($this->formatRow($p));
-                }
-                $people->each->unsetRelations();
-                gc_collect_cycles();
-            });
+        $connection = DB::connection();
+        $queryLogEnabled = $connection->logging();
+        $connection->disableQueryLog();
+        try {
+            $this->baseQuery()
+                ->orderBy('id')
+                ->chunkById(1000, function ($people) use ($push) {
+                    foreach ($people as $p) {
+                        $push($this->formatRow($p));
+                    }
+                    $people->each->unsetRelations();
+                    gc_collect_cycles();
+                });
+        } finally {
+            if ($queryLogEnabled) {
+                $connection->enableQueryLog();
+            }
+        }
     }
 
     private function baseQuery()

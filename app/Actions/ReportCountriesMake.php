@@ -16,17 +16,24 @@ class ReportCountriesMake extends ReportMakeAbstract
 
     public function streamRows(callable $push): void
     {
-        DB::connection()->disableQueryLog();
-
-        $this->baseQuery()
-            ->orderBy('name')
-            ->chunk(1000, function ($countries) use ($push) {
-                foreach ($countries as $c) {
-                    $push($this->formatRow($c));
-                }
-                $countries->each->unsetRelations();
-                gc_collect_cycles();
-            });
+        $connection = DB::connection();
+        $queryLogEnabled = $connection->logging();
+        $connection->disableQueryLog();
+        try {
+            $this->baseQuery()
+                ->orderBy('name')
+                ->chunk(1000, function ($countries) use ($push) {
+                    foreach ($countries as $c) {
+                        $push($this->formatRow($c));
+                    }
+                    $countries->each->unsetRelations();
+                    gc_collect_cycles();
+                });
+        } finally {
+            if ($queryLogEnabled) {
+                $connection->enableQueryLog();
+            }
+        }
     }
 
     private function baseQuery()

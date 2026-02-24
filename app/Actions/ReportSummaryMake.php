@@ -23,9 +23,17 @@ class ReportSummaryMake extends ReportMakeAbstract
 
     public function streamRows(callable $push): void
     {
-        DB::connection()->disableQueryLog();
-        foreach ($this->metrics() as $metric => $value) {
-            $push(['Metric' => $metric, 'Value' => $value]);
+        $connection = DB::connection();
+        $queryLogEnabled = $connection->logging();
+        $connection->disableQueryLog();
+        try {
+            foreach ($this->metrics() as $metric => $value) {
+                $push(['Metric' => $metric, 'Value' => $value]);
+            }
+        } finally {
+            if ($queryLogEnabled) {
+                $connection->enableQueryLog();
+            }
         }
     }
 

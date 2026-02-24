@@ -31,22 +31,29 @@ class ReportDemographicsMake extends ReportMakeAbstract
 
     public function streamRows(callable $push): void
     {
-        DB::connection()->disableQueryLog();
+        $connection = DB::connection();
+        $queryLogEnabled = $connection->logging();
+        $connection->disableQueryLog();
+        try {
+            $counts = [];
 
-        $counts = [];
-
-        $this->streamAll(function ($subset, $row) use (&$counts) {
-            $this->tallyRow($counts, $subset, $row);
-        });
-
-        foreach (['vcep','gcep','cdwg','wg'] as $gt) {
-            $this->streamGroupType($gt, function ($subset, $row) use (&$counts) {
+            $this->streamAll(function ($subset, $row) use (&$counts) {
                 $this->tallyRow($counts, $subset, $row);
             });
-        }
 
-        foreach ($this->flattenCounts($counts) as $record) {
-            $push($record);
+            foreach (['vcep','gcep','cdwg','wg'] as $gt) {
+                $this->streamGroupType($gt, function ($subset, $row) use (&$counts) {
+                    $this->tallyRow($counts, $subset, $row);
+                });
+            }
+
+            foreach ($this->flattenCounts($counts) as $record) {
+                $push($record);
+            }
+        } finally {
+            if ($queryLogEnabled) {
+                $connection->enableQueryLog();
+            }
         }
     }
 

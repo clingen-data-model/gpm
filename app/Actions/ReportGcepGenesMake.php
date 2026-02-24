@@ -16,41 +16,48 @@ class ReportGcepGenesMake extends ReportMakeAbstract
 
     public function streamRows(callable $push): void
     {
-        DB::connection()->disableQueryLog();
+        $connection = DB::connection();
+        $queryLogEnabled = $connection->logging();
+        $connection->disableQueryLog();
+        try {
+            $currentHgnc = null;
+            $currentSymbol = null;
+            $eps = [];
 
-        $currentHgnc = null;
-        $currentSymbol = null;
-        $eps = [];
+            $this->baseQuery()
+                ->orderBy('hgnc_id')
+                ->orderBy('id')
+                ->chunk(2000, function ($genes) use (&$currentHgnc, &$currentSymbol, &$eps, $push) {
+                    foreach ($genes as $g) {
+                        if ($currentHgnc !== null && $g->hgnc_id !== $currentHgnc) {
+                            $push([
+                                'gene_symbol' => $currentSymbol,
+                                'hgnc_id'     => $currentHgnc,
+                                'GCEPs'       => implode(', ', $eps),
+                            ]);
+                            $eps = [];
+                        }
 
-        $this->baseQuery()
-            ->orderBy('hgnc_id')
-            ->orderBy('id')
-            ->chunk(2000, function ($genes) use (&$currentHgnc, &$currentSymbol, &$eps, $push) {
-                foreach ($genes as $g) {
-                    if ($currentHgnc !== null && $g->hgnc_id !== $currentHgnc) {
-                        $push([
-                            'gene_symbol' => $currentSymbol,
-                            'hgnc_id'     => $currentHgnc,
-                            'GCEPs'       => implode(', ', $eps),
-                        ]);
-                        $eps = [];
+                        $currentHgnc = $g->hgnc_id;
+                        $currentSymbol = $g->gene_symbol;
+                        $eps[] = $g->expertPanel->full_long_base_name;
                     }
 
-                    $currentHgnc = $g->hgnc_id;
-                    $currentSymbol = $g->gene_symbol;
-                    $eps[] = $g->expertPanel->full_long_base_name;
-                }
+                    $genes->each->unsetRelations();
+                    gc_collect_cycles();
+                });
 
-                $genes->each->unsetRelations();
-                gc_collect_cycles();
-            });
-
-        if ($currentHgnc !== null) {
-            $push([
-                'gene_symbol' => $currentSymbol,
-                'hgnc_id'     => $currentHgnc,
-                'GCEPs'       => implode(', ', array_values(array_unique($eps))),
-            ]);
+            if ($currentHgnc !== null) {
+                $push([
+                    'gene_symbol' => $currentSymbol,
+                    'hgnc_id'     => $currentHgnc,
+                    'GCEPs'       => implode(', ', array_values(array_unique($eps))),
+                ]);
+            }
+        } finally {
+            if ($queryLogEnabled) {
+                $connection->enableQueryLog();
+            }
         }
     }
 

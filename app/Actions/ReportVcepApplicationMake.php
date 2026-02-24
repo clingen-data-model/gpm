@@ -20,17 +20,24 @@ class ReportVcepApplicationMake extends ReportMakeAbstract
 
     public function streamRows(callable $push): void
     {
-        DB::connection()->disableQueryLog();
-
-        $this->baseQuery()
-            ->orderBy('id')
-            ->chunkById(500, function ($vceps) use ($push) {
-                foreach ($vceps as $vcep) {
-                    $push($this->formatRow($vcep));
-                }
-                $vceps->each->unsetRelations();
-                gc_collect_cycles();
-            });
+        $connection = DB::connection();
+        $queryLogEnabled = $connection->logging();
+        $connection->disableQueryLog();
+        try {
+            $this->baseQuery()
+                ->orderBy('id')
+                ->chunkById(500, function ($vceps) use ($push) {
+                    foreach ($vceps as $vcep) {
+                        $push($this->formatRow($vcep));
+                    }
+                    $vceps->each->unsetRelations();
+                    gc_collect_cycles();
+                });
+        } finally {
+            if ($queryLogEnabled) {
+                $connection->enableQueryLog();
+            }
+        }
     }
 
     private function baseQuery()

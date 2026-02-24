@@ -16,17 +16,24 @@ class ReportInstitutionsMake extends ReportMakeAbstract
 
     public function streamRows(callable $push): void
     {
-        DB::connection()->disableQueryLog();
-
-        $this->baseQuery()
-            ->orderBy('name')
-            ->chunk(1000, function ($institutions) use ($push) {
-                foreach ($institutions as $c) {
-                    $push($this->formatRow($c));
-                }
-                $institutions->each->unsetRelations();
-                gc_collect_cycles();
-            });
+        $connection = DB::connection();
+        $queryLogEnabled = $connection->logging();
+        $connection->disableQueryLog();
+        try {
+            $this->baseQuery()
+                ->orderBy('name')
+                ->chunk(1000, function ($institutions) use ($push) {
+                    foreach ($institutions as $c) {
+                        $push($this->formatRow($c));
+                    }
+                    $institutions->each->unsetRelations();
+                    gc_collect_cycles();
+                });
+        } finally {
+            if ($queryLogEnabled) {
+                $connection->enableQueryLog();
+            }
+        }
     }
 
     private function baseQuery()
