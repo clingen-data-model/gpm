@@ -75,7 +75,11 @@ class GroupController extends Controller
             },
             whereFunction: function (Builder $query, array $where) use ($user) {
                 $query->visibleTo($user);
+                $allowedWhereColumns = ['group_type_id', 'group_status_id', 'group_visibility_id', 'coi_code'];
                 foreach ($where as $key => $value) {
+                    if (!in_array($key, $allowedWhereColumns, true)) {
+                        continue;
+                    }
                     if (is_array($value)) {
                         $query->whereIn($key, $value);
                         continue;

@@ -38,7 +38,6 @@ class GroupResource extends JsonResource
         $data['icon_url'] = $this->icon_url;
         $data['is_working_group'] = $this->is_working_group ?? false;
         $data['is_private'] = $this->is_private ?? false;
-        // $data['parent'] = $this->whenLoaded('parent', GroupResource::collection($this->parent));
 
 
         unset($data['members'], $data['created_at'], $data['deleted_at']);

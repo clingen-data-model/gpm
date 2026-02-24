@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::table('groups', function (Blueprint $table) {
             $table->foreignId('group_visibility_id')
-                ->default(1)
                 ->after('group_status_id')
+                ->nullable()
                 ->constrained('group_visibilities')
                 ->cascadeOnUpdate();
         });
