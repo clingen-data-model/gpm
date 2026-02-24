@@ -9,13 +9,6 @@ class ReportInstitutionsMake extends ReportMakeAbstract
 {
     public $commandSignature = 'reports:institutions';
 
-    public function handle(): array
-    {
-        $rows = [];
-        $this->streamRows(function (array $row) use (&$rows) { $rows[] = $row; });
-        return $rows;
-    }
-
     public function csvHeaders(): ?array
     {
         return ['Name', '# of People'];

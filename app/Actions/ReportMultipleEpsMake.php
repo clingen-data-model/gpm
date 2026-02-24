@@ -9,13 +9,6 @@ class ReportMultipleEpsMake extends ReportMakeAbstract
 {
     public $commandSignature = 'reports:multiple-eps';
 
-    public function handle(): array
-    {
-        $rows = [];
-        $this->streamRows(function (array $row) use (&$rows) { $rows[] = $row; });
-        return $rows;
-    }
-
     public function csvHeaders(): ?array
     {
         return ['first_name','last_name','email','ep count'];

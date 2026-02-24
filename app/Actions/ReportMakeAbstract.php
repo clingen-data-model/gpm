@@ -14,17 +14,9 @@ abstract class ReportMakeAbstract
 
     public $commandSignature = null;
 
-    abstract public function handle();
-
     public function csvHeaders(): ?array { return null; }
 
-    public function streamRows(callable $push): void
-    {
-        $data = $this->handle();
-        if (is_iterable($data)) {
-            foreach ($data as $row) { $push($row); }
-        }
-    }
+    public abstract function streamRows(callable $push): void;
 
     private function outputCsv($out) {
         $headers = $this->csvHeaders();
@@ -46,7 +38,17 @@ abstract class ReportMakeAbstract
     public function asController(ActionRequest $request)
     {
         if ($request->header('accept') === 'application/json') {
-            return $this->handle();
+            return response()->stream(function () {
+                echo '[';
+                $first = true;
+                $this->streamRows(function (array $row) use (&$first) {
+                    if (!$first) echo ',';
+                    echo json_encode($row);
+                    flush();
+                    $first = false;
+                });
+                echo ']';
+            }, 200, ['Content-Type' => 'application/json']);
         }
 
         return new StreamedResponse(function () {

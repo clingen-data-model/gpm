@@ -9,13 +9,6 @@ class ReportGcepGenesMake extends ReportMakeAbstract
 {
     public $commandSignature = 'reports:gcep-genes';
 
-    public function handle(): array
-    {
-        $rows = [];
-        $this->streamRows(function (array $row) use (&$rows) { $rows[] = $row; });
-        return $rows;
-    }
-
     public function csvHeaders(): ?array
     {
         return ['gene_symbol','hgnc_id','GCEPs'];
