@@ -24,8 +24,11 @@ class GroupCreate
 
     public function handle($data): Group
     {
-        $uuid = isset($data['uuid']) ? $data['uuid'] : Uuid::uuid4();
-        $visibilityId = $data['group_visibility_id'] ?? config('groups.visibility.public.id') ?? 1;
+        $uuid = isset($data['uuid']) ? $data['uuid'] : Uuid::uuid4();        
+        $visibilityId = $data['group_visibility_id'] ?? config('groups.visibility.public.id');
+        if ($visibilityId === null) {
+            throw new \RuntimeException('Default group visibility is not configured. Set groups.visibility.public.id.');
+        }
 
         $group = Group::create([
             'uuid' => $uuid,
