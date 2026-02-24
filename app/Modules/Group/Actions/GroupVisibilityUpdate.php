@@ -27,7 +27,7 @@ class GroupVisibilityUpdate
         }
         $oldGroupVisibility = GroupVisibility::find($group->group_visibility_id);
         $group->update(['group_visibility_id' => $newGroupVisibility->id]);
-        
+
         event(new GroupVisibilityUpdated($group, $newGroupVisibility, $oldGroupVisibility));
         return $group;
     }
@@ -35,7 +35,6 @@ class GroupVisibilityUpdate
     public function asController(ActionRequest $request, Group $group)
     {
         $newVisibility = GroupVisibility::findOrFail($request->visibility_id);
-        if (!$newVisibility) { Log::warning('New Group visibility ID is not valid.'); return; }
         $group = $this->handle($group, $newVisibility);
         $group->load('expertPanel');
         return new GroupResource($group);
