@@ -378,7 +378,7 @@ class Group extends Model implements HasMembers, RecordsEvents, HasDocuments, Ha
     protected function isPrivate(): Attribute
     {
         return Attribute::get(
-            fn () => (int) $this->group_visibility_id === config('groups.visibility.private.id')
+            fn () => (int) $this->group_visibility_id === (int) config('groups.visibility.private.id')
         );
     }
 
@@ -387,10 +387,12 @@ class Group extends Model implements HasMembers, RecordsEvents, HasDocuments, Ha
         if ($user && $user->hasAnyRole(['super-user', 'super-admin', 'admin'])) { return $query; }
 
         $privateId = config('groups.visibility.private.id');
-        $wgTypeId  = config('groups.types.wg.id');
 
-        return $query->where(function ($q) use ($privateId, $wgTypeId) {
-            $q->where('group_type_id', '!=', $wgTypeId)->orWhereNull('group_visibility_id')->orWhere('group_visibility_id', '!=', $privateId);
+        return $query->where(function ($q) use ($privateId, $user) {
+            // Show public or null visibility groups or where the user is a member of the group
+            $q->whereNull('group_visibility_id')
+              ->orWhere('group_visibility_id', '!=', $privateId)
+              ->orWhereHas('members', fn ($memberQ) => $memberQ->where('person_id', $user->id));
         });
     }
 
