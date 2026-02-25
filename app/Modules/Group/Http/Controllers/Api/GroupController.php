@@ -103,6 +103,7 @@ class GroupController extends Controller
             'roles',
             'permissions',
             'cois',
+            'latestCoi',
             'person',
             'person.institution',
             'person.credentials',
