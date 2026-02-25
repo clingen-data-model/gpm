@@ -256,7 +256,7 @@
                 </div>
 
                 <!-- Snapshot quick facts (COMPACT) -->
-                <div class="px-3 pb-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 text-sm">
+                <div  v-if="gene.plan" class="px-3 pb-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 text-sm">
                     <div v-if="gene.plan?.is_other" class="sm:col-span-2 lg:col-span-4 rounded-xl border p-2 text-sm border-rose-300 bg-rose-50 p-2">
                         <div class="text-[11px] uppercase tracking-wide text-gray-500">Plan</div>
                         <div class="prose max-w-none" v-html="htmlFromMarkdown((gene.plan?.the_plan || '').replace(/\\/g, ''))"></div>
@@ -295,12 +295,12 @@
                             </div>
                         </div>
 
-                        <div class="sm:col-span-2 lg:col-span-4 rounded-xl border border-gray-200 bg-gray-50 p-2">
+                        <div v-if="gene.plan?.phenotypes" class="sm:col-span-2 lg:col-span-4 rounded-xl border border-gray-200 bg-gray-50 p-2">
                             <div class="text-[11px] uppercase tracking-wide text-gray-500">Phenotypes</div>
                             <div class="text-sm text-gray-900 line-clamp-2">{{ gene.plan?.phenotypes ?? 'N/A' }}</div>
                         </div>
                         
-                        <div v-if="['Moderate','Limited'].includes(gene.plan?.classification)" class="sm:col-span-2 lg:col-span-4 rounded-xl border border-amber-200 bg-amber-50 p-2">
+                        <div v-if="['Moderate','Limited'].includes(gene.plan?.classification) && gene.plan?.curated_plan_text" class="sm:col-span-2 lg:col-span-4 rounded-xl border border-amber-200 bg-amber-50 p-2">
                             <div class="text-[11px] uppercase tracking-wide text-amber-800">Plan</div>
                             <div class="prose max-w-none text-sm text-amber-900" v-html="htmlFromMarkdown((gene.plan?.curated_plan_text || '').replace(/\\/g, ''))"></div>
                         </div>
