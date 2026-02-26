@@ -56,6 +56,11 @@ export default {
                 this.toggleRole(value, 'core-approval-member')
             }
         },
+        coreMemberAttestationStatus () {            
+            if (this.workingCopy?.person?.core_member_attestation_completed === true) { return 'completed'; }
+            if (!this.coreApprovalMember) { return null; }
+            return 'pending'
+        },
         civicEditor: {
             get () {
                 return this.workingCopy.hasRole('civic-editor')
@@ -63,11 +68,6 @@ export default {
             set (value) {
                 this.toggleRole(value, 'civic-editor')
             }
-        },
-        coreMemberAttestationStatus () {            
-            if (this.workingCopy?.person?.core_member_attestation_completed === true) { return 'completed'; }
-            if (!this.coreApprovalMember) { return null; }
-            return 'pending'
         },
         canEdit () {
             return this.hasAnyPermission([
