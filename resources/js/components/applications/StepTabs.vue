@@ -53,7 +53,7 @@ export default {
       <StepOne @step-approved="handleApproved" @updated="handleUpdated" />
     </div>
     <tabs-container
-      v-if="application.expert_panel_type_id == 2"
+      v-if="application.expert_panel_type_id == 2 || application.expert_panel_type_id == 3"
       v-model="activeIndex"
       tab-location="right"
     >

@@ -36,6 +36,12 @@ const routes = [
             component: () =>
                 import('@/views/SummaryVcep.vue'),
         },
+        {
+            name: 'ScvcepsSummary',
+            path: "scvceps",
+            component: () =>
+                import('@/views/SummaryScvcep.vue'),
+        },
         ]
     },
     {
