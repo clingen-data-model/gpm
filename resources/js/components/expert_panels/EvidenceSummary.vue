@@ -81,6 +81,7 @@ export default {
             </span>
             <span v-if="summary.gene.moi" class="rounded-full bg-gray-100 px-2 py-0.5 text-gray-700">{{ summary.gene.moi }}</span>
             <span class="rounded-full bg-blue-50 px-2 py-0.5 text-blue-800">Variant: {{ summary.variant }}</span>
+            <span v-if="group.is_scvcep" class="rounded-full bg-blue-50 px-2 py-0.5 text-blue-800">Assertion ID: {{ summary.assertion_id ?? 'N/A' }}</span>
           </div>
           <dropdown-menu v-if="canEdit" :hide-cheveron="true" class="relative">
             <template #label>
@@ -98,7 +99,7 @@ export default {
         </header>
         <p>{{ summary.summary }}</p>
         <a v-if="summary.vci_url" class="link" :href="summary.vci_url" target="_blank">
-          View in the VCI
+          {{ group.is_vcep ? 'View in the VCI' : 'View in CIVic' }}
         </a>
       </div>
       <EvidenceSummaryForm 

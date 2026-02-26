@@ -30,6 +30,9 @@ export default {
     vcepReviews() {
       return this.items.filter((i) => i.expert_panel.expert_panel_type_id === 2);
     },
+    scvcepReviews() {
+      return this.items.filter((i) => i.expert_panel.expert_panel_type_id === 3);
+    },
     selectedYear() {
         return this.selectedWindow ? this.selectedWindow.for_year : this.latestWindow.for_year
     },
@@ -106,6 +109,12 @@ export default {
           Loading&hellip;
         </div>
         <AnnualUpdateTable v-else :items="gcepReviews" />
+      </tab-item>
+      <tab-item label="SC-VCEPS">
+        <div v-if="loading">
+          Loading&hellip;
+        </div>
+        <AnnualUpdateTable v-else :items="scvcepReviews" />
       </tab-item>
     </tabs-container>
   </div>
