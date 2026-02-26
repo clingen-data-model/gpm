@@ -13,6 +13,11 @@ export default {
             type: Boolean,
             required: false,
             default: false
+        },
+        isScvcep: {
+            type: Boolean,
+            required: false,
+            default: false
         }
     },
     emits: [
@@ -57,6 +62,14 @@ export default {
             return 'pending'
         },
 
+        civicEditor: {
+            get () {
+                return this.workingCopy.hasRole('civic-editor')
+            },
+            set (value) {
+                this.toggleRole(value, 'civic-editor')
+            }
+        },
         canEdit () {
             return this.hasAnyPermission([
                         'ep-applications-manage',
@@ -163,6 +176,9 @@ export default {
             {{ coreMemberAttestationStatus === 'completed' ? 'Completed at ' + formatDate(workingCopy.person.core_member_attestation_completion_date): 'Attestation Required' }}
         </span>
       </div>
+    </td>
+    <td v-if="isScvcep">
+      <input v-model="civicEditor" type="checkbox" :disabled="!canEdit" @input="debounceSave">
     </td>
   </tr>
 </template>

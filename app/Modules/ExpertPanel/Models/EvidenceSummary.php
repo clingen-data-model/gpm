@@ -34,7 +34,8 @@ class EvidenceSummary extends Model implements BelongsToExpertPanel
         'summary',
         'gene_id',
         'variant',
-        'vci_url'
+        'vci_url',
+        'assertion_id',
     ];
 
     /**
