@@ -179,8 +179,12 @@ class Group extends Entity {
     }
 
     isEp() {
-        return Number.parseInt(this.attributes.group_type_id) === Number.parseInt(configs.groups.types.gcep.id)
-            || Number.parseInt(this.attributes.group_type_id) === Number.parseInt(configs.groups.types.vcep.id);
+        const groupTypeID = Number.parseInt(this.attributes.group_type_id);
+        const epIds = [ Number.parseInt(configs.groups.types.gcep.id), 
+                        Number.parseInt(configs.groups.types.vcep.id), 
+                        Number.parseInt(configs.groups.types.scvcep.id),
+        ];
+        return epIds.includes(groupTypeID);
     }
 
     isWorkingGroup() {
@@ -193,6 +197,10 @@ class Group extends Entity {
 
     isCdwg() {
         return Number.parseInt(this.attributes.group_type_id) === Number.parseInt(configs.groups.types.cdwg.id);
+    }
+
+    isScCdwg() {
+        return Number.parseInt(this.attributes.group_type_id) === Number.parseInt(configs.groups.types.sccdwg.id);
     }
 
     documentsOfType(docTypeId) {

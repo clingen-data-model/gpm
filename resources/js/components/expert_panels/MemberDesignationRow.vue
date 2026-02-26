@@ -13,6 +13,11 @@ export default {
             type: Boolean,
             required: false,
             default: false
+        },
+        isScvcep: {
+            type: Boolean,
+            required: false,
+            default: false
         }
     },
     emits: [
@@ -49,6 +54,14 @@ export default {
             },
             set (value) {
                 this.toggleRole(value, 'core-approval-member')
+            }
+        },
+        civicEditor: {
+            get () {
+                return this.workingCopy.hasRole('civic-editor')
+            },
+            set (value) {
+                this.toggleRole(value, 'civic-editor')
             }
         },
         canEdit () {
@@ -152,6 +165,9 @@ export default {
     </td>
     <td>
       <input v-model="coreApprovalMember" type="checkbox" :disabled="!canEdit" @input="debounceSave">
+    </td>
+    <td v-if="isScvcep">
+      <input v-model="civicEditor" type="checkbox" :disabled="!canEdit" @input="debounceSave">
     </td>
   </tr>
 </template>

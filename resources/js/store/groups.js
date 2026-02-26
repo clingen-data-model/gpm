@@ -22,6 +22,9 @@ export const getters = {
     cdwgs: state => {
         return state.items.filter(item => item.group_type_id === 2);
     },
+    sccdwgs: state => {
+        return state.items.filter(item => item.group_type_id === 6);
+    },
     wgs: state => {
         return state.items.filter(item => item.group_type_id === 1);
     },
