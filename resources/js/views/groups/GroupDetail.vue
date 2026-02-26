@@ -22,6 +22,7 @@ import MembershipDescriptionForm from "@/components/expert_panels/MembershipDesc
 import ScopeDescriptionForm from "@/components/expert_panels/ScopeDescriptionForm.vue";
 import GcepRationaleForm from "@/components/expert_panels/GcepRationaleForm.vue";
 import VcepGeneList from "@/components/expert_panels/VcepGeneList.vue";
+import ScvcepGeneList from "@/components/expert_panels/ScvcepGeneList.vue";
 import VcepOngoingPlansForm from "@/components/expert_panels/VcepOngoingPlansForm.vue";
 import GroupDocuments from "./GroupDocuments.vue";
 import AnnualUpdateAlert from "@/components/groups/AnnualUpdateAlert.vue";
@@ -59,6 +60,7 @@ export default {
     ScopeDescriptionForm,
     GcepRationaleForm,
     VcepGeneList,
+    ScvcepGeneList,
     VcepOngoingPlansForm,
     AnnualUpdateAlert,
     StepTabs,
@@ -94,7 +96,13 @@ export default {
       if (!group.value.is_ep) {
         return null;
       }
-      return group.value.is_vcep_or_scvcep ? VcepGeneList : GcepGeneList;
+      if(group.value.is_scvcep) {
+        return ScvcepGeneList;
+      } else if(group.value.is_vcep_or_scvcep) {
+        return VcepGeneList;
+      } else if (group.value.is_gcep) {
+        return GcepGeneList;
+      }
     });
 
     const ongoingPlansFormComponent = computed(() => {

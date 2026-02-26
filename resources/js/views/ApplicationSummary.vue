@@ -15,6 +15,9 @@ export default {
           <router-link :to="{name: 'GcepsSummary'}" class="tab">
             GCEPS
           </router-link>
+          <router-link :to="{name: 'ScvcepsSummary'}" class="tab">
+            SC-VCEPS
+          </router-link>
         </div>
         <note>Historical records of EP applications have not yet been back entered.</note>
       </div>

@@ -190,6 +190,11 @@ class Group extends Model implements HasMembers, RecordsEvents, HasDocuments, Ha
         return $query->ofType(config('groups.types.cdwg.id'));
     }
 
+    public function scopeSccdwg($query)
+    {
+        return $query->ofType(config('groups.types.sccdwg.id'));
+    }
+
     public function scopeWorkingGroup($query)
     {
         return $query->ofType(config('groups.types.wg.id'));
