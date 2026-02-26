@@ -2,6 +2,7 @@
 import Group from '@/domain/group'
 import GcepQuickGuideLink from '../links/GcepQuickGuideLink.vue';
 import VcepProtocolLink from '../links/VcepProtocolLink.vue';
+import ScvcepProtocolLink from '../links/ScvcepProtocolLink.vue';
 import EditIconButton from '@/components/buttons/EditIconButton.vue'
 import RichTextEditor from '@/components/prosekit/RichTextEditor.vue'
 import { htmlFromMarkdown } from '@/markdown-utils';
@@ -11,6 +12,7 @@ export default {
     components: {
         GcepQuickGuideLink,
         VcepProtocolLink,
+        ScvcepProtocolLink,
         EditIconButton,
         RichTextEditor,
     },
@@ -50,6 +52,9 @@ export default {
           const g = this.expertPanel?.genes;
           return Array.isArray(g) ? g : [];
         },
+        curatedGenesCount() {
+          return this.genes.reduce((n, g) => n + ((Array.isArray(g.details) && g.details.length > 0) ? 1 : 0), 0);
+        },
     }
 }
 </script>
@@ -63,9 +68,13 @@ export default {
       />
     </header>
     <div class="mt-2 text-sm">
-      <p v-if="group.is_vcep_or_scvcep">
+      <p v-if="group.is_vcep">
         Describe the scope of work of the Expert Panel including the disease area(s), genes being addressed, and any specific rationale for choosing the condition(s). See the
         <VcepProtocolLink /> for more information.
+      </p>
+      <p v-if="group.is_scvcep">
+        Describe the scope of work of the Expert Panel including the disease area(s), genes being addressed, and any specific rationale for choosing the condition(s). See the
+        <ScvcepProtocolLink /> for more information.
       </p>
       <div v-if="group.is_gcep">
         Describe the scope of work of the expert panel including the following:
@@ -79,6 +88,14 @@ export default {
         </ul>
       </div>
 
+      <div v-if="curatedGenesCount > 0"
+        role="note"
+        class="mt-3 border-l-4 border-amber-400 bg-amber-50 px-3 py-2 text-sm text-amber-900
+              rounded-md dark:border-amber-400 dark:bg-amber-900/20 dark:text-amber-100"
+      >
+        <strong>You have added curated genes: {{ curatedGenesCount }}/{{ genes.length }} gene(s)</strong>
+        — Please include how you prioritized the list, your plan for overlaps (other GCEPs), the scope boundaries, and your throughput/update cadence.
+      </div>
       <transition name="fade" mode="out-in">
         <div v-if="editing" class="mt-2">
           <RichTextEditor

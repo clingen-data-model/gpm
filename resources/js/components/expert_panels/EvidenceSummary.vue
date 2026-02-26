@@ -98,7 +98,7 @@ export default {
         </header>
         <p>{{ summary.summary }}</p>
         <a v-if="summary.vci_url" class="link" :href="summary.vci_url" target="_blank">
-          View in the VCI
+          {{ group.is_vcep ? 'View in the VCI' : 'View in CIVic' }}
         </a>
       </div>
       <EvidenceSummaryForm 
