@@ -65,7 +65,9 @@ trait IsPublishableGroupEvent
             'coi' => url('/coi-group/'.$group->uuid),
         ];
 
-        if ($withMembers) {
+        // Whatever happens, do not send membership information for private working groups, as this is the only way to be sure we don't leak membership info for private groups that have had their visibility changed to public at some point in the past.
+        $hideMembersForPrivateWg = (int) $group->group_type_id === (int) config('groups.types.wg.id') && (int) $group->group_visibility_id === (int) config('groups.visibility.private.id');
+        if ($withMembers && ! $hideMembersForPrivateWg) {
             $data['members'] = $group->members()->isActive()->with(['person', 'person.credentials', 'person.institution', 'roles', 'permissions'])->get()->map(function ($member) { return $this->mapMemberForMessage($member, false); })->toArray();
         }
 

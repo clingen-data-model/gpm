@@ -110,7 +110,8 @@ class GroupController extends Controller
             'members.cois',
             'parent',
             'expertPanel',
-            'expertPanel.curationReviewProtocol'
+            'expertPanel.curationReviewProtocol',
+            'groupVisibility',
         ]);
 
         return new GroupResource($group);

@@ -389,10 +389,12 @@ class Group extends Model implements HasMembers, RecordsEvents, HasDocuments, Ha
         $privateId = config('groups.visibility.private.id');
 
         return $query->where(function ($q) use ($privateId, $user) {
-            // Show public or null visibility groups or where the user is a member of the group
+            $personId = $user?->person?->id;
             $q->whereNull('group_visibility_id')
-              ->orWhere('group_visibility_id', '!=', $privateId)
-              ->orWhereHas('members', fn ($memberQ) => $memberQ->where('person_id', $user->id));
+                ->orWhere('group_visibility_id', '!=', $privateId)
+                ->orWhereHas('members.person', function ($memberQ) use ($user) {
+                    $memberQ->where('user_id', $user->id);
+                });
         });
     }
 
