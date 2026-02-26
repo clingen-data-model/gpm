@@ -37,6 +37,9 @@ export default {
         <router-link :to="{name: 'gceps'}" class="tab">
           GCEPS
         </router-link>
+        <router-link :to="{name: 'scvceps'}" class="tab">
+          SC-VCEPS
+        </router-link>
       </div>
       <div class="p-4 border rounded-tr-lg rounded-b-lg bg-white">
         <router-view />
