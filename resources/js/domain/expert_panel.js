@@ -173,7 +173,7 @@ class ExpertPanel extends Entity
         if (this.expert_panel_type_id === 1) {
             return [1];
         }
-        if (this.expert_panel_type_id === 2 || this.expert_panel_type_id === null) {
+        if (this.expert_panel_type_id === 2 || this.expert_panel_type_id === 3 || this.expert_panel_type_id === null) {
             return [1, 2, 3, 4];
         }
 

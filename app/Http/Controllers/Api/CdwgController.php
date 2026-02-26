@@ -10,7 +10,13 @@ class CdwgController extends Controller
 {
     public function index(Request $request)
     {
-        $cdwgs = Group::cdwg()->orderBy('name', 'asc')->get();
-        return $cdwgs;
+        $scope = strtolower($request->query('scope', 'cdwg'));
+        $query = match($scope) {
+            'sc', 'sc-cdwg' => Group::sccdwg(),
+            'wg'            => Group::wg(),
+            default         => Group::cdwg(),
+        };
+
+        return $query->orderBy('name', 'asc')->get(['id', 'name']);
     }
 }

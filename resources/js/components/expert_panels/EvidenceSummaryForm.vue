@@ -107,15 +107,35 @@ export default {
         label="Variant" 
         :errors="errors.variant"
       />
+      <input-row
+        v-if="group.is_scvcep"
+        v-model="summaryClone.assertion_id"
+        class="mt-0 mb-0"
+        :vertical="true"
+        label="Assertion ID"
+        :errors="errors.assertion_id"
+        :required="true"
+        :max-length="255"
+      />
     </div>
     <input-row class="mt-0 mb-0" label="Summary" :vertical="true" :errors="errors.summary">
       <textarea v-model="summaryClone.summary" rows="5" class="w-full" />
     </input-row>
-    <input-row 
+    <input-row v-if="group.is_vcep"
       v-model="summaryClone.vci_url" 
       class="mt-0" 
       label="VCI URL" 
       :vertical="true" 
+      input-class="w-full" 
+      :errors="errors.vci_url"
+    />
+    <input-row v-if="group.is_scvcep"
+      v-model="summaryClone.vci_url" 
+      class="mt-0" 
+      label="CIViC webpage hyperlink" 
+      :vertical="true" 
+      :required="true"
+      :max-length="10"
       input-class="w-full" 
       :errors="errors.vci_url"
     />
