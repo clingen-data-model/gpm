@@ -38,7 +38,6 @@ class EvidenceSummaryAdd
         }
 
         $evidenceSummary = $this->handle($group, $request->all());
-        $evidenceSummary->load('gene', 'gene.gene');
         return ['data' => $evidenceSummary];
     }
 
@@ -48,7 +47,8 @@ class EvidenceSummaryAdd
             'gene_id' => 'required|exists:genes,id',
             'variant' => 'required|max:255',
             'summary' => 'required|max:66535',
-            'vci_url' => 'nullable|url'
+            'vci_url' => 'nullable|url',
+            'assertion_id' => 'nullable|max:255'
         ];
     }
 

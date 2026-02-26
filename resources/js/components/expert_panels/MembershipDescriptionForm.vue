@@ -58,7 +58,9 @@ export default {
     </header>
     <div class="mt-4">
       <p class="text-sm">
-        Describe the expertise of VCEP members who regularly use the ACMG/AMP guidelines to classify variants and/or review variants during clinical laboratory case sign-out.
+        Describe the expertise of {{ group.is_vcep ? 'VCEP' : 'SC-VCEP' }} members who regularly use the 
+        {{ group.is_vcep ? 'ACMG/AMP' : 'AMP/ASCO/CAP and ClinGen/CGC/VICC' }}
+        guidelines to classify variants and/or review variants during clinical laboratory case sign-out.
       </p>
       <transition name="fade" mode="out-in">
         <div v-if="editing" class="mt-2">
