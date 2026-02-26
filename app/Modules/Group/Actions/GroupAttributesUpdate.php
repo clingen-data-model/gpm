@@ -93,7 +93,7 @@ class GroupAttributesUpdate
 
     public function asController(ActionRequest $request, Group $group)
     {
-        $data = $request->only('name', 'description', 'parent_id', 'group_status_id');
+        $data = $request->only('name', 'description', 'parent_id', 'group_status_id', 'website_url');
         return $this->handle($group, $data);
     }
 
@@ -102,7 +102,7 @@ class GroupAttributesUpdate
         $user = Auth::user();
         if (!$user) { return false; }
 
-        $keys = collect($request->only('name','description','parent_id','group_status_id'))
+        $keys = collect($request->only('name','description','parent_id','group_status_id', 'website_url'))
             ->filter(fn ($v) => !is_null($v))
             ->keys();
 

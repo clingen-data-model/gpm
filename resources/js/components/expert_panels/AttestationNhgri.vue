@@ -70,6 +70,10 @@ export default {
       Curated variants and genes are expected to be approved and posted for the community as soon as possible as described in Section 2.4 of the <vcep-protocol-link />.
       Note that upon approval, a VCEP must finalize their set of variants for upload to the ClinGen Evidence Repository within 30 days.
     </p>
+    <p v-if="group.is_scvcep">
+      Curated variants and genes are expected to be published to CIViC in a timely manner, as described in the <scvcep-protocol-link />.
+      Note that upon approval, an SC-VCEP must work to submit all approved SC-VCEP pilot Assertions to CIViC and/or ClinVar within 30 days.
+    </p>
     <p v-if="group.is_gcep">
       Curated genes and variants are expected to be approved and posted for the community as soon as possible and should not wait for the publication of a manuscript.
     </p>
@@ -85,7 +89,10 @@ export default {
       </input-row>
     </p>
 
-    <p v-if="group.is_vcep_or_scvcep">
+    <p v-if="group.is_gcep">
+      I understand that once a variant is approved in CIViC it will become publicly available in CIViC. They should not be held for publication.
+    </p>
+    <p v-if="group.is_vcep">
       Please review the
       <publication-policy-link />
       and refer to guidance on submissions to a preprint server (e.g. bioRxiv or medRxiv).

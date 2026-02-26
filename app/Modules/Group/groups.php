@@ -44,10 +44,20 @@ return [
             'id' => 5,
             'name' => 'scvcep',
             'fullname' => 'Somatic Cancer Variant Curation Expert Panel',
-            'display_name' => 'SCVCEP',
+            'display_name' => 'SC-VCEP',
             'description' => 'A Somatic cancer variant curation expert panel',
             'can_be_parent' => false,
             'curation_product' => CurationProduct::Variant,
+            'is_somatic_cancer' => true
+        ],
+        'sccdwg' => [
+            'id' => 6,
+            'name' => 'sccdwg',
+            'fullname' => 'Somatic Cancer-CDWG',
+            'display_name' => 'SC-CDWG',
+            'description' => 'A Somatic Cancer-Clinical Domain Working Group that oversees SC-VCEP Expert Panels.',
+            'can_be_parent' => true,
+            'curation_product' => null,
             'is_somatic_cancer' => true
         ],
     ],

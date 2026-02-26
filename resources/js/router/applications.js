@@ -56,6 +56,19 @@ export default [{
                     permissions: ['ep-applications-manage']
                 }
             },
+            {
+                name: 'scvceps',
+                path: "scvceps",
+                components: {
+                    default: () =>
+                        import ('@/views/indexes/ScvcepsList.vue'),
+                    modal: CreateApplicationForm,
+                },
+                meta: {
+                    protected: true,
+                    permissions: ['ep-applications-manage']
+                }
+            },
         ]
     },
     {

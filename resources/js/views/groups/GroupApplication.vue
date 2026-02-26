@@ -1,6 +1,7 @@
 <script>
 import ApplicationGcep from '@/components/expert_panels/ApplicationGcep.vue';
 import ApplicationVcep from '@/components/expert_panels/ApplicationVcep.vue';
+import ApplicationScvcep from '@/components/expert_panels/ApplicationScvcep.vue';
 import ApplicationMenu from '@/components/layout/ApplicationMenu.vue';
 import Group from '@/domain/group';
 import { getApplicationForGroup } from "@/composables/use_application.js";
@@ -10,6 +11,7 @@ export default {
     components: {
         ApplicationGcep,
         ApplicationVcep,
+        ApplicationScvcep,
         ApplicationMenu,
     },
     beforeRouteLeave() {
@@ -39,8 +41,12 @@ export default {
     },
     computed: {
         applicationComponent() {
-            if (this.group?.is_vcep_or_scvcep) {
+            if (this.group?.is_vcep) {
                 return ApplicationVcep;
+            }
+
+            if (this.group?.is_scvcep) {
+                return ApplicationScvcep;
             }
 
             if (this.group?.is_gcep) {

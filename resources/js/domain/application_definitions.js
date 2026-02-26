@@ -357,3 +357,116 @@ export const GcepApplication = applicationDefinitionFactory({
         },
     }
 });
+
+export const ScvcepApplication = applicationDefinitionFactory({
+    steps: {
+        'definition': {
+            name: 'Group Definition',
+            sections: {
+                basicInfo: {
+                    name: 'Basic Information',
+                    requirements: [
+                        requirements.longName,
+                        requirements.shortName
+                    ],
+                },
+                membership: {
+                    name: 'Membership',
+                    requirements: [
+                        requirements.chairs,
+                        requirements.coordinators,
+                        requirements.coisComplete,
+                        requirements.institutions,
+                        requirements.expertiseDescription,
+                        requirements.memberExpertise
+                    ],
+                },
+                websiteDescription: {
+                    name: 'Website Decription',
+                    requirements: [
+                        requirements.websiteDescription,
+                    ],
+                },
+                scope: {
+                    name: 'Scope of Work',
+                    requirements: [
+                        requirements.genes,
+                        requirements.scopeDescription
+                    ],
+                },
+                reanalysis: {
+                    name: 'Reanalysis & Discrepency Resolution',
+                    requirements: [
+                        requirements.reanalysisAttestation
+                    ],
+                },
+                nhgri: {
+                    name: 'NHGRI Data Availability',
+                    requirements: [
+                        requirements.nhgri
+                    ],
+                }
+
+            },
+            completed: group => group.expert_panel.defIsApproved,
+            disabled: () => false,
+        },
+        'draft-specifications': {
+            name: 'Draft Specifications',
+            sections: {
+                draftSpecs: {
+                    name: 'Draft Specfications',
+                    title: null,
+                    requirements: [
+                        requirements.draftApprovedSpecifications
+                    ],
+                }
+            },
+            completed: group => {
+                return group.expert_panel.draftSpecificationsIsApproved
+            },
+            disabled: group => !group.expert_panel.defIsApproved,
+        },
+        'pilot-specifications': {
+            name: 'Specifications Pilot',
+            sections: {
+                pilotSpecs: {
+                    name: 'Pilot Specifications',
+                    requirements: [
+                        requirements.pilotedApprovedSpecifications
+                    ],
+                }
+            },
+            completed: group => group.expert_panel.pilotSpecificationsIsApproved,
+            disabled: group => !group.expert_panel.draftSpecificationsIsApproved,
+        },
+        'sustained-curation': {
+            name: 'Sustained Curation',
+            sections: {
+                curationReviewProcess: {
+                    name: 'Curation and Review Process',
+                    requirements: [
+                        requirements.meetingFrequency,
+                        requirements.curationProcess
+                    ],
+                },
+                evidenceSummaries: {
+                    name: 'Example Evidence Summaries',
+                    requirements: [
+                        requirements.exampleSummaries
+                    ],
+                },
+                designations: {
+                    name: 'Member Designation',
+                    requirements: [
+                        requirements.minimumBiocurators,
+                        requirements.biocuratorTrainers,
+                        requirements.coreApprovalMembers
+                    ],
+                },
+            },
+            completed: group => group.expert_panel.sustainedCurationIsApproved,
+            disabled: group => !group.expert_panel.pilotSpecificationsIsApproved,
+        }
+    }
+});

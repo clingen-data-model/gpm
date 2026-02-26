@@ -2,7 +2,7 @@
 import ApplicationsSummaryTable from '@/components/applications/ApplicationsSummaryTable.vue'
 
 export default {
-    name: 'VcepsSummary',
+    name: 'ScvcepsSummary',
     components: {
         ApplicationsSummaryTable
     },
@@ -10,6 +10,6 @@ export default {
 </script>
 <template>
   <div>
-    <ApplicationsSummaryTable :ep-type-id="2" />
+    <ApplicationsSummaryTable :ep-type-id="3" />
   </div>
 </template>
