@@ -73,7 +73,9 @@ export default {
         class="p-2 border rounded"
       >
         <header class="flex justify-between">
-          <h4>{{ summary.gene.gene_symbol }} - {{ summary.variant }}</h4>
+          <h4>{{ summary.gene.gene_symbol }} - {{ summary.variant }} 
+            <span v-if="group.is_scvcep"> - Assertion ID: {{ summary.assertion_id ?? 'N/A' }}</span>
+          </h4>
           <dropdown-menu v-if="canEdit" :hide-cheveron="true" class="relative">
             <template #label>
               <button class="btn btn-xs">
@@ -90,7 +92,7 @@ export default {
         </header>
         <p>{{ summary.summary }}</p>
         <a v-if="summary.vci_url" class="link" :href="summary.vci_url" target="_blank">
-          View in the VCI
+          {{ group.is_vcep ? 'View in the VCI' : 'View in CIVic' }}
         </a>
       </div>
       <EvidenceSummaryForm 
