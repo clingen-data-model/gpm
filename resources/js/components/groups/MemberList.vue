@@ -164,7 +164,10 @@ export default {
             return `/api/report/groups/${this.group.uuid}/member-export${query}`;
         },
         features () {
-            return this.$store.state.systemInfo.app.features
+          return this.$store.state.systemInfo.app.features
+        },
+        canAdminCompleteCoi () {
+          return Boolean(this.$store.state.systemInfo.env == 'local' || this.$store.state.systemInfo.env == 'demo') && (this.hasRole('super-admin') || this.hasRole('super-user')) && ! this.readonly
         },
     },
     watch: {
@@ -333,7 +336,36 @@ export default {
             }
 
             return requirements
-        }
+        },
+        async adminCompleteCoi (member) {
+          try {
+            await api.post(`/api/coi/${this.group.coi_code}`, {
+              group_member_id: member.id,
+              work_fee_lab: 0,
+              contributions_to_gd_in_group: 2,
+              coi: 0,
+              coi_attestation: 1,
+              data_policy_attestation: 1,
+              admin_override: 1,
+            });
+            await this.$store.dispatch('groups/getMembers', this.group);
+          } catch (e) {
+            console.error(e);
+            const apiMsg =
+              e?.response?.data?.message ||
+              (typeof e?.response?.data === 'string' ? e.response.data : null);
+
+            const memberName = member?.person?.name || `${member?.person?.first_name ?? ''} ${member?.person?.last_name ?? ''}`.trim() || 'this member';
+
+            this.$store.commit(
+              'pushError',
+              apiMsg
+                ? `Could not complete COI for ${memberName}: ${apiMsg}`
+                : `Could not complete COI for ${memberName}. Please try again.`
+            );
+          }
+        },
+
     }
 }
 </script>
@@ -462,6 +494,7 @@ export default {
           </div>
         </template>
         <template #cell-actions="{item}">
+          <button v-if="group.has_coi_requirement && item.needsCoi && canAdminCompleteCoi" class="btn btn-xs" @click.stop="adminCompleteCoi(item)">Complete COI</button> 
           <div class="flex space-x-2 items-center">
             <dropdown-menu
               v-if="hasAnyMemberPermission() && !readonly"
@@ -505,7 +538,7 @@ export default {
                 <icon-notification v-if="item.is_contact" :width="12" :height="12" icon-name="Is a group contact" @click.stop="" />
               </popover>
             </div>
-          </div>
+          </div>          
         </template>
 
         <template #cell-requirements="{item}">

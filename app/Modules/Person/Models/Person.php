@@ -206,7 +206,9 @@ class Person extends Model implements HasLogEntries
      */
     public function credentials(): BelongsToMany
     {
-        return $this->belongsToMany(Credential::class);
+        return $this->belongsToMany(Credential::class)
+            ->withPivot('sort_order')
+            ->orderBy('sort_order');
     }
 
     /**

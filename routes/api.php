@@ -25,6 +25,7 @@ use App\Http\Controllers\Api\GeneLookupController;
 use App\Http\Controllers\Api\SystemInfoController;
 use App\Http\Controllers\Api\AnnualUpdateController;
 use App\Http\Controllers\Api\DiseaseLookupController;
+use App\Http\Controllers\Api\MoiLookupController;
 use App\Http\Controllers\Api\DocumentationController;
 use App\Http\Controllers\ImpersonateSearchController;
 use App\Modules\User\Http\Controllers\CurrentUserController;
@@ -99,11 +100,16 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
 Route::get('/cdwgs', [CdwgController::class, 'index']);
 
+Route::post('/genes/check-genes', [GeneLookupController::class, 'check']);
 Route::get('/diseases/search', [DiseaseLookupController::class, 'search']);
 Route::get('/diseases/{mondo_id}', [DiseaseLookupController::class, 'show']);
 
 Route::get('/genes/search', [GeneLookupController::class, 'search']);
 Route::get('/genes/{hgnc_id}', [GeneLookupController::class, 'show']);
+Route::post('/genes/availability', [GeneLookupController::class, 'genesAvailability']);
+Route::get('/curations', [GeneLookupController::class, 'curations']);
+Route::post('/curationids', [GeneLookupController::class, 'curationids']);
+Route::get('/mois', [MoiLookupController::class, 'index']);
 
 Route::get('/docs', [DocumentationController::class, 'index']);
 Route::get('/docs/{slug}', [DocumentationController::class, 'show']);

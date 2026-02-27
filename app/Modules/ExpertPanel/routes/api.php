@@ -19,6 +19,7 @@ use App\Modules\ExpertPanel\Actions\ApplicationDocumentDelete;
 use App\Modules\ExpertPanel\Actions\ApplicationDocumentUpdate;
 use App\Modules\ExpertPanel\Actions\ExpertPanelUpdateAttributes;
 use App\Modules\ExpertPanel\Actions\ApplicationDocumentMarkFinal;
+use App\Modules\ExpertPanel\Actions\GcepRationaleUpdate;
 use App\Modules\ExpertPanel\Http\Controllers\Api\ApplicationController;
 use App\Modules\ExpertPanel\Http\Controllers\Api\ApplicationLogController;
 use App\Modules\ExpertPanel\Http\Controllers\Api\ApplicationStepController;
@@ -63,5 +64,7 @@ Route::group([
         Route::post('/{expertPanel:uuid}/next-actions/{nextAction:uuid}/complete', NextActionComplete::class);
 
         Route::put('/{expertPanel:uuid}/clinvar', ClinvarOrganizationUpdate::class);
+
+        Route::put('/{expertPanel:uuid}/gcep-rationale', GcepRationaleUpdate::class);
     });
 });

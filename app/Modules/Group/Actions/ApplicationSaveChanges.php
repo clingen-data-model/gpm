@@ -7,7 +7,7 @@ use App\Modules\Group\Models\Group;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsController;
 use App\Modules\Group\Http\Resources\GroupResource;
-
+use App\Modules\ExpertPanel\Actions\GcepRationaleUpdate;
 class ApplicationSaveChanges
 {
     use AsController;
@@ -15,12 +15,11 @@ class ApplicationSaveChanges
     public function __construct(
         private MembershipDescriptionUpdate $memberDescription,
         private ScopeDescriptionUpdate $scopeDescription,
+        private GcepRationaleUpdate $gcepRationale,
         private CurationReviewProtocolUpdate $curationReviewProtocol,
         private AttestationGcepStore $gcepAttestation,
         private AttestationNhgriStore $nhgriAttestation,
         private AttestationReanalysisStore $reanalysisAttestation,
-        // private ExpertPanelNameUpdate $expertPanelName,
-        // private ParentUpdate $groupParent
     ) {
     }
 
@@ -52,7 +51,10 @@ class ApplicationSaveChanges
                             $data->get('reanalysis_attestation_date')
                         );
         }
-        return $group;
+        if ($group->isGcep) {
+            $this->gcepRationale->handle($group->expertPanel, $data->get('prioritization_rationale'));
+        }
+        return $group->refresh()->load('expertPanel');
     }
 
     public function asController(ActionRequest $request, Group $group)

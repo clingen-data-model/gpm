@@ -3,12 +3,12 @@
 namespace App\Modules\ExpertPanel\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Models\GeneTracker\Gene as GtGene;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use App\Models\GeneTracker\Disease as GtDisease;
 use Database\Factories\GeneFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 /**
  * @property int $id
@@ -25,11 +25,7 @@ class Gene extends Model
 {
     use HasFactory, SoftDeletes;
 
-    public function getConnectionName()
-    {
-        return config('database.default');
-    }
-
+    protected $table = 'scope_genes';
 
     /**
      * The attributes that are mass assignable.
@@ -42,6 +38,10 @@ class Gene extends Model
         'gene_symbol',
         'mondo_id',
         'disease_name',
+        'moi',
+        'tier',
+        'plan',
+        'gt_curation_uuid',
         'date_approved',
     ];
 
@@ -54,8 +54,18 @@ class Gene extends Model
         'id' => 'integer',
         'hgnc_id' => 'integer',
         'expert_panel_id' => 'integer',
+        'tier' => 'integer',
         'date_approved' => 'datetime',
+        'plan' => 'array',
     ];
+
+    protected static function booted()
+    {
+        static::deleting(function (self $gene) {
+            // Delete snapshots when gene is deleted (soft delete will trigger this too)
+            $gene->snapshots()->delete();
+        });
+    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -65,26 +75,11 @@ class Gene extends Model
         return $this->belongsTo(ExpertPanel::class);
     }
 
-    /**
-     * Get the gene that owns the Gene
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function gene(): BelongsTo
+    public function snapshots()
     {
-        return $this->belongsTo(GtGene::class, 'hgnc_id', 'hgnc_id');
+        return $this->hasMany(ScopeGeneSnapshot::class, 'scope_gene_id');
     }
-
-    /**
-     * Get the disease that owns the Gene
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function disease(): BelongsTo
-    {
-        return $this->belongsTo(GtDisease::class, 'mondo_id', 'mondo_id');
-    }
-
+    
     /**
      * SCOPES
      */
@@ -102,5 +97,20 @@ class Gene extends Model
     public static function newFactory()
     {
         return new GeneFactory();
+    }
+
+    protected function gtGene(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                return [
+                    'hgnc_id'     => (int) $this->hgnc_id,
+                    'gene_symbol' => $this->gene_symbol,
+                    // 'omim_id'     => (int) $this->omim_id,
+                    'hgnc_name'   => $this->hgnc_name,
+                    // 'hgnc_status' => $this->hgnc_status,
+                ];
+            }
+        );
     }
 }
