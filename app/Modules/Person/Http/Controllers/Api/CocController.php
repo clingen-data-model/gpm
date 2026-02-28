@@ -10,7 +10,11 @@ class CocController extends Controller
 {
     public function show(Request $request, CocService $coc)
     {
-        $person = $request->user()->person ?? $request->user();
+        $person = $request->user()->person;
+
+        if (!$person) {
+            abort(404, 'Person not found.');
+        }
 
         $person->loadMissing('latestCocAttestation');
 
