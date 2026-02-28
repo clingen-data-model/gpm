@@ -30,14 +30,14 @@ trait IsPublishableGroupEvent
         return $messageGene;
     }
 
-    public function mapMemberForMessage($member, $withEmail = false, ?CocService $cocService = null): array
+    public function mapMemberForMessage($member, $withEmail = false): array
     {
         $person = $member->person;
         $roles = $member->roles->pluck('display_name')->toArray();
 
         $coc = null;
         if ($person && $person->relationLoaded('latestCocAttestation')) {
-            $cocService ??= app(CocService::class);
+            $cocService = app(CocService::class);
             $coc = $cocService->statusFor($person);
         }
 
@@ -74,8 +74,13 @@ trait IsPublishableGroupEvent
         ];
 
         if ($withMembers) {
-            $cocService = app(CocService::class);
-            $data['members'] = $group->members()->isActive()->with(['person', 'person.credentials', 'person.institution', 'roles', 'permissions', 'latestCoi', 'person.latestCocAttestation'])->get()->map(function ($member) use ($cocService) { return $this->mapMemberForMessage($member, false, $cocService); })->toArray();
+            $data['members'] = $group->members()
+                ->isActive()
+                ->with(['person', 'person.credentials', 'person.institution', 'roles', 'permissions', 'latestCoi', 'person.latestCocAttestation'])
+                ->get()
+                ->map(function ($member) {
+                    return $this->mapMemberForMessage($member, false);
+                })->toArray();
         }
 
         if ($group->isEp) {

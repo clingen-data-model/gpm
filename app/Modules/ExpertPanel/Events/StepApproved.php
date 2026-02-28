@@ -10,8 +10,6 @@ use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Modules\Group\Events\PublishableApplicationEvent;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use App\Modules\Group\Events\Traits\IsPublishableGroupEvent;
-use Illuminate\Support\Facades\Log;
-use App\Services\CocService;
 
 class StepApproved extends ExpertPanelEvent implements PublishableApplicationEvent
 {
@@ -48,13 +46,13 @@ class StepApproved extends ExpertPanelEvent implements PublishableApplicationEve
     public function getEventType(): string
     {
         $isVcep = $this->application->is_vcep;
-        $isGcep = $this->application->is_gcep;       
+        $isGcep = $this->application->is_gcep;
 
         switch ($this->step) {
             case 1:
                 if ($isVcep) {
                     return 'vcep_definition_approval';
-                } 
+                }
                 if ($isGcep) {
                     return 'gcep_final_approval';
                 }
@@ -68,6 +66,7 @@ class StepApproved extends ExpertPanelEvent implements PublishableApplicationEve
             default:
                 throw new Exception('Invalid step approved expected 1-4, received '.$this->step);
         }
+        return 'unexpected_step';
     }
 
     public function getPublishableMessage(): array
@@ -78,11 +77,10 @@ class StepApproved extends ExpertPanelEvent implements PublishableApplicationEve
             $this->group->loadMissing([
                 'members.person.latestCocAttestation',
             ]);
-            $cocService = app(CocService::class);
 
             $message['members'] = $this->group->members
-                                    ->map(function ($member) use ($cocService) {
-                                        return $this->mapMemberForMessage($member, false, $cocService);
+                                    ->map(function ($member) {
+                                        return $this->mapMemberForMessage($member, false);
                                     })
                                     ->toArray();
 
