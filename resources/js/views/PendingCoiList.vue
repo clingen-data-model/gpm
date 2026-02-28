@@ -4,7 +4,7 @@
 </script>
 
 <template>
-  <card title="You have Conflict of Interest Disclosures to Complete SETH">
+  <card title="You have Conflict of Interest Disclosures to Complete">
     <h3>You must complete a Conflict of Interest Disclosure for the following memberships:</h3>
     <div class="my-2">
       <router-link
