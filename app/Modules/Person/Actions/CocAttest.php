@@ -42,7 +42,7 @@ class CocAttest
     public function rules(): array
     {
         return [
-            'agreed' => ['required', 'boolean', 'in:1,true'],
+            'agreed' => ['required', 'accepted'],
         ];
     }
 }

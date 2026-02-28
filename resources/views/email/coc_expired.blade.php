@@ -11,9 +11,9 @@
     </p>
 @else
     <p>
-        Your ClinGen <strong>Code of Conduct</strong> attestation is <strong>expired</strong>
+        Your ClinGen <strong>Code of Conduct</strong> attestation is <strong>expired</strong>.
         @if(!empty($expiresAt))
-            ({{ optional($expiresAt)->toFormattedDateString() }}).
+            ({{ optional($expiresAt)->toFormattedDateString() }})
         @endif
     </p>
 @endif
