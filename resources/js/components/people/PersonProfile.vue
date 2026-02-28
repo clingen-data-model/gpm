@@ -123,7 +123,7 @@ export default {
         <section v-if="hasPermission('people-manage')" class="mt-4 border-t pt-4">
           <h3>Code of Conduct Attestation Status</h3>
           <dictionary-row class="pb-2" label-class="w-40" label="Status">
-            {{ person?.coc?.status }}
+            {{ person?.coc?.status || 'ERROR'}}
           </dictionary-row>
           <dictionary-row class="pb-2" label-class="w-40" label="Version">
             {{ person?.coc?.version || 'N/A' }}

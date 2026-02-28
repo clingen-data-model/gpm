@@ -227,7 +227,7 @@ router.beforeEach(async (to, from, next) => {
         return;
     }
 
-     const cocStatus = store.getters.currentUser?.person?.coc?.status
+    const cocStatus = store.getters.currentUser?.person?.coc?.status
     if (['missing', 'expired', 'version_mismatch'].includes(cocStatus)) {
         return next({ name: 'PendingCocAttestation', query: { redirect: to.fullPath } })
     }

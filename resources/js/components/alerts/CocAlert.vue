@@ -60,7 +60,7 @@ const formatDate = (iso) => {
         <strong>Code of Conduct:</strong>
         {{ message }}
         <span v-if="expiresAt && (isExpired || isExpiringSoon)">
-          (Expires {{ formatDate(expiresAt) }})
+          (Expiration {{ formatDate(expiresAt) }})
         </span>
       </p>
 
