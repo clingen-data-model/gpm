@@ -5,29 +5,14 @@
 
 <p>Hi {{ $name ?: 'there' }},</p>
 
-@if ($reason === 'missing')
-    <p>
-        Our records show you do not currently have a ClinGen <strong>Code of Conduct</strong> attestation on file.
-    </p>
-@else
-    <p>
-        Your ClinGen <strong>Code of Conduct</strong> attestation is <strong>expired</strong>.
-        @if(!empty($expiresAt))
-            ({{ optional($expiresAt)->toFormattedDateString() }})
-        @endif
-    </p>
-@endif
-
 <p>
-    Please complete your Code of Conduct attestation here:
+    We wanted to remind you that you have the ClinGen Code of Conduct attestation to renew.
+</p>
+<p>    
     <a href="{{ $attestUrl }}">{{ $attestUrl }}</a>
 </p>
-
 <p>
-    Full Code of Conduct:
-    <a href="{{ $fullLink }}">{{ $fullLink }}</a><br>
-    One-page summary:
-    <a href="{{ $summaryLink }}">{{ $summaryLink }}</a>
+    Please follow the links above to log in and complete your Code of Conduct attestation, or log in to the ClinGen GPM and see the list on your dashboard.
 </p>
 
-<p>Thanks,<br>ClinGen</p>
+<p>Thanks,<br>The ClinGen Team</p>
