@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Notification;
 use App\Modules\Group\Models\GroupMember;
 use App\Modules\Group\Actions\MemberRemove;
 use App\Notifications\InviteExpirySummaryForCoordinators;
+use App\Modules\User\Models\User;
 
 class ExpireGroupInvites extends Command
 {
@@ -17,8 +18,9 @@ class ExpireGroupInvites extends Command
 
     public function handle(): int
     {
+        $now = now();
         $ttlDays = (int) config('app.invitation_ttl_days', 30);
-        $cutoff  = CarbonImmutable::now()->subDays($ttlDays);
+        $cutoff  = $now->copy()->subDays($ttlDays);
 
         // STEP 1: Find pending prospective memberships (person.user_id IS NULL) older than TTL
         $expiredMemberships = GroupMember::query()
@@ -40,11 +42,12 @@ class ExpireGroupInvites extends Command
         $errors = 0;
 
         foreach ($expiredMemberships as $gm) {
-            try {
-                $gm->loadMissing('group.groupStatus', 'group.type', 'person');
+            try {                
+                MemberRemove::run($gm, $now->copy()->startOfDay());
 
-                MemberRemove::run($gm, now()->startOfDay());
-
+                $baseName = $gm->group?->name ?? "Group #{$gm->group_id}";
+                $typeName = $gm->group?->type?->display_name;
+                $groupNameById[$gm->group_id] ??= $typeName ? "{$baseName} {$typeName}" : $baseName;
                 $removedByGroup[$gm->group_id][] = [
                     'person_id' => $gm->person_id,
                     'name'      => trim(($gm->person->first_name ?? '').' '.($gm->person->last_name ?? '')) ?: "Person #{$gm->person_id}",
@@ -57,22 +60,18 @@ class ExpireGroupInvites extends Command
             }
         }
 
+        $superAdmins = User::role('super-admin')->get();
         foreach ($removedByGroup as $groupId => $rows) {
-            $coordinators = $this->coordinatorUsersForGroup($groupId);
-            if ($coordinators->isEmpty()) {
-                continue;
-            }
+                $coordinators = $this->coordinatorUsersForGroup($groupId);
+                $recipients = $coordinators->isNotEmpty() ? $coordinators : $superAdmins;
 
-            $groupName = optional(GroupMember::query()
-                    ->with('group:id,name')
-                    ->where('group_id', $groupId)
-                    ->first())->group->name ?? "Group #{$groupId}";
-
-            Notification::send($coordinators, new InviteExpirySummaryForCoordinators(
+            if ($recipients->isEmpty()) { continue; }
+            $groupName = $groupNameById[$groupId] ?? "Group #{$groupId}";
+            Notification::send($recipients, new InviteExpirySummaryForCoordinators(
                     groupId: $groupId,
                     groupName: $groupName,
                     removedRows: $rows,
-                    expiredAt: now()->toDateTimeString(),
+                    expiredAt: $now->toDateTimeString(),
                     ttlDays: $ttlDays
                 )
             );
@@ -97,13 +96,9 @@ class ExpireGroupInvites extends Command
                     ->whereIn('person_id', $peopleToInviteCleanup)
                     ->whereNull('redeemed_at')
                     ->whereNull('deleted_at')
-                    ->update(['deleted_at' => now()]);
+                    ->update(['deleted_at' => $now]);
             }
         }
-
-        $removedCount = collect($removedByGroup)->flatten(1)->count();
-        $this->info("Done. Memberships removed: {$removedCount}, Groups emailed: ".count($removedByGroup).", Errors: {$errors}");
-
         return self::SUCCESS;
     }
 
