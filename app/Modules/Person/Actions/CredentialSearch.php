@@ -26,8 +26,6 @@ class CredentialSearch
             $query->whereRaw('LOWER(credentials.name) LIKE ?', '%'.$this->normalizeString($request->keyword.'%'));
             $query->orWhere(fn($q) => $q->matchesSynonym($request->keyword));
         }
-
-        $query->orderBy('approved', 'DESC');
         $query->orderBy('name', 'ASC');
 
         return $query->get();

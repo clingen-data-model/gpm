@@ -21,15 +21,35 @@
     });
 
     const searchText = ref('');
-    const searchCredentials = async(keyword, options) => {
-        searchText.value = keyword
-        return options.filter(o => {
-            const pattern = /[.,-]/g
-            const normedKeyword = keyword.replace(pattern, '').toLowerCase();
-            return o.name.toLowerCase().match(normedKeyword)
-                || o.synonyms.some(s => s.name.toLowerCase().match(normedKeyword));
-        })
-    }
+    const normalize = (s) => (s ?? '').replace(/[.,-]/g, '').toLowerCase().trim();
+    const searchCredentials = async (keyword, options) => {
+      searchText.value = keyword;
+
+      const k = normalize(keyword);
+
+      const matches = options.filter(o => {
+        const name = normalize(o.name);
+        const syns = (o.synonyms ?? []).map(s => normalize(s.name));
+
+        return name.includes(k) || syns.some(s => s.includes(k));
+      });
+
+      const score = (o) => {
+        const name = normalize(o.name);
+        const syns = (o.synonyms ?? []).map(s => normalize(s.name));
+        // exact match
+        if (name === k || syns.includes(k)) return 0;
+        // prefix match
+        if (name.startsWith(k) || syns.some(s => s.startsWith(k))) return 1;
+        return 2;
+      };
+
+      return matches.sort((a, b) => {
+        const sa = score(a), sb = score(b);
+        if (sa !== sb) return sa - sb;
+        return a.name.localeCompare(b.name, undefined, {sensitivity: 'base'});
+      });
+    };
 
     onMounted(() => {
         store.dispatch('credentials/getItems');

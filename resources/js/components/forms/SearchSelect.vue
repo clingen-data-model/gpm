@@ -359,7 +359,7 @@ export default {
 <template>
   <div class="search-select-component">
     <div class="search-select-container bg-white">
-      <div v-if="hasSelection">
+      <template v-if="hasSelection">
         <div
           v-for="currSelection, idx in selections" :key="idx"
           class="selection" :class="{'disabled': disabled }"
@@ -377,7 +377,7 @@ export default {
             x
           </div>
         </div>
-      </div>
+      </template>
       <input
         v-show="showInput"
         id="search-select-input"
@@ -423,16 +423,23 @@ export default {
     .search-select-component {
         position: relative;
         overflow: visible;
-        height: 2.5rem;
+        min-height: 2.5rem;
+        height: auto;
         width: 100%;
+        min-width: 0;
+        max-width: 100%; 
     }
 
     .search-select-container {
         @apply border border-gray-300 leading-6 px-2 flex items-center flex-wrap py-1 rounded space-x-2;
+        min-width: 0;
+        max-width: 100%;
     }
 
     .selection {
-        @apply bg-gray-500 text-white flex mr-1 rounded text-sm block;
+        @apply bg-gray-500 text-white flex mr-1 rounded text-sm;
+        flex: 0 0 auto;
+        max-width: 100%;
     }
 
     .selection.disabled {
@@ -445,22 +452,19 @@ export default {
     }
 
     .selection > label {
-        @apply py-0.5;
-        margin-bottom: 0;
-    }
-
-    .remove-btn {
-        /* @apply bg-inherit border border-t-0 border-r-0 border-b-0 border-gray-400 rounded-r-md pt-0.5 cursor-pointer; */
+        max-width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
 
     .search-select-container .input {
-        @apply border-none block w-40;
-        display: block;
-        min-width: 2rem; /* Set the width small b/c this will grow with flex */
+        @apply border-none block;
         outline: none;
         padding: 0px;
-        flex-grow: 1;
-        flex-shrink: 1;
+        flex: 1 1 10rem;
+        min-width: 6rem;
+        width: auto;    
     }
 
     .result-container {
