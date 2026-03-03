@@ -195,7 +195,7 @@ class GroupPolicy
     public function manageAnnualUpdate(User $user, Group $group): bool
     {
         return $user->hasAnyPermission('annual-updates-manage')
-            || $user->hasGroupPermissionTo('application-edit', $group);
+            || $user->hasGroupPermissionTo('application-edit', $group) || $user->hasGroupPermissionTo('annual-update-manage', $group);
     }
 
     public function retireMember(User $user, Group $group): bool

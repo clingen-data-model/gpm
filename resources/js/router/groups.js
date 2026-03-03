@@ -119,7 +119,7 @@ export default [
         },
         props: true,
         beforeEnter: async (to) => {
-            return await hasGroupPermission(to, 'application-edit')
+            return await hasGroupPermission(to, 'application-edit') || await hasGroupPermission(to, 'annual-update-manage')
         },
         children: [
             {
