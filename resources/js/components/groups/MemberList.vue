@@ -137,9 +137,6 @@ export default {
             if (!this.group.has_coi_requirement) {
                 fields.splice(fields.findIndex(f => f.name === 'coi_last_completed'), 1);
             }
-            if (!this.group.isEp()) {
-                fields.splice(fields.findIndex(f => f.name === 'requirements'), 1);
-            }
             return fields;
         },
         coiCuttoff () {
