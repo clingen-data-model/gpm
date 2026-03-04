@@ -7,6 +7,7 @@
     import { htmlFromMarkdown } from '@/markdown-utils';
     import GeneCurationStatus from '@/components/expert_panels/GeneCurationStatus.vue'
     import VcepGeneList from '@/components/expert_panels/VcepGeneList.vue';
+    import ScvcepGeneList from '@/components/expert_panels/ScvcepGeneList.vue';
 
     const store = useStore();
     const group = computed(() => store.getters['groups/currentItemOrNew'])
@@ -46,6 +47,7 @@
         <h4>Expertise of {{ group.type.display_name }} members</h4>
         <blockquote class="markdown-preview" v-html="htmlFromMarkdown(expertPanel.membership_description)"></blockquote>
       </div>
+
     </ReviewSection>
 
     <ReviewSection title="Website Description" name="website-description">
@@ -59,7 +61,8 @@
           {{ expertPanel.genes.map(g => g.gene_symbol).join(', ') }}
         </p>
         <GeneCurationStatus v-if="group.is_gcep" :genes="expertPanel.genes" :readonly="true" :editing="false" />
-        <VcepGeneList v-if="group.is_vcep_or_scvcep" :group="group" :editing="false" />
+        <VcepGeneList v-if="group.is_vcep" :group="group" :editing="false" />
+        <ScvcepGeneList v-if="group.is_scvcep" :group="group" :editing="false" />
       </div>
 
       <h3>Description of scope</h3>
