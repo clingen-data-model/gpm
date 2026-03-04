@@ -6,6 +6,7 @@
     import { formatDate } from '@/date_utils'
     import GeneCurationStatus from '@/components/expert_panels/GeneCurationStatus.vue'
     import VcepGeneList from '@/components/expert_panels/VcepGeneList.vue';
+    import ScvcepGeneList from '@/components/expert_panels/ScvcepGeneList.vue';
 
     const store = useStore();
     const group = computed(() => store.getters['groups/currentItemOrNew'])
@@ -42,9 +43,11 @@
       <ReviewMembership :members="members" />
 
       <div v-if="group.is_vcep_or_scvcep" class="mt-6">
-        <h4>Expertise of VCEP members</h4>
+        <h4 v-if="group.is_vcep">Expertise of VCEP members</h4>
+        <h4 v-if="group.is_scvcep">Expertise of SC-VCEP members</h4>
         <blockquote v-html="expertPanel.membership_description"></blockquote>
       </div>
+
     </ReviewSection>
 
     <ReviewSection title="Website Description" name="website-description">
@@ -58,7 +61,8 @@
           {{ expertPanel.genes.map(g => g.gene_symbol).join(', ') }}
         </p>
         <GeneCurationStatus v-if="group.is_gcep" :genes="expertPanel.genes" :readonly="true" :editing="false" />
-        <VcepGeneList v-if="group.is_vcep_or_scvcep" :group="group" :editing="false" />
+        <VcepGeneList v-if="group.is_vcep" :group="group" :editing="false" />
+        <ScvcepGeneList v-if="group.is_scvcep" :group="group" :editing="false" />
       </div>
 
       <h3>Description of scope</h3>
