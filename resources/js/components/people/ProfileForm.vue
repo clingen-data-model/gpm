@@ -152,15 +152,11 @@
             <template #content>
               <div style="max-width: 500px">
                 <h4>What do you mean by credentials?</h4>
-                <p>
-                  Credentials are any degrees or professional certifications you have earned.  Typically, these will be the acronyms you list after your name on your CV.
+                <p>Credentials are any degrees or professional certifications you have earned. Typically, these will be the acronyms you list after your name on your CV. 
+                  <span class="font-semibold">Note, if you create a new or choose an existing credential, it will display exactly as you have typed. Please ensure that the spelling, capitalization, and credential order are as you would like them  to be shown for display on the ClinGen website</span>.
                 </p>
-                <p>
-                  We recommend choosing one or more options already in the list of credentials, but if you do not see yours feel free to add it.
-                </p>
-                <p>
-                  Please do not include current job titles or specific.  If you would like to add that information to your profile please do so in the biography field below.
-                </p>
+                <p>We recommend choosing one or more options already in the list of credentials, but if you do not see yours feel free to add it.</p>
+                <p>Please do not include current job titles or specific. If you would like to add that information to your profile please do so in the biography field below.</p>
               </div>
             </template>
           </popover>
