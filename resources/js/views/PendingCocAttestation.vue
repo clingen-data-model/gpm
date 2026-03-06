@@ -70,7 +70,8 @@ onMounted(fetchCoc)
       <p class="whitespace-pre-line">{{ payload?.content?.definition?.intro }}</p>
       <p>
         The full Code of Conduct can be found <a :href="payload?.content?.links?.full" target="_blank">here</a> and a one-page, 
-        high-level summary of the Code can be found <a :href="payload?.content?.links?.summary" target="_blank">here</a>.
+        high-level summary of the Code can be found <a :href="payload?.content?.links?.summary" target="_blank">here</a>, 
+        and a summary slide can be found <a :href="payload?.content?.links?.slide" target="_blank">here</a>.
       </p>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div v-for="(section, idx) in payload?.content?.definition?.sections" :key="idx">
@@ -89,8 +90,8 @@ onMounted(fetchCoc)
       </div>
 
       <div class="mt-4 flex items-center space-x-2">
-        <button class="btn btn-primary" :disabled="!agreed || loading" @click="submit">
-          I accept the Code of Conduct
+        <button type="button" class="inline-flex items-center justify-center rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50" :disabled="!agreed || loading" @click="submit">
+          Submit
         </button>
       </div>
     </div>

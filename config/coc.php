@@ -8,7 +8,8 @@ return [
     
     'links' => [
         'full'      => 'https://clinicalgenome.org/docs/clingen-code-of-conduct/',
-        'summary'   => 'https://clinicalgenome.org/site/assets/files/10878/clingen_code_of_conduct_slide.pdf',
+        'summary'   => 'https://clinicalgenome.org/site/assets/files/10878/clingen_code_of_conduct_summary_v1_0.pdf',
+        'slide'     => 'https://clinicalgenome.org/site/assets/files/10878/clingen_code_of_conduct_slide.pdf',
         'report'    => 'https://tinyurl.com/clingenreporting',
         'email'     => 'dapc@clinicalgenome.org',
     ],
