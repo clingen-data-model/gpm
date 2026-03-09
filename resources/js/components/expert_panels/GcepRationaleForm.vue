@@ -79,7 +79,7 @@ export default {
       />
     </header>
     <div class="mt-2 text-sm">
-      <div role="note" class="mt-3 border-l-4 border-amber-400 bg-amber-50 px-3 py-2 text-sm text-amber-900 rounded-md dark:border-amber-400 dark:bg-amber-900/20 dark:text-amber-100">
+      <div role="note" class="mt-3 border-l-4 px-3 py-2 text-sm rounded-md text-gray-700 border border-amber-400 bg-amber-50">
         <strong>Tier 1 curated genes added: {{ tier1CuratedGenesCount }}</strong>
         — Please include rationale for how you prioritized your list and how you will handle any overlap in curation efforts, especially for genes that are in another GCEPs scope.
       </div>
