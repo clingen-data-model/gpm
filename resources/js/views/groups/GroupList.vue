@@ -146,10 +146,6 @@ export default {
             this.loadedFor[tabLabel] = true;
             this.loading = false;
         },
-        filteredCoordinators(value) {
-          return value.filter(c => c.end_date == null)
-        }
-
     }
 
 }
@@ -189,15 +185,17 @@ export default {
               </badge>
             </template>
             <template #cell-coordinators="{value}">
-              <span v-for="(coordinator, idx) in filteredCoordinators(value)" :key="coordinator.id">
-                <span v-if="idx > 0">, </span>
-                <router-link
-                  :to="{name: 'PersonDetail', params: {uuid: coordinator.person.uuid}}"
-                  class="link"
-                  @click.stop
-                >
-                  {{ coordinator.person.name }}
-                </router-link>
+              <span v-for="(coordinator, idx) in value" :key="coordinator.id">
+                <template v-if="!coordinator.end_date">
+                  <span v-if="idx > 0">, </span>
+                  <router-link
+                    :to="{name: 'PersonDetail', params: {uuid: coordinator.person.uuid}}"
+                    class="link"
+                    @click.stop
+                  >
+                    {{ coordinator.person.name }}
+                  </router-link>
+                </template>
               </span>
             </template>
           </data-table>
