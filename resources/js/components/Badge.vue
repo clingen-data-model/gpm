@@ -48,7 +48,10 @@ export default {
         @apply bg-red-400;
     }
     .gray {
-        @apply bg-gray-400;
+        @apply bg-gray-500;
+    }
+    .black {
+        @apply bg-neutral-700;
     }
 
 </style>

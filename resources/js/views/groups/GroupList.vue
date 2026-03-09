@@ -185,18 +185,23 @@ export default {
               </badge>
             </template>
             <template #cell-coordinators="{value}">
-              <span v-for="(coordinator, idx) in value" :key="coordinator.id">
-                <template v-if="!coordinator.end_date">
-                  <span v-if="idx > 0">, </span>
-                  <router-link
-                    :to="{name: 'PersonDetail', params: {uuid: coordinator.person.uuid}}"
-                    class="link"
-                    @click.stop
+              <span v-if="Array.isArray(value)">
+                <template v-if="value.filter(c => !c.end_date).length">
+                  <template v-for="(coordinator, idx) in value.filter(c => !c.end_date)" :key="coordinator.id"
                   >
-                    {{ coordinator.person.name }}
-                  </router-link>
+                    <span v-if="idx > 0">, </span>
+                    <router-link
+                      :to="{ name: 'PersonDetail', params: { uuid: coordinator.person.uuid } }"
+                      class="link"
+                      @click.stop
+                    >
+                      {{ coordinator.person.name }}
+                    </router-link>
+                  </template>
                 </template>
+                <template v-else>&nbsp;</template>
               </span>
+              <span v-else>&nbsp;</span>
             </template>
           </data-table>
         </div>
