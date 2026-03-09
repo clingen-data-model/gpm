@@ -216,17 +216,19 @@
                         <div>
                             <div class="flex flex-wrap items-center gap-2">
                                 <span class="text-base font-semibold text-gray-900">{{ gene.gene_symbol }}</span>
-                                <span v-if="gene.mondo_id" class="text-xs rounded-full bg-gray-100 px-2 py-0.5 text-gray-700">{{ gene.mondo_id }}</span>
-                                <span v-if="gene.moi" class="text-xs rounded-full bg-gray-100 px-2 py-0.5 text-gray-700">{{ gene.moi }}</span>
+                                <span v-if="gene.mondo_id" class="rounded-full bg-gray-100 px-2 py-0.5 text-gray-700">
+                                    <span class="font-semibold">{{ gene.mondo_id }}</span>
+                                    {{ gene.disease_name }}
+                                </span>
+                                <span v-if="gene.moi" class="rounded-full bg-gray-100 px-2 py-0.5 text-gray-700">{{ gene.moi }}</span>
                                 <span v-if="gene.plan?.is_other" class="'inline-flex h-2 w-2 rounded-full animate-pulse bg-rose-500" aria-hidden="true">
-
                                 </span>
                                 <span
                                     v-if="gene.is_outdated && gene.gt_data"
                                     class="text-[11px] rounded-full bg-amber-100 text-amber-900 px-2 py-0.5 border border-amber-300"
                                 >Snapshot out of date</span>
                             </div>
-                            <div class="mt-0.5 text-sm text-gray-700 truncate">{{ gene.disease_name }}</div>
+                            <!-- <div class="mt-0.5 text-sm text-gray-700 truncate"></div> -->
                         </div>
                     </div>
 
@@ -285,19 +287,23 @@
 
                         <div class="rounded-xl border border-gray-200 bg-gray-50 p-2">
                             <div class="text-[11px] uppercase tracking-wide text-gray-500">Status</div>
-                            <div class="text-sm text-gray-900">{{ gene.plan?.curation_status ?? 'N/A' }}</div>
+                            <div class="text-sm text-gray-900">
+                                {{ ! gene.plan?.curation_status ? 'N/A' : gene.plan?.date_approved ? gene.plan.curation_status + ' on ' + new Date(gene.plan?.date_approved).toLocaleDateString() : gene.plan.curation_status }}
+                            </div>
                         </div>
 
                         <div class="rounded-xl border border-gray-200 bg-gray-50 p-2">
-                            <div class="text-[11px] uppercase tracking-wide text-gray-500">Date Approved</div>
+                            <div class="text-[11px] uppercase tracking-wide text-gray-500">Rationale</div>
                             <div class="text-sm text-gray-900">
-                                {{ gene.plan?.date_approved ? new Date(gene.plan?.date_approved).toLocaleDateString() : 'N/A' }}
+                                {{ gene.plan?.rationales ?? 'N/A' }}
                             </div>
                         </div>
 
                         <div v-if="gene.plan?.phenotypes" class="sm:col-span-2 lg:col-span-4 rounded-xl border border-gray-200 bg-gray-50 p-2">
                             <div class="text-[11px] uppercase tracking-wide text-gray-500">Phenotypes</div>
                             <div class="text-sm text-gray-900 line-clamp-2">{{ gene.plan?.phenotypes ?? 'N/A' }}</div>
+                            <div v-if="gene.plan?.excluded_phenotypes" class="text-[11px] uppercase mt-1 tracking-wide text-gray-500">Excluded Phenotypes</div>
+                            <div v-if="gene.plan?.excluded_phenotypes" class="text-sm text-gray-900 line-clamp-2">{{ gene.plan?.excluded_phenotypes ?? 'N/A' }}</div>
                         </div>
                         
                         <div v-if="['Moderate','Limited'].includes(gene.plan?.classification) && gene.plan?.curated_plan_text" class="sm:col-span-2 lg:col-span-4 rounded-xl border border-amber-200 bg-amber-50 p-2">
@@ -313,7 +319,7 @@
                         <span class="truncate">Snapshot differs from latest GeneTracker data.</span>
                     </div>
                     <button @click="toggleExpanded(index)" class="rounded border border-amber-400 px-2 py-1 text-xs font-medium hover:bg-amber-100">
-                        {{ expanded.includes(index) ? 'Hide GT diff' : 'Show GT diff' }}
+                        {{ expanded.includes(index) ? 'Hide snapshot' : 'Show snapshot' }}
                     </button>
                 </div>
                 
@@ -328,7 +334,7 @@
                                 <div class="min-w-0 p-2">
                                 <div class="truncate" :title="row.a">{{ row.a || '—' }}</div>
                                 </div>
-                                <div class="min-w-0 p-2" :class="isDiff(row.a, row.b) ? 'bg-sky-50 ring-1 ring-sky-300' : ''">
+                                <div class="min-w-0 p-2" :class="isDiff(row.a, row.b) ? 'bg-amber-50 ring-1 ring-amber-300' : ''">
                                 <div class="truncate" :title="row.b">{{ row.b || '—' }}</div>
                                 </div>
                             </div>
@@ -578,25 +584,27 @@ export default {
 
             const snap = {
                 // prefer what's already inside plan; fall back to top-level fields on fg
-                curation_id:       fromPlan.curation_id       ?? fg.curation_id,
-                gene_symbol:       fromPlan.gene_symbol       ?? fg.gene_symbol,
-                hgnc_id:           fromPlan.hgnc_id           ?? fg.hgnc_id,
-                hgnc_name:         fromPlan.hgnc_name         ?? fg.hgnc_name ?? null,
-                disease_name:      fromPlan.disease_name      ?? fg.disease_name,
-                mondo_id:          fromPlan.mondo_id          ?? fg.mondo_id,
-                expert_panel:      fromPlan.expert_panel      ?? fg.expert_panel ?? null,
-                moi:               fromPlan.moi               ?? fg.moi,
-                moi_name:          fromPlan.moi_name          ?? fg.moi_name ?? null,
-                hp_id:             fromPlan.hp_id             ?? fg.hp_id ?? null,
-                classification_id: fromPlan.classification_id ?? fg.classification_id ?? null,
-                classification:    fromPlan.classification    ?? fg.classification ?? null,
-                curation_status_id:fromPlan.curation_status_id?? fg.curation_status_id ?? null,
-                curation_type:     fromPlan.curation_type     ?? fg.curation_type ?? null,
-                curation_status:   fromPlan.curation_status   ?? fg.curation_status ?? null,
-                date_approved:     fromPlan.date_approved     ?? fg.date_approved ?? null,
-                phenotypes:        fromPlan.phenotypes        ?? fg.phenotypes ?? null,
-                phenotypeIDs:      fromPlan.phenotypeIDs      ?? fg.phenotypeIDs ?? null,
-                checkKey:          fromPlan.checkKey          ?? fg.checkKey ?? null,
+                curation_id:        fromPlan.curation_id        ?? fg.curation_id,
+                gene_symbol:        fromPlan.gene_symbol        ?? fg.gene_symbol,
+                hgnc_id:            fromPlan.hgnc_id            ?? fg.hgnc_id,
+                hgnc_name:          fromPlan.hgnc_name          ?? fg.hgnc_name ?? null,
+                disease_name:       fromPlan.disease_name       ?? fg.disease_name,
+                mondo_id:           fromPlan.mondo_id           ?? fg.mondo_id,
+                expert_panel:       fromPlan.expert_panel       ?? fg.expert_panel ?? null,
+                moi:                fromPlan.moi                ?? fg.moi,
+                moi_name:           fromPlan.moi_name           ?? fg.moi_name ?? null,
+                hp_id:              fromPlan.hp_id              ?? fg.hp_id ?? null,
+                classification_id:  fromPlan.classification_id  ?? fg.classification_id ?? null,
+                classification:     fromPlan.classification     ?? fg.classification ?? null,
+                curation_status_id: fromPlan.curation_status_id ?? fg.curation_status_id ?? null,
+                curation_type:      fromPlan.curation_type      ?? fg.curation_type ?? null,
+                curation_status:    fromPlan.curation_status    ?? fg.curation_status ?? null,
+                date_approved:      fromPlan.date_approved      ?? fg.date_approved ?? null,
+                phenotypes:         fromPlan.phenotypes         ?? fg.phenotypes ?? null,
+                phenotypeIDs:       fromPlan.phenotypeIDs       ?? fg.phenotypeIDs ?? null,
+                rationales:         fromPlan.rationales         ?? fg.rationales ?? null,
+                excluded_phenotypes: fromPlan.excluded_phenotypes ?? fg.excluded_phenotypes ?? null,
+                checkKey:           fromPlan.checkKey           ?? fg.checkKey ?? null,
 
                 // normalize flags/text
                 is_other: false,
