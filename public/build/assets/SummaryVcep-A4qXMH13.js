@@ -1,0 +1,2 @@
+import{A as o}from"./ApplicationsSummaryTable-B9kXdWDI.js";import{_ as a,a as t,c as n,b as p,f as c}from"./app-BFgKsq7-.js";import"./router_aware_sort_and_filter-BvfVwvq8.js";const r={name:"GcepsSummary",components:{ApplicationsSummaryTable:o}};function s(m,i,l,_,u,f){const e=t("ApplicationsSummaryTable");return p(),n("div",null,[c(e,{"ep-type-id":2})])}const b=a(r,[["render",s]]);export{b as default};
+//# sourceMappingURL=SummaryVcep-A4qXMH13.js.map
