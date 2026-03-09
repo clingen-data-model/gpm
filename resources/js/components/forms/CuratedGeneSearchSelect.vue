@@ -36,6 +36,8 @@ export default {
 				curation_status: '',
 				phenotypes: '',
 				phenotypeIDs: '',
+				rationales: '',
+				excluded_phenotypes: '',
 				checkKey: '',
 				is_other: true
 			};
