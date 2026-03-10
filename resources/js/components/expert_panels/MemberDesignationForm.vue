@@ -54,32 +54,11 @@ export default {
     <table class="text-sm">
       <thead>
         <tr>
-          <th colspan="2">
-&nbsp;
-          </th>
-          <th colspan="1" colgroup="biocurator">
-&nbsp;
-          </th>
-          <th colspan="2" colgroup="biocurator" class="text-center">
-            Training
-          </th>
-          <th colspan="2">
-&nbsp;
-          </th>
-        </tr>
-        <tr>
-          <th>First Name</th>
-          <th>Last Name</th>
-          <th colgroup="biocurator" class="w-24">
-            Biocurator
-          </th>
-          <th colgroup="biocurator" class="w-20">
-            Level 1
-          </th>
-          <th colgroup="biocurator" class="w-20">
-            Level 2
-          </th>
-          <th>Biocurator Trainer</th>
+        <th rowspan="2">First Name</th>
+          <th rowspan="2">Last Name</th>
+          <th rowspan="2" class="w-20">Biocurator</th>
+          <th colspan="2" colgroup="biocurator" class="text-center">Training</th>
+          <th rowspan="2">Biocurator Trainer</th>
           <th>
             Core Approval Member
             <popover
@@ -96,6 +75,10 @@ export default {
               <icon-info class="inline-block cursor-pointer" :width="16" :height="16" />
             </popover>
           </th>
+        </tr>
+        <tr>          
+          <th colgroup="biocurator" class="w-20">Level 1</th>
+          <th colgroup="biocurator" class="w-20">Level 2</th>          
         </tr>
       </thead>
       <tbody>
