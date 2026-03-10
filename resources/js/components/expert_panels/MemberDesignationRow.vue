@@ -144,7 +144,7 @@ export default {
   <tr>
     <td>{{ workingCopy.person.first_name }}</td>
     <td>{{ workingCopy.person.last_name }}</td>
-    <td colgroup="biocurator">
+    <td>
       <input v-model="biocurator" type="checkbox" :disabled="!canEdit" @input="debounceSave">
     </td>
     <td colgroup="biocurator">

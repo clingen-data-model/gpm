@@ -268,7 +268,7 @@ router.beforeEach(async (to, from, next) => {
         return;
     }
 
-    if (store.getters.currentUser.person.requires_core_member_attestation && !store.getters.currentUser.is_impersonating) {
+    if (store.getters.currentUser.person.requires_core_member_attestation) {
         router.replace({ name: 'CoreMemberAttestation', params: { redirectTo: to } });
         next();
         return;
