@@ -253,7 +253,7 @@
                                 <dropdown-item @click="confirmRemove(gene)">Remove</dropdown-item>
                             </dropdown-menu>
                         </template>
-                        <span v-else class="text-xs text-gray-700">Tier: {{ gene.tier || '—' }}</span>
+                        <span v-else class="text-xs text-gray-700">Tier: {{ ! gene.tier ? '—' : gene.tier == 1 ? 'Current' : 'Future' }}</span>
                     </div>
                 </div>
 
