@@ -357,6 +357,22 @@ class Group extends Model implements HasMembers, RecordsEvents, HasDocuments, Ha
             ->exists();
     }
 
+    public function memberIsChair(int $personId): bool
+    {
+        return $this->activeMemberships()
+            ->where('person_id', $personId)
+            ->whereHas('roles', fn ($q) => $q->where('name', 'chair'))
+            ->exists();
+    }
+
+    public function memberIsGrantLiaison(int $personId): bool
+    {
+        return $this->activeMemberships()
+            ->where('person_id', $personId)
+            ->whereHas('roles', fn ($q) => $q->where('name', 'grant-liaison'))
+            ->exists();
+    }    
+
     public function isApproved(): bool
     {
         return (int)$this->group_status_id === (int)config('groups.statuses.active.id');

@@ -3,6 +3,7 @@ import Group from '@/domain/group'
 import EditIconButton from '@/components/buttons/EditIconButton.vue'
 import RichTextEditor from '@/components/prosekit/RichTextEditor.vue'
 import { htmlFromMarkdown } from '@/markdown-utils';
+import { hasRole } from '@/auth_utils'
 
 export default {
     name: "GroupDescriptionForm",
@@ -38,7 +39,15 @@ export default {
         },
         htmlDescription() {
             return htmlFromMarkdown(this.group.description);
+        },
+        canEditDescription() {
+            if (hasRole('super-admin')) {
+                return true;
+            }
+            return ['chair', 'grant-liaison', 'coordinator']
+                .some(role => hasRole(role, this.group));
         }
+
     },
 }
 </script>
@@ -47,7 +56,7 @@ export default {
     <header class="flex justify-between items-center">
       <h4>Website Summary Description of Group</h4>
       <EditIconButton
-        v-if="hasAnyPermission(['groups-manage', ['application-edit', group]]) && !editing"
+        v-if="canEditDescription && !editing"
         @click="$emit('update:editing', true)"
       />
     </header>
