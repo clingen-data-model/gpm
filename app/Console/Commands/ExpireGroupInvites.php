@@ -38,6 +38,7 @@ class ExpireGroupInvites extends Command
 
         $this->info("Found {$expiredMemberships->count()} expired membership(s) to remove (TTL={$ttlDays} days).");
 
+        $groupNameById = [];
         $removedByGroup = [];
         $errors = 0;
 

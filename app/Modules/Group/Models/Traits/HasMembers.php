@@ -20,22 +20,31 @@ trait HasMembers
     {
         return $this->hasMany(GroupMember::class);
     }
+
+    public function activeMembers(): Relation
+    {
+        return $this->members()->isActive();
+    }
+
+    protected function activeMembersByRole(string $role): Relation
+    {
+        return $this->activeMembers()->role($role);
+    }
     
     public function chairs(): Relation
     {
-        return $this->members()
-            ->role('chair');
+        return $this->activeMembersByRole(config('groups.roles.chair.name'));
+
     }
     
     public function coordinators(): Relation
     {
-        return $this->members()
-            ->role('coordinator');
+        return $this->activeMembersByRole(config('groups.roles.coordinator.name'));
     }
 
     public function contacts(): Relation
     {
-        return $this->members()->isContact();
+        return $this->activeMembers()->isContact();
     }
     
     public function getHasCoordinatorAttribute():bool

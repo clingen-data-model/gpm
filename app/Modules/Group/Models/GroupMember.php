@@ -138,7 +138,10 @@ class GroupMember extends Model implements BelongsToGroup, BelongsToExpertPanel
 
     public function scopeIsActive($query)
     {
-        return $query->whereNull('end_date');
+        return $query->whereNull('end_date')
+                    ->whereHas('person', function ($q) {
+                        $q->whereNotNull('user_id');
+                    });
     }
 
     public function scopeIsRetired($query)

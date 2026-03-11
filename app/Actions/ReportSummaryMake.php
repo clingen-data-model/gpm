@@ -68,7 +68,7 @@ class ReportSummaryMake extends ReportMakeAbstract
         yield 'GCEPs approved' => $this->getGcepApprovedCount();
         yield 'VCEP genes' => $this->getVcepGenesCount();
         yield 'GCEP genes' => $this->getGcepGenesCount();
-        yield 'All Individuals' => Person::count();
+        yield 'All Individuals' => Person::whereNotNull('user_id')->count();
         yield 'Active Individuals (has active group membership)' => $m['active_members'];
         yield 'Individuals in 1+ WGs' => $m['wg_members'];
         yield 'Individuals in 1+ CDWGs' => $m['cdwg_members'];
@@ -100,9 +100,11 @@ class ReportSummaryMake extends ReportMakeAbstract
 
         $row = DB::table('group_members as gm')            
             ->join('groups as g', 'g.id', '=', 'gm.group_id')
+            ->join('people as p', 'p.id', '=', 'gm.person_id')
             ->whereNull('gm.deleted_at')
             ->whereNull('gm.end_date')
             ->whereNull('g.deleted_at')
+            ->whereNotNull('p.user_id')
             ->selectRaw('COUNT(DISTINCT gm.person_id) as active_members')
             ->selectRaw('COUNT(DISTINCT CASE WHEN g.group_type_id = ? THEN gm.person_id END) as wg_members', [$wgType])
             ->selectRaw('COUNT(DISTINCT CASE WHEN g.group_type_id = ? THEN gm.person_id END) as cdwg_members', [$cdwgType])
