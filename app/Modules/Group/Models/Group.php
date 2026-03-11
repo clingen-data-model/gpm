@@ -353,7 +353,7 @@ class Group extends Model implements HasMembers, RecordsEvents, HasDocuments, Ha
     {
         return $this->activeMemberships()
             ->where('person_id', $personId)
-            ->whereHas('roles', fn ($q) => $q->where('name', 'coordinator'))
+            ->whereHas('roles', fn ($q) => $q->where('name', config('groups.roles.coordinator.name')))
             ->exists();
     }
 
@@ -361,7 +361,7 @@ class Group extends Model implements HasMembers, RecordsEvents, HasDocuments, Ha
     {
         return $this->activeMemberships()
             ->where('person_id', $personId)
-            ->whereHas('roles', fn ($q) => $q->where('name', 'chair'))
+            ->whereHas('roles', fn ($q) => $q->where('name', config('groups.roles.chair.name')))
             ->exists();
     }
 
@@ -369,7 +369,7 @@ class Group extends Model implements HasMembers, RecordsEvents, HasDocuments, Ha
     {
         return $this->activeMemberships()
             ->where('person_id', $personId)
-            ->whereHas('roles', fn ($q) => $q->where('name', 'grant-liaison'))
+            ->whereHas('roles', fn ($q) => $q->where('name', config('groups.roles.grant-liaison.name')))
             ->exists();
     }    
 
