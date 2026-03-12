@@ -172,8 +172,28 @@ class GroupMember extends Model implements BelongsToGroup, BelongsToExpertPanel
         return $this->latestCoi?->completed_at;
     }
 
+    // GPM-516. Exempt regardless of the member status in inactive/retired group if the group other than
+    public function getIsCoiExemptAttribute(): bool
+    {
+        $activeStatuses = [
+            config('groups.statuses.active.id'),
+            config('groups.statuses.applying.id'),
+        ];
+
+        $exemptRoles = config('groups.coi_exempt_roles_on_inactive_group', []);
+
+        if (in_array($this->group->group_status_id, $activeStatuses, true)) {
+            return false;
+        }
+
+        return $this->roles->pluck('name')->intersect($exemptRoles)->isNotEmpty();
+    }
+
     public function getCoiNeededAttribute()
     {
+        if ($this->is_coi_exempt) {
+            return false;
+        }
         if (!$this->group->has_coi_requirement) {
             return false;
         }
@@ -187,6 +207,9 @@ class GroupMember extends Model implements BelongsToGroup, BelongsToExpertPanel
 
     public function getHasCoiRequirementAttribute()
     {
+        if ($this->is_coi_exempt) {
+            return false;
+        }
         return $this->group->has_coi_requirement;
     }
 
