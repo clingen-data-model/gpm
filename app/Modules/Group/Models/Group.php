@@ -34,6 +34,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Builder;
 use App\Modules\User\Models\User;
+use Illuminate\Database\Eloquent\Collection;
 
 /**
  * @property int $id
@@ -409,20 +410,24 @@ class Group extends Model implements HasMembers, RecordsEvents, HasDocuments, Ha
         );
     }
 
-    public function scopeVisibleTo(Builder $query, ?User $user): Builder
+    public function membersVisibleTo(?User $user): Collection
     {
-        if ($user && $user->hasAnyRole(['super-user', 'super-admin', 'admin'])) { return $query; }
+        $query = $this->members();
 
-        $privateId = config('groups.visibility.private.id');
+        $isPrivateWg = (int) $this->group_type_id === (int) config('groups.types.wg.id') && (int) $this->group_visibility_id === (int) config('groups.visibility.private.id');
 
-        return $query->where(function ($q) use ($privateId, $user) {
-            $personId = $user?->person?->id;
-            $q->whereNull('group_visibility_id')
-                ->orWhere('group_visibility_id', '!=', $privateId)
-                ->orWhereHas('members.person', function ($memberQ) use ($user) {
-                    $memberQ->where('user_id', $user->id);
-                });
-        });
+        if (! $isPrivateWg) {
+            return $query->get();
+        }
+        $isAdmin = $user && $user->hasAnyRole(['super-user', 'super-admin', 'admin']);
+        $personId = $user?->person?->id;
+        $isMember = $personId ? $this->members()->where('person_id', $personId)->exists() : false;
+        if ($isAdmin || $isMember) {
+            return $query->get();
+        }
+        return $query->whereHas('roles', function ($q) {
+            $q->whereIn('name', [config('groups.roles.coordinator.name'), config('groups.roles.chair.name')]);
+        })->get();
     }
 
 }

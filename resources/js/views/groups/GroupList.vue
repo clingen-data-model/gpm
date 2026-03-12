@@ -1,4 +1,5 @@
 <script>
+import configs from '@/configs'
 import {useStore} from 'vuex'
 import {useRouter} from 'vue-router'
 import {computed, ref} from 'vue'
@@ -17,8 +18,9 @@ export default {
     setup() {
         const store = useStore();
         const router = useRouter();
-
-
+        const wgTypeId = configs.groups.types.wg.id        
+        const privateVisibilityId = configs.groups.visibilities.private.id
+        const privateVisibilityName = configs.groups.visibilities.private.name
         const tabDefinitions = computed( () => {
             const tabs = [
                 {
@@ -100,6 +102,9 @@ export default {
             tabDefinitions,
             goToItem,
             goToGroup: goToItem,
+            wgTypeId,
+            privateVisibilityId,
+            privateVisibilityName,
         }
     },
     data() {
@@ -194,6 +199,13 @@ export default {
                 }}<span v-if="item.status.id == 1 && item.is_ep">&nbsp;-&nbsp;{{
                   item.expert_panel.currentStepAbbr
                 }}</span>
+              </badge>
+              <badge
+                v-if="item.group_type_id === wgTypeId && item.group_visibility_id === privateVisibilityId"
+                color="yellow"
+                class="text-xs ml-1"
+              >
+                {{privateVisibilityName}}
               </badge>
             </template>
             <template #cell-coordinators="{value}">
