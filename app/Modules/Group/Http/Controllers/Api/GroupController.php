@@ -73,8 +73,7 @@ class GroupController extends Controller
                 }
                 return $query->orderBy($field, $dir);
             },
-            whereFunction: function (Builder $query, array $where) use ($user) {
-                $query->visibleTo($user);
+            whereFunction: function (Builder $query, array $where) use ($user) {                
                 $allowedWhereColumns = ['group_type_id', 'group_status_id', 'group_visibility_id', 'coi_code'];
                 foreach ($where as $key => $value) {
                     if (!in_array($key, $allowedWhereColumns, true)) {
@@ -120,7 +119,7 @@ class GroupController extends Controller
     public function members(Request $request, $groupUuid)
     {
         $group = Group::findByUuidOrFail($groupUuid);
-        $members = $group->members->load(
+        $members = $group->membersVisibleTo($request->user())->load(
             'roles',
             'permissions',
             'cois',
