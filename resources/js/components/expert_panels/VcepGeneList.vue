@@ -258,7 +258,7 @@
                 </div>
 
                 <!-- Snapshot quick facts (COMPACT) -->
-                <div  v-if="gene.plan" class="px-3 pb-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 text-sm">
+                <div  v-if="gene.plan" class="px-3 pb-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 text-sm">
                     <div v-if="gene.plan?.is_other" class="sm:col-span-2 lg:col-span-4 rounded-xl border p-2 text-sm border-rose-300 bg-rose-50 p-2">
                         <div class="text-[11px] uppercase tracking-wide text-gray-500">Plan</div>
                         <div class="prose max-w-none" v-html="htmlFromMarkdown((gene.plan?.the_plan || '').replace(/\\/g, ''))"></div>
@@ -299,8 +299,8 @@
                             </div>
                         </div>
 
-                        <div v-if="gene.plan?.phenotypes" class="sm:col-span-2 lg:col-span-4 rounded-xl border border-gray-200 bg-gray-50 p-2">
-                            <div class="text-[11px] uppercase tracking-wide text-gray-500">Phenotypes</div>
+                        <div v-if="gene.plan?.phenotypes" class="sm:col-span-2 lg:col-span-2 rounded-xl border border-gray-200 bg-gray-50 p-2">
+                            <div class="text-[11px] uppercase tracking-wide text-gray-500">Included Phenotypes</div>
                             <div class="text-sm text-gray-900 line-clamp-2">{{ gene.plan?.phenotypes ?? 'N/A' }}</div>
                             <div v-if="gene.plan?.excluded_phenotypes" class="text-[11px] uppercase mt-1 tracking-wide text-gray-500">Excluded Phenotypes</div>
                             <div v-if="gene.plan?.excluded_phenotypes" class="text-sm text-gray-900 line-clamp-2">{{ gene.plan?.excluded_phenotypes ?? 'N/A' }}</div>
