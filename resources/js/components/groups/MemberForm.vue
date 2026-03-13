@@ -1,7 +1,9 @@
 <script>
 import {debounce} from 'lodash-es'
 import {computed} from 'vue'
-import {useStore} from 'vuex'
+import { useGroupsStore } from '@/stores/groups';
+import { usePeopleStore } from '@/stores/people';
+import { useAlertsStore } from '@/stores/alerts';
 import {api, isValidationError} from '@/http'
 import {Person} from '@/domain'
 import GroupMember from '@/domain/group_member'
@@ -37,9 +39,11 @@ export default {
         'closed'
     ],
     setup () {
-        const store = useStore();
-        const group = computed(() => store.getters['groups/currentItemOrNew'] || {});
-        const people = computed(() => store.getters['people/all'] || {});
+        const groupsStore = useGroupsStore();
+        const peopleStore = usePeopleStore();
+        const alertsStore = useAlertsStore();
+        const group = computed(() => groupsStore.currentItemOrNew || {});
+        const people = computed(() => peopleStore.people || {});
         const roles = groups.roles;
         const permissions = groups.permissions;
 
@@ -48,6 +52,8 @@ export default {
             people,
             roles,
             permissions,
+            groupsStore,
+            alertsStore,
         }
     },
     data () {
@@ -158,19 +164,19 @@ export default {
                 if (!this.newMember.isPersisted()) {
                     if (!this.newMember.person.isPersisted()) {
                         const groupMember = await this.inviteNewMember(this.group, this.newMember);
-                        this.$store.commit('pushSuccess', `${groupMember.person.name} invited to join ${groupMember.group.name}`);
+                        this.alertsStore.pushSuccess(`${groupMember.person.name} invited to join ${groupMember.group.name}`);
                         return groupMember;
 
                     }
                     if (this.newMember.person.isPersisted()) {
                         const groupMember = await this.addPersonAsMember(this.group, this.newMember);
-                        this.$store.commit('pushSuccess', `${groupMember.person.name} added to ${groupMember.group.name}`);
+                        this.alertsStore.pushSuccess(`${groupMember.person.name} added to ${groupMember.group.name}`);
                         return groupMember;
                     }
                 }
                 if (this.newMember.isPersisted()) {
                     const groupMember = await this.updateExistingMember(this.group, this.newMember);
-                    this.$store.commit('pushSuccess', `${groupMember.person.name}'s membership was updated.`);
+                    this.alertsStore.pushSuccess(`${groupMember.person.name}'s membership was updated.`);
                     return groupMember;
                 }
             } catch (error) {
@@ -182,7 +188,7 @@ export default {
             }
         },
         async inviteNewMember (group, member) {
-            const response = await this.$store.dispatch('groups/memberInvite', {
+            const response = await this.groupsStore.memberInvite({
                 uuid: group.uuid,
                 data: {
                     firstName: member.person.first_name,
@@ -198,7 +204,7 @@ export default {
             })
 
             if (member.permissions.length > 0) {
-                await this.$store.dispatch('groups/memberGrantPermission', {
+                await this.groupsStore.memberGrantPermission({
                     uuid: group.uuid,
                     memberId: response.data.id,
                     permissionIds: member.permissions.map(p => p.id)
@@ -220,10 +226,10 @@ export default {
                     training_level_2: member.training_level_2,
                 }
             };
-            const memberData = await this.$store.dispatch('groups/memberAdd', data);
+            const memberData = await this.groupsStore.memberAdd(data);
 
             if (member.permissions.length > 0) {
-                await this.$store.dispatch('groups/memberGrantPermission', {
+                await this.groupsStore.memberGrantPermission({
                     uuid: group.uuid,
                     memberId: memberData.id,
                     permissionIds: member.permissions.map(p => p.id)
@@ -234,8 +240,7 @@ export default {
         },
 
         async updateExistingMember(group, member) {
-            const groupMember = await this.$store.dispatch(
-                'groups/memberUpdate',
+            const groupMember = await this.groupsStore.memberUpdate(
                 {
                     groupUuid: group.uuid,
                     memberId: member.id,
@@ -249,7 +254,7 @@ export default {
                 }
             ).then(rsp => rsp.data);
 
-            await this.$store.dispatch('groups/memberSyncRoles', {group, member});
+            await this.groupsStore.memberSyncRoles({group, member});
             await this.syncPermissions(group, member);
 
             return groupMember;
@@ -266,8 +271,7 @@ export default {
 
             if (newPermIds.length > 0) {
                 // promises.push(
-                    this.$store.dispatch(
-                        'groups/memberGrantPermission',
+                    this.groupsStore.memberGrantPermission(
                         {
                             uuid: group.uuid,
                             memberId: member.id,
@@ -279,8 +283,7 @@ export default {
 
             removedPermIds.forEach(permId => {
                 // promises.push(
-                    this.$store.dispatch(
-                        'groups/memberRevokePermission',
+                    this.groupsStore.memberRevokePermission(
                         {
                             uuid: group.uuid,
                             memberId: member.id,
@@ -312,7 +315,7 @@ export default {
         handleProfileUpdate (updatedPerson) {
             this.newMember.person = updatedPerson;
             this.showProfileForm = false;
-            this.$store.dispatch('groups/getMembers', this.group)
+            this.groupsStore.getMembers(this.group)
         }
     }
 }

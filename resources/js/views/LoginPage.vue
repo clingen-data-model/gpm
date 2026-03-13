@@ -1,14 +1,21 @@
 <script>
 import LoginForm from '@/components/LoginForm.vue';
-import { mapGetters } from 'vuex';
+import { useAuthStore } from '@/stores/auth';
 
 export default {
     name: "LoginPage",
     components: {
         LoginForm
     },
+    setup() {
+        return {
+            authStore: useAuthStore(),
+        }
+    },
     computed: {
-        ...mapGetters(['isAuthed'])
+        isAuthed() {
+            return this.authStore.isAuthed
+        },
     },
     watch: {
         isAuthed () {

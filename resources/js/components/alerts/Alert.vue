@@ -1,7 +1,12 @@
 <script>
-import {Alert} from '@/store/alerts'
+import { Alert, useAlertsStore } from '@/stores/alerts'
 export default {
     name: 'Alert',
+    setup() {
+        return {
+            alertsStore: useAlertsStore(),
+        }
+    },
     props: {
         alert: {
             required: true,
@@ -35,7 +40,7 @@ export default {
             }, this.timeout*1000)
         },
         clearAlert () {
-            this.$store.commit('removeAlert', this.alert.uuid);
+            this.alertsStore.removeAlert(this.alert.uuid);
             clearInterval(this.interval);
         },
         clearTimer () {

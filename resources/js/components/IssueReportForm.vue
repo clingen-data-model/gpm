@@ -1,11 +1,19 @@
 <script>
 import { api, isValidationError } from "@/http";
 import configs from "@/configs";
+import { useAuthStore } from "@/stores/auth";
+import { useAlertsStore } from "@/stores/alerts";
 
 const feedback = configs.feedback;
 
 export default {
   name: "ComponentName",
+  setup() {
+    return {
+      authStore: useAuthStore(),
+      alertsStore: useAlertsStore(),
+    }
+  },
   props: {},
   data() {
     return {
@@ -49,7 +57,7 @@ export default {
           summary: this.summary,
         });
         this.saving = false;
-        this.$store.commit("pushSuccess", "Your problem has been reported.");
+        this.alertsStore.pushSuccess("Your problem has been reported.");
         this.showReportIssue = false;
       } catch (error) {
         if (isValidationError(error)) {
@@ -68,7 +76,7 @@ export default {
 };
 </script>
 <template>
-  <div v-if="$store.getters.isAuthed">
+  <div v-if="authStore.isAuthed">
     <popover hover arrow placement="left">
       <template #content>
         <div class="whitespace-no-wrap w-28 text-xs">

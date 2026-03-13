@@ -1,7 +1,7 @@
 <script>
 import { debounce } from 'lodash-es'
-import { mapGetters } from 'vuex'
 import {api} from '@/http'
+import { useAuthStore } from '@/stores/auth';
 import SortAndFilter from './../composables/router_aware_sort_and_filter';
 import {pageSize, currentPage, getPageItems} from '@/composables/pagination'
 
@@ -34,9 +34,9 @@ export default {
         }
     },
     computed: {
-        ...mapGetters({
-            currentUser: 'currentUser'
-        }),
+        currentUser() {
+            return useAuthStore().currentUser;
+        },
     },
     watch: {
         filter: {

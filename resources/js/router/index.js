@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import store from '../store/index'
+import { useAuthStore } from '@/stores/auth'
+import { useAlertsStore } from '@/stores/alerts'
 import applicationRoutes from './applications'
 import peopleRoutes from './people'
 import authRoutes from './auth'
@@ -65,7 +66,7 @@ const routes = [
                 },
                 props: true,
                 // beforeEnter: async (to) => {
-                //     return store.getters.currentUser.hasPermission('annual-updates-manage');
+                //     return useAuthStore().currentUser.hasPermission('annual-updates-manage');
                 // }
             },
             {
@@ -79,7 +80,7 @@ const routes = [
                 },
                 props: true,
                 // beforeEnter: async (to) => {
-                //     return store.getters.currentUser.hasPermission('annual-updates-manage');
+                //     return useAuthStore().currentUser.hasPermission('annual-updates-manage');
                 // }
             },
         ],
@@ -176,31 +177,34 @@ router.beforeEach(async (to, from, next) => {
         return;
     }
 
+    const authStore = useAuthStore();
+    const alertsStore = useAlertsStore();
+
     try {
-        await store.dispatch('checkAuth')
-        await store.dispatch('getCurrentUser');
+        await authStore.checkAuth()
+        await authStore.getCurrentUser();
     } catch (error) {
         // eslint-disable-next-line no-console
         console.log(error);
     }
 
-    if (!to.name.includes('login') && !store.getters.isAuthed) {
+    if (!to.name.includes('login') && !authStore.isAuthed) {
         next({ name: 'login', query: { redirect: to.fullPath } });
         return;
     }
 
-    if (to.name === 'login' && store.getters.isAuthed) {
+    if (to.name === 'login' && authStore.isAuthed) {
         next({ name: 'Dashboard' })
         return;
     }
 
     if (to.meta.permissions && Array.isArray(to.meta.permissions) && to.meta.permissions.length > 0) {
-        if (store.getters.currentUser.hasAnyPermission(to.meta.permissions)) {
+        if (authStore.currentUser.hasAnyPermission(to.meta.permissions)) {
             next();
             return;
         }
         router.replace({ name: 'Dashboard' })
-        store.commit('pushError', `You don't have permission to access ${to.path}`)
+        alertsStore.pushError(`You don't have permission to access ${to.path}`)
     }
 
     next();
@@ -227,34 +231,36 @@ router.beforeEach(async (to, from, next) => {
         return;
     }
 
-    const cocStatus = store.getters.currentUser?.person?.coc?.status
+    const authStore = useAuthStore();
+
+    const cocStatus = authStore.currentUser?.person?.coc?.status
     if (['missing', 'expired', 'version_mismatch'].includes(cocStatus)) {
         return next({ name: 'PendingCocAttestation', query: { redirect: to.fullPath } })
     }
 
     // Check to see if the user's profile is incomplete
-    if (store.getters.currentUser.profileIncomplete) {
+    if (authStore.currentUser.profileIncomplete) {
         router.replace({ name: 'InitialProfileForm', params: { redirectTo: to } });
         next();
         return;
     }
 
     // Check to see if the user has pending COIs
-    if (store.getters.currentUser.hasPendingCois) {
+    if (authStore.currentUser.hasPendingCois) {
         router.replace({ name: 'PendingCoiList', params: { redirectTo: to } });
         next();
         return;
     }
 
     // Check if the user needs to update credentials or expertise
-    if (store.getters.currentUser.needsCredentials || store.getters.currentUser.needsExpertise) {
+    if (authStore.currentUser.needsCredentials || authStore.currentUser.needsExpertise) {
         router.replace({ name: 'MandatoryProfileUpdate', params: { redirectTo: to } });
         next();
         return;
     }
 
     // Check if the user needs to update profile demographics
-    if (store.getters.currentUser.person.demographics_completed_date === null && !store.getters.currentUser.is_impersonating) {
+    if (authStore.currentUser.person.demographics_completed_date === null && !authStore.currentUser.is_impersonating) {
         //  console.log('redirecting to demographics form');
         router.replace({ name: 'RequiredDemographicsUpdateForm', params: { redirectTo: to } });
         next();

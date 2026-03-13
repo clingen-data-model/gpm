@@ -1,5 +1,6 @@
 <script>
 import CustomEmailForm from '@/components/mail/CustomEmailForm.vue';
+import { usePeopleStore } from '@/stores/people';
 export default {
     name: 'PersonMailLog',
     components: {
@@ -32,7 +33,7 @@ export default {
         cleanupResend () {
             this.currentEmail = {}
             this.showResendDialog = false;
-            this.$store.dispatch('people/getMail', this.person);
+            usePeopleStore().getMail(this.person);
         },
     }
 }

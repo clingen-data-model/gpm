@@ -1,5 +1,7 @@
 <script>
 import MemberDesignationRow from './MemberDesignationRow.vue'
+import { useGroupsStore } from '@/stores/groups';
+
 export default {
     name: 'MemberDesignationForm',
     components: {
@@ -15,10 +17,15 @@ export default {
     emits: [
       'updated',
     ],
+    setup() {
+        return {
+            groupsStore: useGroupsStore(),
+        }
+    },
     computed: {
         group: {
             get() {
-                return this.$store.getters['groups/currentItemOrNew'];
+                return this.groupsStore.currentItemOrNew;
             }
         },
         canEdit () {
@@ -34,14 +41,14 @@ export default {
             immediate: true,
             async handler (to, from) {
                 if ((to.id && (!from || to.id !== from.id))) {
-                    this.$store.dispatch('groups/getMembers', this.group);
+                    this.groupsStore.getMembers(this.group);
                 }
             }
         }
     },
     methods: {
         getMembers () {
-            this.$store.dispatch('groups/getMembers', {group: this.group})
+            this.groupsStore.getMembers({group: this.group})
         },
         handleMemberUpdate () {
             this.$emit('updated');

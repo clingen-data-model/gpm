@@ -1,4 +1,5 @@
 <script>
+import { useGroupsStore } from '@/stores/groups'
 
 export default {
     name: "MenuItem",
@@ -18,6 +19,11 @@ export default {
             default: false
         }
     },
+    setup() {
+        return {
+            groupsStore: useGroupsStore(),
+        }
+    },
     data() {
         return {
             collapsed: true
@@ -34,7 +40,7 @@ export default {
             return this.item.route
         },
         group () {
-            return this.$store.getters['groups/currentItemOrNew']
+            return this.groupsStore.currentItemOrNew
         },
         isStep () {
             return this.item.sections;

@@ -2,6 +2,7 @@
 import mirror from '@/composables/setup_working_mirror'
 import AppSection from '@/components/expert_panels/ApplicationSection.vue'
 import MemberList from '@/components/groups/MemberList.vue'
+import { useGroupsStore } from '@/stores/groups';
 
 export default {
     name: 'MembershipUpdate',
@@ -27,12 +28,13 @@ export default {
     setup(props, context) {
         const {workingCopy} = mirror.setup(props, context);
         return {
-            workingCopy
+            workingCopy,
+            groupsStore: useGroupsStore(),
         }
     },
     computed: {
         group () {
-            return this.$store.getters['groups/currentItemOrNew'];
+            return this.groupsStore.currentItemOrNew;
         },
         isComplete () {
             return Boolean(this.modelValue.completed_at)

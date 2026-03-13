@@ -1,11 +1,12 @@
-import store from '@/store/index'
+import { useAuthStore } from '@/stores/auth'
+import { useAlertsStore } from '@/stores/alerts'
 
 const hasPermission = async (permission) => {
-    if (store.getters.currentUser.hasPermission(permission)) {
+    if (useAuthStore().currentUser.hasPermission(permission)) {
         return true;
     }
 
-    store.commit('pushError', 'Permission denied');
+    useAlertsStore().pushError('Permission denied');
     return false;
 }
 

@@ -1,5 +1,5 @@
 <script>
-import {mapGetters} from 'vuex'
+import { useGroupsStore } from '@/stores/groups'
 import BaseStep from '@/components/applications/BaseStep.vue'
 import DefinitionReview from '@/components/expert_panels/DefinitionReview.vue'
 
@@ -14,10 +14,13 @@ export default {
         return {
         }
     },
+    setup() {
+        return { groupsStore: useGroupsStore() }
+    },
     computed: {
-        ...mapGetters({
-            group: 'groups/currentItemOrNew'
-        }),
+        group () {
+            return this.groupsStore.currentItemOrNew
+        },
         application () {
             return this.group.expert_panel;
         },

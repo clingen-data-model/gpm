@@ -1,6 +1,6 @@
 <script setup>
     import { ref, computed, inject } from 'vue'
-    import { useStore } from 'vuex'
+    import { useAuthStore } from '@/stores/auth'
     import CommentSummary from '../CommentSummary.vue';
     import JudgementForm from './JudgementForm.vue';
     import JudgementDetail from './JudgementDetail.vue';
@@ -10,8 +10,7 @@
     const commentManager = inject('commentManager');
     const latestSubmission = inject('latestSubmission')
 
-    const store = useStore();
-    // const group = computed(() => store.getters['groups/currentItemOrNew'])
+    const authStore = useAuthStore();
 
     const showJudgementDialog = ref(false)
     const initJudgement = () => {
@@ -20,14 +19,14 @@
     const hasMadeJudgment = computed(() => {
         return latestSubmission.value.judgements
             && latestSubmission.value.judgements.length > 0
-            && latestSubmission.value.judgements.filter(j => j.person_id === store.getters.currentUser.person.id).length > 0;
+            && latestSubmission.value.judgements.filter(j => j.person_id === authStore.currentUser.person.id).length > 0;
     })
 
     const otherJudgements = computed(() => {
         if (!latestSubmission.value || !latestSubmission.value.judgements) {
             return [];
         }
-        return latestSubmission.value.judgements.filter(j => j.person_id !== store.getters.currentUser.person.id)
+        return latestSubmission.value.judgements.filter(j => j.person_id !== authStore.currentUser.person.id)
     })
 
     const hasCommentsForEp = computed(() => commentManager.value.commentsForEp.length > 0)

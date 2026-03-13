@@ -1,16 +1,18 @@
 <script setup>
     import {computed, inject, ref} from 'vue'
-    import {useStore} from 'vuex'
+    import { useAuthStore } from '@/stores/auth'
+    import { useGroupsStore } from '@/stores/groups'
     import { api } from '@/http'
     import { titleCase } from '@/string_utils.js';
     import JudgementForm from './JudgementForm.vue';
     import {judgementColor} from '@/composables/judgement_utils.js'
 
     const emits = defineEmits(['deleted']);
-    const store = useStore();
+    const authStore = useAuthStore();
+    const groupsStore = useGroupsStore();
     const latestSubmission = inject('latestSubmission')
-    const group = computed(() => store.getters['groups/currentItemOrNew']);
-    const user = computed(() => store.getters.currentUser);
+    const group = computed(() => groupsStore.currentItemOrNew);
+    const user = computed(() => authStore.currentUser);
     const userJudgement = computed({
         get() {
             if (latestSubmission.value && latestSubmission.value.judgements) {

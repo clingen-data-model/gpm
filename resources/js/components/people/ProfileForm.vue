@@ -1,6 +1,9 @@
 <script setup>
-    import {useStore} from 'vuex'
     import {ref, computed, watch, onMounted} from 'vue'
+    import { usePeopleStore } from '@/stores/people';
+    import { useAuthStore } from '@/stores/auth';
+    import { useAlertsStore } from '@/stores/alerts';
+    import { useCountriesStore } from '@/stores/countries';
     import Person from '@/domain/person'
     import isValidationError from '@/http/is_validation_error'
     import ProfilePhotoForm from '@/components/people/ProfilePhotoForm.vue';
@@ -33,7 +36,6 @@
                         'saved',
                         'canceled'
                     ]);
-    const store = useStore();
     const errors = ref({});
     const profile = ref({});
     const saving = ref(false);
@@ -56,12 +58,11 @@
                 profile.value.expertise_ids = profile.value.expertises.map(c => c.id)
             }
             saving.value = true;
-            const updatedPerson = await store.dispatch(
-                    'people/updateProfile',
+            const updatedPerson = await usePeopleStore().updateProfile(
                     {uuid: props.person.uuid, attributes: profile.value}
                 ).then(rsp => {
-                    store.dispatch('getCurrentUser', {force: true})
-                    store.commit('pushSuccess', 'Your profile has been updated.')
+                    useAuthStore().getCurrentUser({force: true})
+                    useAlertsStore().pushSuccess('Your profile has been updated.')
                     return rsp.data;
                 })
 
@@ -89,11 +90,11 @@
     }, {immediate: true});
 
     const countries = computed(() => {
-        return store.getters['countries/items'].map(i => ({value: i.id, label: i.name}))
+        return useCountriesStore().items.map(i => ({value: i.id, label: i.name}))
     })
 
     onMounted(() => {
-        store.dispatch('countries/getItems');
+        useCountriesStore().getItems();
     });
 
 </script>
@@ -108,7 +109,7 @@
     </p>
 
     <div v-if="(hasPermission('people-manage') || userIsPerson(person))" class="float-right">
-      <ProfilePhotoForm :person="person" @uploaded="p => person = {...p}" style="width: 100px; height: 100px;" />
+      <ProfilePhotoForm :person="person" style="width: 100px; height: 100px;" @uploaded="p => person = {...p}" />
     </div>
 
     <input-row
@@ -152,7 +153,8 @@
             <template #content>
               <div style="max-width: 500px">
                 <h4>What do you mean by credentials?</h4>
-                <p>Credentials are any degrees or professional certifications you have earned. Typically, these will be the acronyms you list after your name on your CV. 
+                <p>
+                  Credentials are any degrees or professional certifications you have earned. Typically, these will be the acronyms you list after your name on your CV. 
                   <span class="font-semibold">Note, if you create a new or choose an existing credential, it will display exactly as you have typed. Please ensure that the spelling, capitalization, and credential order are as you would like them  to be shown for display on the ClinGen website</span>.
                 </p>
                 <p>We recommend choosing one or more options already in the list of credentials, but if you do not see yours feel free to add it.</p>

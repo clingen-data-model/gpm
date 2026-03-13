@@ -52,28 +52,28 @@
 </script>
 
 <template>
-	<div>
-		<button
-			:disabled="!isCurrentStep || isAffiliationMissing"
-			:title="buttonTitle"
-			class="btn btn-lg w-full"
-			v-bind="attrs"
-			@click="startApproveStep"
-			>
-			<slot />
-		</button>
-		<p v-if="isAffiliationMissing && props.step === 1" class="text-red-600 text-sm mt-1">
-			This step cannot be approved until an Affiliation ID is provided.
-		</p>
+  <div>
+    <button
+      :disabled="!isCurrentStep || isAffiliationMissing"
+      :title="buttonTitle"
+      class="btn btn-lg w-full"
+      v-bind="attrs"
+      @click="startApproveStep"
+    >
+      <slot />
+    </button>
+    <p v-if="isAffiliationMissing && props.step === 1" class="text-red-600 text-sm mt-1">
+      This step cannot be approved until an Affiliation ID is provided.
+    </p>
 
-		<teleport to="body">
-			<modal-dialog v-model="showApproveForm" size="xl" @closed="$refs.approvestepform.clearForm()">
-				<ApproveStepForm
-				ref="approvestepform"
-				@saved="handleApproved"
-				@canceled="hideApproveForm"
-				/>
-			</modal-dialog>
-		</teleport>
-	</div>
+    <teleport to="body">
+      <modal-dialog v-model="showApproveForm" size="xl" @closed="$refs.approvestepform.clearForm()">
+        <ApproveStepForm
+          ref="approvestepform"
+          @saved="handleApproved"
+          @canceled="hideApproveForm"
+        />
+      </modal-dialog>
+    </teleport>
+  </div>
 </template>

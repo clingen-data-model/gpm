@@ -1,5 +1,6 @@
 <script>
 import DocumentList from '@/components/documents/DocumentList.vue';
+import { useGroupsStore } from '@/stores/groups';
 
 export default {
     name: 'GroupDocuments',
@@ -7,17 +8,21 @@ export default {
         DocumentList
     },
     props: {
-        
+
+    },
+    setup() {
+        const groupsStore = useGroupsStore();
+        return { groupsStore };
     },
     data() {
         return {
-            
+
         }
     },
     computed: {
         group: {
             get () {
-                return this.$store.getters['groups/currentItemOrNew']
+                return this.groupsStore.currentItemOrNew
             }
         },
         displayDocuments () {
@@ -30,33 +35,21 @@ export default {
     methods: {
         async updateDocument (updatedData) {
             if (!this.canManageDocuments) {
-                this.$store.pushError('Permission denied');
                 return;
             }
-            await this.$store.dispatch(
-                'groups/updateDocument', 
-                {group: this.group, document: updatedData}
-            );
+            await this.groupsStore.updateDocument({group: this.group, document: updatedData});
         },
         async createDocument (newDocumentData) {
             if (!this.canManageDocuments) {
-                this.$store.pushError('Permission denied');
                 return;
             }
-            await this.$store.dispatch(
-                'groups/addDocument', 
-                {group: this.group, data: newDocumentData}
-            );
+            await this.groupsStore.addDocument({group: this.group, data: newDocumentData});
         },
         async deleteDocument (document) {
             if (!this.canManageDocuments) {
-                this.$store.pushError('Permission denied');
                 return;
             }
-            await this.$store.dispatch(
-                'groups/deleteDocument', 
-                {group: this.group, document}
-            );
+            await this.groupsStore.deleteDocument({group: this.group, document});
         }
     }
 }

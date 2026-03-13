@@ -1,6 +1,7 @@
 <script>
 import CspecSummary from '@/components/expert_panels/CspecSummary.vue'
 import ApplicationUploadForm from '@/components/applications/documents/ApplicationUploadForm.vue'
+import { useAuthStore } from '@/stores/auth';
 
 export default {
     name: 'SpecificationsSection',
@@ -18,16 +19,21 @@ export default {
             default: false
         }
     },
+    setup() {
+        return {
+            authStore: useAuthStore(),
+        }
+    },
     data() {
         return {
         }
     },
     computed: {
         cspecSummaryEnabled () {
-            return this.$store.state.systemInfo.app.features.cspec_summary
+            return this.authStore.systemInfo.app.features.cspec_summary
         },
         specificationUpload () {
-            return this.$store.state.systemInfo.app.features.specification_upload
+            return this.authStore.systemInfo.app.features.specification_upload
         }
     },
     methods: {

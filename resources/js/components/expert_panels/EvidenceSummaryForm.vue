@@ -1,6 +1,7 @@
 <script>
 import api from '@/http/api'
 import is_validation_error from '@/http/is_validation_error';
+import { useAlertsStore } from '@/stores/alerts';
 
 
 export default {
@@ -19,6 +20,11 @@ export default {
         'saved',
         'canceled'
     ],
+    setup() {
+        return {
+            alertsStore: useAlertsStore(),
+        }
+    },
     data() {
         return {
             groupGenes: [],
@@ -58,7 +64,7 @@ export default {
                                             .then (response => response.data.data);
 
                 this.$emit('saved', newSummary);
-                this.$store.commit('pushSuccess', 'Saved example evidence summary');
+                this.alertsStore.pushSuccess('Saved example evidence summary');
                 this.editing = false;
             } catch (error) {
                 if (is_validation_error(error)) {

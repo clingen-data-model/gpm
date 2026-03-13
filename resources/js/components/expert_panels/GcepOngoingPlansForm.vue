@@ -1,4 +1,6 @@
 <script>
+import { useGroupsStore } from '@/stores/groups';
+
 export default {
     name: 'GcepOngoingPlansForm',
     props: {
@@ -16,13 +18,18 @@ export default {
     emits: [
       'update',
     ],
+    setup() {
+        return {
+            groupsStore: useGroupsStore(),
+        }
+    },
     computed: {
         group: {
             get () {
-                return this.$store.getters['groups/currentItemOrNew'];
+                return this.groupsStore.currentItemOrNew;
             },
             set (value) {
-                this.$store.commit('groups/addItem', value);
+                this.groupsStore.addItem(value);
             }
         },
         canEdit () {

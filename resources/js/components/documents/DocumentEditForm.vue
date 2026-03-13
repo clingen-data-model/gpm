@@ -1,6 +1,7 @@
 <script>
 import { isValidationError } from '@/http';
-import {mapState} from 'vuex'
+import { useDoctypesStore } from '@/stores/doctypes';
+
 export default {
     name: 'DocumentEditForm',
     props: {
@@ -17,6 +18,11 @@ export default {
         'saved',
         'canceled',
     ],
+    setup() {
+        return {
+            doctypesStore: useDoctypesStore(),
+        }
+    },
     data() {
         return {
             docProxy: {},
@@ -24,9 +30,9 @@ export default {
         }
     },
     computed: {
-        ...mapState({
-            documentTypes: state => state.doctypes.items
-        }),
+        documentTypes () {
+            return this.doctypesStore.items;
+        },
     },
     watch: {
         document: {
@@ -37,7 +43,7 @@ export default {
         }
     },
     mounted () {
-        this.$store.dispatch('doctypes/getItems');
+        this.doctypesStore.getItems();
     },
     methods: {
         cancel() {

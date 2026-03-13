@@ -1,4 +1,5 @@
 <script>
+import { useAuthStore } from '@/stores/auth'
 export default {
     name: 'UserMenu',
     components: {
@@ -34,7 +35,7 @@ export default {
         },
         logout () {
             try{
-                this.$store.dispatch('logout')
+                useAuthStore().logout()
                     .then( () => {
                         this.$router.push('/login')
                     })

@@ -1,5 +1,8 @@
 <script>
 import coiDef from '../../surveys/coi_v2.json'
+import { useAuthStore } from '@/stores/auth'
+import { useCoiStore } from '@/stores/coi'
+import { useAlertsStore } from '@/stores/alerts'
 import Survey from '@/survey'
 import api from '@/http/api'
 import is_validation_error from '@/http/is_validation_error';
@@ -33,6 +36,9 @@ export default {
             redirectCountdown: 5
         }
     },
+    setup() {
+        return { authStore: useAuthStore(), coiStore: useCoiStore(), alertsStore: useAlertsStore() }
+    },
     computed: {
         codeIsValid() {
             return this.groupName !== null;
@@ -41,7 +47,7 @@ export default {
             return `${survey.name} for ${this.groupName}`;
         },
         membership () {
-            return this.$store.getters
+            return this.authStore
                     .currentUser
                     .person.memberships.find(m => {
                         return m.group
@@ -66,7 +72,7 @@ export default {
     },
     async mounted() {
         this.verifyCode();
-        await this.$store.dispatch('getCurrentUser')
+        await this.authStore.getCurrentUser()
     },
     methods: {
         initResponseValues() {
@@ -126,8 +132,7 @@ export default {
         async storeResponse() {
             this.saving = true;
             try {
-                await this.$store.dispatch(
-                    'storeCoi',
+                await this.coiStore.storeCoi(
                     {
                         code: this.code,
                         groupMemberId: this.groupMemberId,
@@ -135,13 +140,13 @@ export default {
                     }
                 );
                 this.saved = true;
-                await this.$store.dispatch('forceGetCurrentUser');
+                await this.authStore.forceGetCurrentUser();
                 this.$router.push({name: 'Dashboard'});
             } catch (error) {
                 if (is_validation_error(error)) {
                     this.errors = error.response.data.errors
                 } else {
-                    this.$store.commit('pushError', `You can not complete a COI for ${this.groupName} because you are not a member.`)
+                    this.alertsStore.pushError(`You can not complete a COI for ${this.groupName} because you are not a member.`)
                 }
             }
             this.saving = false;

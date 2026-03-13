@@ -1,18 +1,17 @@
 <script setup>
     import ProfileForm from '../components/people/ProfileForm.vue';
     import {computed, ref} from 'vue'
-    import {useStore} from 'vuex'
     import {useRouter} from 'vue-router'
+    import { useAuthStore } from '@/stores/auth';
 
     const props = defineProps({
         redirectTo: {
             type: Object
         }
     })
-    const store = useStore();
     const router = useRouter();
 
-    const user = computed(() => store.getters.currentUser || {person: {memberships: []}})
+    const user = computed(() => useAuthStore().currentUser || {person: {memberships: []}})
     const legacyExpertise = computed(() => {
         return user.value.person.memberships
             .map(m => ({groupName: m.group.name,  legacyExpertise: m.legacy_expertise}))
@@ -21,7 +20,7 @@
 
     const handleSaved = async () => {
         try {
-            await store.dispatch('forceGetCurrentUser');
+            await useAuthStore().forceGetCurrentUser();
             if (!props.redirectTo) {
                 router.replace({name: 'Dashboard'});
                 return;
@@ -69,7 +68,7 @@
       </div>
     </div>
     <ProfileForm
-      :person="store.getters.currentUser.person"
+      :person="useAuthStore().currentUser.person"
       :show-title="false"
       @saved="handleSaved"
     />

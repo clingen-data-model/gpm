@@ -1,7 +1,8 @@
 <script>
-import {mapGetters} from 'vuex'
 import { formatDate } from '@/date_utils'
 import is_validation_error from '@/http/is_validation_error'
+import { useGroupsStore } from '@/stores/groups';
+import { useApplicationsStore } from '@/stores/applications';
 
 export default {
     name: 'ConfirmDeleteNextAction',
@@ -15,15 +16,21 @@ export default {
             type: Number,
         }
     },
+    setup() {
+        return {
+            groupsStore: useGroupsStore(),
+            applicationsStore: useApplicationsStore(),
+        }
+    },
     data() {
         return {
             errors: {}
         }
     },
     computed: {
-        ...mapGetters({
-            group: 'groups/currentItemOrNew'
-        }),
+        group () {
+            return this.groupsStore.currentItemOrNew;
+        },
         application () {
             return this.group.expert_panel;
         },
@@ -58,11 +65,11 @@ export default {
         async commitDelete()
         {
             try {
-                await this.$store.dispatch('applications/deleteNextAction',
-                                    {
-                                        application: this.application,
-                                        nextAction: this.nextAction
-                                    });
+                await this.applicationsStore.deleteNextAction(
+                    {
+                        application: this.application,
+                        nextAction: this.nextAction
+                    });
                 this.$router.go(-1);
             } catch ( error ) {
                 if (is_validation_error(error)) {

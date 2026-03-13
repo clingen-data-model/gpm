@@ -1,10 +1,14 @@
 <script>
 import GroupForm from '@/components/groups/GroupForm.vue';
+import { useGroupsStore } from '@/stores/groups'
 
 export default {
     name: 'BasicInfoData',
     components: {
         GroupForm,
+    },
+    setup() {
+        return { groupsStore: useGroupsStore() }
     },
     data () {
         return {
@@ -13,7 +17,7 @@ export default {
     },
     computed: {
         group () {
-            return this.$store.getters['groups/currentItemOrNew']
+            return this.groupsStore.currentItemOrNew
         },
         application () {
             return this.group.expert_panel;

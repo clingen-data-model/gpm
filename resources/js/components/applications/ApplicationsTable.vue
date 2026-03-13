@@ -1,5 +1,5 @@
 <script>
-import { mapGetters } from 'vuex'
+import { useApplicationsStore } from '@/stores/applications'
 import { formatDate } from '@/date_utils'
 import sortAndFilter from '@/composables/router_aware_sort_and_filter'
 import configs from '@/configs'
@@ -160,9 +160,7 @@ export default {
         }
     },
     computed: {
-        ...mapGetters({
-            applications: 'applications/all'
-        }),
+        applications() { return useApplicationsStore().all },
         filteredData() {
             let applications = this.applications
                 .filter(item => !this.epTypeId || Number.parseInt(item.expert_panel_type_id) === Number.parseInt(this.epTypeId))
@@ -252,7 +250,7 @@ export default {
                 params.showDeleted = 1;
             }
 
-            this.$store.dispatch('applications/getApplications', params);
+            useApplicationsStore().getApplications(params);
         },
         goToApplication (item) {
             if (item.deleted_at) {

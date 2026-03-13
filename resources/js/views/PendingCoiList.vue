@@ -1,6 +1,6 @@
 <script setup>
-    import { useStore } from 'vuex'
-    const store = useStore();
+    import { useAuthStore } from '@/stores/auth'
+    const authStore = useAuthStore();
 </script>
 
 <template>
@@ -8,7 +8,7 @@
     <h3>You must complete a Conflict of Interest Disclosure for the following memberships:</h3>
     <div class="my-2">
       <router-link
-        v-for="membership in store.getters.currentUser.person.membershipsWithPendingCois"
+        v-for="membership in authStore.currentUser.person.membershipsWithPendingCois"
         :key="membership.id"
         class="block my-0 font-bold p-2 border border-gray-300 first:rounded-t-lg last:rounded-b-lg cursor-pointer hover:bg-blue-50 link"
         :to="`/coi/${membership.group.coi_code}`"

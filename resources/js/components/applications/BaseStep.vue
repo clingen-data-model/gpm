@@ -1,5 +1,5 @@
 <script>
-import { mapGetters } from 'vuex'
+import { useGroupsStore } from '@/stores/groups'
 import { formatDate } from '@/date_utils'
 import ApplicationLog from '@/components/applications/ApplicationLog.vue'
 import StepControls from '@/components/applications/StepControls.vue'
@@ -52,10 +52,13 @@ export default {
             showRejectForm: false
         }
     },
+    setup() {
+        return { groupsStore: useGroupsStore() }
+    },
     computed: {
-        ...mapGetters({
-            group: 'groups/currentItemOrNew'
-        }),
+        group () {
+            return this.groupsStore.currentItemOrNew
+        },
         application () {
             return this.group.expert_panel;
         },
@@ -85,8 +88,7 @@ export default {
         },
         async updateApprovalDate() {
             try {
-                await this.$store.dispatch(
-                    'groups/updateApprovalDate',
+                await this.groupsStore.updateApprovalDate(
                     {
                         group: this.group,
                         dateApproved: this.newApprovalDate,

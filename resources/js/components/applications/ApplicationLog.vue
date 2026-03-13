@@ -1,6 +1,6 @@
 <script>
 import {computed, watch} from 'vue'
-import {useStore} from 'vuex';
+import {useGroupsStore} from '@/stores/groups';
 
 
 import LogEntryForm from '@/components/log_entries/LogEntryForm.vue'
@@ -44,9 +44,9 @@ export default {
         }
     },
     setup () {
-        const store  = useStore();
+        const groupsStore = useGroupsStore();
         const group = computed(() => {
-            return store.getters['groups/currentItemOrNew']
+            return groupsStore.currentItemOrNew
         })
 
         const application = computed(() => {

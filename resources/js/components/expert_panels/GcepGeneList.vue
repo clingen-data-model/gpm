@@ -1,9 +1,10 @@
 <script>
 import {ref, watch, computed, onMounted} from 'vue';
-import {useStore} from 'vuex';
 import formFactory from '@/forms/form_factory'
 import is_validation_error from '@/http/is_validation_error'
 import api from '@/http/api'
+import { useGroupsStore } from '@/stores/groups';
+import { useAlertsStore } from '@/stores/alerts';
 
 export default {
     name: 'GcepGeneList',
@@ -29,7 +30,8 @@ export default {
         'update'
     ],
     setup(props, context) {
-        const store = useStore();
+        const groupsStore = useGroupsStore();
+        const alertsStore = useAlertsStore();
 
         const loading = ref(false);
         const genesAsText = ref(null);
@@ -38,10 +40,10 @@ export default {
 
         const group = computed({
             get() {
-                return store.getters['groups/currentItemOrNew'];
+                return groupsStore.currentItemOrNew;
             },
             set (value) {
-                store.commit('groups/addItem', value)
+                groupsStore.addItem(value)
             }
         });
 
@@ -51,13 +53,13 @@ export default {
             }
             loading.value = true;
             try {
-                await store.dispatch('groups/getGenes', group.value);
+                await groupsStore.getGenes(group.value);
                 genesAsText.value = group.value.expert_panel.genes.map(g => g.gene_symbol).join(", ");
             } catch (error) {
-                store.commit('pushError', error.response.data);
+                alertsStore.pushError(error.response.data);
             }
             loading.value = false;
-            
+
         }
         const hideForm = () => {
             context.emit('update:editing', false);
@@ -96,7 +98,7 @@ export default {
                     if (messages.group) {
                         messages.group
                             .forEach(m => {
-                                store.pushError(m)
+                                alertsStore.pushError(m)
                             })
                     }
                     const geneMessages = Object.keys(messages).map(key => {
@@ -117,7 +119,7 @@ export default {
         };
 
 
-        watch(() => store.getters['groups/currentItem'], (to, from) => {
+        watch(() => groupsStore.currentItem, (to, from) => {
             if (to.id && (!from || to.id !== from.id)) {
                 // syncGenesAsText();
                 getGenes();

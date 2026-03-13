@@ -3,6 +3,8 @@
 
 
 import TrashButton from '@/components/buttons/TrashIconButton.vue';
+import { useGroupsStore } from '@/stores/groups'
+import { useApplicationsStore } from '@/stores/applications'
 import DocumentEditForm from './DocumentEditForm';
 import is_validation_error from '../../../http/is_validation_error';
 
@@ -80,9 +82,12 @@ export default {
             ],            
         }
     },
+    setup() {
+        return { groupsStore: useGroupsStore(), applicationsStore: useApplicationsStore() }
+    },
     computed: {
         group () {
-            return this.$store.getters['groups/currentItemOrNew']
+            return this.groupsStore.currentItemOrNew
         },
         application () {
             return this.group.expert_panel
@@ -135,10 +140,9 @@ export default {
         },
         markFinal(item) {
             if (!this.hasFinalVersion || this.confirmNewFinal(item)) {
-                this.$store.dispatch(
-                    'applications/markDocumentVersionFinal',
+                this.applicationsStore.markDocumentVersionFinal(
                     {
-                        application: this.application, 
+                        application: this.application,
                         document: item
                     }
                 );
@@ -161,7 +165,7 @@ export default {
         },
         async commitDelete() {
             try {
-                await this.$store.dispatch('applications/deleteDocument', {application: this.application, document: this.activeDocument});
+                await this.applicationsStore.deleteDocument({application: this.application, document: this.activeDocument});
                 this.showDeleteConfirmation = false;
                 this.$emit('updated');
             } catch (err) {

@@ -116,7 +116,7 @@ export default {
             formData.append('profile_photo', blob);
                 api.postForm(`/api/people/${this.person.uuid}/profile-photo`, formData)
                     .then(async (rsp) => {                         
-                        let updated = rsp?.data;
+                        const updated = rsp?.data;
                         this.$emit('uploaded', updated);
                         this.showForm = false;
                         this.file = null;

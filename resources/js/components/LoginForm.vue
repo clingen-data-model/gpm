@@ -1,8 +1,14 @@
 <script>
 import is_validation_error from '@/http/is_validation_error'
 import isAuthError from '@/http/is_auth_error'
+import { useAuthStore } from '@/stores/auth'
 
 export default {
+    setup() {
+        return {
+            authStore: useAuthStore(),
+        }
+    },
     props: {
     },
     emits: [
@@ -22,7 +28,7 @@ export default {
     methods: {
         async authenticate() {
             try {
-                await this.$store.dispatch('login', {email: this.email, password: this.password})
+                await this.authStore.login({email: this.email, password: this.password})
             } catch (e) {
                 if (is_validation_error(e)) {
                     this.errors = e.response.data.errors
@@ -32,7 +38,7 @@ export default {
             }
 
             try {
-                await this.$store.dispatch('getCurrentUser')
+                await this.authStore.getCurrentUser()
             } catch (e) {
                 if (isAuthError(e)) {
                     this.$emit('authenticationFailed')

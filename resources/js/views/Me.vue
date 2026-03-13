@@ -1,13 +1,13 @@
 <script>
-import {mapGetters} from 'vuex'
+import { useAuthStore } from '@/stores/auth';
 export default {
-    computed: { 
-        ...mapGetters({
-            currentUser: 'currentUser'
-        })
+    computed: {
+        currentUser() {
+            return useAuthStore().currentUser;
+        }
     },
     mounted () {
-        this.$store.dispatch('getCurrentUser');
+        useAuthStore().getCurrentUser();
     }
 }
 </script>

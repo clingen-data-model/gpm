@@ -1,6 +1,6 @@
 <script setup>
     import {computed, onMounted, provide, ref, shallowRef, watch} from 'vue';
-    import {useStore} from 'vuex';
+    import {useGroupsStore} from '@/stores/groups';
     import {hasPermission} from '@/auth_utils.js';
     import ApplicationAdmin from './ApplicationAdmin.vue'
     import ApplicationReview from './ApplicationReview.vue'
@@ -16,10 +16,10 @@
     const commentManager = ref(commentManagerFactory('App\\Modules\\Group\\Models\\Group', 0));
     provide('commentManager', commentManager)
 
-    const store = useStore();
+    const groupsStore = useGroupsStore();
 
     const loading = ref(false);
-    const group = computed(() => store.getters['groups/currentItemOrNew'])
+    const group = computed(() => groupsStore.currentItemOrNew)
     provide('group', group);
 
     const applicationView = shallowRef(ApplicationReview);
@@ -36,13 +36,13 @@
     }
     const getGroup = async () => {
         loading.value = true;
-        await store.dispatch('groups/findAndSetCurrent', props.uuid);
-        store.dispatch('groups/getDocuments', group.value);
-        store.dispatch('groups/getNextActions', group.value);
-        store.dispatch('groups/getSubmissions', group.value);
+        await groupsStore.findAndSetCurrent(props.uuid);
+        groupsStore.getDocuments(group.value);
+        groupsStore.getNextActions(group.value);
+        groupsStore.getSubmissions(group.value);
         getLatestSubmission();
-        store.dispatch('groups/getMembers', group.value);
-        store.dispatch('groups/getGenes', group.value);
+        groupsStore.getMembers(group.value);
+        groupsStore.getGenes(group.value);
         loading.value = false;
     };
 

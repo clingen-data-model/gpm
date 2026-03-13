@@ -1,5 +1,5 @@
 <script>
-import {mapGetters} from 'vuex'
+import { useGroupsStore } from '@/stores/groups'
 import {formatDate} from '@/date_utils'
 import BaseStep from '@/components/applications/BaseStep.vue'
 import SpecificationsSection from '../expert_panels/SpecificationsSection.vue'
@@ -19,10 +19,13 @@ export default {
 
         }
     },
+    setup() {
+        return { groupsStore: useGroupsStore() }
+    },
     computed: {
-        ...mapGetters({
-            group: 'groups/currentItemOrNew'
-        }),
+        group () {
+            return this.groupsStore.currentItemOrNew
+        },
         application () {
             return this.group.expert_panel;
         },

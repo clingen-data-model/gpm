@@ -5,6 +5,7 @@ import VcepProtocolLink from '../links/VcepProtocolLink.vue';
 import EditIconButton from '@/components/buttons/EditIconButton.vue'
 import RichTextEditor from '@/components/prosekit/RichTextEditor.vue'
 import { htmlFromMarkdown } from '@/markdown-utils';
+import { useGroupsStore } from '@/stores/groups';
 
 export default {
     name: "ScopeDescriptionForm",
@@ -31,13 +32,18 @@ export default {
         "update:group",
         "update"
     ],
+    setup() {
+        return {
+            groupsStore: useGroupsStore(),
+        }
+    },
     computed: {
         group: {
             get() {
-                return this.$store.getters["groups/currentItem"] || new Group();
+                return this.groupsStore.currentItem || new Group();
             },
             set(value) {
-                this.$store.commit("groups/addItem", value);
+                this.groupsStore.addItem(value);
             }
         },
         htmlScopeDescription() {

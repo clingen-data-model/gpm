@@ -2,6 +2,7 @@
 import {formatDate} from '../../../date_utils'
 import {isValidationError} from '@/http';
 import config from '@/configs.json'
+import { useGroupsStore } from '@/stores/groups'
 
 const documentsTypes = config.documentsTypes;
 
@@ -41,9 +42,12 @@ export default {
             showDeleteConfirmation: false
         }
     },
+    setup() {
+        return { groupsStore: useGroupsStore() }
+    },
     computed: {
         group () {
-            return this.$store.getters['groups/currentItemOrNew']
+            return this.groupsStore.currentItemOrNew
         },
         documents () {
             return this.group.documents.filter(d => {
@@ -69,7 +73,7 @@ export default {
         }
     },
     mounted() {
-        this.$store.dispatch('groups/getDocuments', this.group);
+        this.groupsStore.getDocuments(this.group);
     },
     methods: {
         async save() {
@@ -82,7 +86,7 @@ export default {
                     })
                 data.set('file', this.$refs.fileInput.files[0]);
                 data.set('document_type_id', this.documentTypeId);
-                await this.$store.dispatch('groups/addApplicationDocument', {group: this.group, data});
+                await this.groupsStore.addApplicationDocument({group: this.group, data});
 
                 this.clearForm();
                 this.$emit('saved');
@@ -127,7 +131,7 @@ export default {
             this.resetActiveDocument();
         },
         async commitDelete() {
-            await this.$store.dispatch('groups/deleteDocument', {group: this.group, document: this.activeDocument})
+            await this.groupsStore.deleteDocument({group: this.group, document: this.activeDocument})
             this.showDeleteConfirmation = false;
             this.resetActiveDocument();
         },

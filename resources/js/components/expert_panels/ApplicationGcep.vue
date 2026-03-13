@@ -3,6 +3,7 @@ import {debounce} from 'lodash-es'
 
 import {errors} from '@/forms/form_factory'
 import {isValidationError} from '@/http'
+import { useGroupsStore } from '@/stores/groups';
 
 import ApplicationSection from '@/components/expert_panels/ApplicationSection.vue'
 import ApplicationStep from '@/components/expert_panels/ApplicationStep.vue'
@@ -35,8 +36,10 @@ export default {
         'saving',
     ],
     setup () {
+        const groupsStore = useGroupsStore();
         return {
-            errors
+            errors,
+            groupsStore,
         }
     },
     data () {
@@ -48,10 +51,10 @@ export default {
     computed: {
         group: {
             get () {
-                return this.$store.getters['groups/currentItemOrNew'];
+                return this.groupsStore.currentItemOrNew;
             },
             set (value) {
-                this.$store.commit('groups/addItem', value);
+                this.groupsStore.addItem(value);
             }
         },
     },
@@ -89,7 +92,7 @@ export default {
         },
         saveUpdates () {
             if (this.applicationIsDirty()) {
-                return this.$store.dispatch('groups/saveApplicationData', this.group)
+                return this.groupsStore.saveApplicationData(this.group)
                         .then(() => {
                             this.$emit('saved');
                         });
@@ -97,7 +100,7 @@ export default {
         },
         saveWebDescription() {
             if (this.webDescriptionIsDirty()) {
-              return this.$store.dispatch('groups/descriptionUpdate', {
+              return this.groupsStore.descriptionUpdate({
                 uuid: this.group.uuid,
                 description: this.group.description
               })

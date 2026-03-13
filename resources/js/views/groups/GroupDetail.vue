@@ -1,6 +1,8 @@
 <script>
 import { ref, computed, onMounted, watch } from "vue";
-import { useStore } from "vuex";
+import { useGroupsStore } from "@/stores/groups";
+import { useAlertsStore } from "@/stores/alerts";
+import { useAuthStore } from "@/stores/auth";
 
 import { logEntries, fetchEntries } from "@/adapters/log_entry_repository";
 import { hasPermission } from "@/auth_utils";
@@ -70,15 +72,17 @@ export default {
     },
   },
   setup(props) {
-    const store = useStore();
+    const groupsStore = useGroupsStore();
+    const alertsStore = useAlertsStore();
+    const authStore = useAuthStore();
     const showModal = ref(false);
 
     const group = computed({
       get () {
-        return store.getters["groups/currentItemOrNew"];
+        return groupsStore.currentItemOrNew;
       },
       set (value) {
-        store.commit("groups/addItem", value);
+        groupsStore.addItem(value);
       },
     });
 
@@ -98,17 +102,17 @@ export default {
     };
 
     const getGroup = () => {
-      store.dispatch("groups/find", props.uuid).then(() => {
-        store.commit("groups/setCurrentItemIndexByUuid", props.uuid);
-        store.dispatch('groups/getChildren', group.value);
+      groupsStore.find(props.uuid).then(() => {
+        groupsStore.setCurrentItemIndexByUuid(props.uuid);
+        groupsStore.getChildren(group.value);
         if (group.value.is_ep) {
-          store.dispatch("groups/getGenes", group.value);
-          store.dispatch("groups/getDocuments", group.value);
+          groupsStore.getGenes(group.value);
+          groupsStore.getDocuments(group.value);
           if (group.value.is_vcep_or_scvcep) {
-            store.dispatch("groups/getEvidenceSummaries", group.value);
+            groupsStore.getEvidenceSummaries(group.value);
           }
-          store.dispatch("groups/getPendingTasks", group.value);
-          store.dispatch("groups/getAnnualUpdate", group.value);
+          groupsStore.getPendingTasks(group.value);
+          groupsStore.getAnnualUpdate(group.value);
         }
       });
     };
@@ -135,6 +139,9 @@ export default {
       needsToReviewSustainedCuration,
       getLogEntries,
       getGroup,
+      groupsStore,
+      alertsStore,
+      authStore,
     };
   },
   data() {
@@ -168,7 +175,7 @@ export default {
     this.showConfirmDelete = false;
   },
   beforeUnmount() {
-    this.$store.commit("groups/clearCurrentItem");
+    this.groupsStore.clearCurrentItem();
   },
   methods: {
     hideModal() {
@@ -207,57 +214,48 @@ export default {
       }
     },
     saveDescription() {
-      return this.$store
-        .dispatch("groups/descriptionUpdate", {
+      return this.groupsStore
+        .descriptionUpdate({
           uuid: this.group.uuid,
           description: this.group.description,
         })
         .then(() => {
-          this.$store.commit(
-            "pushSuccess",
-            "Description updated."
-          );
+          this.alertsStore.pushSuccess("Description updated.");
         });
     },
     saveMembershipDescription() {
-      return this.$store
-        .dispatch("groups/membershipDescriptionUpdate", {
+      return this.groupsStore
+        .membershipDescriptionUpdate({
           uuid: this.group.uuid,
           membershipDescription: this.group.expert_panel.membership_description,
         })
         .then(() => {
-          this.$store.commit(
-            "pushSuccess",
-            "Description of expertise updated."
-          );
+          this.alertsStore.pushSuccess("Description of expertise updated.");
         });
     },
     saveScopeDescription() {
-      return this.$store
-        .dispatch("groups/scopeDescriptionUpdate", {
+      return this.groupsStore
+        .scopeDescriptionUpdate({
           uuid: this.group.uuid,
           scopeDescription: this.group.expert_panel.scope_description,
         })
         .then((response) => {
-          this.$store.commit("pushSuccess", "Description of scope updated.");
+          this.alertsStore.pushSuccess("Description of scope updated.");
           return response;
         });
     },
     saveOngoingPlansForm() {
       const { uuid, expert_panel: expertPanel } = this.group;
-      return this.$store
-        .dispatch("groups/curationReviewProtocolUpdate", { uuid, expertPanel })
+      return this.groupsStore
+        .curationReviewProtocolUpdate({ uuid, expertPanel })
         .then(() => {
-          this.$store.commit(
-            "pushSuccess",
-            "Curation review protocol updated."
-          );
+          this.alertsStore.pushSuccess("Curation review protocol updated.");
         });
     },
     revertGroupChanges() {
       this.errors = {};
-      return this.$store.dispatch("groups/find", this.group.uuid).then(() => {
-        this.$store.commit("pushInfo", "Update canceled.");
+      return this.groupsStore.find(this.group.uuid).then(() => {
+        this.alertsStore.pushInfo("Update canceled.");
       });
     },
     handleTabChange(tabName) {
@@ -269,22 +267,22 @@ export default {
       this.showConfirmDelete = true;
     },
     deleteGroup() {
-      this.$store.dispatch("groups/delete", this.group.uuid);
-      this.$store.commit("pushSuccess", "Group deleted.");
+      this.groupsStore.delete(this.group.uuid);
+      this.alertsStore.pushSuccess("Group deleted.");
       this.$router.push({ name: "GroupList" });
     },
     async fakeCspecPilotApproved() {
       try {
         await api.post(`/api/groups/${this.uuid}/dev/fake-pilot-approved`);
-        this.$store.dispatch("groups/getPendingTasks", this.group);
+        this.groupsStore.getPendingTasks(this.group);
       } catch (e) {
         if (e.response.status === 418) {
-          this.$store.commit("pushError", e.response.data);
+          this.alertsStore.pushError(e.response.data);
         }
       }
     },
     createAnnualUpdateForLatestWindow () {
-      this.$store.dispatch('groups/createAnnualUpdateForLatestWindow', this.group);
+      this.groupsStore.createAnnualUpdateForLatestWindow(this.group);
     }
   },
 };
@@ -340,15 +338,14 @@ export default {
             </submission-wrapper>
           </tab-item>
           <tab-item label="Website Description">
-
-            <template v-if="group.is_vcep" >
+            <template v-if="group.is_vcep">
               <ClinvarForm :group="group" @saved="getGroup" />
-              <br />
+              <br>
             </template>
 
-            <template v-if="(userInGroup(group) || hasPermission('groups-manage')) && group.is_working_group" >
+            <template v-if="(userInGroup(group) || hasPermission('groups-manage')) && group.is_working_group">
               <WGCaptionIconForm :group="group" @saved="getGroup" />
-              <br />
+              <br>
             </template>
 
             <submission-wrapper
@@ -548,7 +545,7 @@ export default {
               </button>
             </section>
             <section
-              v-if="$store.state.systemInfo.env !== 'production'"
+              v-if="authStore.systemInfo.env !== 'production'"
               class="border my-4 p-4 rounded"
             >
               <h2 class="mb-4">

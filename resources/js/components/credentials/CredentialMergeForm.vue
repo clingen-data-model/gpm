@@ -1,6 +1,7 @@
 <script>
 import { isValidationError } from '@/http';
 import SearchSelect from '@/components/forms/SearchSelect.vue'
+import { useCredentialsStore } from '@/stores/credentials';
 
 export default {
     name: 'CredentialMergeForm',
@@ -58,8 +59,7 @@ export default {
             }
             try {
                 this.errors = {};
-                await this.$store.dispatch(
-                        'credentials/merge',
+                await useCredentialsStore().merge(
                         {
                             authority: this.selectedAuthority,
                             obsolete: this.selectedObsolete

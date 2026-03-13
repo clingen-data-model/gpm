@@ -1,6 +1,7 @@
 <script>
 import Application from '@/domain/application'
 import is_validation_error from '@/http/is_validation_error'
+import { useCoiStore } from '@/stores/coi'
 
 export default {
     props: {
@@ -15,6 +16,7 @@ export default {
         'done'
     ],
     setup() {
+        const coiStore = useCoiStore();
         const assembleFormData = (fileInput, otherData) => {
             const data = new FormData();
             Object.keys(otherData)
@@ -28,7 +30,7 @@ export default {
             return data;
         }
 
-        return {assembleFormData}
+        return {assembleFormData, coiStore}
 
     },
     data() {
@@ -59,7 +61,7 @@ export default {
             try {
                 const data = this.assembleFormData(this.$refs.fileInput, this.newCoi);
 
-                await this.$store.dispatch('storeLegacyCoi', {application: this.application, coiData: data})
+                await this.coiStore.storeLegacyCoi({application: this.application, coiData: data})
                 this.clearForm();
                 this.showModal = false;
                 this.$emit('saved');

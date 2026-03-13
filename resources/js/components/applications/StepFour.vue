@@ -1,5 +1,5 @@
 <script>
-import {mapGetters} from 'vuex'
+import { useGroupsStore } from '@/stores/groups'
 import BaseStep from '@/components/applications/BaseStep.vue'
 // import EvidenceSummaryList from '@/components/expert_panels/EvidenceSummaryList.vue'
 // import VcepOngoingPlansForm from '@/components/expert_panels/VcepOngoingPlansForm.vue'
@@ -24,10 +24,13 @@ export default {
 
         }
     },
+    setup() {
+        return { groupsStore: useGroupsStore() }
+    },
     computed: {
-        ...mapGetters({
-            group: 'groups/currentItemOrNew'
-        }),
+        group () {
+            return this.groupsStore.currentItemOrNew
+        },
         application () {
             return this.group.expert_panel;
         },

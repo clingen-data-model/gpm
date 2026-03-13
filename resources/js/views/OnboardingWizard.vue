@@ -1,4 +1,5 @@
 <script>
+import { useAuthStore } from '@/stores/auth'
 import OnboardingSteps from '@/components/onboarding/OnboardingSteps.vue'
 import InviteRedemptionForm from '@/components/onboarding/InviteRedemptionForm.vue'
 import AccountCreationForm from '@/components/onboarding/AccountCreationForm.vue'
@@ -47,10 +48,10 @@ export default {
             return stepWidths[this.currentStepIdx]
         },
         canContinue () {
-            return !this.$store.getters.isAuthed
+            return !useAuthStore().isAuthed
                 || (
-                    this.$store.getters.isAuthed &&
-                    !this.$store.getters.currentUser.person.timezone
+                    useAuthStore().isAuthed &&
+                    !useAuthStore().currentUser.person.timezone
                 );
         }
 
@@ -92,7 +93,7 @@ export default {
                 return;
             }
             if (this.invite.id) {
-                if (this.$store.state.user.id) {
+                if (useAuthStore().user.id) {
                     this.currentStepIndex = 3
                 }
             }
@@ -120,7 +121,7 @@ export default {
         </keep-alive>
       </div>
       <p>
-        <router-link v-if="!$store.getters.isAuthed" class="block link pt-2" :to="{name: 'login'}">
+        <router-link v-if="!useAuthStore().isAuthed" class="block link pt-2" :to="{name: 'login'}">
           &lt; Log In
         </router-link>
       </p>

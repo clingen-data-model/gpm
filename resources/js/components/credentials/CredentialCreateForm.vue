@@ -1,7 +1,7 @@
 <script setup>
     import {ref, watch} from 'vue';
-    import {useStore} from 'vuex';
     import {isValidationError} from '@/http';
+    import { useCredentialsStore } from '@/stores/credentials';
 
     const props = defineProps({
         starterString: {
@@ -13,7 +13,6 @@
         'saved',
         'canceled'
     ]);
-    const store = useStore();
     const errors = ref({});
     const newCredentialName = ref(null);
 
@@ -23,8 +22,7 @@
 
     const saveNewCredential = async () => {
         try {
-            const newCredential = await store.dispatch(
-                                        'credentials/create',
+            const newCredential = await useCredentialsStore().create(
                                         {name: newCredentialName.value}
                                     )
                                     .then(rsp => rsp.data);

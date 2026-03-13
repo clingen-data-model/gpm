@@ -1,6 +1,7 @@
 <script>
-import { mapGetters } from 'vuex'
 import { formatDateTime as formatDate } from '@/date_utils'
+import { usePeopleStore } from '@/stores/people';
+import { useAlertsStore } from '@/stores/alerts';
 import { logEntries, fetchEntries, saveEntry } from "@/adapters/log_entry_repository";
 
 import TabsContainer from '../TabsContainer.vue'
@@ -49,7 +50,7 @@ export default {
         uuid: {
             immediate: true,
             async handler () {
-                await this.$store.dispatch('people/getPerson', { uuid: this.uuid });
+                await usePeopleStore().getPerson({ uuid: this.uuid });
                 if (this.coordinatesPerson(this.person)) {
                     this.getLogEntries();
                     this.getMailLog();
@@ -64,9 +65,9 @@ export default {
         }
     },
     computed: {
-        ...mapGetters({
-            person: 'people/currentItem'
-        }),
+        person() {
+            return usePeopleStore().currentItem;
+        },
         showModal: {
             get() {
                 return this.$route.meta.showModal
@@ -90,7 +91,7 @@ export default {
     },
     methods: {
         async commitDelete() {
-            await this.$store.dispatch('people/deletePerson', this.person);
+            await usePeopleStore().deletePerson(this.person);
             this.showDeleteConfirmation = false;
             this.$router.go(-1);
         },
@@ -100,7 +101,7 @@ export default {
         },
         async getMailLog() {
             this.mailLoading = true;
-            await this.$store.dispatch('people/getMail', this.person);
+            await usePeopleStore().getMail(this.person);
             this.mailLoading = false;
         },
         async getLogEntries() {
@@ -120,11 +121,11 @@ export default {
             const parts = [`Retired from ${n} ${n === 1 ? 'group' : 'groups'}.`]
             if (data?.disable_login) parts.push('Login has been disabled for this member.')
 
-            await this.$store.dispatch('people/getPerson', { uuid: this.uuid })
+            await usePeopleStore().getPerson({ uuid: this.uuid })
             this.getLogEntries()
-            this.$store.commit('pushSuccess', parts.join(' '))
+            useAlertsStore().pushSuccess(parts.join(' '))
           } catch (e) {
-            this.$store.commit('pushError', 'Failed to retire user — see console/logs.')
+            useAlertsStore().pushError('Failed to retire user — see console/logs.')
           } finally {
             this.retireAllBusy = false
           }
@@ -139,7 +140,7 @@ export default {
         }
     },
     mounted() {
-        this.$store.dispatch('people/clearCurrentItem');
+        usePeopleStore().clearCurrentItem();
     }
 }
 </script>
@@ -236,7 +237,7 @@ export default {
           </p>
           <p>&nbsp;</p>
           <p>
-            This button will remove the person from all the groups they are a member of.<br />
+            This button will remove the person from all the groups they are a member of.<br>
             <button class="btn btn red" @click="showRetireAllConfirmation = true">
               Retire Person
             </button>
@@ -280,9 +281,9 @@ export default {
 
         <div class="mt-3">
           <label class="flex items-start space-x-2">
-            <input type="checkbox" v-model="retireAlsoDisableLogin" class="mt-1" />
+            <input v-model="retireAlsoDisableLogin" type="checkbox" class="mt-1">
             <span>
-              Also disable login for this user.<br />
+              Also disable login for this user.<br>
               <small class="text-gray-500">
                 This will delete the user's account data but keep their member record for reference.
                 Contact an administrator if you need to restore their access later.
@@ -293,14 +294,14 @@ export default {
 
         <div class="mt-3">
           <label class="block font-semibold mb-1">Reason (optional)</label>
-          <textarea v-model="retireReason" class="w-full border rounded p-2" rows="3" placeholder="e.g., Left ClinGen"></textarea>
+          <textarea v-model="retireReason" class="w-full border rounded p-2" rows="3" placeholder="e.g., Left ClinGen" />
         </div>
 
         <div class="border my-4 px-2 py-1 font-bold bg-red-100 border-red-200 rounded text-red-800">
           This cannot be undone.
         </div>
 
-        <button-row :submit-text="`Retire ${person.name}`" submit-variant="red" :busy="retireAllBusy" @submitted="commitRetireAll" @canceled="showRetireAllConfirmation = false"/>
+        <button-row :submit-text="`Retire ${person.name}`" submit-variant="red" :busy="retireAllBusy" @submitted="commitRetireAll" @canceled="showRetireAllConfirmation = false" />
       </modal-dialog>
     </teleport>
   </div>

@@ -4,6 +4,7 @@ import ApplicationVcep from '@/components/expert_panels/ApplicationVcep.vue';
 import ApplicationMenu from '@/components/layout/ApplicationMenu.vue';
 import Group from '@/domain/group';
 import { getApplicationForGroup } from "@/composables/use_application.js";
+import { useGroupsStore } from '@/stores/groups';
 
 export default {
     name: 'GroupApplication',
@@ -37,6 +38,10 @@ export default {
             saving: false
         }
     },
+    setup() {
+        const groupsStore = useGroupsStore();
+        return { groupsStore };
+    },
     computed: {
         applicationComponent() {
             if (this.group?.is_vcep_or_scvcep) {
@@ -50,7 +55,7 @@ export default {
             return null;
         },
         group () {
-            const group = this.$store.getters['groups/currentItem'] || new Group();
+            const group = this.groupsStore.currentItem || new Group();
             return group || new Group();
         },
         application() {
@@ -67,17 +72,17 @@ export default {
         uuid: {
             immediate: true,
             async handler (to) {
-                await this.$store.dispatch('groups/find', to)
+                await this.groupsStore.find(to)
                     .then(() => {
-                        this.$store.commit('groups/setCurrentItemIndexByUuid', this.uuid)
+                        this.groupsStore.setCurrentItemIndexByUuid(this.uuid)
                     });
-                await this.$store.dispatch('groups/getSubmissions', this.group);
+                await this.groupsStore.getSubmissions(this.group);
 
             }
         },
     },
     beforeUnmount() {
-        this.$store.commit('groups/clearCurrentItem')
+        this.groupsStore.clearCurrentItem();
     },
     methods: {
         hideModal () {

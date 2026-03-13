@@ -1,6 +1,6 @@
 <script setup>
 import {computed, provide, ref, watch} from 'vue'
-import {useStore} from 'vuex'
+import { useGroupsStore } from '@/stores/groups'
 import DefinitionReview from '@/components/expert_panels/DefinitionReview.vue'
 import SustainedCurationReview from '@/components/expert_panels/SustainedCurationReview.vue'
 import SpecificationsSection from '@/components/expert_panels/SpecificationsSection.vue'
@@ -12,19 +12,19 @@ const props = defineProps({
         required: true
     }
 });
-const store = useStore();
+const groupsStore = useGroupsStore();
 
 // eslint-disable-next-line unused-imports/no-unused-vars
 const commentManager = ref(commentManagerFactory('App\\Modules\\Group\\Models\\Group', 0));
 provide('commentManager', null)
 
-const group = computed(() => store.getters['groups/currentItemOrNew'])
+const group = computed(() => groupsStore.currentItemOrNew)
 
 const loadGroup = async (uuid) => {
-    await store.dispatch('groups/findAndSetCurrent', uuid);
-    store.dispatch('groups/getMembers', group.value);
-    store.dispatch('groups/getMembers', group.value);
-    store.dispatch('groups/getGenes', group.value);
+    await groupsStore.findAndSetCurrent(uuid);
+    groupsStore.getMembers(group.value);
+    groupsStore.getMembers(group.value);
+    groupsStore.getGenes(group.value);
 
 }
 

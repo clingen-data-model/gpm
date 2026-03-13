@@ -1,5 +1,5 @@
 <script>
-import {mapGetters} from 'vuex'
+import { useGroupsStore } from '@/stores/groups'
 import api from '@/http/api';
 import isValidationError from '@/http/is_validation_error';
 import UserDefinedMailForm from '@/components/forms/UserDefinedMailForm.vue'
@@ -33,10 +33,13 @@ export default {
             errors: {}
         }
     },
+    setup() {
+        return { groupsStore: useGroupsStore() }
+    },
     computed: {
-        ...mapGetters({
-            group: 'groups/currentItemOrNew'
-        }),
+        group () {
+            return this.groupsStore.currentItemOrNew
+        },
         application () {
             return this.group.expert_panel;
         },
@@ -81,7 +84,7 @@ export default {
             };
 
             try {
-                await this.$store.dispatch('groups/approveCurrentStep', data)
+                await this.groupsStore.approveCurrentStep(data)
                 this.clearForm();
                 this.$emit('saved');
             } catch (e) {

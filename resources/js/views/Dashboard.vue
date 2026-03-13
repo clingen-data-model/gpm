@@ -1,6 +1,7 @@
 <script setup>
-import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
+import { useAuthStore } from '@/stores/auth'
+import { usePeopleStore } from '@/stores/people'
 import { ref, computed, onMounted, watch } from 'vue'
 import { upperCase } from 'lodash-es'
 import CoiList from '@/components/people/CoiList.vue'
@@ -15,19 +16,18 @@ import DemographicsForm from '../components/people/DemographicsForm.vue';
 import { featureIsEnabled } from '@/utils.js'
 import { hasAnyPermission, hasPermission } from '@/auth_utils.js'
 
-const store = useStore();
 const router = useRouter();
 const user = computed(() => {
-    return store.getters.currentUser
+    return useAuthStore().currentUser
 });
 const personFromStore = computed(() => {
-    return store.getters['people/currentItem'] || new Person();
+    return usePeopleStore().currentItem || new Person();
 })
 
 const loadPersonInStore = () => {
     if (user.value.id && user.value.person && user.value.person.id) {
-        store.commit('people/addItem', user.value.person);
-        store.commit('people/setCurrentItemIndex', user.value.person);
+        usePeopleStore().addItem(user.value.person);
+        usePeopleStore().setCurrentItemIndex(user.value.person);
     }
 }
 
@@ -98,7 +98,7 @@ const showApplicationActivity = computed(() => {
 })
 
 onMounted(async () => {
-    await store.dispatch('getCurrentUser');
+    await useAuthStore().getCurrentUser();
 })
 
 const navigateToGroup = (item) => {

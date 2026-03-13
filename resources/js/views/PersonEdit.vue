@@ -1,5 +1,6 @@
 <script>
 import ProfileForm from '@/components/people/ProfileForm.vue'
+import { usePeopleStore } from '@/stores/people';
 
 export default {
     name: 'PersonEdit',
@@ -14,14 +15,14 @@ export default {
     },
     computed: {
         person () {
-            return this.$store.getters['people/currentItem'];
+            return usePeopleStore().currentItem;
         }
     },
     watch: {
         uuid: {
             immediate: true,
             handler () {
-                this.$store.dispatch('people/getPerson', {uuid: this.uuid});
+                usePeopleStore().getPerson({uuid: this.uuid});
             }
         }
     },

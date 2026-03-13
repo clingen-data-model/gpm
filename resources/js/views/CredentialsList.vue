@@ -3,6 +3,8 @@ import sortAndFilter from '@/composables/router_aware_sort_and_filter';
 import CredentialUpdateForm from '@/components/credentials/CredentialUpdateForm.vue'
 import CredentialsApprovalForm from '../components/credentials/CredentialsApprovalForm.vue';
 import CredentialMergeForm from '../components/credentials/CredentialMergeForm.vue';
+import { useCredentialsStore } from '@/stores/credentials';
+import { useAlertsStore } from '@/stores/alerts';
 
 export default {
     name: 'CredentialList',
@@ -67,7 +69,7 @@ export default {
     },
     computed: {
         items () {
-            return this.$store.getters['credentials/items']
+            return useCredentialsStore().items
         },
         filteredItems () {
             if (!this.filter) {
@@ -83,7 +85,7 @@ export default {
         }
     },
     mounted () {
-        this.$store.dispatch('credentials/getItems');
+        useCredentialsStore().getItems();
     },
     methods: {
         edit (item) {
@@ -103,7 +105,7 @@ export default {
             this.showEditDialog = false;
 
             this.updateItem();
-            this.$store.commit("pushSuccess", 'Credential saved.')
+            useAlertsStore().pushSuccess('Credential saved.')
         },
         handleCancel() {
             this.showApproveDialog = false;
@@ -114,7 +116,7 @@ export default {
         handleMerge() {
             this.items.splice(this.currentIndex, 1);
             this.showMergeDialog = false;
-            this.$store.commit("pushSuccess", 'Credential merged.')
+            useAlertsStore().pushSuccess('Credential merged.')
             this.currentItem = {};
         },
         updateItem() {
@@ -139,9 +141,9 @@ export default {
                 // eslint-disable-next-line no-alert
                 alert('You cannot delete an credential because it is in use.  Please edit the credential or merge it into another.')
             }
-            await this.$store.dispatch('credentials/delete', this.currentItem)
+            await useCredentialsStore().delete(this.currentItem)
             this.showDeleteConfirmation = false;
-            this.$store.commit("pushSuccess", `${this.currentItem.name} deleted.`);
+            useAlertsStore().pushSuccess(`${this.currentItem.name} deleted.`);
         },
     },
 }

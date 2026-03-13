@@ -1,5 +1,6 @@
 <script>
 import is_validation_error from '../../../http/is_validation_error';
+import { useApplicationsStore } from '@/stores/applications'
 export default {
     name: 'DocumentEditForm',
     props: {
@@ -18,6 +19,9 @@ export default {
         'canceled',
         'saved',
     ],
+    setup() {
+        return { applicationsStore: useApplicationsStore() }
+    },
     data() {
         return {
             docProxy: {},
@@ -44,7 +48,7 @@ export default {
         },
         async save() {
             try {
-                await this.$store.dispatch('applications/updateDocumentInfo', {application: this.application, document: this.docProxy});
+                await this.applicationsStore.updateDocumentInfo({application: this.application, document: this.docProxy});
                 this.docProxy = {};
                 this.$emit('saved');
                 this.$emit('updated');

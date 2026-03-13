@@ -2,7 +2,8 @@
 import UserMenu from '@/components/UserMenu.vue'
 import AlertViewer from '@/components/alerts/AlertViewer.vue'
 import IssueReportForm from '@/components/IssueReportForm.vue'
-import { mapGetters } from 'vuex'
+import { useAuthStore } from '@/stores/auth'
+import { useCdwgsStore } from '@/stores/cdwgs'
 import configs from '@/configs';
 
 export default {
@@ -11,6 +12,12 @@ export default {
     AlertViewer,
     IssueReportForm,
   },
+  setup() {
+    return {
+      authStore: useAuthStore(),
+      cdwgsStore: useCdwgsStore(),
+    }
+  },
   data() {
     return {
       showLogin: false,
@@ -18,10 +25,12 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['isAuthed']),
+    isAuthed() {
+      return this.authStore.isAuthed
+    },
     appName () {
-      return this.$store.state && this.$store.state.systemInfo && this.$store.state.systemInfo.app?
-              this.$store.state.systemInfo.app.name
+      return this.authStore.systemInfo && this.authStore.systemInfo.app?
+              this.authStore.systemInfo.app.name
               : 'GPM'
     }
   },
@@ -34,11 +43,11 @@ export default {
   },
   mounted() {
     this.getLookupResources()
-    this.$store.dispatch('getCurrentUser');
+    this.authStore.getCurrentUser();
   },
   methods: {
     getLookupResources() {
-      this.$store.dispatch('cdwgs/getAll');
+      this.cdwgsStore.getAll();
     },
     refreshCurrentRoute() {
       this.$router.push(this.$route)
@@ -57,7 +66,7 @@ export default {
               {{ appName }}
             </router-link>
           </div>
-          <span v-if="$store.getters.isAuthed">
+          <span v-if="authStore.isAuthed">
             <router-link
               v-if="hasPermission('ep-applications-manage')"
               to="/applications"
@@ -127,11 +136,11 @@ export default {
         </div>
       </footer> -->
       <div v-if="hasRole('super-user')" class="container mx-auto note border-t mt-4 pt-4">
-        Build: {{ $store.state.systemInfo.build.name }}
+        Build: {{ authStore.systemInfo.build.name }}
         |
-        Commit: {{ $store.state.systemInfo.build.commit || '--' }}
+        Commit: {{ authStore.systemInfo.build.commit || '--' }}
         |
-        Env: {{ $store.state.systemInfo.env }}
+        Env: {{ authStore.systemInfo.env }}
       </div>
     </teleport>
     <!-- This is a comment test -->

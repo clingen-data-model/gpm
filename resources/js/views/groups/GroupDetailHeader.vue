@@ -56,24 +56,24 @@ export default {
         </note>
       </div>
       <div class="flex items-center gap-2">
-      <button 
-        v-if="hasAnyPermission(['groups-manage', ['info-edit', group]])" 
-        class="btn btn-xs"
-        @click="$emit('showEdit')" 
-      >
-        Edit Group Info
-      </button>
-      <EmitCheckpointsButton
-        v-if="hasRole('coordinator', group) || hasRole('super-user') || hasRole('super-admin')"
-        :group="group"
-        :ids="[group.id]" 
-        :only-active="true"
-        :row-id="group.id"
-        size="btn-xs"
-        label="Send Website Updates"
-        processing-label="Queuing..."
-        :queue="true"
-      />
+        <button 
+          v-if="hasAnyPermission(['groups-manage', ['info-edit', group]])" 
+          class="btn btn-xs"
+          @click="$emit('showEdit')" 
+        >
+          Edit Group Info
+        </button>
+        <EmitCheckpointsButton
+          v-if="hasRole('coordinator', group) || hasRole('super-user') || hasRole('super-admin')"
+          :group="group"
+          :ids="[group.id]" 
+          :only-active="true"
+          :row-id="group.id"
+          size="btn-xs"
+          label="Send Website Updates"
+          processing-label="Queuing..."
+          :queue="true"
+        />
       </div>
     </h1>
     <dictionary-row label="Chairs:">

@@ -1,5 +1,5 @@
 // import router from '.'
-import store from '@/store/index'
+import { useAuthStore } from '@/stores/auth'
 
 const UserAdmin = () => import (/* user-admin */ '@/views/UserAdmin.vue')
 const InviteAdmin = () => import (/* invite-admin */ '@/views/InviteAdmin.vue')
@@ -13,7 +13,7 @@ export default [
         meta: {
             protected: true,
             beforeEnter: async () => {
-                return await store.getters.currentUser.hasPermission('users-manage')
+                return await useAuthStore().currentUser.hasPermission('users-manage')
             }
         }
     },
@@ -25,7 +25,7 @@ export default [
         meta: {
             protected: true,
             beforeEnter: async () => {
-                return await store.getters.currentUser.hasPermission('people-manage')
+                return await useAuthStore().currentUser.hasPermission('people-manage')
             }
         }
     },

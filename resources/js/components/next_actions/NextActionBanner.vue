@@ -1,5 +1,7 @@
 <script>
 import is_validation_error from '@/http/is_validation_error';
+import { useApplicationsStore } from '@/stores/applications';
+
 export default {
     props: {
         application: {
@@ -15,6 +17,11 @@ export default {
       'completed',
       'canceled',
     ],
+    setup() {
+        return {
+            applicationsStore: useApplicationsStore(),
+        }
+    },
     data() {
         return {
             showModal: false,
@@ -28,10 +35,10 @@ export default {
         },
         async markComplete () {
             try {
-                await this.$store.dispatch('applications/completeNextAction', 
+                await this.applicationsStore.completeNextAction(
                     {
-                        application: this.application, 
-                        nextAction: this.nextAction, 
+                        application: this.application,
+                        nextAction: this.nextAction,
                         dateCompleted: this.dateCompleted
                     })
                 this.clearForm();

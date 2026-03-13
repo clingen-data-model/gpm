@@ -1,5 +1,5 @@
 <script>
-import { mapGetters } from 'vuex'
+import { useGroupsStore } from '@/stores/groups'
 import StepOne from '@/components/applications/StepOne.vue'
 import StepTwo from '@/components/applications/StepTwo.vue'
 import StepThree from '@/components/applications/StepThree.vue'
@@ -18,10 +18,13 @@ export default {
             activeStep: 1
         }
     },
+    setup() {
+        return { groupsStore: useGroupsStore() }
+    },
     computed: {
-        ...mapGetters({
-            group: 'groups/currentItemOrNew'
-        }),
+        group () {
+            return this.groupsStore.currentItemOrNew
+        },
         application () {
             return this.group.expert_panel;
         },

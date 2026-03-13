@@ -1,4 +1,6 @@
 <script>
+import { useGroupsStore } from '@/stores/groups';
+
 export default {
     name: 'CspecSummary',
     props: {
@@ -34,9 +36,14 @@ export default {
             ]
         }
     },
+    setup() {
+        return {
+            groupsStore: useGroupsStore(),
+        }
+    },
     computed: {
         group () {
-            return this.$store.getters['groups/currentItemOrNew'];
+            return this.groupsStore.currentItemOrNew;
         },
         hasSpecifications () {
             return this.group.expert_panel.specifications && this.group.expert_panel.specifications.length > 0;
@@ -47,11 +54,11 @@ export default {
     },
     watch: {
         group (to) {
-            this.$store.dispatch('groups/getSpecifications', to)
+            this.groupsStore.getSpecifications(to)
         }
     },
     mounted() {
-        this.$store.dispatch('groups/getSpecifications', this.group)
+        this.groupsStore.getSpecifications(this.group)
     },
     methods: {
         goToCspec () {

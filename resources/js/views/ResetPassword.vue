@@ -1,7 +1,13 @@
 <script>
 import api from '../http/api'
 import is_validation_error from '../http/is_validation_error'
+import { useAuthStore } from '@/stores/auth'
 export default {
+    setup() {
+        return {
+            authStore: useAuthStore(),
+        }
+    },
     props: {
 
     },
@@ -44,9 +50,9 @@ export default {
 
             api.post('/api/reset-password', data)
                 .then(() => {
-                    this.$store.dispatch('login', {email: this.email, password: this.password})
+                    this.authStore.login({email: this.email, password: this.password})
                         .then(() => {
-                            this.$store.dispatch('getCurrentUser');
+                            this.authStore.getCurrentUser();
                             this.$router.replace('/');
                         })
                 })

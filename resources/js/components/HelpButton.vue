@@ -1,11 +1,17 @@
 <script>
 import { api } from "@/http";
 import configs from "@/configs";
+import { useAuthStore } from "@/stores/auth";
 
 const feedback = configs.feedback;
 
 export default {
   name: "ComponentName",
+  setup() {
+    return {
+      authStore: useAuthStore(),
+    }
+  },
   props: {},
   data() {
     return {
@@ -32,7 +38,7 @@ export default {
 };
 </script>
 <template>
-  <div v-if="$store.getters.isAuthed">
+  <div v-if="authStore.isAuthed">
     <popover hover arrow placement="left">
       <template #content>
         <div class="whitespace-no-wrap w-28 text-xs">

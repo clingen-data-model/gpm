@@ -1,9 +1,10 @@
 <script>
 import StepInput from '@/components/forms/StepInput.vue'
-import {mapGetters} from 'vuex'
 import RichTextEditor from '@/components/prosekit/RichTextEditor.vue'
 import {formatDate} from '@/date_utils'
 import configs from '@/configs'
+import { useGroupsStore } from '@/stores/groups';
+import { useApplicationsStore } from '@/stores/applications';
 
 export default {
     name: 'NextActionForm',
@@ -23,6 +24,12 @@ export default {
         'formCleared',
         'canceled'
     ],
+    setup() {
+        return {
+            groupsStore: useGroupsStore(),
+            applicationsStore: useApplicationsStore(),
+        }
+    },
     data() {
         return {
             errors: {},
@@ -38,9 +45,9 @@ export default {
         }
     },
     computed: {
-        ...mapGetters({
-            group: 'groups/currentItemOrNew'
-        }),
+        group () {
+            return this.groupsStore.currentItemOrNew;
+        },
         application () {
             return this.group.expert_panel;
         },
@@ -136,8 +143,7 @@ export default {
         async save() {
             try {
                 if (this.newAction.id) {
-                    await this.$store.dispatch(
-                        'applications/updateNextAction',
+                    await this.applicationsStore.updateNextAction(
                         {
                             application: this.application,
                             updatedAction: this.newAction,
@@ -146,8 +152,7 @@ export default {
                     this.$emit('saved')
                     this.clearForm();
                 } else {
-                    await this.$store.dispatch(
-                        'applications/addNextAction',
+                    await this.applicationsStore.addNextAction(
                         {
                             application: this.application,
                             nextActionData: this.newAction

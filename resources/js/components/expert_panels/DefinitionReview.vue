@@ -1,12 +1,12 @@
 <script setup>
-    import {useStore} from 'vuex';
     import { computed} from 'vue'
     import ReviewSection from '@/components/expert_panels/ReviewSection.vue'
     import ReviewMembership from '@/components/expert_panels/ReviewMembership.vue'
     import { formatDate } from '@/date_utils'
+    import { useGroupsStore } from '@/stores/groups';
 
-    const store = useStore();
-    const group = computed(() => store.getters['groups/currentItemOrNew'])
+    const groupsStore = useGroupsStore();
+    const group = computed(() => groupsStore.currentItemOrNew)
     const expertPanel = computed(() => group.value.expert_panel);
     const members = computed( () => {
         if (!group.value) {
@@ -38,12 +38,12 @@
 
       <div v-if="group.is_vcep_or_scvcep" class="mt-6">
         <h4>Expertise of VCEP members</h4>
-        <blockquote v-html="expertPanel.membership_description"></blockquote>
+        <blockquote v-html="expertPanel.membership_description" />
       </div>
     </ReviewSection>
 
     <ReviewSection title="Website Description" name="website-description">
-      <blockquote v-html="group.description"></blockquote>
+      <blockquote v-html="group.description" />
     </ReviewSection>
 
     <ReviewSection title="Scope" name="scope">
@@ -67,7 +67,7 @@
       </div>
 
       <h3>Description of scope</h3>
-      <blockquote v-html="expertPanel.scope_description"></blockquote>
+      <blockquote v-html="expertPanel.scope_description" />
     </ReviewSection>
 
     <ReviewSection v-if="group.is_gcep" title="Plans" name="plans">

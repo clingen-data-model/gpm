@@ -1,7 +1,7 @@
 <script setup>
     import { api, isValidationError } from '@/http'
     import { computed, inject, ref, watch } from 'vue';
-    import { useStore} from 'vuex';
+    import { useGroupsStore } from '@/stores/groups';
     import CommentSummary from '../CommentSummary.vue';
 
     const props = defineProps({
@@ -13,8 +13,8 @@
     const emits = defineEmits(['saved', 'canceled', 'update:modelValue'])
 
     const commentManager = inject('commentManager')
-    const store = useStore();
-    const group = computed(() => store.getters['groups/currentItemOrNew'])
+    const groupsStore = useGroupsStore();
+    const group = computed(() => groupsStore.currentItemOrNew)
 
     const judgementOptions = [
         'request-revisions',

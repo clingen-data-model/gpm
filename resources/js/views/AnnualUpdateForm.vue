@@ -1,6 +1,7 @@
 <script>
 import { debounce } from 'lodash-es'
 import { api, isValidationError } from '@/http'
+import { useGroupsStore } from '@/stores/groups';
 
 // Common Components
 import ApplicationSection from '@/components/expert_panels/ApplicationSection.vue'
@@ -149,6 +150,11 @@ export default {
             lastSaved: null
         }
     },
+    setup() {
+        return {
+            groupsStore: useGroupsStore(),
+        }
+    },
     computed: {
         showLastYearLink () {
             return this.expertPanel &&
@@ -157,7 +163,7 @@ export default {
                 this.expertPanel.previous_year_annual_update.id !== this.annualUpdate.id
         },
         group () {
-            return this.$store.getters['groups/currentItemOrNew'];
+            return this.groupsStore.currentItemOrNew;
         },
         year () {
             const thisYear = this.annualUpdate.window ? this.annualUpdate.window.for_year : (new Date()).getFullYear()-1;
@@ -211,11 +217,11 @@ export default {
 
         this.saveOngoingPlans = debounce(() => {
             const {uuid, expert_panel: expertPanel} = this.group;
-            return this.$store.dispatch('groups/curationReviewProtocolUpdate', {uuid, expertPanel});
+            return this.groupsStore.curationReviewProtocolUpdate({uuid, expertPanel});
         }, 2000);
     },
     async mounted () {
-        await this.$store.dispatch('groups/findAndSetCurrent', this.uuid);
+        await this.groupsStore.findAndSetCurrent(this.uuid);
         await this.getAnnualUpdate();
     },
     methods: {

@@ -1,6 +1,7 @@
 <script>
 import {setupMirror} from '@/composables/setup_working_mirror'
 import {isValidationError} from '@/http'
+import { useExpertisesStore } from '@/stores/expertises';
 
 export default {
     name: 'InstitutionCreateForm',
@@ -31,7 +32,7 @@ export default {
         async save () {
             try {
                 this.initErrors();
-                const newCred = await this.$store.dispatch('expertises/update', this.workingCopy)
+                const newCred = await useExpertisesStore().update(this.workingCopy)
                                     .then(rsp => rsp.data);
 
                 this.$emit('update:modelValue', newCred);

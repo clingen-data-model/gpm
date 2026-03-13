@@ -1,6 +1,7 @@
 <script>
 import GroupMember from '@/domain/group_member'
 import {debounce} from 'lodash-es'
+import { useGroupsStore } from '@/stores/groups';
 
 export default {
     name: 'ComponentName',
@@ -18,6 +19,11 @@ export default {
     emits: [
         'updated'
     ],
+    setup() {
+        return {
+            groupsStore: useGroupsStore(),
+        }
+    },
     data() {
         return {
             workingCopy: new GroupMember(),
@@ -25,7 +31,7 @@ export default {
     },
     computed: {
         group () {
-            return this.$store.getters['groups/currentItemOrNew'];
+            return this.groupsStore.currentItemOrNew;
         },
         biocurator: {
             get () {
@@ -103,8 +109,7 @@ export default {
 
         updateTrainingInfo () {
             if (this.workingCopy.isDirty('training_level_1') || this.workingCopy.isDirty('training_level_2')) {
-                return this.$store.dispatch(
-                    'groups/memberUpdate',
+                return this.groupsStore.memberUpdate(
                     {
                         groupUuid: this.group.uuid,
                         memberId: this.workingCopy.id,
@@ -119,13 +124,12 @@ export default {
 
         syncRoles() {
             if (this.workingCopy.isDirty('roles')) {
-                return this.$store.dispatch(
-                        'groups/memberSyncRoles',
-                        {
-                            group: this.group,
-                            member: this.workingCopy
-                        }
-                    );
+                return this.groupsStore.memberSyncRoles(
+                    {
+                        group: this.group,
+                        member: this.workingCopy
+                    }
+                );
             }
         },
         emitUpdated () {

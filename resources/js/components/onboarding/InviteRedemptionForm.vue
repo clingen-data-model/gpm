@@ -3,6 +3,8 @@ import { ref, toRefs, watch } from 'vue'
 import {fetchInvite} from '@/domain/onboarding_service'
 import InputErrors from '@/components/forms/InputErrors.vue'
 import isValidationError from '@/http/is_validation_error'
+import { useAuthStore } from '@/stores/auth'
+import { useAlertsStore } from '@/stores/alerts'
 
 export default {
     name: 'InviteRedemptionCode',
@@ -77,8 +79,8 @@ export default {
         this.syncCode();
     },
     beforeMount () {
-        if (this.$store.getters.currentUser.id !== null) {
-            this.$store.commit('pushError', 'You can\'t redeem an invite b/c you\'re already logged in.');
+        if (useAuthStore().currentUser.id !== null) {
+            useAlertsStore().pushError('You can\'t redeem an invite b/c you\'re already logged in.');
             this.$router.replace({name: 'Dashboard'})
         }
     },

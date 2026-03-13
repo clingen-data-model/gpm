@@ -1,5 +1,6 @@
 <script>
-import {mapGetters} from 'vuex'
+import { useGroupsStore } from '@/stores/groups'
+import { useAlertsStore } from '@/stores/alerts'
 
 export default {
     name: 'ConfirmDeleteApplication',
@@ -9,15 +10,18 @@ export default {
             type: String
         }
     },
+    setup() {
+        return { groupsStore: useGroupsStore(), alertsStore: useAlertsStore() }
+    },
     data() {
         return {
-            
+
         }
     },
     computed: {
-        ...mapGetters({
-            group: 'groups/currentItemOrNew'
-        }),
+        group () {
+            return this.groupsStore.currentItemOrNew
+        },
         application () {
             return this.group.expert_panel;
         }
@@ -27,8 +31,8 @@ export default {
             this.$router.go(-1);
         },
         async commitDelete() {
-            this.$store.dispatch('groups/delete', this.group.uuid);
-            this.$store.commit('pushSuccess', 'Application deleted.');
+            this.groupsStore.delete(this.group.uuid);
+            this.alertsStore.pushSuccess('Application deleted.');
             this.$router.push({name: 'ApplicationsIndex'});
         }
     }

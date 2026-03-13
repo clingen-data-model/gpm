@@ -2,7 +2,7 @@
 import {ref, onMounted} from 'vue'
 import {redeemInvite, redeemInviteForExistingUser} from '@/domain/onboarding_service'
 import isValidationError from '@/http/is_validation_error'
-import { useStore } from 'vuex'
+import { useAuthStore } from '@/stores/auth'
 import LoginForm from '@/components/LoginForm.vue'
 
 export default {
@@ -20,7 +20,6 @@ export default {
       'saved',
     ],
     setup (props, context) {
-        const store = useStore();
         const errors = ref({});
         const email = ref(null);
         const password = ref(null);
@@ -29,7 +28,7 @@ export default {
         const createAccount = async () => {
             try {
                 await redeemInvite(props.invite, email.value, password.value, password_confirmation.value);
-                await store.dispatch('login', {email: email.value, password: password.value})
+                await useAuthStore().login({email: email.value, password: password.value})
                 context.emit('saved')
             } catch (error) {
                 if (isValidationError(error)) {

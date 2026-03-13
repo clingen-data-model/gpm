@@ -1,5 +1,5 @@
 <script>
-import {useStore} from 'vuex'
+import { useGroupsStore } from '@/stores/groups'
 import {useRouter} from 'vue-router'
 import {computed, ref} from 'vue'
 import GroupForm from '@/components/groups/GroupForm.vue'
@@ -15,7 +15,7 @@ export default {
 
     },
     setup() {
-        const store = useStore();
+        const groupsStore = useGroupsStore();
         const router = useRouter();
 
 
@@ -50,7 +50,7 @@ export default {
 
         const filterString = ref(null);
 
-        const groups = computed(() => store.getters['groups/all']);
+        const groups = computed(() => groupsStore.items);
 
         const filteredGroups = computed(() => groups.value.filter(group => {
             if (!filterString.value) {
@@ -90,6 +90,7 @@ export default {
             tabDefinitions,
             goToItem,
             goToGroup: goToItem,
+            groupsStore,
         }
     },
     data() {
@@ -142,7 +143,7 @@ export default {
                 return;
             }
             this.loading = true;
-            await this.$store.dispatch('groups/getItems', {where: {group_type_id: typeTab.typeId}});
+            await this.groupsStore.getItems({where: {group_type_id: typeTab.typeId}});
             this.loadedFor[tabLabel] = true;
             this.loading = false;
         },
@@ -187,8 +188,7 @@ export default {
             <template #cell-coordinators="{value}">
               <span v-if="Array.isArray(value)">
                 <template v-if="value.filter(c => !c.end_date).length">
-                  <template v-for="(coordinator, idx) in value.filter(c => !c.end_date)" :key="coordinator.id"
-                  >
+                  <template v-for="(coordinator, idx) in value.filter(c => !c.end_date)" :key="coordinator.id">
                     <span v-if="idx > 0">, </span>
                     <router-link
                       :to="{ name: 'PersonDetail', params: { uuid: coordinator.person.uuid } }"

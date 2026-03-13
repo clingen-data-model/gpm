@@ -42,8 +42,8 @@ const onClick = async () => {
 </script>
 
 <template>
-    <button type="button" class="btn btn-outline" :class="size" :disabled="disabled" @click.stop="onClick" :title="disabled ? 'Only Active groups can be checkpointed' : 'Emit checkpoint'">
-        <span v-if="processing">{{ processingLabel }}</span>
-        <span v-else>{{ label }}</span>
-    </button>
+  <button type="button" class="btn btn-outline" :class="size" :disabled="disabled" :title="disabled ? 'Only Active groups can be checkpointed' : 'Emit checkpoint'" @click.stop="onClick">
+    <span v-if="processing">{{ processingLabel }}</span>
+    <span v-else>{{ label }}</span>
+  </button>
 </template>

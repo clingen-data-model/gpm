@@ -1,7 +1,7 @@
 <script setup>
     import {computed, ref, onMounted } from 'vue'
-    import {useStore} from 'vuex'
     import {setupMirror, mirrorProps, mirrorEmits} from '@/composables/setup_working_mirror'
+    import { useCredentialsStore } from '@/stores/credentials';
     import SearchSelect from '../forms/SearchSelect.vue';
     import CredentialCreateForm from '../credentials/CredentialCreateForm.vue'
 
@@ -13,11 +13,10 @@
         }
     });
     const emit = defineEmits([...mirrorEmits]);
-    const store = useStore();
     const {workingCopy} = setupMirror(props, {emit})
 
     const credentials = computed(() => {
-        return store.getters['credentials/items'];
+        return useCredentialsStore().items;
     });
 
     const searchText = ref('');
@@ -45,14 +44,14 @@
       };
 
       return matches.sort((a, b) => {
-        const sa = score(a), sb = score(b);
+        const sa = score(a); const sb = score(b);
         if (sa !== sb) return sa - sb;
         return a.name.localeCompare(b.name, undefined, {sensitivity: 'base'});
       });
     };
 
     onMounted(() => {
-        store.dispatch('credentials/getItems');
+        useCredentialsStore().getItems();
     });
 
     const showCreateForm = ref(false);

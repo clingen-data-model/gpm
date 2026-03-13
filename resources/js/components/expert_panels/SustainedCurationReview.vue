@@ -1,16 +1,16 @@
 <script setup>
     import EvidenceSummaryList from '@/components/expert_panels/EvidenceSummaryList.vue'
     import {computed, watch } from 'vue'
-    import {useStore} from 'vuex'
     import ReviewSection from '@/components/expert_panels/ReviewSection.vue'
+    import { useGroupsStore } from '@/stores/groups';
 
-    const store = useStore();
-    const group = computed(() => store.getters['groups/currentItemOrNew'])
+    const groupsStore = useGroupsStore();
+    const group = computed(() => groupsStore.currentItemOrNew)
     const expertPanel = computed(() => group.value.expert_panel)
 
     watch(() => group.value, (to, from) => {
         if ((to.id && (!from || to.id !== from.id))) {
-            store.dispatch('groups/getEvidenceSummaries', group.value);
+            groupsStore.getEvidenceSummaries(group.value);
         }
     });
 </script>

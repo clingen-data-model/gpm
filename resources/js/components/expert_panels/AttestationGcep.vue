@@ -1,5 +1,6 @@
 <script>
 import {api, isValidationError} from '@/http'
+import { useGroupsStore } from '@/stores/groups';
 
 export default {
     name: 'AttestationGcep',
@@ -13,6 +14,11 @@ export default {
     emits: [
         'update'
     ],
+    setup() {
+        return {
+            groupsStore: useGroupsStore(),
+        }
+    },
     data() {
         return {
             errors: {},
@@ -22,10 +28,10 @@ export default {
     computed: {
         group: {
             get () {
-                return this.$store.getters['groups/currentItemOrNew'];
+                return this.groupsStore.currentItemOrNew;
             },
             set (value) {
-                this.$store.commit('groups/addItem', value)
+                this.groupsStore.addItem(value)
             }
         },
         gciTrainingErrors () {

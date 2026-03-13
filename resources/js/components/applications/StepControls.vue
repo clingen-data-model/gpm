@@ -1,6 +1,6 @@
 <script setup>
 import {computed} from 'vue'
-import {useStore} from 'vuex';
+import {useGroupsStore} from '@/stores/groups';
 import SubmissionInfo from './SubmissionInfo.vue';
 import StepApproveControl from './StepApproveControl.vue'
 import StepSendToChairsControl from './StepSendToChairsControl.vue'
@@ -25,9 +25,9 @@ const emit = defineEmits([
   'revisionsRequested',
 ])
 
-const store = useStore()
+const groupsStore = useGroupsStore()
 
-const group = computed(() => store.getters['groups/currentItemOrNew'])
+const group = computed(() => groupsStore.currentItemOrNew)
 
 const showSendToChairsControl = computed(() => {
     if (!group.value) {

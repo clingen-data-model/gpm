@@ -1,6 +1,7 @@
 <script>
-import { mapState } from 'vuex';
 import { isValidationError } from '@/http';
+import { useDoctypesStore } from '@/stores/doctypes';
+import { useGroupsStore } from '@/stores/groups';
 
 export default {
     props: {
@@ -13,6 +14,12 @@ export default {
         'saved',
         'canceled',
     ],
+    setup() {
+        return {
+            doctypesStore: useDoctypesStore(),
+            groupsStore: useGroupsStore(),
+        }
+    },
     data() {
         return {
             newDocument: {
@@ -24,11 +31,11 @@ export default {
         }
     },
     computed: {
-        ...mapState({
-            documentTypes: state => state.doctypes.items
-        }),
+        documentTypes () {
+            return this.doctypesStore.items;
+        },
         group () {
-            return this.$store.getters['groups/currentItemOrNew']
+            return this.groupsStore.currentItemOrNew
         },
         application () {
             return this.group.expert_panel
@@ -40,12 +47,11 @@ export default {
             if (this.documentTypes.length === 0) {
                 return {};
             }
-            // return this.documentTypes.
-            return this.$store.getters['doctypes/getItemById'](this.documentTypeId)
+            return this.doctypesStore.getItemById(this.documentTypeId)
         }
     },
     mounted() {
-        this.$store.dispatch('doctypes/getItems');
+        this.doctypesStore.getItems();
     },
     methods: {
         async save() {

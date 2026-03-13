@@ -3,7 +3,9 @@ import configs from '@/configs'
 import Group from '@/domain/group'
 import formFactory from '@/forms/form_factory'
 import { api, isValidationError } from '@/http'
-import {sortBy} from 'lodash-es'
+import { useGroupsStore } from '@/stores/groups';
+import { useCdwgsStore } from '@/stores/cdwgs';
+import { useAlertsStore } from '@/stores/alerts';
 
 export default {
     name: 'GroupForm',
@@ -14,11 +16,17 @@ export default {
     ],
     setup (props, context) {
         const {errors, submitFormData, resetErrors} = formFactory(props, context)
+        const groupsStore = useGroupsStore();
+        const cdwgsStore = useCdwgsStore();
+        const alertsStore = useAlertsStore();
 
         return {
             errors,
             submitFormData,
-            resetErrors
+            resetErrors,
+            groupsStore,
+            cdwgsStore,
+            alertsStore,
         }
     },
     data() {
@@ -32,7 +40,7 @@ export default {
     computed: {
         group: {
             get() {
-                const group = this.$store.getters['groups/currentItem'];
+                const group = this.groupsStore.currentItem;
                 if (group) {
                     return group;
                 }
@@ -40,7 +48,7 @@ export default {
             },
             set (value) {
                 try {
-                    this.$store.commit("groups/addItem", value);
+                    this.groupsStore.addItem(value);
                 } catch (e) {
                     // eslint-disable-next-line no-console
                     console.log(`Error setting group: ${e}`);
@@ -61,7 +69,7 @@ export default {
             return 50000
         },
         cdwgs () {
-            return this.$store.getters['cdwgs/all']
+            return this.cdwgsStore.all
         },
         namesDirty () {
             return this.group.expert_panel.isDirty('long_base_name')
@@ -84,7 +92,7 @@ export default {
     },
     beforeMount() {
         this.getParentOptions();
-        this.$store.dispatch('cdwgs/getAll');
+        this.cdwgsStore.getAll();
     },
     methods: {
         async save() {
@@ -102,7 +110,7 @@ export default {
                 const newGroup = await this.createGroup()
                                     .then(response => response.data.data);
                 this.$emit('saved');
-                this.$store.commit('pushSuccess', 'Group created.');
+                this.alertsStore.pushSuccess('Group created.');
                 this.$router.push({name: 'AddMember', params: {uuid: newGroup.uuid}});
             } catch (error) {
                 if (isValidationError(error)) {
@@ -125,8 +133,7 @@ export default {
                 name = this.group.expert_panel.long_base_name;
             }
 
-            return this.$store.dispatch(
-                'groups/create',
+            return this.groupsStore.create(
                 {
                     name,
                     parent_id,
@@ -212,7 +219,7 @@ export default {
         },
         resetData () {
             if (this.group.uuid) {
-                this.$store.dispatch('groups/find', this.group.uuid);
+                this.groupsStore.find(this.group.uuid);
             }
         },
         cancel() {

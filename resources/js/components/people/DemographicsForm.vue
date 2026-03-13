@@ -1,6 +1,7 @@
 <script>
 import axios from "axios";
-import { mapGetters } from "vuex";
+import { useCountriesStore } from '@/stores/countries';
+import { usePeopleStore } from '@/stores/people';
 
 const baseUrl = "/api/people";
 
@@ -278,14 +279,12 @@ export default {
     },
 
     computed: {
-        ...mapGetters({
-            person: "people/currentItem",
-        }),
-
-
+        person() {
+            return usePeopleStore().currentItem;
+        },
 
         countries() {
-            return this.$store.getters["countries/items"].map((i) => ({
+            return useCountriesStore().items.map((i) => ({
                 value: i.id,
                 label: i.name,
             }));
@@ -363,7 +362,7 @@ export default {
     methods: {
         async fetchCountries() {
             try {
-                await this.$store.dispatch("countries/getItems");
+                await useCountriesStore().getItems();
             } catch (error) {
                 console.error("Error fetching countries:", error);
             }

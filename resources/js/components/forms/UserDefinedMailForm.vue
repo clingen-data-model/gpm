@@ -1,5 +1,6 @@
 <script>
 import RichTextEditor from '@/components/prosekit/RichTextEditor.vue';
+import { useGroupsStore } from '@/stores/groups';
 
 export default {
     name: 'ComponentName',
@@ -15,6 +16,11 @@ export default {
     emits: [
       'update:email',
     ],
+    setup() {
+        return {
+            groupsStore: useGroupsStore(),
+        }
+    },
     data() {
         return {
 
@@ -22,7 +28,7 @@ export default {
     },
     computed: {
         group () {
-            return this.$store.getters['groups/currentItemOrNew'];
+            return this.groupsStore.currentItemOrNew;
         },
         workingEmail: {
             get () {

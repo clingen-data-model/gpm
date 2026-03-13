@@ -1,8 +1,8 @@
 <script>
 import CompleteNextActionForm from '@/components/next_actions/CompleteNextActionForm.vue'
-import {mapGetters} from 'vuex'
 import CheckmarkButton from '@/components/buttons/CheckmarkIconButton.vue'
 import TrashIconButton from '@/components/buttons/TrashIconButton.vue'
+import { useGroupsStore } from '@/stores/groups';
 
 export default {
     name: 'NextActions',
@@ -20,6 +20,11 @@ export default {
     emits: [
       'completed',
     ],
+    setup() {
+        return {
+            groupsStore: useGroupsStore(),
+        }
+    },
     data() {
         return {
             tableSort: {
@@ -64,9 +69,9 @@ export default {
         }
     },
     computed: {
-        ...mapGetters({
-            group: 'groups/currentItemOrNew'
-        }),
+        group () {
+            return this.groupsStore.currentItemOrNew;
+        },
         application () {
             return this.group.expert_panel;
         },

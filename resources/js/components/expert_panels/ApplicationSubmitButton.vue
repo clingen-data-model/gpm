@@ -3,6 +3,8 @@ import RequirementsItem from '@/components/expert_panels/RequirementsItem.vue'
 import {isValidationError} from '@/http'
 import configs from '@/configs'
 import DevComponent from '@/components/dev/DevComponent.vue'
+import { useGroupsStore } from '@/stores/groups';
+import { useAlertsStore } from '@/stores/alerts';
 
 const {submissions} = configs;
 
@@ -32,6 +34,11 @@ export default {
         'submitted',
         'canceled'
     ],
+    setup() {
+        const groupsStore = useGroupsStore();
+        const alertsStore = useAlertsStore();
+        return { groupsStore, alertsStore };
+    },
     data() {
         return {
             showSubmissionConfirmation: false,
@@ -42,7 +49,7 @@ export default {
     },
     computed: {
         group () {
-            return this.$store.getters['groups/currentItemOrNew'];
+            return this.groupsStore.currentItemOrNew;
         },
         meetsRequirements () {
             if (this.bypassReqs) {
@@ -82,15 +89,15 @@ export default {
         },
         async confirmSubmission () {
             try {
-                await this.$store.dispatch('groups/submitApplicationStep', {group: this.group, notes: this.notes});
-                this.$store.commit('pushSuccess', 'Your application has been submitted for approval.')
+                await this.groupsStore.submitApplicationStep({group: this.group, notes: this.notes});
+                this.alertsStore.pushSuccess('Your application has been submitted for approval.')
                 this.showSubmissionConfirmation = false;
                 this.$emit('submitted');
             } catch (error) {
                 if (isValidationError(error)) {
                     const errors = error.response.data.errors;
 
-                    this.$store.commit('pushError', errors.group.join(','));
+                    this.alertsStore.pushError(errors.group.join(','));
                     return;
                 }
 

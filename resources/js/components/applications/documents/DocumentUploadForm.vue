@@ -2,6 +2,8 @@
 import {formatDate} from '../../../date_utils'
 import {isValidationError} from '@/http';
 import configs from '@/configs.json'
+import { useGroupsStore } from '@/stores/groups'
+import { useDoctypesStore } from '@/stores/doctypes'
 
 const documentsTypes = configs.documentsTypes;
 
@@ -38,12 +40,15 @@ export default {
             errors: {},
         }
     },
+    setup() {
+        return { groupsStore: useGroupsStore(), doctypesStore: useDoctypesStore() }
+    },
     computed: {
         docTypes () {
             return documentsTypes;
         },
         group () {
-            return this.$store.getters['groups/currentItemOrNew']
+            return this.groupsStore.currentItemOrNew
         },
         application () {
             return this.group.expert_panel
@@ -59,7 +64,7 @@ export default {
         }
     },
     mounted() {
-        this.$store.dispatch('doctypes/getItems');
+        this.doctypesStore.getItems();
     },
     methods: {
         async save() {
@@ -71,7 +76,7 @@ export default {
                         data.append(key, val);
                     })
                 data.set('file', this.$refs.fileInput.files[0]);
-                await this.$store.dispatch('groups/addApplicationDocument',
+                await this.groupsStore.addApplicationDocument(
                         {group: this.group, data}
                     )
 

@@ -1,9 +1,9 @@
 <script>
-import {mapGetters} from 'vuex'
 import { formatDate } from '@/date_utils'
 import StepInput from '@/components/forms/StepInput.vue'
 import RichTextEditor from '@/components/prosekit/RichTextEditor.vue'
 import {logEntries, saveEntry, updateEntry} from '@/adapters/log_entry_repository'
+import { useGroupsStore } from '@/stores/groups';
 
 export default {
     name: 'LogEntryForm',
@@ -23,7 +23,8 @@ export default {
     ],
     setup () {
         return {
-            logEntries
+            logEntries,
+            groupsStore: useGroupsStore(),
         }
     },
     data() {
@@ -37,9 +38,9 @@ export default {
         }
     },
     computed: {
-        ...mapGetters({
-            group: 'groups/currentItemOrNew'
-        }),
+        group () {
+            return this.groupsStore.currentItemOrNew;
+        },
         application () {
             return this.group.expert_panel;
         }

@@ -1,6 +1,7 @@
 <script>
 import {setupMirror} from '@/composables/setup_working_mirror'
 import {isValidationError} from '@/http'
+import { useCredentialsStore } from '@/stores/credentials';
 
 export default {
     name: 'InstitutionCreateForm',
@@ -33,7 +34,7 @@ export default {
                 this.initErrors();
                 // eslint-disable-next-line no-console
                 console.log('save!');
-                const newCred = await this.$store.dispatch('credentials/update', this.workingCopy)
+                const newCred = await useCredentialsStore().update(this.workingCopy)
                                     .then(rsp => rsp.data);
 
                 // eslint-disable-next-line no-console

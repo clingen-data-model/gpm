@@ -3,6 +3,7 @@ import VcepOngoingPlansForm from '@/components/expert_panels/VcepOngoingPlansFor
 import EvidenceSummaries from '@/components/expert_panels/EvidenceSummaryList.vue'
 import MemberDesignationForm from '@/components/expert_panels/MemberDesignationForm.vue'
 import {debounce} from 'lodash-es'
+import { useGroupsStore } from '@/stores/groups';
 
 export default {
     name: 'SustainedCurationReview',
@@ -10,6 +11,10 @@ export default {
         VcepOngoingPlansForm,
         EvidenceSummaries,
         MemberDesignationForm,
+    },
+    setup() {
+        const groupsStore = useGroupsStore();
+        return { groupsStore };
     },
     props: {
         uuid: {
@@ -25,7 +30,7 @@ export default {
     },
     computed: {
         group () {
-            return  this.$store.getters['groups/currentItemOrNew'];
+            return this.groupsStore.currentItemOrNew;
         },
         expertPanel () {
             return this.group.expert_panel;
@@ -45,15 +50,15 @@ export default {
     created () {
         this.saveOngoingPlans = debounce(() => {
             const {uuid, expert_panel: expertPanel} = this.group;
-            return this.$store.dispatch('groups/curationReviewProtocolUpdate', {uuid, expertPanel});
+            return this.groupsStore.curationReviewProtocolUpdate({uuid, expertPanel});
         }, 2000);
     },
     methods: {
         getGroup () {
-            this.$store.dispatch('groups/findAndSetCurrent', this.uuid);
+            this.groupsStore.findAndSetCurrent(this.uuid);
         },
         async submitReview () {
-            await this.$store.dispatch('groups/completeSustainedCurationReview', this.group);
+            await this.groupsStore.completeSustainedCurationReview(this.group);
             this.$router.go(-1);
         }
     }

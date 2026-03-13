@@ -1,5 +1,5 @@
 <script>
-import { mapGetters } from 'vuex'
+import { useApplicationsStore } from '@/stores/applications'
 import sortAndFilter from '@/composables/router_aware_sort_and_filter'
 
 export default {
@@ -106,9 +106,7 @@ export default {
         }
     },
     computed: {
-        ...mapGetters({
-            applications: 'applications/all'
-        }),
+        applications() { return useApplicationsStore().all },
         filteredData() {
             return this.applications
                 .filter(item => !this.expert_panel_type_id || Number.parseInt(item.expert_panel_type_id) === Number.parseInt(this.expert_panel_type_id))
@@ -186,7 +184,7 @@ export default {
                 params.where = where;
             }
 
-            this.$store.dispatch('applications/getApplications', params);
+            useApplicationsStore().getApplications(params);
         },
         goToApplication (item) {
             this.$router.push({name: 'ApplicationDetail', params: {uuid: item.uuid}})

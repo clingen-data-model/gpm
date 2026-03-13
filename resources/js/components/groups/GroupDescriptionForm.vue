@@ -4,12 +4,17 @@ import EditIconButton from '@/components/buttons/EditIconButton.vue'
 import RichTextEditor from '@/components/prosekit/RichTextEditor.vue'
 import { htmlFromMarkdown } from '@/markdown-utils';
 import { hasRole } from '@/auth_utils'
+import { useGroupsStore } from '@/stores/groups';
 
 export default {
     name: "GroupDescriptionForm",
     components: {
         EditIconButton,
         RichTextEditor,
+    },
+    setup() {
+        const groupsStore = useGroupsStore();
+        return { groupsStore };
     },
     props: {
         editing: {
@@ -31,10 +36,10 @@ export default {
     computed: {
         group: {
             get() {
-                return this.$store.getters["groups/currentItem"] || new Group();
+                return this.groupsStore.currentItem || new Group();
             },
             set(value) {
-                this.$store.commit("groups/addItem", value);
+                this.groupsStore.addItem(value);
             }
         },
         htmlDescription() {

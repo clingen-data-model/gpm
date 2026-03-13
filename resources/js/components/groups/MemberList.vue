@@ -4,6 +4,8 @@ import sortAndFilter from '@/composables/router_aware_sort_and_filter'
 import MemberPreview from '@/components/groups/MemberPreview.vue'
 import CoiDetail from '@/components/applications/CoiDetail.vue'
 import configs from '@/configs.json'
+import { useGroupsStore } from '@/stores/groups';
+import { useAuthStore } from '@/stores/auth';
 // import GroupMembersFilter from '@/components/groups/GroupMembersFilter.vue'
 
 export default {
@@ -21,10 +23,14 @@ export default {
     },
     setup() {
         const {sort, filter} = sortAndFilter({field: 'person.last_name', desc: false});
+        const groupsStore = useGroupsStore();
+        const authStore = useAuthStore();
 
         return {
             sort,
             filter,
+            groupsStore,
+            authStore,
         }
     },
     data() {
@@ -113,7 +119,7 @@ export default {
         },
 
         group () {
-            return this.$store.getters['groups/currentItemOrNew'];
+            return this.groupsStore.currentItemOrNew;
         },
 
         filteredMembers () {
@@ -161,7 +167,7 @@ export default {
             return `/api/report/groups/${this.group.uuid}/member-export${query}`;
         },
         features () {
-            return this.$store.state.systemInfo.app.features
+            return this.authStore.systemInfo.app.features
         },
     },
     watch: {
@@ -169,7 +175,7 @@ export default {
             immediate: true,
             handler (to, from) {
                 if ((to.id && (!from || to.id !== from.id))) {
-                    this.$store.dispatch('groups/getMembers', this.group);
+                    this.groupsStore.getMembers(this.group);
                 }
             }
         }
@@ -209,7 +215,7 @@ export default {
         },
         async retireMember () {
             try {
-                await this.$store.dispatch('groups/memberRetire', {
+                await this.groupsStore.memberRetire({
                     uuid: this.group.uuid,
                     memberId: this.selectedMember.id,
                     startDate: this.selectedMember.start_date,
@@ -233,7 +239,7 @@ export default {
         // },
         async unretireMember () {
             try {
-                await this.$store.dispatch('groups/memberUnretire', {
+                await this.groupsStore.memberUnretire({
                     uuid: this.group.uuid,
                     memberId: this.selectedMember.id,
                 });
@@ -255,7 +261,7 @@ export default {
         },
         async removeMember () {
             try {
-                await this.$store.dispatch('groups/memberRemove', {
+                await this.groupsStore.memberRemove({
                     uuid: this.group.uuid,
                     memberId: this.selectedMember.id,
                     startDate: this.selectedMember.start_date,

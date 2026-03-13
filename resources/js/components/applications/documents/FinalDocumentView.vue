@@ -1,5 +1,7 @@
 <script>
 import { formatDate } from '../../../date_utils'
+import { useGroupsStore } from '@/stores/groups'
+import { useApplicationsStore } from '@/stores/applications'
 import DocumentEditForm from './DocumentEditForm'
 import RemoveButton from '../../buttons/RemoveButton'
 import is_validation_error from '../../../http/is_validation_error'
@@ -29,9 +31,12 @@ export default {
             newDateReviewed: null
         }
     },
+    setup() {
+        return { groupsStore: useGroupsStore(), applicationsStore: useApplicationsStore() }
+    },
     computed: {
         group () {
-            return this.$store.getters['groups/currentItemOrNew'];
+            return this.groupsStore.currentItemOrNew;
         },
         application () {
             return this.group.expert_panel;
@@ -62,11 +67,11 @@ export default {
         },
         async saveDateReceived() {
             try {
-                await this.$store.dispatch('applications/updateDocumentInfo', {
-                        application: this.application, 
+                await this.applicationsStore.updateDocumentInfo({
+                        application: this.application,
                         document: {
                             uuid: this.firstDocument.uuid,
-                            date_received: this.newDateReceived, 
+                            date_received: this.newDateReceived,
                             date_reviewed: this.firstDocument.date_reviewed
                         }
                     });
@@ -84,11 +89,11 @@ export default {
         },
         async saveDateReviewed() {
             try {
-                await this.$store.dispatch('applications/updateDocumentInfo', {
-                        application: this.application, 
+                await this.applicationsStore.updateDocumentInfo({
+                        application: this.application,
                         document: {
                             uuid: this.finalDocument.uuid,
-                            date_reviewed: this.newDateReviewed, 
+                            date_reviewed: this.newDateReviewed,
                             date_received: this.finalDocument.date_received
                         }
                     });

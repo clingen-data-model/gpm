@@ -1,12 +1,12 @@
 <script setup>
     import {ref, computed, onMounted} from 'vue'
-    import {useStore} from 'vuex'
     import ReviewCommentForm from './ReviewCommentForm.vue'
     import commentFormFactory from '@/forms/comment_form.js'
     import commentRepository from '../../repositories/comment_repository';
     import DropdownItem from '../DropdownItem.vue';
     import commentManagerFactory from '@/composables/comment_manager.js'
     import {hasPermission} from '../../auth_utils';
+    import { useAuthStore } from '@/stores/auth';
 
     const props = defineProps({
         comment: {
@@ -21,7 +21,7 @@
 
     const emits = defineEmits(['created', 'updated', 'resolved', 'unresolved', 'deleted']);
 
-    const store = useStore();
+    const authStore = useAuthStore();
 
     const formDef = commentFormFactory();
     const replyManager = ref(commentManagerFactory('App\\Models\\Comment', props.comment.id))
@@ -108,7 +108,7 @@
         replyManager.value.getComments();
     })
 
-    const canEdit = computed(() => hasPermission('comments-manage') || store.getters.currentUser.person.id === props.comment.creator_id)
+    const canEdit = computed(() => hasPermission('comments-manage') || authStore.currentUser.person.id === props.comment.creator_id)
 </script>
 <template>
   <div class="my-2">

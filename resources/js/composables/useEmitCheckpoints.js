@@ -1,10 +1,9 @@
 
 import { reactive, ref } from 'vue'
-import { useStore } from 'vuex'
+import { useGroupsStore } from '@/stores/groups'
+import { useAlertsStore } from '@/stores/alerts'
 
 export default function useEmitCheckpoints () {
-    const store = useStore()
-
     const emitting = ref(false)
     const emittingRow = reactive({})
 
@@ -15,8 +14,11 @@ export default function useEmitCheckpoints () {
      * @param {{ rowId?: number, queue?: boolean, toast?: boolean }} opts
      */
     const emitCheckpoints = async (ids, { rowId, queue = true, toast = true } = {}) => {
+        const groupsStore = useGroupsStore()
+        const alertsStore = useAlertsStore()
+
         if (!Array.isArray(ids) || ids.length === 0) {
-            if (toast) store.commit('pushError', 'No groups to checkpoint.')
+            if (toast) alertsStore.pushError('No groups to checkpoint.')
             return null
         }
 
@@ -24,21 +26,21 @@ export default function useEmitCheckpoints () {
         else emitting.value = true
 
         try {
-            const res = await store.dispatch('groups/checkpoints', { group_ids: ids, queue })
+            const res = await groupsStore.checkpoints({ group_ids: ids, queue })
             const accepted = res?.accepted ?? 0
             const denied   = (res?.denied_ids || []).length
             const missing  = (res?.not_found_ids || []).length
 
             if (toast) {
                 if (accepted > 0) {
-                    store.commit('pushSuccess', `Queued checkpoints: ${accepted} accepted${denied ? `, ${denied} denied` : ''}${missing ? `, ${missing} missing` : ''}.`)
+                    alertsStore.pushSuccess(`Queued checkpoints: ${accepted} accepted${denied ? `, ${denied} denied` : ''}${missing ? `, ${missing} missing` : ''}.`)
                 } else {
-                    store.commit('pushError', `No groups accepted. ${denied ? `${denied} denied. ` : ''}${missing ? `${missing} not found.` : ''}`)
+                    alertsStore.pushError(`No groups accepted. ${denied ? `${denied} denied. ` : ''}${missing ? `${missing} not found.` : ''}`)
                 }
             }
             return res
         } catch (e) {
-            if (toast) store.commit('pushError', e?.response?.data?.message || 'Failed to queue Checkpoints.')
+            if (toast) alertsStore.pushError(e?.response?.data?.message || 'Failed to queue Checkpoints.')
             return null
         } finally {
             if (rowId) emittingRow[rowId] = false

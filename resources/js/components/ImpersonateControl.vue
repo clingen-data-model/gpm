@@ -1,11 +1,16 @@
 <script>
-import {mapGetters} from 'vuex';
+import { useAuthStore } from '@/stores/auth';
 import {impersonate, search} from '../domain/impersonate_service';
 import SearchSelect from '@/components/forms/SearchSelect.vue';
 
 export default {
     components: {
         SearchSelect
+    },
+    setup() {
+        return {
+            authStore: useAuthStore(),
+        }
     },
     emits: [
       'impersonated',
@@ -19,13 +24,13 @@ export default {
         }
     },
     computed: {
-        ...mapGetters({
-            user: 'currentUser'
-        }),
+        user() {
+            return this.authStore.currentUser
+        },
         canImpersonate () {
-            return this.$store.getters.currentUser.hasRole('super-user')
-                || this.$store.getters.currentUser.hasRole('super-admin')
-                || this.$store.getters.currentUser.hasRole('admin');
+            return this.authStore.currentUser.hasRole('super-user')
+                || this.authStore.currentUser.hasRole('super-admin')
+                || this.authStore.currentUser.hasRole('admin');
         },
         progressMessage () {
             if (this.clearingImpersonate) {

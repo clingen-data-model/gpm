@@ -1,7 +1,8 @@
 <script>
-import { mapGetters } from 'vuex'
 import is_validation_error from '@/http/is_validation_error'
 import RemoveButton from '@/components/buttons/RemoveButton.vue'
+import { useGroupsStore } from '@/stores/groups';
+import { useApplicationsStore } from '@/stores/applications';
 
 export default {
     components: {
@@ -19,6 +20,12 @@ export default {
         'done',
         'deleted'
     ],
+    setup() {
+        return {
+            groupsStore: useGroupsStore(),
+            applicationsStore: useApplicationsStore(),
+        }
+    },
     data() {
         return {
             showRemoveConfirmation: false,
@@ -26,9 +33,9 @@ export default {
         }
     },
     computed: {
-        ...mapGetters({
-            group: 'groups/currentItemOrNew'
-        }),
+        group () {
+            return this.groupsStore.currentItemOrNew;
+        },
         application () {
             return this.group.expert_panel;
         }
@@ -44,7 +51,7 @@ export default {
         },
         async save () {
             try {
-                await this.$store.dispatch('applications/removeContact', {application: this.application, contact: this.contact})
+                await this.applicationsStore.removeContact({application: this.application, contact: this.contact})
                 this.showRemoveConfirmation = false;
                 this.$emit('saved');
                 this.$emit('deleted');

@@ -2,11 +2,15 @@
 
 import {camelCase, kebabCase, sentenceCase, snakeCase, titleCase} from '@/string_utils'
 import { createApp } from 'vue'
+import { createPinia } from 'pinia'
 import App from './App.vue'
 import router from './router'
-import store from './store'
+import { setupInterceptors } from './http/interceptors'
 
 const app = createApp(App)
+const pinia = createPinia()
+app.use(pinia)
+setupInterceptors()
 
 const registerComponents = (modules) => {
     for (const path in modules) {
@@ -62,7 +66,7 @@ import "./assets/styles/popper-theme.css"
 app.config.globalProperties.append = (path, pathToAppend) =>
   path + (path.endsWith('/') ? '' : '/') + pathToAppend
 
-app.use(store)
+app
     .mixin({
         methods: {
             userCan,

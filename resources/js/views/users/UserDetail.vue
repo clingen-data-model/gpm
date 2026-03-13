@@ -2,6 +2,7 @@
 import User from '@/domain/user'
 import {api} from '@/http'
 import configs from '@/configs'
+import { useAuthStore } from '@/stores/auth';
 
 export default {
     name: 'UserDetail',
@@ -78,7 +79,7 @@ export default {
             });
         },
         canEditUser () {
-            const currentUser = this.$store.getters.currentUser;
+            const currentUser = useAuthStore().currentUser;
             if (!this.hasPermission('users-manage')) {
                 return false;
             }
@@ -99,7 +100,7 @@ export default {
 
         },
         currentUserIsUser () {
-            return Number.parseInt(this.$store.getters.currentUser.id) === Number.parseInt(this.user.id);
+            return Number.parseInt(useAuthStore().currentUser.id) === Number.parseInt(this.user.id);
         }
     },
     watch: {

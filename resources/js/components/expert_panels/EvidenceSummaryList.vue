@@ -1,6 +1,7 @@
 <script>
 import EvidenceSummary from '@/components/expert_panels/EvidenceSummary.vue'
 import EvidenceSummaryForm from '@/components/expert_panels/EvidenceSummaryForm.vue'
+import { useGroupsStore } from '@/stores/groups';
 
 export default {
     name: 'EvidenceSummaryList',
@@ -18,6 +19,11 @@ export default {
     emits: [
         'summariesAdded'
     ],
+    setup() {
+        return {
+            groupsStore: useGroupsStore(),
+        }
+    },
     data() {
         return {
             newSummaries: [],
@@ -31,10 +37,10 @@ export default {
     computed: {
         group: {
             get () {
-                return this.$store.getters['groups/currentItemOrNew'];
+                return this.groupsStore.currentItemOrNew;
             },
             set (value) {
-                this.$store.commit('groups/addItem', value)
+                this.groupsStore.addItem(value)
             }
         },
         meetsRequirements() {
@@ -62,7 +68,7 @@ export default {
         async getEvidenceSummaries () {
             this.loading = true;
             try {
-                this.summaries = await this.$store.dispatch('groups/getEvidenceSummaries', this.group)
+                this.summaries = await this.groupsStore.getEvidenceSummaries(this.group)
             } catch (error) {
                 // eslint-disable-next-line no-console
                 console.log(error);

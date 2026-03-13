@@ -1,7 +1,7 @@
 <script>
-import {mapGetters} from 'vuex'
 import {isValidationError} from '@/http'
 import {logEntries, deleteEntry} from '@/adapters/log_entry_repository'
+import { useGroupsStore } from '@/stores/groups';
 
 export default {
     name: 'ConfirmDeleteLogEntry',
@@ -11,15 +11,21 @@ export default {
             type: String,
         }
     },
+    setup () {
+        return {
+            logEntries,
+            groupsStore: useGroupsStore(),
+        }
+    },
     data() {
         return {
             errors: {}
         }
     },
     computed: {
-        ...mapGetters({
-            group: 'groups/currentItemOrNew'
-        }),
+        group () {
+            return this.groupsStore.currentItemOrNew;
+        },
         application () {
             return this.group.expert_panel;
         },
@@ -48,7 +54,7 @@ export default {
         async deleteEntry()
         {
             try {
-                // await this.$store.dispatch('applications/deleteLogEntry', {application: this.application, logEntry:  this.logEntry});
+                // await this.applicationsStore.deleteLogEntry({application: this.application, logEntry:  this.logEntry});
                 await deleteEntry(`/api/groups/${this.group.uuid}/activity-logs`, this.id)
                 this.$router.go(-1);
             } catch ( error ) {
@@ -56,13 +62,8 @@ export default {
                     this.errors = error.response.data.errors;
                 }
                 this.errors = {a: error.message};
-                
+
             }
-        }
-    },
-    setup () {
-        return {
-            logEntries
         }
     }
 }

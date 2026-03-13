@@ -1,5 +1,6 @@
 <script>
 import { isValidationError } from '@/http';
+import { usePeopleStore } from '@/stores/people';
 
 export default {
     name: 'PersonMergeForm',
@@ -48,10 +49,9 @@ export default {
         async commitMerge () {
             try {
                 this.errors = {};
-                await this.$store.dispatch(
-                    'people/mergePeople', 
+                await usePeopleStore().mergePeople(
                     {
-                        authority: this.authorityCopy, 
+                        authority: this.authorityCopy,
                         obsolete: this.obsoleteCopy
                     }
                 );

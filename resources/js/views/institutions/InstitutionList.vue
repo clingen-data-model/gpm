@@ -1,6 +1,7 @@
 <script>
 import sortAndFilter from '@/composables/router_aware_sort_and_filter';
 import {getAllInstitutions, deleteInstitution} from '@/forms/institution_form'
+import { useAlertsStore } from '@/stores/alerts';
 import InstitutionApprovalForm from '@/components/institutions/InstitutionApprovalForm.vue'
 import InstitutionUpdateForm from '@/components/institutions/InstitutionUpdateForm.vue'
 import InstitutionMergeForm from '@/components/institutions/InstitutionMergeForm.vue'
@@ -118,7 +119,7 @@ export default {
 
             this.updateItem();
             this.currentItem = {country: {}}
-            this.$store.commit("pushSuccess", 'Institution saved.')
+            useAlertsStore().pushSuccess('Institution saved.')
         },
         handleCancel() {
             this.showApproveDialog = false;
@@ -129,7 +130,7 @@ export default {
         handleMerge() {
             this.items.splice(this.currentIndex, 1);
             this.showMergeDialog = false;
-            this.$store.commit("pushSuccess", 'Institution merged.')
+            useAlertsStore().pushSuccess('Institution merged.')
         },
         updateItem() {
             if (!this.currentItem.id) {
@@ -156,7 +157,7 @@ export default {
             await deleteInstitution(this.currentItem);
             this.items.splice(this.currentIndex, 1);
             this.showDeleteConfirmation = false;
-            this.$store.commit("pushSuccess", `${this.currentItem.name} deleted.`);
+            useAlertsStore().pushSuccess(`${this.currentItem.name} deleted.`);
         }
     }
 }

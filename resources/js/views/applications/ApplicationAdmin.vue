@@ -1,5 +1,5 @@
 <script>
-import { mapGetters } from 'vuex'
+import { useGroupsStore } from '@/stores/groups'
 import ApplicationLog from '@/components/applications/ApplicationLog.vue'
 import NextActions from '@/components/next_actions/NextActions.vue'
 import ProgressChart from '@/components/applications/ProgressChart.vue'
@@ -34,10 +34,13 @@ export default {
                                     : false;
         }
     },
+    setup() {
+        return { groupsStore: useGroupsStore() }
+    },
     computed: {
-        ...mapGetters({
-            group: 'groups/currentItemOrNew'
-        }),
+        group () {
+            return this.groupsStore.currentItemOrNew
+        },
         application () {
             return this.group.expert_panel;
         },

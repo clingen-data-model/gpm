@@ -1,9 +1,15 @@
 <script>
 import MenuItem from '@/components/layout/MenuItem.vue'
+import { useGroupsStore } from '@/stores/groups'
 
 export default {
     components: {
         MenuItem
+    },
+    setup() {
+        return {
+            groupsStore: useGroupsStore(),
+        }
     },
     props: {
         application: {
@@ -22,9 +28,9 @@ export default {
     },
     computed: {
         group () {
-            return this.$store.getters['groups/currentItemOrNew']
+            return this.groupsStore.currentItemOrNew
         }
-        
+
     },
     methods: {
         isCurrentStep(item) {

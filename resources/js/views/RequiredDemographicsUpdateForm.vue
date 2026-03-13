@@ -1,7 +1,7 @@
 <script setup>
-import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 import DemographicsForm from '../components/people/DemographicsForm.vue';
+import { useAuthStore } from '@/stores/auth';
 
 const props = defineProps({
     redirectTo: {
@@ -9,13 +9,12 @@ const props = defineProps({
         default: () => ({ name: 'Dashboard' })
     }
 })
-const store = useStore();
 const router = useRouter();
 
 const handleSave = async () => {
     try {
 
-        await store.dispatch('forceGetCurrentUser');
+        await useAuthStore().forceGetCurrentUser();
         router.replace(props.redirectTo);
 
     } catch (error) {
@@ -29,7 +28,7 @@ const handleSave = async () => {
 <template>
   <div>
     <card title="Please fill out your demographic profile information">
-      <DemographicsForm :uuid="store.getters.currentUser.person.uuid" :start-in-edit-mode="true" @saved="handleSave" />
+      <DemographicsForm :uuid="useAuthStore().currentUser.person.uuid" :start-in-edit-mode="true" @saved="handleSave" />
     </card>
   </div>
 </template>

@@ -1,5 +1,5 @@
 <script>
-import {mapGetters} from 'vuex'
+import { useAuthStore } from '@/stores/auth'
 import ImpersonateControl from '@/components/ImpersonateControl.vue'
 import AnnouncementControl from '@/components/alerts/AnnouncementControl.vue'
 
@@ -9,16 +9,23 @@ export default {
         ImpersonateControl,
         AnnouncementControl
     },
+    setup() {
+        return {
+            authStore: useAuthStore(),
+        }
+    },
     data() {
         return {
             menuOpen: false
         }
     },
     computed: {
-        ...mapGetters({
-            user: 'currentUser',
-            isAuthed: 'isAuthed'
-        })
+        user() {
+            return this.authStore.currentUser
+        },
+        isAuthed() {
+            return this.authStore.isAuthed
+        },
     },
     methods: {
         handleOutsideClick() {
@@ -32,7 +39,7 @@ export default {
         },
         logout () {
             try{
-                this.$store.dispatch('logout')
+                this.authStore.logout()
             } catch (error) {
                 // eslint-disable-next-line no-alert
                 alert(error)

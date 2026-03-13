@@ -1,9 +1,9 @@
 <script setup>
     import { ref, watch, computed } from 'vue'
-    import {useStore} from 'vuex'
     import RichTextEditor from '@/components/prosekit/RichTextEditor.vue'
     import StepInput from '@/components/forms/StepInput.vue'
     import {saveEntry, updateEntry, fetchEntries} from '@/adapters/log_entry_repository'
+    import { useGroupsStore } from '@/stores/groups';
 
     const props = defineProps({
         logEntry: {
@@ -22,7 +22,7 @@
             }
     });
     const emits = defineEmits(['saved', 'canceled'])
-    const store = useStore();
+    const groupsStore = useGroupsStore();
 
     // DATA
     const newEntry = ref({
@@ -33,7 +33,7 @@
     const errors = ref({});
 
     //COMPUTED
-    const group = computed(() => store.getters['groups/currentItemOrNew']);
+    const group = computed(() => groupsStore.currentItemOrNew);
 
     // METHODS
     const syncEntry =  (entry) => {

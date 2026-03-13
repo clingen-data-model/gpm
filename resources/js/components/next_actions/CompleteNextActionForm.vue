@@ -1,6 +1,7 @@
 <script>
 import is_validation_error from '@/http/is_validation_error'
-import {mapGetters} from 'vuex'
+import { useGroupsStore } from '@/stores/groups';
+import { useApplicationsStore } from '@/stores/applications';
 
 export default {
     name: 'ComponentName',
@@ -14,6 +15,12 @@ export default {
         'completed',
         'canceled',
     ],
+    setup() {
+        return {
+            groupsStore: useGroupsStore(),
+            applicationsStore: useApplicationsStore(),
+        }
+    },
     data() {
         return {
             errors: [],
@@ -21,9 +28,9 @@ export default {
         }
     },
     computed: {
-        ...mapGetters({
-            group: 'groups/currentItemOrNew'
-        }),
+        group () {
+            return this.groupsStore.currentItemOrNew;
+        },
         application () {
             return this.group.expert_panel;
         }
@@ -31,10 +38,10 @@ export default {
     methods: {
         async markComplete () {
             try {
-                await this.$store.dispatch('applications/completeNextAction', 
+                await this.applicationsStore.completeNextAction(
                     {
-                        application: this.application, 
-                        nextAction: this.nextAction, 
+                        application: this.application,
+                        nextAction: this.nextAction,
                         dateCompleted: this.dateCompleted
                     })
                 this.clearForm();

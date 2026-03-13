@@ -1,6 +1,6 @@
 <script setup>
     import {computed} from 'vue';
-    import {useStore} from 'vuex';
+    import {useGroupsStore} from '@/stores/groups';
     import {hasPermission} from '@/auth_utils.js'
     import ScreenTemplate from '@/components/ScreenTemplate.vue';
     import DefinitionReview from '@/components/expert_panels/DefinitionReview.vue';
@@ -8,8 +8,8 @@
     import SustainedCurationReview from '@/components/expert_panels/SustainedCurationReview.vue';
 
     const emits = defineEmits(['deleted', 'saved']);
-    const store = useStore();
-    const group = computed(() => store.getters['groups/currentItemOrNew'])
+    const groupsStore = useGroupsStore();
+    const group = computed(() => groupsStore.currentItemOrNew)
     const expertPanel = computed(() => group.value.expert_panel);
 
     const breadcrumbs = computed(() => {

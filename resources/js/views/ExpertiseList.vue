@@ -2,6 +2,8 @@
 import sortAndFilter from '@/composables/router_aware_sort_and_filter';
 import ExpertiseUpdateForm from '@/components/expertises/ExpertiseUpdateForm.vue'
 import ExpertiseCreateForm from '@/components/expertises/ExpertiseCreateForm.vue'
+import { useExpertisesStore } from '@/stores/expertises';
+import { useAlertsStore } from '@/stores/alerts';
 
 export default {
     name: 'CredentialList',
@@ -53,7 +55,7 @@ export default {
     },
     computed: {
         items () {
-            return this.$store.getters['expertises/items']
+            return useExpertisesStore().items
         },
         filteredItems () {
             if (!this.filter) {
@@ -69,7 +71,7 @@ export default {
         }
     },
     mounted () {
-        this.$store.dispatch('expertises/getItems');
+        useExpertisesStore().getItems();
     },
     methods: {
         edit (item) {
@@ -81,7 +83,7 @@ export default {
             this.showEditDialog = false;
 
             this.updateItem();
-            this.$store.commit("pushSuccess", 'Expertise saved.')
+            useAlertsStore().pushSuccess('Expertise saved.')
         },
         handleCancel() {
             this.showCreateDialog = false;
@@ -112,9 +114,9 @@ export default {
                 alert('You cannot delete this expertise because it is in use.  Please edit the expertise or remove it from all people using it.')
             }
             try {
-                await this.$store.dispatch('expertises/delete', this.currentItem)
+                await useExpertisesStore().delete(this.currentItem)
                 this.showDeleteConfirmation = false;
-                this.$store.commit("pushSuccess", `${this.currentItem.name} deleted.`);
+                useAlertsStore().pushSuccess(`${this.currentItem.name} deleted.`);
             } catch (e) {
                 console.error(e);
                 throw e;

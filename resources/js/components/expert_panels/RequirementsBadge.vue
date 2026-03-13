@@ -1,5 +1,6 @@
 <script>
 import RequirementsItem from './RequirementsItem.vue'
+import { useGroupsStore } from '@/stores/groups';
 
 export default {
     name: 'RequirementsBadge',
@@ -12,13 +13,18 @@ export default {
             required: true
         }
     },
+    setup() {
+        return {
+            groupsStore: useGroupsStore(),
+        }
+    },
     data () {
         return {
         }
     },
     computed: {
         group() {
-            return this.$store.getters['groups/currentItemOrNew']
+            return this.groupsStore.currentItemOrNew
         },
         meetsRequirements () {
             return this.section.meetsRequirements(this.group);

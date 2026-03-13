@@ -1,6 +1,7 @@
 <script>
 import api from '@/http/api';
 import is_validation_error from '../../http/is_validation_error';
+import { useGroupsStore } from '@/stores/groups';
 
 export default {
     name: 'NHGRIDataAvailability',
@@ -14,6 +15,11 @@ export default {
     emits: [
         'update'
     ],
+    setup() {
+        return {
+            groupsStore: useGroupsStore(),
+        }
+    },
     data() {
         return {
             errors: {},
@@ -22,10 +28,10 @@ export default {
     computed: {
         group: {
             get () {
-                return this.$store.getters['groups/currentItemOrNew'];
+                return this.groupsStore.currentItemOrNew;
             },
             set (value) {
-                this.$store.commit('groups/addItem', value);
+                this.groupsStore.addItem(value);
             }
         },
         attestation: {

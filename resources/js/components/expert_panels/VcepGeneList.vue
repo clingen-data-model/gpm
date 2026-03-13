@@ -2,11 +2,12 @@
 import {api} from '@/http'
 import {ref, computed, onMounted} from 'vue';
 import {debounce} from 'lodash-es'
-import {useStore} from 'vuex';
 import GeneSearchSelect from '@/components/forms/GeneSearchSelect.vue'
 import DiseaseSearchSelect from '@/components/forms/DiseaseSearchSelect.vue'
 import is_validation_error from '@/http/is_validation_error'
 import {hasAnyPermission} from '@/auth_utils'
+import { useGroupsStore } from '@/stores/groups';
+import { useAlertsStore } from '@/stores/alerts';
 
 export default {
     name: 'VcepGeneList',
@@ -27,13 +28,14 @@ export default {
         'editing'
     ],
     setup(props, context) {
-        const store = useStore();
+        const groupsStore = useGroupsStore();
+        const alertsStore = useAlertsStore();
 
         const showConfirmRemove = ref(false);
         const selectedGene = ref({gene: {}, disease: {}});
 
         const group = computed(() => {
-            return store.getters['groups/currentItemOrNew'];
+            return groupsStore.currentItemOrNew;
         });
 
 
@@ -103,7 +105,7 @@ export default {
                 // need to set genes on the expert_panel for requirements validation
                 group.value.expert_panel.genes = genes.value;
             } catch (error) {
-                store.commit('pushError', error.response.data);
+                alertsStore.pushError(error.response.data);
             }
             loading.value = false;
         }
@@ -114,7 +116,7 @@ export default {
                 await getGenes();
                 cancelRemove();
             } catch (error) {
-                store.commit('pushError', error.response.data);
+                alertsStore.pushError(error.response.data);
             }
         }
 

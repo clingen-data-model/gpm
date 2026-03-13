@@ -2,6 +2,7 @@
 import EditIconButton from '@/components/buttons/EditIconButton.vue'
 import RichTextEditor from '@/components/prosekit/RichTextEditor.vue'
 import { htmlFromMarkdown } from '@/markdown-utils';
+import { useGroupsStore } from '@/stores/groups';
 
 export default {
     name: 'MembershipDescriptionForm',
@@ -27,13 +28,18 @@ export default {
         'canceled',
         'update'
     ],
+    setup() {
+        return {
+            groupsStore: useGroupsStore(),
+        }
+    },
     computed: {
         group: {
             get () {
-                return this.$store.getters['groups/currentItemOrNew'];
+                return this.groupsStore.currentItemOrNew;
             },
             set (value) {
-                this.$store.commit('groups/addItem', value);
+                this.groupsStore.addItem(value);
             }
         },
         htmlMembershipDescription () {

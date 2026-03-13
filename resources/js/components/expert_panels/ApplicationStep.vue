@@ -1,11 +1,16 @@
 <script>
 import ApplicationSubmitButton from '@/components/expert_panels/ApplicationSubmitButton.vue'
 import { getApplicationForGroup } from "@/composables/use_application.js";
+import { useGroupsStore } from '@/stores/groups';
 
 export default {
     name: 'ApplicationStep',
     components: {
         ApplicationSubmitButton
+    },
+    setup() {
+        const groupsStore = useGroupsStore();
+        return { groupsStore };
     },
     props: {
         title: {
@@ -30,7 +35,7 @@ export default {
     },
     computed: {
         group () {
-            return this.$store.getters['groups/currentItemOrNew'];
+            return this.groupsStore.currentItemOrNew;
         },
         application() {
             return getApplicationForGroup(this.group);

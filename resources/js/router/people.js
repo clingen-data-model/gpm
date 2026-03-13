@@ -1,5 +1,5 @@
 import router from '.'
-import store from '../store/index'
+import { useAuthStore } from '@/stores/auth'
 import { checkPermissionAndPersonOwnership } from './route_guards'
 
 const PersonDetail = () => import ('@/components/people/PersonDetail.vue')
@@ -45,7 +45,7 @@ export default [
         path: '/invites/:code',
         component: OnboardingWizard,
         beforeEnter: () => {
-            if (store.getters.currentUser.id !== null) {
+            if (useAuthStore().currentUser.id !== null) {
                 router.replace({name: 'Dashboard'});
             }
             return true;
@@ -59,7 +59,7 @@ export default [
         path: '/invites',
         component: OnboardingWizard,
         beforeEnter: () => {
-            if (store.getters.currentUser.id !== null) {
+            if (useAuthStore().currentUser.id !== null) {
                 router.replace({name: 'Dashboard'});
             }
             return true;

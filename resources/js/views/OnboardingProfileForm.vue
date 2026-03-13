@@ -1,7 +1,7 @@
 <script setup>
-    import {useStore} from 'vuex'
     import {useRouter} from 'vue-router'
     import ProfileForm from '../components/people/ProfileForm.vue';
+    import { useAuthStore } from '@/stores/auth';
 
     const props = defineProps({
         redirectTo: {
@@ -9,11 +9,10 @@
             default: () => ({name: 'Dashboard'})
         }
     })
-    const store = useStore();
     const router = useRouter();
 
     const handleSave = async () => {
-        await store.dispatch('forceGetCurrentUser');
+        await useAuthStore().forceGetCurrentUser();
 
         router.replace(props.redirectTo)
     }
@@ -23,7 +22,7 @@
   <div>
     <card title="Please fill out your profile">
       <ProfileForm
-        :person="store.getters.currentUser.person"
+        :person="useAuthStore().currentUser.person"
         :allow-cancel="false"
         :show-title="false"
         @saved="handleSave"

@@ -1,5 +1,6 @@
 <script>
-import { mapGetters } from 'vuex'
+import { useCdwgsStore } from '@/stores/cdwgs'
+import { useApplicationsStore } from '@/stores/applications'
 import { formatDate } from '@/date_utils'
 
 export default {
@@ -28,10 +29,11 @@ export default {
             errors: {}
         }
     },
+    setup() {
+        return { cdwgsStore: useCdwgsStore(), applicationsStore: useApplicationsStore() }
+    },
     computed: {
-        ...mapGetters({
-            cdwgs: 'cdwgs/all'
-        }),
+        cdwgs() { return this.cdwgsStore.all },
         hasErrors() {
             return Object.keys(this.errors).length > 0;
         }
@@ -54,7 +56,7 @@ export default {
         },
         async save() {
             try {
-                await this.$store.dispatch('applications/initiateApplication', this.app)
+                await this.applicationsStore.initiateApplication(this.app)
                 this.$emit('saved', this.app);
             } catch (error) {
                 if (error.response && Number.parseInt(error.response.status) === 422 && error.response.data.errors) {

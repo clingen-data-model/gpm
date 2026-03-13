@@ -1,8 +1,14 @@
 <script>
+import { useGroupsStore } from '@/stores/groups';
+
 export default {
     name: 'SubgroupList',
     props: {
 
+    },
+    setup() {
+        const groupsStore = useGroupsStore();
+        return { groupsStore };
     },
     data() {
         return {
@@ -11,7 +17,7 @@ export default {
     },
     computed: {
         group () {
-            return this.$store.getters['groups/currentItemOrNew'];
+            return this.groupsStore.currentItemOrNew;
         },
         showMemberReportButton () {
             return this.hasAnyPermission([['members-invite', this.group], 'groups-manage', 'ep-applications-manage', 'annual-updates-manage'])

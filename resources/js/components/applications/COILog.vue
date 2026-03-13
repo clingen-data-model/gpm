@@ -2,6 +2,8 @@
 
 import CoiDetail from '@/components/applications/CoiDetail.vue';
 import CoiLegacyUpload from '@/components/applications/CoiLegacyUpload.vue';
+import { useAuthStore } from '@/stores/auth'
+import { useApplicationsStore } from '@/stores/applications'
 
 export default {
     components: {
@@ -13,6 +15,9 @@ export default {
             required: true,
             type: Object
         }
+    },
+    setup() {
+        return { authStore: useAuthStore(), applicationsStore: useApplicationsStore() }
     },
     data() {
         return {
@@ -57,7 +62,7 @@ export default {
             return this.application.cois && this.application.cois.length > 0;
         },
         mailtoLink() {
-            return `mailto:${this.group.contacts.map(p => p.email).join(';')}?subject=Your COI Link for your Expert Panel Application&body=Your expert panel's COI form: ${this.$store.state.hostname}${this.application.coi_url}.`
+            return `mailto:${this.group.contacts.map(p => p.email).join(';')}?subject=Your COI Link for your Expert Panel Application&body=Your expert panel's COI form: ${this.authStore.hostname}${this.application.coi_url}.`
         }
     },
     methods: {
@@ -67,7 +72,7 @@ export default {
         },
         async refresh() {
             this.refreshing = true;
-            await this.$store.dispatch('applications/getApplication', this.application.uuid);
+            await this.applicationsStore.getApplication(this.application.uuid);
             this.refreshing = false;
         },
         mailToContacts() {
@@ -86,7 +91,7 @@ export default {
     <div class="flex justify-between">
       <h2>Conflict of Interest</h2>
       <CoiLegacyUpload
-        v-if="$store.state.features.legacyCoi"
+        v-if="authStore.features.legacyCoi"
         :application="application"
       />
     </div>

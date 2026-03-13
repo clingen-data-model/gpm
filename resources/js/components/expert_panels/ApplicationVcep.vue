@@ -17,6 +17,7 @@ import GroupDescriptionForm from '@/components/groups/GroupDescriptionForm.vue';
 import ScopeDescriptionForm from '@/components/expert_panels/ScopeDescriptionForm.vue';
 import VcepGeneList from '@/components/expert_panels/VcepGeneList.vue';
 import VcepOngoingPlansForm from '@/components/expert_panels/VcepOngoingPlansForm.vue';
+import { useGroupsStore } from '@/stores/groups';
 
 export default {
     name: 'ApplicationVcep',
@@ -43,7 +44,8 @@ export default {
     ],
     setup () {
         return {
-            errors
+            errors,
+            groupsStore: useGroupsStore(),
         }
     },
     data () {
@@ -55,10 +57,10 @@ export default {
     computed: {
         group: {
             get () {
-                return this.$store.getters['groups/currentItemOrNew'];
+                return this.groupsStore.currentItemOrNew;
             },
             set (value) {
-                this.$store.commit('groups/addItem', value);
+                this.groupsStore.addItem(value);
             }
         },
     },
@@ -96,7 +98,7 @@ export default {
         },
         saveUpdates () {
             if (this.applicationIsDirty() ) {
-                return this.$store.dispatch('groups/saveApplicationData', this.group)
+                return this.groupsStore.saveApplicationData(this.group)
                         .then(() => {
                             this.$emit('saved');
                         });
@@ -104,7 +106,7 @@ export default {
         },
         saveWebDescription() {
           if(this.webDescriptionIsDirty()) {
-            return this.$store.dispatch('groups/descriptionUpdate', {
+            return this.groupsStore.descriptionUpdate({
               uuid: this.group.uuid,
               description: this.group.description
             });
