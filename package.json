@@ -20,6 +20,7 @@
     "js-yaml": "^4.1.0",
     "lodash-es": "^4.17.21",
     "marked": "^15.0.7",
+    "pinia": "^3.0.4",
     "prosekit": "^0.11.5",
     "prosemirror-markdown": "^1.13.2",
     "register-service-worker": "^1.7.2",
@@ -32,8 +33,7 @@
     "uuid": "^11.0.5",
     "vue": "^3.2.37",
     "vue-router": "^4.0.16",
-    "vue3-popper": "^1.5.0",
-    "vuex": "^4.0.2"
+    "vue3-popper": "^1.5.0"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^4.3.0",
