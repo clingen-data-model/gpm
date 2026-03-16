@@ -17,8 +17,7 @@ class PublicationDeleted extends GroupEvent
 
     public function getLogEntry(): string
     {
-        $submitterName = Auth::user() ? Auth::user()->name : 'system';
-        return "Publication '" . $this->publication->display_title . "' " . $this->publication->identifier . " deleted by " . $submitterName . ".";
+        return "Publication '" . $this->publication->meta['title'] . "' " . $this->publication->identifier . " deleted";
     }
 
     public function getProperties(): array
