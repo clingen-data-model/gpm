@@ -362,7 +362,7 @@ export default {
       </AppSection>
 
       <AppSection title="Publications">
-        <PublicationsForm v-model="annualUpdate" :version="year" :errors="errors" :group-uuid="uuid" :shape-exchange="true" />
+        <PublicationsForm v-model="annualUpdate" :version="window" :errors="errors" :group-uuid="uuid" :shape-exchange="true" />
       </AppSection>
 
       <AppSection title="Goals for next year">
