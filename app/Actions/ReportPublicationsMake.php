@@ -26,17 +26,10 @@ class ReportPublicationsMake extends ReportMakeAbstract
                 $authors = implode('; ', array_filter($authors));
             }
 
-            $identifiers = $base['identifiers'] ?? null;
-            if (is_array($identifiers)) {
-                $parts = [];
-                foreach ($identifiers as $key => $value) {
-                    if ($value === null || $value === '') continue;
-                    $parts[] = strtoupper($key) . ': ' . $value;
-                }
-                $identifiers = implode(', ', $parts);
-            } elseif (!is_string($identifiers)) {
-                $identifiers = '';
-            }
+            $identifiers = [];
+            if ($base['meta']['pmid']['id']) { $identifiers[] = strtoupper("PMID: ") . $base['meta']['pmid']['id']; }
+            if ($base['meta']['doi']['id']) { $identifiers[] = strtoupper("DOI: ") . $base['meta']['doi']['id']; }
+            if ($base['meta']['pmcid']['id']) { $identifiers[] = strtoupper("PMCID: ") . $base['meta']['pmcid']['id']; }
 
             $group         = $pub->group;
             $groupType     = $group?->type?->display_name;
@@ -45,14 +38,14 @@ class ReportPublicationsMake extends ReportMakeAbstract
             $affiliationID = $group?->expertPanel?->affiliation_id;
 
             $row = [
-                // From Publication
-                'uuid'        => $base['uuid'] ?? null,
+                // From Publication::toExchangePayload
+                'publication_id'    => $base['publication_id'] ?? null,
                 'type'        => $base['type'] ?? null,
                 'title'       => $base['title'] ?? null,
                 'authors'     => $authors,
                 'journal'     => $base['journal'] ?? null,
                 'identifiers' => $identifiers,
-                'published'   => $base['published'] ?? null,
+                'published_at'   => $base['published_at'] ?? null,
                 'url'         => $base['url'] ?? null,
 
                 // From Group
@@ -72,6 +65,13 @@ class ReportPublicationsMake extends ReportMakeAbstract
         });
 
         return $rows->toArray();
+    }
+
+    public function streamRows(callable $push): void
+    {
+        foreach ($this->handle() as $row) {
+            $push($row);
+        }
     }
 
     public function asCommand(Command $command)
