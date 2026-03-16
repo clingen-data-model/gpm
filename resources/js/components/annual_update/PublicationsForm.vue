@@ -1,23 +1,28 @@
 <script setup>
-import { api } from "@/http";
+import { api } from"@/http";
 import { debounce, cloneDeep } from 'lodash-es'
-import { computed, onMounted, ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 
 const props = defineProps({
   modelValue: { type: Object, required: true },
-  version: { type: [String, Number], required: true },
+  version: { type: Object, required: true },
   errors: { type: Object, default: () => ({}) },
   groupUuid: { type: String, default: null },
-  shapeExchange: { type: Boolean, default: true }
+  shapeExchange: { type: Boolean, default: true } // Flag query string that it's coming from Annual Updates
 })
 
 const emit = defineEmits(['update:modelValue'])
 
+const formatDateParam = (value) => {
+  if (!value) return null
+  return String(value).slice(0, 10)
+}
+
 const au = computed(() => props.modelValue || {})
-const year = computed(() => Number(props.version))
+const year = computed(() => Number(props.version.for_year))
 const isComplete = computed(() => Boolean(au.value?.completed_at))
 const groupUuid = computed(() => {
-    return ( props.groupUuid || au.value?.expert_panel?.group?.uuid || (typeof window !== 'undefined' && window?.appRouteParams?.uuid) || null )
+  return ( props.groupUuid || au.value?.expert_panel?.group?.uuid || (typeof window !== 'undefined' && window?.appRouteParams?.uuid) || null )
 })
 
 const pubs = ref([]);
@@ -26,265 +31,265 @@ const note = ref('');
 const totalCount = computed(() => Number(pubs.value.length) || 0)
 const includedCount = computed(() => pubs.value.filter(p => !!p.included).length)
 
-const normalizePublication = (pub) => {
-    const isExchange = pub && typeof pub === 'object' && 'uuid' in pub && 'identifiers' in pub && 'published' in pub
-    if (isExchange) {
-        return {
-            uuid: pub.uuid,
-            type: pub.type ?? null,
-            title: pub.title ?? '',
-            authors: Array.isArray(pub.authors) ? pub.authors : [],
-            journal: pub.journal ?? '',
-            identifiers: pub.identifiers ?? {},
-            published: pub.published ?? null,
-            url: pub.url ?? null,
-            included: pub.included ?? true
-        }
-    }
-  
-    return {
-        uuid: pub.uuid ?? pub.id ?? null,
-        type: pub.pub_type ?? pub.type ?? null,
-        title: pub.title ?? '',
-        authors: Array.isArray(pub.authors) ? pub.authors : [],
-        journal: pub.journal ?? '',
-        identifiers: {
-            doi: pub.doi ?? pub.identifiers?.doi ?? null,
-            pmid: pub.pmid ?? pub.identifiers?.pmid ?? null,
-            pmcid: pub.pmcid ?? pub.identifiers?.pmcid ?? null,
-        },
-        published: (pub.published_at ?? pub.published ?? null)?.toString().slice(0, 10),
-        url: pub.url ?? null,
-        included: pub.included ?? true
-    }
-}
+const publicationKey = (p) => p?.publication_id ?? null
+const sourceLabel = (p) => String(p?.source_type).toUpperCase()
+const sourceValue = (p) => p?.source_id ?? null
+const publishedOf = (p) => formatDateParam(p?.published_at)
+
+// Need to double check the date range we want to use to fetch the publications for the Annual Update.
+const publicationPeriodStart = computed(() => `${year.value}-01-01`)
+const publicationPeriodEnd = computed(() => `${year.value + 1}-03-31`)
 
 const emitChange = debounce(() => {
-    if (isComplete.value) return
-    const next = cloneDeep(au.value) || {}
-    next.data = next.data || {}
-    next.data.publications = stripUiFlags(pubs.value)
-    next.data.publications_note = note.value ?? ''
-    emit('update:modelValue', next)
+  if (isComplete.value) return
+  const next = cloneDeep(au.value) || {}
+  next.data = next.data || {}
+  next.data.publications = stripUiFlags(pubs.value)
+  next.data.publications_note = note.value ?? ''
+  emit('update:modelValue', next)
 }, 600)
 
 watch(() => props.modelValue, (val) => {
-    if (!val) return
-        const d = val.data || {}
-        if (Array.isArray(d.publications) && d.publications.length > 0) {
-            pubs.value = cloneDeep(d.publications)
-        }
-        if (typeof d.publications_note === 'string') note.value = d.publications_note
-    }, { deep: true, immediate: true }
-)
+  if (!val) return
+  const d = val.data || {}
+  if (Array.isArray(d.publications) && d.publications.length > 0) {
+    pubs.value = cloneDeep(d.publications).map((p) => ({
+      ...p,
+      included: p.included ?? true,
+    }))
+  }
+  if (typeof d.publications_note === 'string') note.value = d.publications_note
+}, { deep: true, immediate: true })
 
 const preloadPublications = async () => {
-    console.log('preload guard', { year: year.value, groupUuid: groupUuid.value });
-    if (!year.value || !groupUuid.value) { 
-        console.log("Return no UUID || year")
-        console.log('preload: missing prereqs → returning early');
-        return
-    }
-    console.log('preload: prereqs OK → fetching…');
-    loading.value = true
-    const params = { start: `${year.value}-01-01`, end:   `${year.value}-12-31` }
-    if (props.shapeExchange) params.shape_exchange = 1
+  if (!year.value || !groupUuid.value) return
+  loading.value = true
+  const params = {
+    start: publicationPeriodStart.value,
+    end: publicationPeriodEnd.value,
+    shape_exchange: props.shapeExchange ?? 'false',
+  }
 
-    try {
-        const { data } = await api.get(`/api/groups/${groupUuid.value}/publications`, { params })
-        const normalized = (Array.isArray(data) ? data : []).map(normalizePublication)
-        const seen = new Set()
-        const unique = []
-        for (const p of normalized) {
-            if (!p.uuid || seen.has(p.uuid)) continue
-            seen.add(p.uuid)
-            unique.push({ ...p, included: false })
-        }        
-        mergePublications(unique);
-    } catch (e) {    
-    } finally {
-        loading.value = false
+  try {
+    const { data } = await api.get(`/api/groups/${groupUuid.value}/publications`, { params })
+    /* pubs.value = (Array.isArray(data) ? data : []).map(p => ({
+      ...p,
+      included: p.included ?? false,
+    }))
+    emitChange() */
+    const latest = (Array.isArray(data) ? data : []).map((p) => ({
+      ...p,
+      included: false, // Flag whether to be included in the Annual Update - default is set to false
+    }))
+    const seen = new Set()
+    const unique = []
+    for (const p of latest) {
+      const key = publicationKey(p)
+      if (!key || seen.has(key)) continue
+      seen.add(key)
+      unique.push(p)
     }
+    mergePublications(unique)
+  } catch (e) {
+    //
+  } finally {
+    loading.value = false
+  }
 }
 
 const preloaded = ref(false)
 watch(() => [groupUuid.value, year.value, au.value?.data?.publications?.length],
-    async ([uuid, yr, len]) => {
+  async ([uuid, yr]) => {
     if (!uuid || !yr) return
 
     const parentHas = Array.isArray(au.value?.data?.publications) && au.value.data.publications.length > 0
     if (parentHas || pubs.value.length > 0 || preloaded.value) return
-        preloaded.value = true
-        await preloadPublications()
-    }, { immediate: true }
-)
-
-onMounted(() => { })
+    preloaded.value = true
+    await preloadPublications()
+}, { immediate: true })
 
 const toggleAll = (include) => {
-    if (isComplete.value) return
-    pubs.value = pubs.value.map(p => ({ ...p, included: !!include }))
-    emitChange()
+  if (isComplete.value) return
+  pubs.value = pubs.value.map(p => ({ ...p, included: !!include }))
+  emitChange()
 }
 const onToggleRow = (idx, value) => {
-    if (isComplete.value) return
-    pubs.value = pubs.value.map((p, i) => i === idx ? { ...p, included: !!value } : p);
-    emitChange()
-    }
-const onNoteInput = () => { if (! isComplete.value) emitChange() }
+  if (isComplete.value) return
+  pubs.value = pubs.value.map((p, i) => i === idx ? { ...p, included: !!value } : p);
+  emitChange()
+}
+const onNoteInput = () => { if (!isComplete.value) emitChange() }
+const latestKeys = ref(new Set())
+const newKeys = ref(new Set())
 
-const latestUuids = ref(new Set());
-const newUuids = ref(new Set());
+const isMissing = (p) => latestKeys.value.size > 0 && !latestKeys.value.has(publicationKey(p))
 
-const isMissing = (p) => latestUuids.value.size > 0 && !latestUuids.value.has(p.uuid);
-const isNew = (p) => newUuids.value.has(p.uuid);
+const isNew = (p) => newKeys.value.has(publicationKey(p))
 
-const stripUiFlags = (arr) => arr.map(({ _new, _missing, ...rest }) => rest);
+const stripUiFlags = (arr) => arr.map(({ _new, _missing, ...rest }) => rest)
 
 const mergePublications = (latestRaw) => {
-    const latest = (latestRaw || []).map(normalizePublication);
+  const latest = Array.isArray(latestRaw) ? latestRaw : []
 
-    latestUuids.value = new Set(latest.map(p => p.uuid));
+  latestKeys.value = new Set(latest.map(publicationKey).filter(Boolean))
 
-    const byUuid = (arr) => {
-        const m = new Map();
-        for (const p of arr) if (p?.uuid) m.set(p.uuid, p);
-        return m;
-    };
-
-    const saved = Array.isArray(pubs.value) ? pubs.value : [];
-    const savedMap  = byUuid(saved);
-    const latestMap = byUuid(latest);
-
-    newUuids.value = new Set(latest.filter(p => !savedMap.has(p.uuid)).map(p => p.uuid));
-
-    const mergedMap = new Map(saved.map(p => [p.uuid, { ...p }]));
-    for (const l of latest) {
-        if (!mergedMap.has(l.uuid)) {
-        mergedMap.set(l.uuid, { ...l, included: false });
-        } else {
-        const prev = mergedMap.get(l.uuid);
-        mergedMap.set(l.uuid, { ...prev, ...l, included: prev.included });
-        }
+  const byKey = (arr) => {
+    const m = new Map()
+    for (const p of arr) {
+      const key = publicationKey(p)
+      if (key) m.set(key, p)
     }
-    const merged = Array.from(mergedMap.values());
-    
-    merged.sort((a, b) => {
-        const da = a.published || '';
-        const db = b.published || '';
-        if (da !== db) return db.localeCompare(da);
-        return (a.title || '').localeCompare(b.title || '');
-    });
+    return m;
+  }
 
-    pubs.value = merged;
-    emitChange();
-};
+  const saved = Array.isArray(pubs.value) ? pubs.value : [];
+  const savedMap = byKey(saved);
+  newKeys.value = new Set(latest.filter(p => !savedMap.has(publicationKey(p))).map(publicationKey).filter(Boolean));
+
+  const mergedMap = new Map(saved.map(p => [publicationKey(p), { ...p }]).filter(([key]) => !!key))
+
+  for (const l of latest) {
+    const key = publicationKey(l)
+    if (!key) continue
+    if (!mergedMap.has(key)) {
+      mergedMap.set(key, { ...l, included: false })
+    } else {
+      const prev = mergedMap.get(key)
+      mergedMap.set(key, { ...prev, ...l, included: prev.included });
+    }
+  }
+  const merged = Array.from(mergedMap.values());
+
+  merged.sort((a, b) => {
+    const da = publishedOf(a);
+    const db = publishedOf(b);
+    if (da !== db) return db.localeCompare(da);
+    return String(a.title || '').localeCompare(String(b.title || ''));
+  })
+
+  pubs.value = merged
+  emitChange();
+}
 
 const refresh = async () => {
-    if (isComplete.value || loading.value) return;
-    await preloadPublications(); // it now merges
-};
+  if (isComplete.value || loading.value) return
+  await preloadPublications()
+}
 
 const removeRow = (idx) => {
-    if (isComplete.value) return;
-    pubs.value = pubs.value.filter((_, i) => i !== idx);
-    emitChange();
-};
+  if (isComplete.value) return
+  pubs.value = pubs.value.filter((_, i) => i !== idx)
+  emitChange();
+}
 
 const groupPublicationsUrl = computed(() =>
-    groupUuid.value ? `/groups/${groupUuid.value}?tab=publications` : null
+  groupUuid.value ? `/groups/${groupUuid.value}?tab=publications` : null
 )
 </script>
 
 <template>
-    <div class="space-y-4">
-        <div class="flex items-center justify-between">
-            <div>
-                <h4 class="text-lg font-semibold">Publications from {{ year }}</h4>
-            </div>
+  <div class="space-y-4">
+    <div class="rounded-md border-l-4 border-blue-300 bg-blue-50 px-3 py-2 text-blue-900">
+      To add new publications, go to your Group's page and open the <strong>Publications</strong> tab.
+      <template v-if="groupPublicationsUrl">
+        You can open it here:
+        <a :href="groupPublicationsUrl" class="underline hover:no-underline font-medium" target="_blank" rel="noopener">Group Detail page &gt; Publications</a>.
+      </template>
+      <template v-else>
+        (Use the gray breadcrumb at the top: <em>Group &gt; EP</em>.)
+      </template>
+      <template v-if="isComplete">
+        <span class="ml-2 italic">(This Annual Update is read-only.)</span>
+      </template>
+    </div>
 
-            <div class="flex items-center gap-2">
-                <button type="button" class="btn sm" @click="refresh" :disabled="isComplete || loading"> Refresh list</button>
-                <button type="button" class="btn sm" @click="toggleAll(true)" :disabled="isComplete || loading || totalCount === 0">Include all</button>
-                <button type="button" class="btn sm" @click="toggleAll(false)" :disabled="isComplete || loading || totalCount === 0">Exclude all</button>
-            </div>
-        </div>
+    <div class="flex items-center justify-between">
+      <div class="text-gray-700" v-if="totalCount > 0">
+        Included <strong>{{ includedCount }}</strong> of <strong>{{ totalCount }}</strong>
+      </div>
 
-        <div class="rounded-md border-l-4 border-blue-300 bg-blue-50 px-3 py-2 text-sm text-blue-900">
-            To add new publications, go to your Group'spage and open the <strong>Publications</strong> tab.
-            <template v-if="groupPublicationsUrl">
-                You can open it here: <a :href="groupPublicationsUrl" class="underline hover:no-underline font-medium" target="_blank" rel="noopener">Group Detail page &gt; Publications</a>.
-            </template>
-            <template v-else>
-                (Use the gray breadcrumb at the top: <em>Group &gt; EP</em>.)
-            </template>
-            <template v-if="isComplete">
-                <span class="ml-2 italic">(This Annual Update is read-only.)</span>
-            </template>
-        </div>
+      <div class="flex items-center gap-2">
+        <button type="button" class="btn sm" @click="refresh" :disabled="isComplete || loading">Refresh list</button>
+        <button type="button" class="btn sm" @click="toggleAll(true)" :disabled="isComplete || loading || totalCount === 0">Include all</button>
+        <button type="button" class="btn sm" @click="toggleAll(false)" :disabled="isComplete || loading || totalCount === 0">Exclude all</button>
+      </div>
+    </div>
 
-        <div class="text-sm text-gray-700" v-if="totalCount > 0">
-            Included <strong>{{ includedCount }}</strong> of <strong>{{ totalCount }}</strong>
-        </div>
+    <div v-if="loading" class="text-gray-500">Loading publications...</div>
+    <div v-else class="overflow-x-auto">
+      <table class="min-w-full border border-gray-200 rounded-md">
+        <thead class="bg-gray-50">
+          <tr>
+            <th class="px-3 py-2 text-left font-medium">Include</th>
+            <th class="px-3 py-2 text-left font-medium">Identifier</th>
+            <th class="px-3 py-2 text-left font-medium">Title / Journal</th>
+            <th class="px-3 py-2 font-medium">Published</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(p, idx) in pubs" :key="publicationKey(p)" class="border-t">
+            <td class="px-3 py-2">
+              <input
+                type="checkbox"
+                :checked="!!p.included"
+                :disabled="isComplete"
+                @change="onToggleRow(idx, $event.target.checked)"
+              />
+            </td>
+            <td class="px-3 py-2">
+              <div class="">
+                <template v-if="sourceLabel(p) && sourceValue(p)">
+                  <span class="font-mono">{{ sourceLabel(p) }}:</span>
+                  <span class="font-mono">{{ sourceValue(p) }}</span>
+                </template>
+                <template v-else>
+                  <span class="text-gray-500 italic">No ID</span>
+                </template>
+              </div>
+            </td>
+            <td class="px-3 py-2">
+              <div class="font-medium leading-snug line-clamp-2">
+                {{ p.title }}
+                <span v-if="isNew(p)" class="ml-2 text-[10px] px-1.5 py-0.5 rounded bg-green-100 text-green-800 align-middle">New</span>
+                <span v-if="isMissing(p)" class="ml-2 text-[10px] px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 align-middle">Not in latest</span>
+                <button
+                  v-if="isMissing(p)"
+                  type="button"
+                  class="ml-2 text-[10px] px-1.5 py-0.5 rounded border"
+                  :disabled="isComplete"
+                  @click="removeRow(idx)"
+                >
+                  Remove
+                </button>
+              </div>
+              <div>
+                <div v-if="p.authors && p.authors.length > 0"><span class="font-medium">Authors:</span> {{ p.authors.join(', ') }}</div>                
+                <span class="font-medium">Publication Type:</span> {{ p.type ?? 'n.a' }}  · 
+                <span class="font-medium">Journal:</span> {{ p.journal ?? 'n.a' }}
+              </div>
+            </td>
+            <td class="px-3 py-2">
+              {{ formatDate(publishedOf(p)) || 'n.a' }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="text-gray-500">
+        Only publications with a publication date within this Annual Update period {{ formatDate(publicationPeriodStart) }} to {{ formatDate(publicationPeriodEnd) }} are shown.
+      </div>
+    </div>
 
-        <div v-if="loading" class="text-sm text-gray-500">Loading publications...</div>
-        <div v-else class="overflow-x-auto">
-            <table class="min-w-full border border-gray-200 rounded-md">
-                <thead class="bg-gray-50">
-                    <tr>
-                        <th class="px-3 py-2 text-left text-xs font-medium text-gray-600">Include</th>
-                        <th class="px-3 py-2 text-left text-xs font-medium text-gray-600">Identifier</th>
-                        <th class="px-3 py-2 text-left text-xs font-medium text-gray-600">Title / Journal</th>
-                        <th class="px-3 py-2 text-left text-xs font-medium text-gray-600">Published</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="(p, idx) in pubs" :key="p.uuid" class="border-t">
-                        <td class="px-3 py-2">
-                            <input type="checkbox" :checked="!!p.included" :disabled="isComplete" @change="onToggleRow(idx, $event.target.checked)" />
-                        </td>
-                        <td class="px-3 py-2">
-                            <div class="text-sm">
-                                <template v-if="p.identifiers?.pmid">
-                                    <span class="font-mono">PMID:</span> <span class="font-mono break-all">{{ p.identifiers.pmid }}</span>
-                                </template>
-                                <template v-else-if="p.identifiers?.pmcid">
-                                    <span class="font-mono">PMCID:</span> <span class="font-mono break-all">{{ p.identifiers.pmcid }}</span>
-                                </template>
-                                <template v-else-if="p.identifiers?.doi">
-                                    <span class="font-mono">DOI:</span> <span class="font-mono break-all">{{ p.identifiers.doi }}</span>
-                                </template>
-                                <template v-else>
-                                    <span class="text-gray-500 italic">No ID</span>
-                                </template>
-                            </div>
-                        </td>
-                        <td class="px-3 py-2">
-                            <div class="text-sm font-medium leading-snug line-clamp-2">
-                                {{ p.title }}
-                                <span v-if="isNew(p)" class="ml-2 text-[10px] px-1.5 py-0.5 rounded bg-green-100 text-green-800 align-middle">New</span>
-                                <span v-if="isMissing(p)" class="ml-2 text-[10px] px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 align-middle">Not in latest</span>
-                                <button v-if="isMissing(p)" type="button" class="ml-2 text-[10px] px-1.5 py-0.5 rounded border" :disabled="isComplete" @click="removeRow(idx)">Remove</button>
-                            </div>
-                            <div class="text-xs text-gray-600">
-                                <span v-if="p.type">{{ p.type }}</span>
-                                <span v-if="p.type && p.journal"> · </span>
-                                <span v-if="p.journal">{{ p.journal }}</span>
-                            </div>
-                        </td>
-                        <td class="px-3 py-2 text-sm">
-                        {{ p.published || '—' }}
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-    <!-- Section-level note -->
     <div class="space-y-1">
-        <label class="block text-sm font-medium">Notes about publications (optional)</label>
-        
-      <textarea class="w-full rounded-md border p-2 text-sm" rows="3" placeholder="Add any context or comments related to this year’s publications..." v-model="note" @input="onNoteInput" :disabled="isComplete"></textarea>
+      <label class="block font-medium">Notes about publications (optional)</label>
+
+      <textarea
+        class="w-full rounded-md border p-2"
+        rows="3"
+        placeholder="Add any context or comments related to this year's publications..."
+        v-model="note"
+        @input="onNoteInput"
+        :disabled="isComplete"
+      ></textarea>
       <div v-if="errors?.publications_note" class="text-xs text-red-600">
         {{ errors.publications_note }}
       </div>
