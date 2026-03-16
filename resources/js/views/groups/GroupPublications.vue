@@ -1,7 +1,7 @@
 <script setup>
 import { ref, watch, computed, reactive, onActivated, defineExpose } from "vue";
 import { api } from "@/http";
-import usePublicationLookup from "@/composables/usePublicationLookup";
+import useOpenAlex from "@/composables/useOpenAlex";
 
 const props = defineProps({ group: { type: Object, required: true } });
 
@@ -9,7 +9,7 @@ const loading = ref(false);
 const loadedFor = ref(null);
 const items = ref([]);
 const error = ref("");
-const pubClient = usePublicationLookup();
+const pubClient = useOpenAlex();
 
 const addModal = reactive({
   open: false,
@@ -52,11 +52,11 @@ async function doPreview() {
   const q = addModal.raw?.trim();
   if (!q) {
     addModal.loading = false;
-    addModal.error = "Please enter an identifier.";
+    addModal.error = "Please enter a DOI, PMID, or PMCID.";
     return;
   }
   try {
-    const res = await pubClient.fetchFromUrl(q);
+    const res = await pubClient.lookupIdentifier(q);
     if (!res) throw new Error("No match found.");
     addModal.preview = res;
   } catch (e) {
@@ -68,22 +68,14 @@ async function doPreview() {
 
 async function savePublication() {
   addModal.error = ""
+
   if (!addModal.preview) {
     addModal.error = "Preview first.";
     return
   }
 
-  const payload = {
-    source:      addModal.preview.doi ? 'doi' : (addModal.preview.pmid ? 'pmid' : (addModal.preview.pmcid ? 'pmcid' : 'url')),
-    identifier:  addModal.preview.doi ?? addModal.preview.pmid ?? addModal.preview.pmcid ?? addModal.raw.trim(),
-    link:        addModal.preview.url ?? null,
-    pub_type:    addModal.preview.pubType ?? null,
-    published_at: addModal.preview.date ?? addModal.preview.firstPublicationDate ?? null,
-    meta:        addModal.preview,
-  }
-
   try {
-    await api.post(`/api/groups/${groupUuid.value}/publications`, payload)
+    await api.post(`/api/groups/${groupUuid.value}/publications`, addModal.preview)
     addModal.raw = "";
     addModal.preview = null;
     addModal.open = false
@@ -149,28 +141,6 @@ onActivated(() => {
     if (groupUuid.value && loadedFor.value !== groupUuid.value && items.value.length === 0) fetchPublications();
 });
 
-function titleOf(p) {
-    return p.meta?.title || "(title pending)";
-}
-function journalOf(p) {
-    return p.meta?.journal || p.meta?.journalTitle || "";
-}
-function dateOf(p) {
-    return p.published_at || p.meta?.firstPublicationDate || p.meta?.pubdate || "";
-}
-function typeOf(p) {
-    return p.pub_type || (p.meta?.pubType === "preprint" ? "preprint" : (p.meta?.pubType || "published"));
-}
-function idsOf(p) {
-    const pmid = p.meta?.pmid || p.meta?.pmId || p.pmid;
-    const pmcid = p.meta?.pmcid || p.pmcid;
-    const doi = p.meta?.doi || p.doi;
-    return { pmid, pmcid, doi };
-}
-function urlOf(p) {
-    return p.link || p.meta?.url || null;
-}
-
 function clearAddModal() {
   addModal.raw   = ''
   addModal.error = ''
@@ -187,7 +157,7 @@ function clearAddModal() {
         </header>
         <p v-if="error" class="text-red-600">{{ error }}</p>
         <div v-if="!loading && items.length === 0" class="text-gray-600">No publications added yet.</div>
-        <div v-if="loading">Loading...</div>
+        <div v-else-if="loading">Loading...</div>
         <div v-else class="overflow-x-auto border rounded">
             <table class="min-w-full text-sm">
                 <thead class="bg-gray-50">
@@ -203,18 +173,18 @@ function clearAddModal() {
                 <tbody>
                     <tr v-for="p in items" :key="p.id" class="border-t">
                         <td class="px-3 py-2">
-                            <span class="inline-block px-2 py-0.5 rounded text-xs" :class="typeOf(p) === 'preprint' ? 'bg-rose-100 text-rose-800' : 'bg-emerald-100 text-emerald-800'">{{ typeOf(p) }}</span>
+                            <span class="inline-block px-2 py-0.5 rounded text-xs" :class="p.pub_type === 'preprint' ? 'bg-rose-100 text-rose-800' : 'bg-emerald-100 text-emerald-800'">{{ p.pub_type }}</span>
                         </td>
                         <td class="px-3 py-2">
                             <div class="flex items-center gap-2">
                                 <div class="font-medium">
-                                    <span v-if="!urlOf(p)">{{ titleOf(p) }}</span>
-                                    <a v-else :href="urlOf(p)" target="_blank" rel="noopener noreferrer" class="underline">
-                                        {{ titleOf(p) }}
+                                    <span v-if="!p.link">{{ p.meta?.title }}</span>
+                                    <a v-else :href="p.link" target="_blank" rel="noopener noreferrer" class="underline">
+                                        {{ p.meta?.title }}
                                     </a>
                                 </div>
 
-                                <a v-if="urlOf(p)" :href="urlOf(p)" target="_blank" rel="noopener noreferrer" class="inline-flex items-center opacity-80 hover:opacity-100" aria-label="Open publication in new tab" title="Open link">
+                                <a v-if="p.link" :href="p.link" target="_blank" rel="noopener noreferrer" class="inline-flex items-center opacity-80 hover:opacity-100" aria-label="Open publication in new tab" title="Open link">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" class="text-gray-600">
                                         <path d="M14 3h7v7h-2V6.41l-9.29 9.3-1.42-1.42 9.3-9.29H14V3z"/>
                                         <path d="M5 5h6v2H7v10h10v-4h2v6H5V5z"/>
@@ -223,22 +193,9 @@ function clearAddModal() {
                             </div>
                         </td>
 
-                        <td class="px-3 py-2">{{ journalOf(p) }}</td>
-                        <td class="px-3 py-2">
-                            <template v-if="idsOf(p).pmid">
-                                <span class="mr-2">PMID: {{ idsOf(p).pmid }}</span>
-                            </template>
-                            <template v-if="idsOf(p).pmcid">
-                                <span class="mr-2">PMCID: {{ idsOf(p).pmcid }}</span>
-                            </template>
-                            <template v-if="idsOf(p).doi">
-                                <span class="mr-2">DOI: {{ idsOf(p).doi }}</span>
-                            </template>
-                            <div class="text-xs text-gray-500">
-                                source={{ p.source }} • id={{ p.identifier }}
-                            </div>
-                        </td>
-                        <td class="px-3 py-2">{{ dateOf(p) }}</td>
+                        <td class="px-3 py-2">{{ p.meta?.journal }}</td>
+                        <td class="px-3 py-2">{{ String(p.source || '').toUpperCase() }}: {{ p.identifier }}</td>
+                        <td class="px-3 py-2">{{ formatDate(p.published_at) }}</td>
                         <td class="px-3 py-2">
                             <div class="flex flex-wrap items-center gap-x-2 gap-y-2">
                                 <button class="btn btn-xs inline-flex items-center shrink-0" @click="showDetails(p)" title="View details"> Details </button>
@@ -252,14 +209,14 @@ function clearAddModal() {
         <modal-dialog v-model="addModal.open" title="Add a publication">
           <div class="space-y-3">
             <p class="text-sm text-gray-600">
-              Paste <strong>PMID / PMCID / DOI / URL</strong>, preview it, then save.
+              Paste a <strong>DOI, PMID, or PMCID</strong> to preview the record before saving.
             </p>
 
             <div class="flex gap-2">
               <input
                 v-model="addModal.raw"
                 class="w-full border rounded px-3 py-2"
-                placeholder="e.g., PMID: 12345678 · PMCID: PMC1234567 · DOI: 10.1038/s41586-020-2649-2 · URL"
+                placeholder="e.g., 10.1038/s41586-020-2649-2 · PMID:29456894 · PMC1234567"
                 @keydown.enter.prevent="doPreview"
               />
               <button class="btn" :disabled="addModal.loading || !addModal.raw" @click="doPreview">
@@ -269,19 +226,36 @@ function clearAddModal() {
 
             <p v-if="addModal.error" class="text-sm text-red-600">{{ addModal.error }}</p>
             <div v-if="addModal.preview" class="rounded border p-3 space-y-1">
-              <div class="font-medium">{{ addModal.preview.title || 'Untitled' }}</div>
+              <div class="font-medium">{{ addModal.preview.meta.title || 'Untitled' }}</div>
+
               <div class="text-sm text-gray-600">
-                {{ addModal.preview.journalTitle || '—' }} · {{ addModal.preview.pubType || '—' }} · {{ addModal.preview.date || addModal.preview.firstPublicationDate || '—' }}
+                {{ addModal.preview.meta.journal || '—' }}
+                · {{ addModal.preview.meta.type || '—' }}
+                · {{ formatDate(addModal.preview.meta.published_at) || '—' }}
               </div>
+
               <div class="text-xs text-gray-600">
-                DOI: <span class="font-mono">{{ addModal.preview.doi || '—' }}</span>
+                DOI: <span class="font-mono">{{ addModal.preview.meta?.doi?.id || '—' }}</span>
                 <span class="mx-2">|</span>
-                PMID: <span class="font-mono">{{ addModal.preview.pmid || '—' }}</span>
+                PMID: <span class="font-mono">{{ addModal.preview.meta?.pmid?.id || '—' }}</span>
                 <span class="mx-2">|</span>
-                PMCID: <span class="font-mono">{{ addModal.preview.pmcid || '—' }}</span>
+                PMCID: <span class="font-mono">{{ addModal.preview.meta?.pmcid?.id || '—' }}</span>
               </div>
+
+              <div v-if="addModal.preview.meta.authors?.length" class="text-xs text-gray-600">
+                {{ addModal.preview.meta.authors.join('; ') }}
+              </div>
+
               <div class="flex items-center gap-2 pt-2">
-                <a v-if="addModal.preview.url" :href="addModal.preview.url" target="_blank" rel="noopener" class="underline text-sm">Open</a>
+                <a
+                  v-if="addModal.preview.url"
+                  :href="addModal.preview.url"
+                  target="_blank"
+                  rel="noopener"
+                  class="underline text-sm"
+                >
+                  Open
+                </a>
                 <button class="btn" @click="savePublication">Save</button>
                 <button class="btn" @click="clearAddModal" type="button">Clear</button>
               </div>
@@ -292,7 +266,7 @@ function clearAddModal() {
             <div class="space-y-3">
                 <div class="flex items-center justify-between gap-2">
                     <div class="text-sm text-gray-600">
-                        <div><strong class="mr-1">SOURCE:</strong>{{ detailsModal.item?.source }}</div>
+                        <div><strong class="mr-1 capitalize">SOURCE:</strong>{{ detailsModal.item?.source }}</div>
                         <div><strong class="mr-1">IDENTIFIER:</strong>{{ detailsModal.item?.identifier }}</div>
                     </div>
                     <div class="flex items-center gap-2">
