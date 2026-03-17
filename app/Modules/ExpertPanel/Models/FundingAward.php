@@ -16,6 +16,7 @@ class FundingAward extends Model
     use HasUuid;
 
     protected $fillable = [
+        'uuid',
         'expert_panel_id',
         'funding_source_id',
         'start_date',

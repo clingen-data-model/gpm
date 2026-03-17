@@ -11,6 +11,7 @@ use Illuminate\Validation\Rule;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsController;
 use Lorisleiva\Actions\Concerns\AsObject;
+use Ramsey\Uuid\Uuid;
 
 class FundingAwardUpsert
 {
@@ -26,7 +27,9 @@ class FundingAwardUpsert
         $data = $this->normalizeData($data);
 
         if ($isCreate) {
-            $fundingAward = FundingAward::create(array_merge($data, ['expert_panel_id' => $expertPanel->id]));
+            $data['uuid'] = Uuid::uuid4()->toString();
+            $data['expert_panel_id'] = $expertPanel->id;
+            $fundingAward = FundingAward::create($data);
         } else {
             $fundingAward->fill($data);
             $fundingAward->save();
