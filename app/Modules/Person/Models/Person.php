@@ -519,11 +519,4 @@ class Person extends Model implements HasLogEntries
         );
     }
 
-    public function fundingAwardPis()
-    {
-        return $this->belongsToMany(FundingAward::class, 'funding_award_contact_pis')
-            ->withPivot(['is_primary'])
-            ->withTimestamps();
-    }
-
 }
