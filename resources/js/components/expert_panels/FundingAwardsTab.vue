@@ -6,8 +6,10 @@ import PersonTypeaheadMultiSelect from '@/components/people/PersonTypeaheadMulti
 import { hasRole } from '@/auth_utils'
 
 const props = defineProps({
-  expertPanel: { type: Object, required: true },
+  expertPanel: { type: Object, default: true },
 })
+
+const expertPanelUuid = computed(() => props.expertPanel?.uuid || null)
 
 const loading = ref(false)
 const awards = ref([])
@@ -16,7 +18,7 @@ const fundingSourcesLoading = ref(false)
 const fundingSources = ref([])
 
 const piOptionsLoading = ref(false)
-const piOptions = ref([]) 
+const piOptions = ref([])
 
 const showForm = ref(false)
 const editing = ref(null)
@@ -28,6 +30,15 @@ const selectedPiIds = ref([])
 const primaryPiId = ref(null)
 const piById = reactive({})
 const groupMemberIdSet = computed(() => new Set((piOptions.value || []).map(p => Number(p.id))))
+
+function emptyRepContact() {
+  return {
+    role: '',
+    name: '',
+    email: '',
+    phone: '',
+  }
+}
 
 function cachePeople(list) {
   for (const p of (list || [])) {
@@ -43,7 +54,6 @@ function cachePerson(payload) {
   }
   if (payload?.id) {
     piById[Number(payload.id)] = payload
-    return
   }
 }
 
@@ -57,6 +67,23 @@ function piLabel(id) {
   return isGroupMember(id) ? `${name} (Group member)` : name
 }
 
+function addRepContact() {
+  form.rep_contacts.push(emptyRepContact())
+}
+
+function removeRepContact(index) {
+  form.rep_contacts.splice(index, 1)
+
+  if (!form.rep_contacts.length) {
+    form.rep_contacts.push(emptyRepContact())
+  }
+}
+
+function firstRepContactError(index, field) {
+  const e = errors.value?.[`rep_contacts.${index}.${field}`]
+  return Array.isArray(e) ? e[0] : ''
+}
+
 const form = reactive({
   funding_source_id: '',
   award_number: '',
@@ -64,14 +91,7 @@ const form = reactive({
   end_date: '',
   award_url: '',
   funding_source_division: '',
-  contact_1_role: '',
-  contact_1_name: '',
-  contact_1_email: '',
-  contact_1_phone: '',
-  contact_2_role: '',
-  contact_2_name: '',
-  contact_2_email: '',
-  contact_2_phone: '',
+  rep_contacts: [emptyRepContact()],
   notes: '',
 })
 
@@ -93,14 +113,7 @@ function resetForm() {
   form.end_date = ''
   form.award_url = ''
   form.funding_source_division = ''
-  form.contact_1_role = ''
-  form.contact_1_name = ''
-  form.contact_1_email = ''
-  form.contact_1_phone = ''
-  form.contact_2_role = ''
-  form.contact_2_name = ''
-  form.contact_2_email = ''
-  form.contact_2_phone = ''
+  form.rep_contacts = [emptyRepContact()]
   form.notes = ''
   errors.value = {}
 
@@ -121,23 +134,19 @@ function startEdit(item) {
   form.funding_source_id = String(
     item.funding_source_id ?? item.fundingSource?.id ?? item.funding_source?.id ?? ''
   )
-
   form.award_number = item.award_number ?? ''
   form.start_date = item.start_date ?? ''
   form.end_date = item.end_date ?? ''
   form.award_url = item.award_url ?? ''
   form.funding_source_division = item.funding_source_division ?? ''
-
-  form.contact_1_role = item.contact_1_role ?? ''
-  form.contact_1_name = item.contact_1_name ?? ''
-  form.contact_1_email = item.contact_1_email ?? ''
-  form.contact_1_phone = item.contact_1_phone ?? ''
-
-  form.contact_2_role = item.contact_2_role ?? ''
-  form.contact_2_name = item.contact_2_name ?? ''
-  form.contact_2_email = item.contact_2_email ?? ''
-  form.contact_2_phone = item.contact_2_phone ?? ''
-
+  form.rep_contacts = Array.isArray(item.rep_contacts) && item.rep_contacts.length
+    ? item.rep_contacts.map(contact => ({
+        role: contact?.role ?? '',
+        name: contact?.name ?? '',
+        email: contact?.email ?? '',
+        phone: contact?.phone ?? '',
+      }))
+    : [emptyRepContact()]
   form.notes = item.notes ?? ''
 
   const pis = item.contactPis || item.contact_pis || []
@@ -172,9 +181,10 @@ watch(
 )
 
 async function fetchAwards() {
+  if (!expertPanelUuid.value) return
   loading.value = true
   try {
-    const res = await api.get(`/api/applications/${props.expertPanel.uuid}/funding-awards`)
+    const res = await api.get(`/api/applications/${expertPanelUuid.value}/funding-awards`)
     const rows = Array.isArray(res.data) ? res.data : []
     awards.value = rows
 
@@ -196,9 +206,10 @@ async function fetchFundingSources() {
 }
 
 async function fetchPiOptions() {
+  if (!expertPanelUuid.value) return
   piOptionsLoading.value = true
   try {
-    const res = await api.get(`/api/applications/${props.expertPanel.uuid}/funding-awards/pi-options`)
+    const res = await api.get(`/api/applications/${expertPanelUuid.value}/funding-awards/pi-options`)
     piOptions.value = Array.isArray(res.data) ? res.data : []
     cachePeople(piOptions.value)
   } finally {
@@ -270,25 +281,23 @@ async function save() {
   errors.value = {}
 
   const payload = {
-    funding_source_id: form.funding_source_id ?? null,
+    funding_source_id: form.funding_source_id || null,
     award_number: form.award_number || null,
     start_date: form.start_date || null,
     end_date: form.end_date || null,
     award_url: form.award_url || null,
     funding_source_division: form.funding_source_division || null,
-
-    contact_1_role: form.contact_1_role || null,
-    contact_1_name: form.contact_1_name || null,
-    contact_1_email: form.contact_1_email || null,
-    contact_1_phone: form.contact_1_phone || null,
-
-    contact_2_role: form.contact_2_role || null,
-    contact_2_name: form.contact_2_name || null,
-    contact_2_email: form.contact_2_email || null,
-    contact_2_phone: form.contact_2_phone || null,
-
+    rep_contacts: (form.rep_contacts || [])
+      .map(contact => ({
+        role: contact.role || null,
+        name: contact.name || null,
+        email: contact.email || null,
+        phone: contact.phone || null,
+      }))
+      .filter(contact =>
+        Object.values(contact).some(value => value !== null && String(value).trim() !== '')
+      ),
     notes: sanitizeNotes(form.notes) || null,
-
     contact_pi_person_ids: selectedPiIds.value.map(Number),
     primary_contact_pi_id: primaryPiId.value ? Number(primaryPiId.value) : null,
   }
@@ -296,11 +305,11 @@ async function save() {
   try {
     if (editing.value) {
       await api.put(
-        `/api/applications/${props.expertPanel.uuid}/funding-awards/${editing.value.id}`,
+        `/api/applications/${expertPanelUuid.value}/funding-awards/${editing.value.id}`,
         payload
       )
     } else {
-      await api.post(`/api/applications/${props.expertPanel.uuid}/funding-awards`, payload)
+      await api.post(`/api/applications/${expertPanelUuid.value}/funding-awards`, payload)
     }
 
     showForm.value = false
@@ -316,13 +325,18 @@ async function save() {
 
 async function destroyAward(item) {
   if (!confirm('Delete this funding award?')) return
-  await api.delete(`/api/applications/${props.expertPanel.uuid}/funding-awards/${item.id}`)
+  await api.delete(`/api/applications/${expertPanelUuid.value}/funding-awards/${item.id}`)
   await fetchAwards()
 }
 
-onMounted(async () => {
-  await Promise.all([fetchFundingSources(), fetchAwards()])
-})
+watch(
+  expertPanelUuid,
+  async (uuid) => {
+    if (!uuid) return
+    await Promise.all([fetchFundingSources(), fetchPiOptions(), fetchAwards()])
+  },
+  { immediate: true }
+)
 </script>
 
 <template>
@@ -371,12 +385,11 @@ onMounted(async () => {
           <div class="text-sm">
             <template v-if="item.award_url">
               <a class="link" :href="item.award_url" target="_blank" rel="noopener">
-                NIH Reporter
+                {{ item.funding_source_division ?? 'NIH Reporter' }}
               </a>
             </template>
-            <template v-else>—</template>
+            <template v-else>{{ item.funding_source_division ?? 'n.a' }}</template>
           </div>
-          <div v-if="item.funding_source_division" class="text-xs text-gray-600">IC: {{ item.funding_source_division }}</div>
         </template>
 
         <template #cell-actions="{ item }">
@@ -437,7 +450,7 @@ onMounted(async () => {
 
             <PersonTypeaheadMultiSelect
               v-model="selectedPiIds"
-              :expert-panel-uuid="expertPanel.uuid"
+              :expert-panel-uuid="expertPanelUuid"
               :disabled="!canManage"
               :people-by-id="piById"
               placeholder="Search people…"
@@ -467,7 +480,13 @@ onMounted(async () => {
           <div class="grid grid-cols-2 gap-2">
             <div>
               <label class="block text-sm">Award Number</label>
-              <input v-model="form.award_number" class="w-full" type="text" maxlength="30" placeholder="(optional)" />
+              <input
+                v-model="form.award_number"
+                class="w-full"
+                type="text"
+                maxlength="30"
+                placeholder="(optional)"
+              />
               <div v-if="firstError('award_number')" class="text-sm text-red-600 mt-1">
                 {{ firstError('award_number') }}
               </div>
@@ -475,7 +494,13 @@ onMounted(async () => {
 
             <div>
               <label class="block text-sm">NIH IC</label>
-              <input v-model="form.funding_source_division" class="w-full" type="text" maxlength="255" placeholder="(optional)" />
+              <input
+                v-model="form.funding_source_division"
+                class="w-full"
+                type="text"
+                maxlength="255"
+                placeholder="(optional)"
+              />
               <div v-if="firstError('funding_source_division')" class="text-sm text-red-600 mt-1">
                 {{ firstError('funding_source_division') }}
               </div>
@@ -515,58 +540,96 @@ onMounted(async () => {
           </div>
 
           <div class="border-t pt-3">
-            <h3 class="text-sm font-semibold mb-2">Award Rep. Contact #1</h3>
-            <div class="grid grid-cols-2 gap-2">
-              <div>
-                <label class="block text-sm">Role</label>
-                <input v-model="form.contact_1_role" class="w-full" type="text" maxlength="255" placeholder="(optional)" />
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="text-sm font-semibold m-0">Award Rep. Contacts</h3>
+              <button
+                v-if="canManage"
+                class="btn btn-xs"
+                type="button"
+                @click="addRepContact"
+              >
+                + Add more
+              </button>
+            </div>
+
+            <div
+              v-for="(contact, index) in form.rep_contacts"
+              :key="`rep-contact-${index}`"
+              class="border rounded p-3 mb-3 last:mb-0"
+            >
+              <div class="flex items-center justify-between mb-2">
+                <h4 class="text-sm font-semibold m-0">Award Rep. Contact #{{ index + 1 }}</h4>
+                <button
+                  v-if="canManage && form.rep_contacts.length > 1"
+                  class="btn btn-xs"
+                  type="button"
+                  @click="removeRepContact(index)"
+                >
+                  Remove
+                </button>
               </div>
-              <div>
-                <label class="block text-sm">Name</label>
-                <input v-model="form.contact_1_name" class="w-full" type="text" maxlength="255" placeholder="(optional)" />
-              </div>
-              <div>
-                <label class="block text-sm">Email</label>
-                <input v-model="form.contact_1_email" class="w-full" type="email" maxlength="255" placeholder="(optional)" />
-              </div>
-              <div>
-                <label class="block text-sm">Phone</label>
-                <input v-model="form.contact_1_phone" class="w-full" type="text" maxlength="255" placeholder="(optional)" />
+
+              <div class="grid grid-cols-2 gap-2">
+                <div>
+                  <label class="block text-sm">Role</label>
+                  <input
+                    v-model="contact.role"
+                    class="w-full"
+                    type="text"
+                    maxlength="255"
+                    placeholder="(optional)"
+                  />
+                  <div v-if="firstRepContactError(index, 'role')" class="text-sm text-red-600 mt-1">
+                    {{ firstRepContactError(index, 'role') }}
+                  </div>
+                </div>
+
+                <div>
+                  <label class="block text-sm">Name</label>
+                  <input
+                    v-model="contact.name"
+                    class="w-full"
+                    type="text"
+                    maxlength="255"
+                    placeholder="(optional)"
+                  />
+                  <div v-if="firstRepContactError(index, 'name')" class="text-sm text-red-600 mt-1">
+                    {{ firstRepContactError(index, 'name') }}
+                  </div>
+                </div>
+
+                <div>
+                  <label class="block text-sm">Email</label>
+                  <input
+                    v-model="contact.email"
+                    class="w-full"
+                    type="email"
+                    maxlength="255"
+                    placeholder="(optional)"
+                  />
+                  <div v-if="firstRepContactError(index, 'email')" class="text-sm text-red-600 mt-1">
+                    {{ firstRepContactError(index, 'email') }}
+                  </div>
+                </div>
+
+                <div>
+                  <label class="block text-sm">Phone</label>
+                  <input
+                    v-model="contact.phone"
+                    class="w-full"
+                    type="text"
+                    maxlength="255"
+                    placeholder="(optional)"
+                  />
+                  <div v-if="firstRepContactError(index, 'phone')" class="text-sm text-red-600 mt-1">
+                    {{ firstRepContactError(index, 'phone') }}
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
 
-          <div class="border-t pt-3">
-            <h3 class="text-sm font-semibold mb-2">Award Rep. Contact #2</h3>
-            <div class="grid grid-cols-2 gap-2">
-              <div>
-                <label class="block text-sm">Role</label>
-                <input v-model="form.contact_2_role" class="w-full" type="text" maxlength="255" placeholder="(optional)" />
-                <div v-if="firstError('contact_2_role')" class="text-sm text-red-600 mt-1">
-                  {{ firstError('contact_2_role') }}
-                </div>
-              </div>
-              <div>
-                <label class="block text-sm">Name</label>
-                <input v-model="form.contact_2_name" class="w-full" type="text" maxlength="255" placeholder="(optional)" />
-                <div v-if="firstError('contact_2_name')" class="text-sm text-red-600 mt-1">
-                  {{ firstError('contact_2_name') }}
-                </div>
-              </div>
-              <div>
-                <label class="block text-sm">Email</label>
-                <input v-model="form.contact_2_email" class="w-full" type="email" maxlength="255" placeholder="(optional)" />
-                <div v-if="firstError('contact_2_email')" class="text-sm text-red-600 mt-1">
-                  {{ firstError('contact_2_email') }}
-                </div>
-              </div>
-              <div>
-                <label class="block text-sm">Phone</label>
-                <input v-model="form.contact_2_phone" class="w-full" type="text" maxlength="255" placeholder="(optional)" />
-                <div v-if="firstError('contact_2_phone')" class="text-sm text-red-600 mt-1">
-                  {{ firstError('contact_2_phone') }}
-                </div>
-              </div>
+            <div v-if="firstError('rep_contacts')" class="text-sm text-red-600 mt-1">
+              {{ firstError('rep_contacts') }}
             </div>
           </div>
 

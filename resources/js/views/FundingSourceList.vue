@@ -2,7 +2,16 @@
 import { ref, reactive, computed, onMounted } from 'vue'
 import api from '@/http/api'
 import SubmissionWrapper from '@/components/groups/SubmissionWrapper.vue'
+import { useStore } from 'vuex'
+import { isValidationError } from '@/http'
 
+const store = useStore()
+const errors = ref({})
+
+function firstError(field) {
+  const e = errors.value?.[field]
+  return Array.isArray(e) ? e[0] : ''
+}
 const MAX_FILE_BYTES = 3 * 1024 * 1024
 const MAX_DIM = 600
 const CAPTION_MAX = 500
@@ -64,6 +73,7 @@ function getTypeName(item) {
 }
 
 function resetForm() {
+  errors.value = {}
   form.name = ''
   form.funding_type_id = ''
   form.caption = ''
@@ -217,45 +227,48 @@ function onToggleRemoveLogo() {
 }
 
 async function save() {
-  if (!form.funding_type_id) {
-    alert('Funding Type is required.')
-    return
-  }
-
+  errors.value = {}
   form.caption = sanitizedCaption(form.caption)
 
   const fd = new FormData()
   fd.append('name', form.name ?? '')
-  fd.append('funding_type_id', String(form.funding_type_id))
+  fd.append('funding_type_id', String(form.funding_type_id ?? ''))
   fd.append('caption', form.caption ?? '')
   fd.append('website_url', form.website_url ?? '')
 
-  if (editing.value && removeLogo.value) {
-    fd.append('remove_logo', '1')
-  }
+  if (editing.value && removeLogo.value) fd.append('remove_logo', '1')
+  if (logoFile.value) fd.append('logo', logoFile.value)
 
-  if (logoFile.value) {
-    fd.append('logo', logoFile.value)
-  }
+  try {
+    if (editing.value) {
+      await api.post(`/api/funding-sources/${editing.value.id}`, fd, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      })
+    } else {
+      await api.post('/api/funding-sources', fd, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      })
+    }
 
-  if (editing.value) {
-    await api.post(`/api/funding-sources/${editing.value.id}`, fd, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    })
-  } else {
-    await api.post('/api/funding-sources', fd, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    })
+    showForm.value = false
+    await fetchItems()
+  } catch (e) {
+    if (e?.response?.status === 422) {
+      errors.value = e.response.data.errors || {}
+      return
+    }
+    store.commit('pushError', e?.response?.data?.message || 'Failed to save funding source.')
   }
-
-  showForm.value = false
-  await fetchItems()
 }
 
 async function destroy(item) {
   if (!confirm(`Delete funding source "${item.name}"?`)) return
-  await api.delete(`/api/funding-sources/${item.id}`)
-  await fetchItems()
+  try {
+    await api.delete(`/api/funding-sources/${item.id}`)
+    await fetchItems()
+  } catch (e) {
+    store.commit('pushError', e?.response?.data?.message || 'Failed to delete funding source.')
+  }
 }
 
 onMounted(async () => {
@@ -340,6 +353,9 @@ onMounted(async () => {
               <option value="" disabled>Select a type…</option>
               <option v-for="t in fundingTypes" :key="t.id" :value="t.id">{{ t.name }}</option>
             </select>
+            <div v-if="firstError('funding_type_id')" class="text-sm text-red-600 mt-1">
+              {{ firstError('funding_type_id') }}
+            </div>
           </div>
 
           <div>
