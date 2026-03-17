@@ -32,7 +32,6 @@ import WGCaptionIconForm from '@/components/groups/WGCaptionIconForm.vue';
 import ClinvarForm from '@/components/expert_panels/ClinvarForm.vue';
 import FundingAwardsTab from '@/components/expert_panels/FundingAwardsTab.vue'
 import GroupPublications from "./GroupPublications.vue";
-import PublicationsForm from "@/components/forms/PublicationForm.vue";
 
 import { api, isValidationError } from "../../http";
 
@@ -68,7 +67,6 @@ export default {
     GroupPublications,
     FundingAwardsTab,
     GroupPublications,
-    PublicationsForm,
   },
   props: {
     uuid: {
@@ -493,7 +491,6 @@ export default {
           <tab-item v-if="(userInGroup(group) || hasPermission('groups-manage')) && group.is_ep" label="Publications">
             <GroupPublications :key="group.uuid" :group="group" />
             <note>Publications are visible to members of this group (and admins).</note>
-            <PublicationsForm />
           </tab-item>
 
           <tab-item label="Attestations" :visible="group.is_ep">
