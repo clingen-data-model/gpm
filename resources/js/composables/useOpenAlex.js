@@ -1,6 +1,6 @@
 import { ref } from "vue";
 
-const OPENALEX_API_KEY = "";
+const OPENALEX_API_KEY = "zU75TmpI6Ycqz69zDgdLDC";
 
 function stripDoiUrl(value) {
   return value.replace(/^https?:\/\/doi\.org\//i, "");
