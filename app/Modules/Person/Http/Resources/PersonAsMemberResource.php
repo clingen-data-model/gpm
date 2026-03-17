@@ -7,8 +7,6 @@ use App\Modules\Person\Http\Resources\InstitutionResource;
 use App\Modules\Group\Http\Resources\MembershipResource;
 use App\Services\CocService;
 
-use App\Services\CocService;
-
 class PersonAsMemberResource extends JsonResource
 {
     /**
