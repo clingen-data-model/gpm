@@ -15,7 +15,7 @@ return new class extends Migration
         Schema::create('attestations', function (Blueprint $table) {
             $table->uuid('uuid')->primary();
 
-            $table->foreignId('person_id')->constrained('people')->cascadeOnDelete();
+            $table->foreignId('person_id')->constrained('people');
             $table->json('experience_types')->nullable();
             $table->text('other_text')->nullable();
 
