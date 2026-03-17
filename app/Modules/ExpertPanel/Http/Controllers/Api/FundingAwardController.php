@@ -15,10 +15,21 @@ class FundingAwardController extends Controller
         return FundingAward::query()
             ->where('expert_panel_id', $expertPanel->id)
             ->with(['fundingSource.fundingType', 'contactPis'])
-            ->orderByRaw('start_date IS NULL') // nulls last
+            ->orderByRaw('start_date IS NULL')
             ->orderByDesc('start_date')
             ->orderByDesc('id')
-            ->get();
+            ->get()
+            ->each(function (FundingAward $award) {
+                $award->rep_contacts = collect($award->rep_contacts ?? [])
+                    ->map(fn ($contact) => [
+                        'role'  => $contact['role'] ?? null,
+                        'name'  => $contact['name'] ?? null,
+                        'email' => $contact['email'] ?? null,
+                        'phone' => $contact['phone'] ?? null,
+                    ])
+                    ->values()
+                    ->all();
+            });
     }
     
     public function piOptions(Request $request, ExpertPanel $expertPanel)
@@ -27,55 +38,49 @@ class FundingAwardController extends Controller
         $limit = (int) $request->query('limit', 25);
         $limit = max(5, min($limit, 50));
 
-        $map = fn (Person $p, bool $inGroup) => [
-            'id'       => $p->id,
-            'uuid'     => $p->uuid,
-            'name'     => trim(($p->first_name ?? '').' '.($p->last_name ?? '')),
-            'email'    => $p->email,
-            'phone'    => $p->phone,
-            'in_group' => $inGroup,
-        ];
-
-        $members = $expertPanel->group->activeMemberships()->with('person:id,uuid,first_name,last_name,email,phone')->get();
-        $groupPeople = $members->pluck('person')->filter()->unique('id')->values();
+        $query = Person::query()
+            ->select(['id', 'uuid', 'first_name', 'last_name', 'email', 'phone'])
+            ->isActivatedUser();
 
         if ($q !== '') {
-            $qLower = mb_strtolower($q);
-            $groupPeople = $groupPeople->filter(function ($p) use ($qLower) {
-                $hay = mb_strtolower(trim(($p->first_name ?? '').' '.($p->last_name ?? '').' '.($p->email ?? '')));
-                return str_contains($hay, $qLower);
-            })->values();
-        }
+            $like = '%' . $q . '%';
+            $starts = $q . '%';
 
-        $groupIds = $groupPeople->pluck('id')->values();
-        $groupOut = $groupPeople->sortBy(fn (Person $p) => strtolower(($p->last_name ?? '').' '.($p->first_name ?? '')))->values()->map(fn (Person $p) => $map($p, true));
-
-        $remaining = $limit - $groupOut->count();
-        if ($remaining <= 0) {
-            return $groupOut->take($limit)->values();
-        }
-
-        $others = collect();
-        if ($q !== '') {
-            $like = '%'.$q.'%';
-
-            $others = Person::query()
-                ->select(['id','uuid','first_name','last_name','email','phone'])
-                ->isActivatedUser()
-                ->whereNotIn('id', $groupIds)
+            $query
                 ->where(function ($qq) use ($like) {
                     $qq->where('first_name', 'like', $like)
-                    ->orWhere('last_name', 'like', $like)
-                    ->orWhere('email', 'like', $like);
+                        ->orWhere('last_name', 'like', $like)
+                        ->orWhereRaw(
+                            "CONCAT(COALESCE(first_name, ''), ' ', COALESCE(last_name, '')) like ?",
+                            [$like]
+                        );
                 })
-                ->orderBy('last_name')
-                ->orderBy('first_name')
-                ->limit($remaining)
-                ->get()
-                ->map(fn ($p) => $map($p, false));
+                ->orderByRaw(
+                    "CASE
+                        WHEN first_name like ? THEN 0
+                        WHEN last_name like ? THEN 1
+                        WHEN CONCAT(COALESCE(first_name, ''), ' ', COALESCE(last_name, '')) like ? THEN 2
+                        ELSE 3
+                    END",
+                    [$starts, $starts, $starts]
+                );
+        } else {
+            $query->orderBy('last_name')->orderBy('first_name');
         }
 
-        return $groupOut->concat($others)->values();
+        return $query
+            ->orderBy('last_name')
+            ->orderBy('first_name')
+            ->limit($limit)
+            ->get()
+            ->map(fn (Person $p) => [
+                'id'    => $p->id,
+                'uuid'  => $p->uuid,
+                'name'  => trim(($p->first_name ?? '') . ' ' . ($p->last_name ?? '')),
+                'email' => $p->email,
+                'phone' => $p->phone,
+            ])
+            ->values();
     }
 
 

@@ -494,7 +494,7 @@ export default {
           </tab-item>
 
           <tab-item label="Funding Awards" :visible="group.is_ep">
-            <FundingAwardsTab :expert-panel="group.expert_panel" />
+            <FundingAwardsTab v-if="group.expert_panel?.uuid" :expert-panel="group.expert_panel" />
           </tab-item>
 
 
