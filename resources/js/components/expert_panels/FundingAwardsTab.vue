@@ -9,6 +9,8 @@ const props = defineProps({
   expertPanel: { type: Object, default: true },
 })
 
+const MAX_REP_CONTACTS = 3
+
 const expertPanelUuid = computed(() => props.expertPanel?.uuid || null)
 
 const loading = ref(false)
@@ -68,6 +70,7 @@ function piLabel(id) {
 }
 
 function addRepContact() {
+  if (form.rep_contacts.length >= MAX_REP_CONTACTS) return
   form.rep_contacts.push(emptyRepContact())
 }
 
@@ -304,10 +307,7 @@ async function save() {
 
   try {
     if (editing.value) {
-      await api.put(
-        `/api/applications/${expertPanelUuid.value}/funding-awards/${editing.value.id}`,
-        payload
-      )
+      await api.put(`/api/applications/${expertPanelUuid.value}/funding-awards/${editing.value.id}`, payload)
     } else {
       await api.post(`/api/applications/${expertPanelUuid.value}/funding-awards`, payload)
     }
@@ -543,7 +543,7 @@ watch(
             <div class="flex items-center justify-between mb-2">
               <h3 class="text-sm font-semibold m-0">Award Rep. Contacts</h3>
               <button
-                v-if="canManage"
+                v-if="canManage && form.rep_contacts.length < MAX_REP_CONTACTS"
                 class="btn btn-xs"
                 type="button"
                 @click="addRepContact"
