@@ -87,15 +87,6 @@ function firstRepContactError(index, field) {
   return Array.isArray(e) ? e[0] : ''
 }
 
-const selectedPiIds = ref([])
-const primaryPiId = ref(null)
-
-const piNameById = computed(() => {
-  const map = new Map()
-  for (const p of piOptions.value) map.set(p.id, p.name)
-  return map
-})
-
 const form = reactive({
   funding_source_id: '',
   award_number: '',
@@ -362,7 +353,6 @@ watch(
     <div v-else>
       <data-table
         v-model:sort="sort"
-        v-remaining-height
         :data="awards"
         :fields="fields"
         row-class="active:bg-blue-100"
