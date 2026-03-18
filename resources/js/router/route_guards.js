@@ -25,23 +25,32 @@ export const checkPermissionAndPersonOwnership = async (to) => {
     return false;
 };
 
-export const hasGroupPermission = async (to, permission) => {
-    if (store.getters.currentUser.hasPermission('groups-manage')) {
-        return true;
+export const hasGroupPermission = async (to, permissions, bypassPermissions = ['groups-manage']) => {
+    const requiredPermissions = Array.isArray(permissions) ? permissions : [permissions]
+    const allowedBypassPermissions = Array.isArray(bypassPermissions) ? bypassPermissions : [bypassPermissions]
+
+    if (allowedBypassPermissions.some(permission => store.getters.currentUser.hasPermission(permission))) 
+    {
+        return true
     }
 
-    if (!store.getters['groups/currentItem'] || store.getters['groups/currentItem'].uuid !== to.params.uuid) {
-        await store.dispatch('groups/findAndSetCurrent', to.params.uuid);
+    if (!store.getters['groups/currentItem'] || store.getters['groups/currentItem'].uuid !== to.params.uuid) 
+    {
+        await store.dispatch('groups/findAndSetCurrent', to.params.uuid)
     }
 
-    const group = store.getters['groups/currentItem'];
+    const group = store.getters['groups/currentItem']
 
-    if (store.getters.currentUser.hasGroupPermission(permission, group)) {
-        return true;
+    const hasRequiredPermission = requiredPermissions.some(permission =>
+        store.getters.currentUser.hasGroupPermission(permission, group)
+    )
+
+    if (hasRequiredPermission) {
+        return true
     }
 
-    store.commit('pushError', 'Permission denied');
-    return false;
+    store.commit('pushError', 'Permission denied')
+    return false
 }
 
 export const hasPermission = (to, permission) => {

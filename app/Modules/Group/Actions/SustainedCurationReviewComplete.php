@@ -42,6 +42,8 @@ class SustainedCurationReviewComplete
 
     public function authorize(ActionRequest $request): bool
     {
-        return $request->user()->can('updateApplicationAttribute', $request->group);
+        return $request->user()->can('updateApplicationAttribute', $request->group) || 
+            $request->user()->hasAnyPermission('annual-updates-manage') || 
+            $request->user()->hasGroupPermissionTo('annual-update-manage', $request->group);
     }
 }
