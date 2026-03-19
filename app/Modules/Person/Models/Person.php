@@ -140,6 +140,7 @@ class Person extends Model implements HasLogEntries
     protected $appends = [
         'name',
         'attestation_pending',
+        'requires_core_member_attestation',
         'has_core_member_attestation',
         'core_member_attestation_completed',
         'core_member_attestation_completion_date',
