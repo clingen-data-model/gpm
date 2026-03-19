@@ -15,9 +15,15 @@ class GroupMembersMakeCsv
     public function handle(ActionRequest $request, Group $group)
     {
         $rows = $group->members()
-                    ->with('person', 'roles', 'permissions', 'person.institution', 'person.country')
+                    ->with('person', 'person.attestation', 'roles', 'permissions', 'person.institution', 'person.country')
                     ->find(explode(',', $request->member_ids))
                     ->map(function ($member) {
+                        $isCoreApprovalMember = $member->roles->contains('name', config('groups.roles.core-approval-member.name'));
+                        $coreApprovalAttestation = null;
+                        if ($isCoreApprovalMember) {
+                            $coreApprovalAttestation = $member->person->core_member_attestation_completed ? 'Completed on ' . $member->person->core_member_attestation_completion_date : 'Attestation Required';
+                        }
+
                         return [
                             'first_name' => $member->person->first_name,
                             'last_name' => $member->person->last_name,
@@ -37,6 +43,7 @@ class GroupMembersMakeCsv
                             'address' => $member->person->addressString,
                             'country' => ($member->person->country) ? $member->person->country->name : null,
                             'timezone' => $member->person->timezone,
+                            'core_approval_member_attestation' => $coreApprovalAttestation,
                         ];
                     });
 

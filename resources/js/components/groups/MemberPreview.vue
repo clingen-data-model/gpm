@@ -9,30 +9,35 @@ import {formatDate} from '@/date_utils'
 
 
 export default {
-    name: 'MemberPreview',
-    components: {
-        ProfilePicture,
-        CredentialsView,
-        ExpertisesView
+  name: 'MemberPreview',
+  components: {
+    ProfilePicture,
+    CredentialsView,
+    ExpertisesView
+  },
+  props: {
+    member: {
+      type: GroupMember,
+      required: true
     },
-    props: {
-        member: {
-            type: GroupMember,
-            required: true
-        },
-        group: {
-            type: Group,
-            required: true
-        }
-    },
-    emits: [
-        'edit',
-    ],
-    setup () {
-        return {
-            formatDate
-        }
+    group: {
+      type: Group,
+      required: true
     }
+  },
+  emits: [
+    'edit',
+  ],
+  setup () {
+    return {
+      formatDate
+    }
+  },
+  computed: {
+    isCoreApprovalMember() {
+      return this.member.hasRole('core-approval-member')
+    }
+  }    
 }
 </script>
 <template>
@@ -91,6 +96,12 @@ export default {
             <h4>Extra Permissions:</h4>
             <div class="ml-2">
               {{ member.permissions.length > 0 ? member.permissions.map(i => i.name).join(', ') : '--' }}
+            </div>
+          </div>
+          <div v-if="isCoreApprovalMember" class="mt-2">
+            <h4>Core Approval Member Attestation:</h4>
+            <div class="ml-2">
+              {{ member.person.core_member_attestation_completed ? `Completed on ${formatDate(member.person.core_member_attestation_completion_date)}` : 'Attestation Required'   }}
             </div>
           </div>
         </div>

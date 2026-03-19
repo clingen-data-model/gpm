@@ -63,7 +63,7 @@ export default {
             Core Approval Member
             <popover
               arrow
-              content="Core approval members are responsible for ongoing final approval of variant classifications."
+              content="Core approval members are responsible for ongoing final approval of variant classifications and are required to complete the Core Approval Member attestation."
               hover
             >
               <icon-info class="inline-block cursor-pointer" :width="16" :height="16" />
