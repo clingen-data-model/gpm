@@ -30,7 +30,6 @@ class PersonAsMemberResource extends JsonResource
             'legacy_credentials' => $this->legacy_credentials,
             'institution_id' => $this->institution_id,
             'country_id' => $this->country_id,
-            'requires_core_member_attestation' => $this->requires_core_member_attestation,
             'core_member_attestation_completed' => $this->core_member_attestation_completed,
             'core_member_attestation_completion_date' => $this->core_member_attestation_completion_date,
         ];
