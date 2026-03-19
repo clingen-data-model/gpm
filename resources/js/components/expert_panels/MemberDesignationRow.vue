@@ -64,9 +64,8 @@ export default {
                 this.toggleRole(value, 'civic-editor')
             }
         },
-        attestationStatus () {
-            if (!this.coreApprovalMember) { return null; }
-            if (this.workingCopy?.person?.attestation_completed === true) { return 'completed'; }
+        coreMemberAttestationStatus () {            
+            if (this.workingCopy?.person?.core_member_attestation_completed === true) { return 'completed'; }
             if (!this.coreApprovalMember) { return null; }
             return 'pending'
         },
@@ -172,8 +171,8 @@ export default {
     <td class="align-middle">
       <div class="flex items-center gap-2">
         <input v-model="coreApprovalMember" type="checkbox" :disabled="!canEdit" @input="debounceSave" class="align-middle" />
-        <span v-if="attestationStatus" class="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs" :class="{ 'bg-green-100 text-green-800': attestationStatus === 'completed', 'bg-amber-100 text-amber-800': attestationStatus === 'pending'}" :title="attestationStatus === 'completed' ? 'Attestation Completed' : 'Attestation Required'">
-            {{ attestationStatus === 'completed' ? 'Attestation Completed' : 'Attestation Required' }}
+        <span v-if="coreMemberAttestationStatus" class="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs" :class="{ 'bg-green-100 text-green-800': coreMemberAttestationStatus === 'completed', 'bg-amber-100 text-amber-800': coreMemberAttestationStatus === 'pending'}" :title="coreMemberAttestationStatus === 'completed' ? 'Attestation Completed' : 'Attestation Required'">
+            {{ coreMemberAttestationStatus === 'completed' ? 'Attestation Completed' : 'Attestation Required' }}
         </span>
       </div>
     </td>

@@ -140,9 +140,9 @@ class Person extends Model implements HasLogEntries
     protected $appends = [
         'name',
         'attestation_pending',
-        'requires_core_member_attestation',
         'has_core_member_attestation',
-        'attestation_completed',
+        'core_member_attestation_completed',
+        'core_member_attestation_completion_date',
     ];
 
     public function __construct(array $attributes = [])
@@ -468,25 +468,15 @@ class Person extends Model implements HasLogEntries
         return $this->hasOne(Attestation::class, 'person_id', 'id')->whereNull('revoked_at')->whereNull('deleted_at');
     }
 
-    public function coreApprovalAttestation()
+    protected function currentAttestation(): ?Attestation
     {
-        return $this->hasOne(Attestation::class)->whereNull('revoked_at');
-    }
-
-    protected function attestationCompleted(): Attribute
-    {
-        return Attribute::make(
-            get: fn () => (bool) ($this->has_core_member_attestation && !$this->attestation_pending)
-        );
+        return $this->attestation;
     }
 
     protected function hasCoreMemberAttestation(): Attribute
     {
         return Attribute::make(
-            get: function () {
-                $attestation = $this->relationLoaded('attestation') ? $this->attestation : $this->attestation()->first();
-                return $attestation !== null;
-            }
+            get: fn () => $this->currentAttestation() !== null
         );
     }
 
@@ -494,9 +484,23 @@ class Person extends Model implements HasLogEntries
     {
         return Attribute::make(
             get: function () {
-                $attestation = $this->relationLoaded('attestation') ? $this->attestation : $this->attestation()->first();
+                $attestation = $this->currentAttestation();
                 return $attestation !== null && $attestation->attested_at === null;
             }
+        );
+    }
+
+    protected function coreMemberAttestationCompletionDate(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->currentAttestation()?->attested_at
+        );
+    }
+
+    protected function coreMemberAttestationCompleted(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->core_member_attestation_completion_date !== null
         );
     }
 
@@ -505,7 +509,8 @@ class Person extends Model implements HasLogEntries
         return Attribute::make(
             get: function () {
                 $roleId = config('groups.roles.core-approval-member.id', 105);
-                $isCoreNow = $this->activeMemberships()->whereHas('roles', fn($q) => $q->where('id', $roleId)->orWhere('name', 'core-approval-member'))->exists();
+                $roleName = config('groups.roles.core-approval-member.name', 'core-approval-member');
+                $isCoreNow = $this->activeMemberships()->whereHas('roles', fn($q) => $q->where('id', $roleId)->orWhere('name', $roleName))->exists();
                 return $isCoreNow && $this->attestation_pending;
             }
         );
