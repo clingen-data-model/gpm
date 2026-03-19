@@ -15,7 +15,7 @@ class Person extends Entity {
         profile_photo: null,
         race_id: null,
         coc: null,
-        attestation_completed: false,
+        core_member_attestation_completed: false,
         created_at: null,
         updated_at: null,
         deleted_at: null
@@ -107,8 +107,8 @@ class Person extends Entity {
         return ['missing','expired','version_mismatch'].includes(this.cocStatus)
     }
 
-    get attestationCompleted() {
-        return !!this.attestation_completed;
+    get coreMemberAttestationCompleted() {
+        return !!this.core_member_attestation_completed;
     }
 
     matchesKeyword(keyword) {

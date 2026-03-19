@@ -85,7 +85,7 @@ describe('coreApprovalMembersAttestation', () => {
     const coreMember = ({ completed = false } = {}) =>
         new GroupMember({
             roles: [coreRole],
-            person: { attestation_completed: completed, },
+            person: { core_member_attestation_completed: completed, },
         });
 
     beforeEach(() => {
