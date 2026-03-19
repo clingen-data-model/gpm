@@ -129,7 +129,7 @@ export const coreApprovalMembersAttestation = new Requirement(
     group => {
         const members = group.coreApprovalMembers || [];        
         if (members.length === 0) return false;
-        return members.every(m => m.person && m.person.attestation_completed === true);
+        return members.every(m => m.person && m.person.core_member_attestation_completed === true);
     }
 );
 
