@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { useStore } from 'vuex'
 import api from '@/http/api'
 
@@ -21,6 +21,21 @@ const sortKey = ref('gene_symbol')
 const sortOrder = ref('asc')
 const currentPage = ref(1)
 const pageSize = ref(20)
+const showFilters = ref(false)
+
+const filterTier = ref('')
+const filterMoi = ref('')
+const filterClassification = ref('')
+const filterCurationType = ref('')
+
+const detailEntries = (gene) => Array.isArray(gene.details) ? gene.details : []
+
+const normalize = (value) => (value ?? '').toString().trim()
+
+const matchesDetailField = (gene, field, selectedValue) => {
+	if (!selectedValue) return true
+	return detailEntries(gene).some(entry => normalize(entry?.[field]) === selectedValue)
+}
 
 const expanded = ref([])          
 const selectedGenes = ref([])
@@ -29,6 +44,7 @@ const savingTierFor = ref(null)
 const savingBulk = ref(false)
 
 const showConfirmRemove = ref(false);
+const removingId = ref(null);
 const selectedGene = ref(null);
 const confirmRemove = (gene) => {
 	selectedGene.value = gene;
@@ -41,12 +57,14 @@ const cancelRemove = () => {
 const removeGene = async () => {
 	if (!selectedGene.value) return;
 	try {
+    removingId.value = selectedGene.value.id;
 		await api.delete(`/api/groups/${props.groupID}/expert-panel/genes/${selectedGene.value.id}`);
 		showConfirmRemove.value = false;
 		store.commit('pushSuccess', `Successfully removed gene ${selectedGene.value.gene_symbol}`);
 		const removed = selectedGene.value;
 		selectedGene.value = null;
 		emit('removed', { id: removed.id, gene_symbol: removed.gene_symbol })
+    removingId.value = null;
 	} catch (error) {
 		store.commit('pushError', error.response?.data);
 	}
@@ -89,46 +107,57 @@ const allStatuses = computed(() => {
 
 const filteredGenes = computed(() => {
 	const kw = search.value.trim().toLowerCase()
+
 	return props.genes.filter(g => {
+		const details = detailEntries(g)
+
 		const symbolMatch = g.gene_symbol?.toLowerCase().includes(kw)
 		const epMatch = (g.expert_panels || []).some(ep => ep?.toLowerCase().includes(kw))
-		const diseaseMatch = (g.details || []).some(d => d?.disease_name?.toLowerCase().includes(kw) || d?.mondo_id?.toLowerCase().includes(kw))
-		const statusMatch = (g.statuses || []).some(s => s?.toLowerCase().includes(kw))
-		const matchesSearch = !kw || symbolMatch || epMatch || diseaseMatch || statusMatch
-		const matchesStatus = selectedStatuses.value.length === 0 || (g.statuses || []).some(s => selectedStatuses.value.includes(s))
-		return matchesSearch && matchesStatus
+		const diseaseMatch = details.some(d => d?.disease_name?.toLowerCase().includes(kw) || d?.mondo_id?.toLowerCase().includes(kw))
+		const statusSearchMatch = (g.statuses || []).some(s => s?.toLowerCase().includes(kw))
+		const detailSearchMatch = details.some(d => d?.classification?.toLowerCase().includes(kw) || d?.moi_name?.toLowerCase().includes(kw) || d?.curation_type?.toLowerCase().includes(kw) || d?.curation_status?.toLowerCase().includes(kw))
+		const matchesSearch = !kw || symbolMatch || epMatch || diseaseMatch || statusSearchMatch || detailSearchMatch
+		const matchesStatus = selectedStatuses.value.length === 0 || (g.statuses || []).some(s => selectedStatuses.value.includes(s)) || details.some(d => selectedStatuses.value.includes(d?.curation_status))
+		// const matchesTier = !filterTier.value || String(g.tier ?? '') === filterTier.value
+    const matchesTier = !filterTier.value ? true : filterTier.value === 'none' ? (g.tier === null || g.tier === undefined || g.tier === '') : String(g.tier) === filterTier.value
+		const matchesMoi = matchesDetailField(g, 'moi_name', filterMoi.value)
+		const matchesClassification = matchesDetailField(g, 'classification', filterClassification.value)
+		const matchesCurationType = matchesDetailField(g, 'curation_type', filterCurationType.value)
+
+		return ( matchesSearch && matchesStatus && matchesTier && matchesMoi && matchesClassification && matchesCurationType
+		)
 	})
 })
 
 const sortedGenes = computed(() => {
-    return [...filteredGenes.value].sort((a, b) => {
-        if (sortKey.value === 'statuses') {
-            const pri = (g) => {
-                const arr = Array.isArray(g.statuses) ? g.statuses : []
-                const vals = arr.map(s => statusPriority[s] ?? 0)
-                return vals.length ? Math.min(...vals) : 0
-            }
-            const aP = pri(a), bP = pri(b)
-            return sortOrder.value === 'asc' ? bP - aP : aP - bP
-        }
+  return [...filteredGenes.value].sort((a, b) => {
+    if (sortKey.value === 'statuses') {
+      const pri = (g) => {
+        const arr = Array.isArray(g.statuses) ? g.statuses : []
+        const vals = arr.map(s => statusPriority[s] ?? 0)
+        return vals.length ? Math.min(...vals) : 0
+      }
+      const aP = pri(a), bP = pri(b)
+      return sortOrder.value === 'asc' ? bP - aP : aP - bP
+    }
 
-        if (sortKey.value === 'tier') {
-            const aN = Number(a.tier || 0)
-            const bN = Number(b.tier || 0)
-            return sortOrder.value === 'asc' ? aN - bN : bN - aN
-        }
+    if (sortKey.value === 'tier') {
+      const aN = Number(a.tier || 0)
+      const bN = Number(b.tier || 0)
+      return sortOrder.value === 'asc' ? aN - bN : bN - aN
+    }
 
-        let aVal, bVal
-        if (sortKey.value === 'expert_panel') {
-            aVal = ((a.expert_panels || []).join(', ')).toLowerCase()
-            bVal = ((b.expert_panels || []).join(', ')).toLowerCase()
-        } else { 
-            aVal = (a.gene_symbol ?? '').toString().toLowerCase()
-            bVal = (b.gene_symbol ?? '').toString().toLowerCase()
-        }
+    let aVal, bVal
+    if (sortKey.value === 'expert_panel') {
+      aVal = ((a.expert_panels || []).join(', ')).toLowerCase()
+      bVal = ((b.expert_panels || []).join(', ')).toLowerCase()
+    } else { 
+      aVal = (a.gene_symbol ?? '').toString().toLowerCase()
+      bVal = (b.gene_symbol ?? '').toString().toLowerCase()
+    }
 
-        return sortOrder.value === 'asc' ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal)
-    })
+    return sortOrder.value === 'asc' ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal)
+  })
 })
 
 const totalPages = computed(() => Math.ceil(sortedGenes.value.length / pageSize.value))
@@ -205,6 +234,59 @@ const clearSelection = () => {
   selectedGenes.value = [] 
 }
 
+const moiOptions = computed(() => {
+	const set = new Set()
+	props.genes.forEach(g => {
+		detailEntries(g).forEach(entry => {
+			if (entry?.moi_name) set.add(entry.moi_name)
+		})
+	})
+	return Array.from(set).sort((a, b) => a.localeCompare(b))
+})
+
+const classificationOptions = computed(() => {
+	const set = new Set()
+	props.genes.forEach(g => {
+		detailEntries(g).forEach(entry => {
+			if (entry?.classification) set.add(entry.classification)
+		})
+	})
+	return Array.from(set).sort((a, b) => a.localeCompare(b))
+})
+
+const curationTypeOptions = computed(() => {
+	const set = new Set()
+	props.genes.forEach(g => {
+		detailEntries(g).forEach(entry => {
+			if (entry?.curation_type) set.add(entry.curation_type)
+		})
+	})
+	return Array.from(set).sort((a, b) => a.localeCompare(b))
+})
+const activeFilterCount = computed(() => {
+	let count = 0
+	if (selectedStatuses.value.length) count += 1
+	if (filterTier.value) count += 1
+	if (filterMoi.value) count += 1
+	if (filterClassification.value) count += 1
+	if (filterCurationType.value) count += 1
+	return count
+})
+
+const clearFilters = () => {
+	selectedStatuses.value = []
+	filterTier.value = ''
+	filterMoi.value = ''
+	filterClassification.value = ''
+	filterCurationType.value = ''
+	currentPage.value = 1
+}
+watch(
+	[search, selectedStatuses, filterTier, filterMoi, filterClassification, filterCurationType, pageSize],
+	() => {
+		currentPage.value = 1
+	}
+)
 
 </script>
 
@@ -212,53 +294,19 @@ const clearSelection = () => {
   <div class="space-y-3">
     <!-- Toolbar (search, status filter, sort, page size) -->
     <div class="mb-3 border rounded-lg bg-white px-3 py-2">
-      <div class="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
-        <!-- LEFT: full row on narrow -->
-        <div class="flex flex-wrap items-center gap-3 w-full md:w-auto">
-          <input type="checkbox" :checked="isAllSelected" @change="toggleSelectAll" v-if="editing" />
-
-          <input
-            v-model="search"
-            type="text"
-            placeholder="Search genes, statuses, diseases…"
-            class="border rounded px-2 py-1 text-sm w-full sm:w-64"
-          />
-
-          <!-- Status dropdown (your existing block) -->
-          <div class="flex items-center gap-2">
-            <label class="text-xs text-gray-500">Status</label>
-            <div class="flex items-center gap-2 relative">
-              <button
-                type="button"
-                class="border rounded px-2 py-1 text-sm bg-white min-w-40 flex items-center justify-between"
-                @click="statusMenuOpen = !statusMenuOpen"
-              >
-                <span class="truncate">{{ statusLabel }}</span>
-                <span class="ml-2 text-gray-400">▾</span>
-              </button>
-
-              <div
-                v-if="statusMenuOpen"
-                class="absolute top-full left-0 mt-1 w-72 border rounded bg-white shadow-lg z-50 p-2"
-              >
-                <div class="flex items-center justify-between pb-2 border-b">
-                  <button type="button" class="text-xs text-blue-600" @click="clearStatuses">Clear</button>
-                  <button type="button" class="text-xs text-gray-600" @click="statusMenuOpen = false">Done</button>
-                </div>
-
-                <div class="max-h-64 overflow-auto pt-2 space-y-1">
-                  <label v-for="s in allStatuses" :key="s" class="flex items-center gap-2 text-sm">
-                    <input type="checkbox" :checked="selectedStatuses.includes(s)" @change="toggleStatus(s)" />
-                    <span>{{ s }}</span>
-                  </label>
-                </div>
-              </div>
-            </div>
-          </div>
+      <div class="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+        <!-- Left -->
+        <div class="flex flex-wrap items-center gap-3 w-full lg:w-auto">
+          <input v-if="editing" type="checkbox" :checked="isAllSelected" @change="toggleSelectAll" />
+          <input v-model="search" type="text" placeholder="Search genes, statuses, diseases, MOI..." class="border rounded px-2 py-1 text-sm w-full sm:w-72" />
+          <button type="button" class="border rounded px-3 py-1 text-sm bg-white hover:bg-gray-50" @click="showFilters = !showFilters">
+            Filters <span v-if="activeFilterCount"> ({{ activeFilterCount }})</span>
+          </button>
+          <button v-if="activeFilterCount" type="button" class="text-sm text-blue-600 hover:underline" @click="clearFilters">Clear</button>
         </div>
 
-        <!-- RIGHT: drops to new row on narrow -->
-        <div class="flex flex-wrap items-center gap-3 w-full md:w-auto md:justify-end">
+        <!-- Right -->
+        <div class="flex flex-wrap items-center gap-3 w-full lg:w-auto lg:justify-end">
           <div class="flex items-center gap-2">
             <label class="text-xs text-gray-500">Sort by</label>
             <select v-model="sortKey" class="border rounded px-2 py-1 text-sm">
@@ -285,6 +333,91 @@ const clearSelection = () => {
           </div>
         </div>
       </div>
+
+      <!-- Filters panel -->
+      <transition name="fade">
+        <div v-if="showFilters" class="mt-3 border rounded-lg bg-gray-50 p-3">
+          <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-3">
+            <!-- Status -->
+            <div class="relative">
+              <label class="block text-xs font-medium text-gray-600 mb-1">Status</label>
+              <button
+                type="button"
+                class="border rounded px-2 py-2 text-sm bg-white w-full flex items-center justify-between"
+                @click="statusMenuOpen = !statusMenuOpen"
+              >
+                <span class="truncate">{{ statusLabel }}</span>
+                <span class="ml-2 text-gray-400">▾</span>
+              </button>
+
+              <div
+                v-if="statusMenuOpen"
+                class="absolute top-full left-0 mt-1 w-full min-w-[18rem] border rounded bg-white shadow-lg z-50 p-2"
+              >
+                <div class="flex items-center justify-between pb-2 border-b">
+                  <button type="button" class="text-xs text-blue-600" @click="clearStatuses">Clear</button>
+                  <button type="button" class="text-xs text-gray-600" @click="statusMenuOpen = false">Done</button>
+                </div>
+
+                <div class="max-h-64 overflow-auto pt-2 space-y-1">
+                  <label v-for="s in allStatuses" :key="s" class="flex items-center gap-2 text-sm">
+                    <input type="checkbox" :checked="selectedStatuses.includes(s)" @change="toggleStatus(s)" />
+                    <span>{{ s }}</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tier -->
+            <div>
+              <label class="block text-xs font-medium text-gray-600 mb-1">Tier</label>
+              <select v-model="filterTier" class="w-full border rounded px-2 py-2 text-sm bg-white">
+                <option value="">All Tiers</option>
+                <option value="1">Primary</option>
+                <option value="2">Secondary</option>
+                <option value="none">No Tier Set</option>
+              </select>
+            </div>
+
+            <!-- MOI -->
+            <div>
+              <label class="block text-xs font-medium text-gray-600 mb-1">MOI</label>
+              <select v-model="filterMoi" class="w-full border rounded px-2 py-2 text-sm bg-white">
+                <option value="">All MOIs</option>
+                <option v-for="moi in moiOptions" :key="moi" :value="moi">{{ moi }}</option>
+              </select>
+            </div>
+
+            <!-- Classification -->
+            <div>
+              <label class="block text-xs font-medium text-gray-600 mb-1">Classification</label>
+              <select v-model="filterClassification" class="w-full border rounded px-2 py-2 text-sm bg-white">
+                <option value="">All Classifications</option>
+                <option v-for="c in classificationOptions" :key="c" :value="c">{{ c }}</option>
+              </select>
+            </div>
+
+            <!-- Curation Type -->
+            <div>
+              <label class="block text-xs font-medium text-gray-600 mb-1">Curation Type</label>
+              <select v-model="filterCurationType" class="w-full border rounded px-2 py-2 text-sm bg-white">
+                <option value="">All Curation Types</option>
+                <option v-for="type in curationTypeOptions" :key="type" :value="type">{{ type }}</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="mt-3 flex justify-end">
+            <button
+              type="button"
+              class="border rounded px-3 py-1 text-sm bg-white hover:bg-gray-50"
+              @click="clearFilters"
+            >
+              Clear filters
+            </button>
+          </div>
+        </div>
+      </transition>
     </div>
 
     <!-- Bulk Tier Update Bar -->
@@ -370,11 +503,11 @@ const clearSelection = () => {
                 </select>
                 <span v-if="savingTierFor === gene.id" class="text-xs text-gray-500">Saving…</span>
 				<button class="rounded border px-2 py-1 text-xs bg-white hover:bg-red-50"
-					:disabled="removingId === gene.id"
+					:disabled="removingId == gene.id"
 					@click="confirmRemove(gene)"
 					title="Remove gene"
 					>
-					{{ removingId === gene.id ? 'Removing…' : ' X ' }}
+					{{ removingId == gene.id ? 'Removing…' : ' X ' }}
 				</button>
               </template>
               <span v-else class="text-xs text-gray-700">Tier: {{ ! gene.tier ? '—' : gene.tier == 1 ? 'Primary' : 'Secondary' }}</span>
