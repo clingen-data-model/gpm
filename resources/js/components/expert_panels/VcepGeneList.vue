@@ -1,35 +1,64 @@
 <template>
 <div>
-    <!-- Header controls -->
-    <div class="flex justify-between items-center mb-4">
-        <div v-if="editing" class="flex items-center gap-2">
-            <button class="btn blue" @click="startAdd" :disabled="isFormVisible">
-                + Add Gene
-            </button>
-        </div>
+  <!-- Header controls -->
+  <div class="mb-4">
+    <div class="flex flex-wrap justify-between items-center gap-3">
+      <div v-if="editing" class="flex items-center gap-2">
+        <button class="btn blue" @click="startAdd" :disabled="isFormVisible">+ Add Gene</button>
+      </div>
 
-        <div class="flex items-center gap-4">
-            <!-- Search -->
-            <input
-                v-model="search"
-                type="text"
-                placeholder="Search genes, diseases, MOI, notes..."
-                class="border rounded px-2 py-1 text-sm"
-            />
-
-            <!-- MOI Filter -->
-            <select v-model="filterMoi" class="border p-1 rounded text-sm">
-                <option value="">All MOIs</option>
-                <option v-for="moi in moiOptions" :key="moi" :value="moi">{{ moi }}</option>
-            </select>
-
-            <!-- Classification Filter -->
-            <select v-model="filterClassification" class="border p-1 rounded text-sm">
-                <option value="">All Classifications</option>
-                <option v-for="c in classificationOptions" :key="c" :value="c">{{ c }}</option>
-            </select>
-        </div>
+      <div class="flex items-center gap-2 flex-wrap">
+        <!-- Search -->
+        <input v-model="search" type="text" placeholder="Search genes, diseases, MOI, notes..." class="border rounded px-2 py-1 text-sm min-w-[260px]" />
+        <!-- Filters toggle -->
+        <button type="button" class="border rounded px-3 py-1 text-sm bg-white hover:bg-gray-50" @click="showFilters = !showFilters" >
+            Filters<span v-if="activeFilterCount"> ({{ activeFilterCount }})</span>
+        </button>
+        <!-- Quick clear when filters are active -->
+        <button v-if="activeFilterCount" type="button" class="text-sm text-blue-600 hover:underline" @click="clearFilters">Clear</button>
+      </div>
     </div>
+
+    <!-- Collapsible filters panel -->
+    <transition name="fade">
+      <div v-if="showFilters" class="mt-3 border rounded-lg bg-gray-50 p-3">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+          <!-- MOI Filter -->
+          <div>
+            <label class="block text-xs font-medium text-gray-600 mb-1">MOI</label>
+            <select v-model="filterMoi" class="w-full border p-2 rounded text-sm bg-white">
+              <option value="">All MOIs</option>
+              <option v-for="moi in moiOptions" :key="moi" :value="moi">{{ moi }}</option>
+            </select>
+          </div>
+
+          <!-- Classification Filter -->
+          <div>
+            <label class="block text-xs font-medium text-gray-600 mb-1">Classification</label>
+            <select v-model="filterClassification" class="w-full border p-2 rounded text-sm bg-white">
+              <option value="">All Classifications</option>
+              <option v-for="c in classificationOptions" :key="c" :value="c">{{ c }}</option>
+            </select>
+          </div>
+
+          <!-- Tier Filter -->
+          <div>
+            <label class="block text-xs font-medium text-gray-600 mb-1">Tier</label>
+            <select v-model="filterTier" class="w-full border p-2 rounded text-sm bg-white">
+              <option value="">All Tiers</option>
+              <option value="1">Current</option>
+              <option value="2">Future</option>
+              <option value="none">No Tier Set</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="mt-3 flex justify-end">
+          <button type="button" class="border rounded px-3 py-1 text-sm bg-white hover:bg-gray-50" @click="clearFilters">Clear filters</button>
+        </div>
+      </div>
+    </transition>
+  </div>
 
     <!-- Add/Edit Form -->
     <transition name="fade" @after-enter="onFormEntered">
@@ -91,22 +120,6 @@
                         <p v-if="errors['custom_gene']" class="text-red-500 text-xs mt-1">{{ errors['custom_gene'][0] }}</p>
                     </div>
 
-                    <!-- MOI -->
-                    <div>
-                        <label class="block text-sm font-medium mb-1">MOI</label>
-                        <select v-model="formGene.custom_moi" class="form-select w-full">
-                            <option value="">----Select MOI-----</option>
-                            <option v-for="moi in mois" :key="moi.id" :value="moi">{{ moi.name }} ({{ moi.abbreviation }})</option>
-                        </select>
-                        <p v-if="errors['custom_moi']" class="text-red-500 text-xs mt-1">{{ errors['custom_moi'][0] }}</p>
-                    </div>
-
-                    <!-- Disease -->
-                    <div class="col-span-2">
-                        <label class="block text-sm font-medium mb-1">Disease</label>
-                        <DiseaseSearchSelect v-model="formGene.custom_disease" placeholder="Search disease..." />
-                    </div>
-
                     <!-- Plan -->
                     <div class="col-span-2 mb-6">
                         <label class="block text-sm font-medium mb-1">Plan for Curation *</label>
@@ -160,42 +173,31 @@
 
     <!-- List toolbar -->
     <div class="mb-3 flex items-center justify-between border rounded-lg bg-white px-3 py-2">
-        <div class="flex items-center gap-3">
-            <input
-            v-if="canEdit && editing"
-            type="checkbox"
-            :checked="isAllSelected"
-            @change="toggleSelectAll"
-            aria-label="Select all on page"
-            />
-            <span class="text-sm text-gray-600">
-            {{ paginatedGenes.length }} shown / {{ filteredAndSortedGenes.length }} total
-            </span>
-        </div>
+      <div class="flex items-center gap-3">
+        <input v-if="canEdit && editing" type="checkbox" :checked="isAllSelected" @change="toggleSelectAll" aria-label="Select all on page" />
+        <span class="text-sm text-gray-600">
+          {{ paginatedGenes.length }} shown / {{ filteredAndSortedGenes.length }} total
+        </span>
+      </div>
 
-        <div class="flex items-center gap-2">
-            <label class="text-xs text-gray-500">Sort by</label>
-            <select v-model="sortKey" class="border rounded px-2 py-1 text-sm">
-                <option value="gene_symbol">HGNC Symbol</option>
-                <option value="disease">Disease</option>
-                <option value="moi">MOI</option>
-                <option value="tier">Tier</option>
-            </select>
-            <button
-                class="border rounded px-2 py-1 text-xs"
-                @click="sortOrder = sortOrder === 'asc' ? 'desc' : 'asc'"
-                :aria-label="`Toggle sort order (currently ${sortOrder})`"
-                title="Toggle sort order"
-                >
-                {{ sortOrder === 'asc' ? 'ASC ▲' : 'DESC ▼' }}
-            </button>
-            <div class="ml-2 flex items-center gap-2">
-                <label class="text-xs text-gray-500">Page size</label>
-                <select v-model="pageSize" class="border rounded px-2 py-1 text-sm">
-                    <option v-for="size in [2, 20, 50, 100]" :key="size" :value="size">{{ size }}</option>
-                </select>
-            </div>
+      <div class="flex items-center gap-2">
+        <label class="text-xs text-gray-500">Sort by</label>
+        <select v-model="sortKey" class="border rounded px-2 py-1 text-sm">
+          <option value="gene_symbol">HGNC Symbol</option>
+          <option value="disease">Disease</option>
+          <option value="moi">MOI</option>
+          <option value="tier">Tier</option>
+        </select>
+        <button class="border rounded px-2 py-1 text-xs" @click="sortOrder = sortOrder === 'asc' ? 'desc' : 'asc'" :aria-label="`Toggle sort order (currently ${sortOrder})`" title="Toggle sort order">
+            {{ sortOrder === 'asc' ? 'ASC ▲' : 'DESC ▼' }}
+        </button>
+        <div class="ml-2 flex items-center gap-2">
+          <label class="text-xs text-gray-500">Page size</label>
+          <select v-model="pageSize" class="border rounded px-2 py-1 text-sm">
+            <option v-for="size in [20, 50, 100]" :key="size" :value="size">{{ size }}</option>
+          </select>
         </div>
+      </div>
     </div>
 
 
@@ -221,8 +223,10 @@
                                     {{ gene.disease_name }}
                                 </span>
                                 <span v-if="gene.moi" class="rounded-full bg-gray-100 px-2 py-0.5 text-gray-700">{{ gene.moi }}</span>
-                                <span v-if="gene.plan?.is_other" class="'inline-flex h-2 w-2 rounded-full animate-pulse bg-rose-500" aria-hidden="true">
-                                </span>
+                                <template v-if="gene.plan?.is_other">
+                                    <span class="text-xs rounded-full px-2 py-0.5 text-gray-700 border border-rose-300 bg-rose-50">No Gene Curation</span>
+                                    <span class="'inline-flex h-2 w-2 rounded-full animate-pulse bg-rose-500" aria-hidden="true"></span>
+                                </template>
                                 <span
                                     v-if="gene.is_outdated && gene.gt_data"
                                     class="text-[11px] rounded-full bg-amber-100 text-amber-900 px-2 py-0.5 border border-amber-300"
@@ -379,7 +383,7 @@
 
 <script>
 import { api } from '@/http';
-import { ref, nextTick, computed, onMounted } from 'vue';
+import { ref, nextTick, computed, onMounted, watch } from 'vue';
 import { useStore } from 'vuex';
 import GeneSearchSelect from '@/components/forms/GeneSearchSelect.vue';
 import DiseaseSearchSelect from '@/components/forms/DiseaseSearchSelect.vue';
@@ -413,6 +417,8 @@ export default {
         const search = ref('');
         const filterMoi = ref('');
         const filterClassification = ref('');
+        const filterTier = ref('');
+        const showFilters = ref(false);
         const sortKey = ref('gene_symbol');
         const sortOrder = ref('asc');
 
@@ -446,15 +452,14 @@ export default {
             }
         };
 
-
-        const getMois = async () => {
+        /* const getMois = async () => {
             try {
                 const response = await api.get('/api/mois');
                 mois.value = response.data;
             } catch (error) {
                 store.commit('pushError', error.response.data);
             }
-        };
+        }; */
 
         const getGenes = async () => {
             if (!group.value.uuid) return;
@@ -754,6 +759,11 @@ export default {
             if (filterClassification.value) {
                 result = result.filter(g => g.plan?.classification === filterClassification.value);
             }
+            if (filterTier.value === 'none') {
+              result = result.filter(g => g.tier === null || g.tier === undefined || g.tier === '');
+            } else if (filterTier.value) {
+              result = result.filter(g => String(g.tier) === filterTier.value);
+            }
             // Sorting logic
             result.sort((a, b) => {
                 let aVal, bVal;
@@ -897,9 +907,22 @@ export default {
             requestAnimationFrame(() => scrollToForm())
         }
 
+        const activeFilterCount = computed(() => {
+            return [filterMoi.value, filterClassification.value, filterTier.value].filter(Boolean).length;
+        });
 
+        const clearFilters = () => {
+            filterMoi.value = '';
+            filterClassification.value = '';
+            filterTier.value = '';
+            currentPage.value = 1;
+        };
 
-        onMounted(() => { getGenes(); getMois(); });
+        watch([search, filterMoi, filterClassification, filterTier], () => {
+            currentPage.value = 1;
+        });
+
+        onMounted(() => { getGenes(); /* getMois(); */ });
         const expanded = ref([])
         const toggleExpanded = index => {
             if (expanded.value.includes(index)) {
@@ -919,7 +942,8 @@ export default {
             showConfirmRemove, selectedGene, confirmRemove, cancelRemove, removeGene,
             setSort, startAdd, startEdit, cancelForm, selectOther, handleCuratedSelection, saveForm,
             remove, updateTier, applyBulkTier, toggleSelect, toggleSelectAll, applyGtUpdate,
-            compactDiffRows, isDiff, htmlFromMarkdown, formEl, onFormEntered, clearSelection
+            compactDiffRows, isDiff, htmlFromMarkdown, formEl, onFormEntered, clearSelection,
+            showFilters, filterTier, activeFilterCount, clearFilters
         };
     }
 };
