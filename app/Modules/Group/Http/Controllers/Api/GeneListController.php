@@ -14,7 +14,7 @@ class GeneListController extends Controller
     {
         if (!$group->isEp) {
             throw new ModelNotFoundException('Only expert panels have gene lists.');
-        }       
+        }
 
         // We want to differentiate list of Genes/GDMs between "applying" and other than applying.
         $isApplying = (int) $group->group_status_id === (int) config('groups.statuses.applying.id');
