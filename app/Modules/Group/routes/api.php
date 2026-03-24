@@ -154,6 +154,7 @@ Route::group([
 
             // GENES
             Route::group(['prefix' => '/genes'], function () {
+                Route::post('/check-other-vcep-match', [GeneListController::class, 'checkOtherVcepMatch']);
                 Route::get('/', [GeneListController::class, 'index']);
                 Route::post('/', GenesAdd::class);                
                 Route::put('/update-tier', GenesUpdateTier::class);
