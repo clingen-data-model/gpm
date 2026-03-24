@@ -30,7 +30,7 @@
             <select v-model="filterMoi" class="w-full border p-2 rounded text-sm bg-white">
               <option value="">All MOIs</option>
               <option v-for="moi in moiOptions" :key="moi" :value="moi">{{ moi }}</option>
-            </select>
+            </select>g
           </div>
 
           <!-- Classification Filter -->
