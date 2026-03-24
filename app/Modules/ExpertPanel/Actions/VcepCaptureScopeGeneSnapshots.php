@@ -10,7 +10,8 @@ use Illuminate\Support\Facades\DB;
 class VcepCaptureScopeGeneSnapshots
 {
     public function __construct(
-        private readonly GtApiService $gtApiService
+        private readonly GtApiService $gtApiService,
+        private readonly VcepGeneConflictService $vcepGeneConflictService
     ) {}
 
     public function handle(Group $group): void
@@ -40,14 +41,18 @@ class VcepCaptureScopeGeneSnapshots
                     }
                     $item ??= $data[0];
                 }
+                $item = is_array($item) ? $item : [];
+                $conflictData = $this->vcepGeneConflictService->check($group, $scopeGene);
+                $payload = array_merge($item, $conflictData);
                 $curationUUID = $item['curation_id'] ?? $uuid;
+                
                 ScopeGeneSnapshot::updateOrCreate(
                     [
                         'scope_gene_id' => $scopeGene->id,
                         'curation_uuid' => $curationUUID,
                     ], [
                         'check_key'         => $item['checkKey'] ?? null,
-                        'payload'           => json_encode($item, JSON_UNESCAPED_SLASHES),
+                        'payload'           => json_encode($payload, JSON_UNESCAPED_SLASHES),
                         'captured_at'       => $now,
                         'is_outdated'       => false,
                         'last_compared_at'  => null,
