@@ -6,6 +6,10 @@
       <div v-if="editing" class="flex items-center gap-2">
         <button class="btn blue" @click="startAdd" :disabled="isFormVisible">+ Add Gene</button>
       </div>
+      <EditIconButton
+        v-else-if="hasAnyPermission(['groups-manage', ['application-edit', group]]) && !editing"
+        @click="$emit('update:editing', true)"
+      />
 
       <div class="flex items-center gap-2 flex-wrap">
         <!-- Search -->
@@ -29,7 +33,7 @@
             <select v-model="filterMoi" class="w-full border p-2 rounded text-sm bg-white">
               <option value="">All MOIs</option>
               <option v-for="moi in moiOptions" :key="moi" :value="moi">{{ moi }}</option>
-            </select>
+            </select>g
           </div>
 
           <!-- Classification Filter -->
@@ -76,6 +80,18 @@
                     class="w-full"
                     :key="curatedGeneKey"
                 />
+                <div v-if="formGene?.vcep_conflict?.has_other_vcep_match" :class="['mt-3 border rounded p-3 text-sm', formGene?.vcep_conflict?.has_approved_other_vcep_match ? 'border-red-300 bg-red-50 text-red-900' : 'border-amber-300 bg-amber-50 text-amber-900']">
+                  <div class="font-semibold mb-1">
+                    {{ formGene?.vcep_conflict?.has_approved_other_vcep_match ? 'This GDM is active in another VCEP.' : 'This GDM already exists in another VCEP.'}}
+                  </div>
+                  <ul class="list-disc ml-5 space-y-1">
+                    <li v-for="match in formGene?.vcep_conflict?.other_vcep_matches || []" :key="`${match.group_uuid}-${match.match_basis}`">
+                      <strong>{{ match.group_name }}</strong>
+                      <span class="ml-1">({{ match.application_status }})</span>
+                    </li>
+                  </ul>
+                </div>
+
                 <button
                     type="button"
                     class="text-blue-600 underline text-sm hover:text-blue-800"
@@ -118,6 +134,12 @@
                         <label class="block text-sm font-medium mb-1">Gene *</label>
                         <GeneSearchSelect v-model="formGene.custom_gene" placeholder="Search gene..." />
                         <p v-if="errors['custom_gene']" class="text-red-500 text-xs mt-1">{{ errors['custom_gene'][0] }}</p>
+                    </div>
+
+                    <!-- Disease -->
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Disease</label>
+                        <DiseaseSearchSelect v-model="formGene.custom_disease" placeholder="Search disease..." />
                     </div>
 
                     <!-- Plan -->
@@ -223,7 +245,7 @@
                                     {{ gene.disease_name }}
                                 </span>
                                 <span v-if="gene.moi" class="rounded-full bg-gray-100 px-2 py-0.5 text-gray-700">{{ gene.moi }}</span>
-                                <template v-if="gene.plan?.is_other">
+                                <template v-if="! gene.gt_curation_uuid">
                                     <span class="text-xs rounded-full px-2 py-0.5 text-gray-700 border border-rose-300 bg-rose-50">No Gene Curation</span>
                                     <span class="'inline-flex h-2 w-2 rounded-full animate-pulse bg-rose-500" aria-hidden="true"></span>
                                 </template>
@@ -231,6 +253,13 @@
                                     v-if="gene.is_outdated && gene.gt_data"
                                     class="text-[11px] rounded-full bg-amber-100 text-amber-900 px-2 py-0.5 border border-amber-300"
                                 >Snapshot out of date</span>
+                                
+                                <span v-if="hasApprovedOtherVcepMatch(gene)" class="text-[11px] rounded-full bg-red-100 text-red-900 px-2 py-0.5 border border-red-300" :title="formatOtherVcepMatches(gene)">
+                                  Approved in another VCEP
+                                </span>
+                                <span v-else-if="hasOtherVcepMatch(gene)" class="text-[11px] rounded-full bg-amber-100 text-amber-900 px-2 py-0.5 border border-amber-300" :title="formatOtherVcepMatches(gene)">
+                                  Found in another VCEP
+                                </span>
                             </div>
                             <!-- <div class="mt-0.5 text-sm text-gray-700 truncate"></div> -->
                         </div>
@@ -391,12 +420,13 @@ import CuratedGeneSearchSelect from '@/components/forms/CuratedGeneSearchSelect.
 import { htmlFromMarkdown, markdownFromHTML } from '@/markdown-utils'
 import { hasAnyPermission } from '@/auth_utils';
 import RichTextEditor from '@/components/prosekit/RichTextEditor.vue';
+import EditIconButton from '@/components/buttons/EditIconButton.vue'
 
 export default {
     name: 'VcepGeneList',
-    components: { GeneSearchSelect, DiseaseSearchSelect, CuratedGeneSearchSelect, RichTextEditor },
+    components: { GeneSearchSelect, DiseaseSearchSelect, CuratedGeneSearchSelect, RichTextEditor, EditIconButton },
     props: { readonly: { type: Boolean, required: false, default: false }, editing: { type: Boolean, required: false, default: true } },
-    emits: ['saved'],
+    emits: ["update:editing", "saved"],
     setup(props, { emit }) {
         const store = useStore();
         const genes = ref([]);
@@ -494,36 +524,35 @@ export default {
             isFormVisible.value = true;
             isEditing.value = gene.id;
 
-            if (gene.plan?.is_other) {
-                // Build form for Other gene
-                formGene.value = {
-                    id: gene.id,
-                    is_other: true,
-                    custom_gene: { hgnc_id: gene.hgnc_id, gene_symbol: gene.gene_symbol },
-                    custom_disease: { mondo_id: gene.mondo_id, name: gene.disease_name },
-                    custom_moi: mois.value.find(m => m.abbreviation === gene.moi) || null,
-                    custom_plan: (unescapeMarkdown(gene.plan?.the_plan || ''))
-                };
+            if (gene.plan?.is_other == false) {
+              const plan = {
+                ...gene.plan,
+                is_other: false,
+                curated_plan_text: gene.plan?.curated_plan_text ?? ''
+              };
+              formGene.value = {
+                id: gene.id,
+                hgnc_id: gene.hgnc_id,
+                gene_symbol: gene.gene_symbol,
+                disease_name: gene.disease_name,
+                mondo_id: gene.mondo_id,
+                moi: gene.moi,
+                date_approved: gene.date_approved,
+                requires_plan: ['Moderate', 'Limited'].includes(gene.plan?.classification),
+                plan,
+                curated_plan_text: (unescapeMarkdown(plan?.curated_plan_text || '')),
+                is_other: false
+              };
             } else {
-                const plan = {
-                    ...gene.plan,
-                    is_other: false,
-                    curated_plan_text: gene.plan?.curated_plan_text ?? ''
-                };
-
-                formGene.value = {
-                    id: gene.id,
-                    hgnc_id: gene.hgnc_id,
-                    gene_symbol: gene.gene_symbol,
-                    disease_name: gene.disease_name,
-                    mondo_id: gene.mondo_id,
-                    moi: gene.moi,
-                    date_approved: gene.date_approved,
-                    requires_plan: ['Moderate', 'Limited'].includes(gene.plan?.classification),
-                    plan,
-                    curated_plan_text: (unescapeMarkdown(plan?.curated_plan_text || '')),
-                    is_other: false
-                };
+              // Build form for Other gene
+              formGene.value = {
+                  id: gene.id,
+                  is_other: true,
+                  custom_gene: { hgnc_id: gene.hgnc_id, gene_symbol: gene.gene_symbol },
+                  custom_disease: { mondo_id: gene.mondo_id, name: gene.disease_name },
+                  custom_moi: mois.value.find(m => m.abbreviation === gene.moi) || null,
+                  custom_plan: (unescapeMarkdown(gene.plan?.the_plan || ''))
+              };                
             }
             console.log('Editing gene:', formGene.value);
             curatedGeneKey.value++;
@@ -559,21 +588,52 @@ export default {
                 custom_gene: null,
                 custom_disease: null,
                 custom_moi: null,
-                custom_plan: ''
+                custom_plan: '',
+                vcep_conflict: emptyVcepConflict(),
             };
         };
+        
+        const handleCuratedSelection = async selected => {
+          if (selected && !selected.is_other) {
+            const vcepConflict = await checkOtherVcepMatch(selected)
 
-        const handleCuratedSelection = selected => {
-            if (selected && !selected.is_other) {
-                formGene.value = {
-                    ...selected,
-                    is_other: false,
-                    requires_plan: ['Moderate', 'Limited'].includes(selected.classification),
-                    curated_plan_text: htmlFromMarkdown('')
-                };
-
-            }
+            formGene.value = {
+              ...selected,
+              is_other: false,
+              requires_plan: ['Moderate', 'Limited'].includes(selected.classification),
+              curated_plan_text: htmlFromMarkdown(''),
+              vcep_conflict: vcepConflict,
+            };
+          }
         };
+        
+        // VCEP conflict helpers
+        const emptyVcepConflict = () => ({
+            has_other_vcep_match: false,
+            has_approved_other_vcep_match: false,
+            other_vcep_matches: [],
+        })
+
+        const checkOtherVcepMatch = async (selected) => {
+          if (!group.value?.uuid || !selected) {
+            return emptyVcepConflict()
+          }
+
+          try {
+            const payload = {
+              gt_curation_uuid: selected.curation_id ?? selected.gt_curation_uuid ?? null,
+              hgnc_id: selected.hgnc_id ?? null,
+              gene_symbol: selected.gene_symbol ?? null,
+              mondo_id: selected.mondo_id ?? null,
+            }
+            const { data } = await api.post(`/api/groups/${group.value.uuid}/expert-panel/genes/check-other-vcep-match`, payload)
+            return data?.vcep_conflict ?? emptyVcepConflict()
+          } catch (error) {
+            store.commit('pushError', error.response?.data?.message || 'Failed to check for existing VCEP match')
+            return emptyVcepConflict()
+          }
+        }
+        // End of: VCEP conflict helpers
 
         const isCuratedPlanValid = computed(() => {
             if (!formGene.value?.requires_plan) return true;
@@ -918,6 +978,36 @@ export default {
             currentPage.value = 1;
         };
 
+        /** SECTION FOR FORMATTING OTHER VCEP MATCHES */
+        const formatOtherVcepMatches = (gene) => {
+            const matches = Array.isArray(gene.vcep_conflict?.other_vcep_matches) ? gene.vcep_conflict.other_vcep_matches : []
+            if (!matches.length) return ''
+            return matches
+                .map(match => {
+                    const name = match.group_name || 'Unknown group'
+                    const status = match.application_status || 'unknown status'
+                    const basis = match.match_basis ? ` — ${match.match_basis}` : ''
+                    return `${name} — Status: ${status} ${basis}`
+                })
+                .join('\n')
+        }
+        const hasOtherVcepMatch = (gene) => !!gene.vcep_conflict?.has_other_vcep_match
+        const hasApprovedOtherVcepMatch = (gene) => !!gene.vcep_conflict?.has_approved_other_vcep_match
+        /** END OF SECTION FOR FORMATTING OTHER VCEP MATCHES */
+
+        const save = () => {
+          cancelForm()
+          clearSelection()
+          emit('update:editing', false)
+          emit('saved')
+        }
+
+        const cancel = () => {
+          cancelForm()
+          clearSelection()
+          emit('update:editing', false)
+        }
+
         watch([search, filterMoi, filterClassification, filterTier], () => {
             currentPage.value = 1;
         });
@@ -943,7 +1033,8 @@ export default {
             setSort, startAdd, startEdit, cancelForm, selectOther, handleCuratedSelection, saveForm,
             remove, updateTier, applyBulkTier, toggleSelect, toggleSelectAll, applyGtUpdate,
             compactDiffRows, isDiff, htmlFromMarkdown, formEl, onFormEntered, clearSelection,
-            showFilters, filterTier, activeFilterCount, clearFilters
+            showFilters, filterTier, activeFilterCount, clearFilters, formatOtherVcepMatches, hasOtherVcepMatch, hasApprovedOtherVcepMatch,
+            emptyVcepConflict, checkOtherVcepMatch, save, cancel
         };
     }
 };
