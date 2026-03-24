@@ -79,6 +79,10 @@ class Gene extends Model
     {
         return $this->hasMany(ScopeGeneSnapshot::class, 'scope_gene_id');
     }
+    public function latestSnapshot()
+    {
+        return $this->hasOne(ScopeGeneSnapshot::class, 'scope_gene_id')->latestOfMany('captured_at');
+    }
     
     /**
      * SCOPES
