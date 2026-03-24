@@ -291,53 +291,57 @@
                 </div>
 
                 <!-- Snapshot quick facts (COMPACT) -->
-                <div  v-if="gene.plan" class="px-3 pb-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 text-sm">
+                <div v-if="gene.plan && gene.plan.length > 0" class="px-3 pb-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 text-sm">
                     <div v-if="gene.plan?.is_other" class="sm:col-span-2 lg:col-span-4 rounded-xl border p-2 text-sm border-rose-300 bg-rose-50 p-2">
                         <div class="text-[11px] uppercase tracking-wide text-gray-500">Plan</div>
                         <div class="prose max-w-none" v-html="htmlFromMarkdown((gene.plan?.the_plan || '').replace(/\\/g, ''))"></div>
                     </div>
                     <template v-else>
-                        <div class="rounded-xl border border-gray-200 bg-gray-50 p-2">
-                            <div class="text-[11px] uppercase tracking-wide text-gray-500">Expert Panel</div>
-                            <div class="text-sm text-gray-900">{{ gene.plan?.expert_panel ?? 'N/A' }}</div>
-                        </div>
-
-                        <div :class="['rounded-xl border p-2',
-                            ['Moderate','Limited'].includes(gene.plan?.classification)
-                            ? (gene.plan?.classification === 'Limited'
-                                ? 'border-amber-200 bg-amber-100 ring-1 ring-amber-500'
-                                : 'border-amber-100 bg-amber-50 ring-1 ring-amber-300')
-                            : 'border-gray-200 bg-gray-50'
-                        ]">
-                            <div class="text-[11px] uppercase tracking-wide text-gray-500">Classification</div>
-                            <div class="mt-0.5 text-gray-900 flex items-center gap-2 text-sm">
-                                {{ gene.plan?.classification ?? 'N/A' }}
-                                <span v-if="['Moderate','Limited'].includes(gene.plan?.classification)" 
-                                    :class="['inline-flex h-2 w-2 rounded-full animate-pulse', gene.plan?.classification === 'Limited' ? 
-                                        'bg-amber-500' : 'bg-amber-300']" aria-hidden="true"></span>
+                        <template v-if="gene.plan?.expert_panel || gene.plan?.classification || gene.plan?.classification">
+                            <div class="rounded-xl border border-gray-200 bg-gray-50 p-2">
+                                <div class="text-[11px] uppercase tracking-wide text-gray-500">Expert Panel</div>
+                                <div class="text-sm text-gray-900">{{ gene.plan?.expert_panel ?? 'N/A' }}</div>
                             </div>
-                        </div>
 
-                        <div class="rounded-xl border border-gray-200 bg-gray-50 p-2">
-                            <div class="text-[11px] uppercase tracking-wide text-gray-500">Status</div>
-                            <div class="text-sm text-gray-900">
-                                {{ ! gene.plan?.curation_status ? 'N/A' : gene.plan?.date_approved ? gene.plan.curation_status + ' on ' + new Date(gene.plan?.date_approved).toLocaleDateString() : gene.plan.curation_status }}
+                            <div :class="['rounded-xl border p-2',
+                                ['Moderate','Limited'].includes(gene.plan?.classification)
+                                ? (gene.plan?.classification === 'Limited'
+                                    ? 'border-amber-200 bg-amber-100 ring-1 ring-amber-500'
+                                    : 'border-amber-100 bg-amber-50 ring-1 ring-amber-300')
+                                : 'border-gray-200 bg-gray-50'
+                            ]">
+                                <div class="text-[11px] uppercase tracking-wide text-gray-500">Classification</div>
+                                <div class="mt-0.5 text-gray-900 flex items-center gap-2 text-sm">
+                                    {{ gene.plan?.classification ?? 'N/A' }}
+                                    <span v-if="['Moderate','Limited'].includes(gene.plan?.classification)" 
+                                        :class="['inline-flex h-2 w-2 rounded-full animate-pulse', gene.plan?.classification === 'Limited' ? 
+                                            'bg-amber-500' : 'bg-amber-300']" aria-hidden="true"></span>
+                                </div>
                             </div>
-                        </div>
 
-                        <div class="rounded-xl border border-gray-200 bg-gray-50 p-2">
-                            <div class="text-[11px] uppercase tracking-wide text-gray-500">Rationale</div>
-                            <div class="text-sm text-gray-900">
-                                {{ gene.plan?.rationales ?? 'N/A' }}
+                            <div class="rounded-xl border border-gray-200 bg-gray-50 p-2">
+                                <div class="text-[11px] uppercase tracking-wide text-gray-500">Status</div>
+                                <div class="text-sm text-gray-900">
+                                    {{ ! gene.plan?.curation_status ? 'N/A' : gene.plan?.date_approved ? gene.plan.curation_status + ' on ' + new Date(gene.plan?.date_approved).toLocaleDateString() : gene.plan.curation_status }}
+                                </div>
                             </div>
-                        </div>
+                        </template>
 
-                        <div v-if="gene.plan?.phenotypes" class="sm:col-span-2 lg:col-span-2 rounded-xl border border-gray-200 bg-gray-50 p-2">
-                            <div class="text-[11px] uppercase tracking-wide text-gray-500">Included Phenotypes</div>
-                            <div class="text-sm text-gray-900 line-clamp-2">{{ gene.plan?.phenotypes ?? 'N/A' }}</div>
-                            <div v-if="gene.plan?.excluded_phenotypes" class="text-[11px] uppercase mt-1 tracking-wide text-gray-500">Excluded Phenotypes</div>
-                            <div v-if="gene.plan?.excluded_phenotypes" class="text-sm text-gray-900 line-clamp-2">{{ gene.plan?.excluded_phenotypes ?? 'N/A' }}</div>
-                        </div>
+                        <template v-if="gene.plan?.rationales || gene.plan?.phenotypes">
+                            <div class="rounded-xl border border-gray-200 bg-gray-50 p-2">
+                                <div class="text-[11px] uppercase tracking-wide text-gray-500">Rationale</div>
+                                <div class="text-sm text-gray-900">
+                                    {{ gene.plan?.rationales ?? 'N/A' }}
+                                </div>
+                            </div>
+
+                            <div class="sm:col-span-2 lg:col-span-2 rounded-xl border border-gray-200 bg-gray-50 p-2">
+                                <div class="text-[11px] uppercase tracking-wide text-gray-500">Included Phenotypes</div>
+                                <div class="text-sm text-gray-900 line-clamp-2">{{ gene.plan?.phenotypes ?? 'N/A' }}</div>
+                                <div v-if="gene.plan?.excluded_phenotypes" class="text-[11px] uppercase mt-1 tracking-wide text-gray-500">Excluded Phenotypes</div>
+                                <div v-if="gene.plan?.excluded_phenotypes" class="text-sm text-gray-900 line-clamp-2">{{ gene.plan?.excluded_phenotypes ?? 'N/A' }}</div>
+                            </div>
+                        </template>
                         
                         <div v-if="['Moderate','Limited'].includes(gene.plan?.classification) && gene.plan?.curated_plan_text" class="sm:col-span-2 lg:col-span-4 rounded-xl border border-amber-200 bg-amber-50 p-2">
                             <div class="text-[11px] uppercase tracking-wide text-amber-800">Plan</div>
