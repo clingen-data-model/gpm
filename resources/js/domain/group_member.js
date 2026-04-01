@@ -127,7 +127,7 @@ class GroupMember extends Entity {
         const yearAgo = new Date();
         yearAgo.setFullYear(today.getFullYear()-1);
 
-        if (this.latestCoiDate.valueOf() <= yearAgo.valueOf()) {
+        if (new Date(this.latestCoiDate).valueOf() <= yearAgo.valueOf()) {
             return true;
         }
 
