@@ -5,7 +5,6 @@ namespace App\Modules\Group\Http\Controllers\Api;
 use Illuminate\Http\Request;
 use App\Modules\Group\Models\Group;
 use App\Http\Controllers\Controller;
-use App\Models\GeneTracker\Disease;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class GeneListController extends Controller
