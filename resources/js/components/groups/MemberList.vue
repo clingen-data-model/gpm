@@ -178,6 +178,17 @@ export default {
         toggleFilter() {
             this.showFilter = !this.showFilter;
         },
+        coiRequirementMet(member) {
+          if (!this.group.has_coi_requirement) {
+              return true;
+          }
+          if (!member.coi_last_completed) {
+              return false;
+          }
+
+          return new Date(member.coi_last_completed) >= this.coiCuttoff;
+        },
+
         matchesFilters(member) {
             if (this.filters.keyword && !member.matchesKeyword(this.filters.keyword)) {
                 return false;
@@ -304,8 +315,8 @@ export default {
             this.selectedMember = member;
         },
         requirementsMet (member) {
-            if (this.group.has_coi_requirement && member.needsCoi) {
-                return false;
+            if (!this.coiRequirementMet(member)) {
+              return false;
             }
 
             if (this.group.isEp() && !member.hasAnyExpertise) {
@@ -319,7 +330,7 @@ export default {
             if (this.group.has_coi_requirement) {
                 requirements.coi = {
                     label: 'COI is up to date',
-                    met: !member.needsCoi,
+                    met: this.coiRequirementMet(member),
                 }
             }
             if (this.group.isEp()) {
@@ -467,7 +478,7 @@ export default {
               <icon-view />
             </button>
             <icon-exclamation
-              v-if="item.coi_last_completed === null || (item.coi_last_completed < yearAgo())"
+              v-if="!coiRequirementMet(item)"
               :class="getCoiDateStyle(item)"
             />
           </div>
