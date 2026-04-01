@@ -27,6 +27,23 @@ const isEmpty = (val) => {
             return !(val);
     }
 }
+const coiCutoff = () => {
+    const cutoff = new Date();
+    cutoff.setFullYear(cutoff.getFullYear() - 1);
+    return cutoff;
+};
+const coiRequirementMet = (member) => {
+    if (!member.isActive) {
+        return true;
+    }
+
+    if (!member.coi_last_completed) {
+        return false;
+    }
+
+    return new Date(member.coi_last_completed) >= coiCutoff();
+};
+
 
 export const longName = new Requirement('Long Base Name', group => !isEmpty(group.expert_panel.long_base_name));
 export const shortName = new Requirement('Short Base Name', group => !isEmpty(group.expert_panel.short_base_name));
@@ -34,7 +51,7 @@ export const shortName = new Requirement('Short Base Name', group => !isEmpty(gr
 export const chairs = new Requirement('1+ Co-chairs', group => !isEmpty(group.chairs));
 export const coordinators = new Requirement('1+ Coordinator', group => !isEmpty(group.coordinators));
 
-export const coisComplete = new Requirement('All members completed COI', group => isEmpty(group.members.filter(member => member.isActive && member.needsCoi)));
+export const coisComplete = new Requirement('All members completed COI', group => group.members.every(member => coiRequirementMet(member)));
 export const cocsComplete = new Requirement(
     'All members completed CoC', 
     group => isEmpty(group.members.filter(member => {
