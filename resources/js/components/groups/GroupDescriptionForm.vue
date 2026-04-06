@@ -73,9 +73,9 @@ export default {
             @update:model-value="$emit('update')"
           />
         </div>
-        <div v-else class="border-2 mt-8 p-2">
-          <div v-if="group.description" v-html="htmlDescription" />
-          <p v-else class="well cursor-pointer" @click="showForm">
+        <div v-else class="border-2 mt-8 p-4 rounded">
+          <div v-if="group.description" class="markdown-preview" v-html="htmlDescription" />
+          <p v-else class="well cursor-pointer">
             A website summary description has not yet been provided.
           </p>
         </div>
@@ -83,3 +83,34 @@ export default {
     </div>
   </div>
 </template>
+
+<style scoped>
+.markdown-preview :deep(p) {
+  margin: 0.5rem 0;
+}
+
+.markdown-preview :deep(ul) {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+  margin: 0.5rem 0;
+}
+
+.markdown-preview :deep(ol) {
+  list-style-type: decimal;
+  padding-left: 1.5rem;
+  margin: 0.5rem 0;
+}
+
+.markdown-preview :deep(li) {
+  display: list-item;
+  margin: 0.25rem 0;
+}
+
+.markdown-preview :deep(strong) {
+  font-weight: 600;
+}
+
+.markdown-preview :deep(em) {
+  font-style: italic;
+}
+</style>

@@ -1,7 +1,7 @@
 <script setup>
 import 'prosekit/basic/style.css'
 
-import { ref, watch, watchPostEffect } from 'vue'
+import { ref, watch, onMounted, onBeforeUnmount } from 'vue'
 import { createEditor } from 'prosekit/core'
 import { defineExtension } from './extension.ts'
 import { htmlFromMarkdown, markdownFromHTML } from '@/markdown-utils'
@@ -24,40 +24,61 @@ const props = defineProps({
 const emit = defineEmits(['update:modelValue'])
 
 const extension = defineExtension()
+const editorRef = ref(null)
+const lastEmittedValue = ref(props.modelValue || '')
+const isApplyingExternalUpdate = ref(false)
 
-const formatValue = (value) => {
+const formatValue = (value = '') => {
     return props.markdownFormat ? htmlFromMarkdown(value) : DOMPurify.sanitize(value)
 }
-const initialContent = formatValue(props.modelValue)
-const editor = createEditor({ extension, defaultContent: initialContent })
 
-useDocChange((/* doc */) => {
+const editor = createEditor({
+    extension,
+    defaultContent: formatValue(props.modelValue || ''),
+})
+
+useDocChange(() => {
+    if (isApplyingExternalUpdate.value) { return }
     const newContent = props.markdownFormat ? markdownFromHTML(editor.getDocHTML()) : DOMPurify.sanitize(editor.getDocHTML())
-    emit('update:modelValue', newContent)
+    if (newContent !== props.modelValue) {
+        lastEmittedValue.value = newContent
+        emit('update:modelValue', newContent)
+    }
 }, { editor })
 
-const editorRef = ref(null)
-
-watchPostEffect((onCleanup) => {
-    editor.mount(editorRef.value)
-    onCleanup(() => editor.unmount())
-})
-
-watch(() => props.modelValue, (newValue) => {
-    const incomingContent = formatValue(newValue)
-    if (editor.getDocHTML() !== incomingContent) {
-        editor.setContent(incomingContent)
+onMounted(() => {
+    if (editorRef.value) {
+        editor.mount(editorRef.value)
     }
 })
 
-/*
-watchPostEffect(() => {
-    const newContent = formatValue(props.modelValue)
-    if (editor.getDocHTML() !== newContent) {
-        editor.setContent(newContent)
-    }
+onBeforeUnmount(() => {
+    editor.unmount()
 })
-*/
+
+watch(
+    () => props.modelValue,
+    (newValue) => {
+        const safeValue = newValue || ''
+
+        // don't reset content/selection
+        if (safeValue === lastEmittedValue.value) {
+            return
+        }
+        const incomingContent = formatValue(safeValue)
+        // Only apply true external changes
+        if (editor.getDocHTML() === incomingContent) {
+            return
+        }
+
+        isApplyingExternalUpdate.value = true
+        try {
+            editor.setContent(incomingContent)
+        } finally {
+            isApplyingExternalUpdate.value = false
+        }
+    }
+)
 </script>
 
 <template>
