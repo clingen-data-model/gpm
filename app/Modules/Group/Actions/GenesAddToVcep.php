@@ -55,6 +55,7 @@ class GenesAddToVcep
                 'moi'           => $gene['moi']           ?? null,
                 'date_approved' => $gene['date_approved'] ?? null,
                 'plan'          => $gene['plan'] ?? null,
+                'tier'          => isset($gene['plan']['is_other']) && $gene['plan']['is_other'] === true ? 2 : null, // Hard code tier: 2 for "Future", 1 for "Current" GDM
                 'gt_curation_uuid'   => data_get($gene, 'plan.curation_id') ?? null,
             ]);
             $snapshotPayloads[] = $gene['plan'] ?? null;
