@@ -6,10 +6,7 @@
       <div v-if="editing" class="flex items-center gap-2">
         <button class="btn blue" @click="startAdd" :disabled="isFormVisible">+ Add Gene</button>
       </div>
-      <EditIconButton
-        v-else-if="hasAnyPermission(['groups-manage', ['application-edit', group]]) && !editing"
-        @click="$emit('update:editing', true)"
-      />
+      <EditIconButton v-else-if="(hasRole('super-admin') || hasRole('super-user')) && !editing" @click="$emit('update:editing', true)" />
 
       <div class="flex items-center gap-2 flex-wrap">
         <!-- Search -->
@@ -266,12 +263,16 @@
                     </div>
 
                     <div class="flex items-center gap-2">
-                        <template v-if="editing">
+                        <span v-if="(gene.plan?.is_other === true && !(hasRole('super-admin') || hasRole('super-user'))) || ! editing" class="text-xs text-gray-700">
+                            Tier: {{ ! gene.tier ? '—' : gene.tier == 1 ? 'Current' : 'Future' }}
+                        </span>
+                        <template v-else>
                             <select v-model="gene.tier" class="border rounded px-2 py-1 text-xs" @change="updateTier(gene)" :disabled="savingTierFor === gene.id || readonly" title="Tier">
                                 <option value="null">—</option>
                                 <option value="1">Current</option>
                                 <option value="2">Future</option>
                             </select>
+                            
 
                             <button v-if="gene.is_outdated && gene.gt_data" @click="applyGtUpdate(gene)" title="Refresh from latest GT"
                             class="hidden sm:inline-flex rounded border border-amber-400 bg-amber-50 px-2 py-1 text-xs font-semibold text-amber-900 hover:bg-amber-100">
@@ -286,7 +287,6 @@
                                 <dropdown-item @click="confirmRemove(gene)">Remove</dropdown-item>
                             </dropdown-menu>
                         </template>
-                        <span v-else class="text-xs text-gray-700">Tier: {{ ! gene.tier ? '—' : gene.tier == 1 ? 'Current' : 'Future' }}</span>
                     </div>
                 </div>
 
