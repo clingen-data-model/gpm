@@ -152,7 +152,6 @@ export default {
         group_status_id,
         short_base_name,
         affiliation_id,
-        group_visibility_id,
         website_url
       })
       
