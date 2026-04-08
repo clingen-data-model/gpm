@@ -45,7 +45,9 @@ export default {
             if (this.group.is_vcep) {
                 return "I understand that once a variant is approved in the VCI it will become publicly available in the Evidence Repository. They should not be held for publication."
             }
-
+            if(this.group.is_scvcep) {
+                return "Please check box to confirm your understanding that once a variant classification is approved in CIViC, the group should \"publish\" the record to make the curation publicly available on CIViC (https://civicdb.org/)"
+            }
             return "Please check box to confirm your understanding that once a gene is approved in the GCI, the group should utilize the “publish” functionality within the GCI to make the curation publicly available on the ClinGen website (https://clinicalgenome.org/). They should not be held for publication."
         }
     },

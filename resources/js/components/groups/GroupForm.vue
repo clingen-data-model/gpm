@@ -132,15 +132,26 @@ export default {
         name,
         parent_id,
         group_type_id,
-        group_status_id
+        group_status_id,
+        website_url
       } = this.group.attributes;
 
-      const {short_base_name} = this.group.expert_panel;
+      const { short_base_name, affiliation_id } = this.group.expert_panel;
 
       if (name === null && this.group.expert_panel) {
         name = this.group.expert_panel.long_base_name;
       }
 
+      console.log('Creating group with data', {
+        name,
+        parent_id,
+        group_type_id,
+        group_status_id,
+        short_base_name,
+        affiliation_id,
+        website_url
+      })
+      
       return this.$store.dispatch(
         'groups/create',
         {
@@ -148,7 +159,9 @@ export default {
           parent_id,
           group_type_id,
           group_status_id,
-          short_base_name
+          short_base_name,
+          affiliation_id,
+          website_url
         }
       );
     },
@@ -173,6 +186,9 @@ export default {
 
       if (this.group.isDirty('group_status_id')) {
         promises.push(this.saveStatus())
+      }
+      if (this.group.isDirty('website_url')) {
+        promises.push(this.saveWebsiteUrl());
       }
 
       return Promise.all(promises);
@@ -225,6 +241,13 @@ export default {
         url: `/api/groups/${this.group.uuid}/status`,
         data: {status_id: this.group.group_status_id}
       })
+    },
+    saveWebsiteUrl () {
+      return this.submitFormData({
+        method: 'put',
+        url: `/api/groups/${this.group.uuid}`,
+        data: { website_url: this.group.website_url || null }
+      });
     },
     resetData () {
       if (this.group.uuid) {
@@ -295,7 +318,7 @@ export default {
     </dictionary-row>
 
     <transition name="slide-fade-down" mode="out-in">
-      <div v-if="group.group_type_id > 2 && group.expert_panel">
+      <div v-if="[3, 4, 5].includes(Number(group.group_type_id)) && group.expert_panel">
         <input-row
           v-model="group.expert_panel.long_base_name"
           label="Long Base Name"
@@ -311,6 +334,15 @@ export default {
           :errors="errors.short_base_name  || errors.name"
           input-class="w-full"
           @update:model-value="emitUpdate"
+        />
+        <input-row
+            v-if="Number.parseInt(group.group_type_id) === 5"
+            v-model="group.website_url"
+            label="Website URL"
+            placeholder="https://civicdb.org/organizations/{INT:number}}/"
+            :errors="errors.website_url"
+            input-class="w-full"
+            @update:model-value="emitUpdate"
         />
         <div v-if="hasAnyPermission(['groups-manage'])">
           <input-row
@@ -358,6 +390,7 @@ export default {
       </input-row>
 
       <input-row
+        v-if="! [2, 6].includes(Number(group.group_type_id))"
         v-model="group.parent_id"
         type="select"
         :options="parentOptions"

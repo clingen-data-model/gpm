@@ -24,7 +24,7 @@ export default {
                 {
                     label: 'VCEPs',
                     typeId: 4,
-                    filter: (g) => g.is_vcep_or_scvcep,
+                    filter: (g) => g.is_vcep,
                 },
                 {
                     label: 'GCEPs',
@@ -109,7 +109,9 @@ export default {
             loadedFor: {
                 'VCEPs': false,
                 'GCEPs': false,
+                'SC-VCEPs': false,
                 'CDWGs': false,
+                'SC-CDWGs': false,
                 'WGs': false,
             },
             sort: {

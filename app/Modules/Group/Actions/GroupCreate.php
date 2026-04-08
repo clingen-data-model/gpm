@@ -24,13 +24,15 @@ class GroupCreate
 
     public function handle($data): Group
     {
+        $uuid = isset($data['uuid']) ? $data['uuid'] : Uuid::uuid4();
         $group = Group::create([
-            'uuid' => isset($data['uuid']) ? $data['uuid'] : Uuid::uuid4(),
+            'uuid' => $uuid,
             'name' => $data['name'],
             'group_type_id' => $data['group_type_id'],
             'group_status_id' => $data['group_status_id'],
             'coi_code' => $this->makeCoiCode->handle(),
             'parent_id' => $this->resolveParentId($data),
+            'website_url' => $data['website_url'] ?? null,
         ]);
 
         if ($group->isEp) {
@@ -41,9 +43,10 @@ class GroupCreate
                 'cdwg_id' => $this->resolveParentId($data),
                 'expert_panel_type_id' => ($data['group_type_id'] - 2),
                 'date_initiated' => Carbon::now(),
+                'affiliation_id' => $data['affiliation_id'] ?? null,
                 'current_step' => 1,
             ]);
-            $expertPanel->uuid = Uuid::uuid4();
+            $expertPanel->uuid = $uuid;
             $group->expertPanel()->save($expertPanel);
         }
 
@@ -54,7 +57,7 @@ class GroupCreate
 
     public function asController(ActionRequest $request)
     {
-        $data = $request->only('name', 'group_type_id', 'group_status_id', 'parent_id', 'long_base_name', 'short_base_name');
+        $data = $request->only('name', 'group_type_id', 'group_status_id', 'parent_id', 'long_base_name', 'short_base_name', 'website_url', 'affiliation_id');
 
         $group = $this->handle($data);
         $group->load('expertPanel');
