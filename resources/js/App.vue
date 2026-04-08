@@ -33,13 +33,9 @@ export default {
     }
   },
   mounted() {
-    this.getLookupResources()
     this.$store.dispatch('getCurrentUser');
   },
   methods: {
-    getLookupResources() {
-      this.$store.dispatch('cdwgs/getAll');
-    },
     refreshCurrentRoute() {
       this.$router.push(this.$route)
     },

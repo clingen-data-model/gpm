@@ -72,6 +72,7 @@ class Group extends Model implements HasMembers, RecordsEvents, HasDocuments, Ha
         'coi_code',
         'caption',
         'icon_path',
+        'website_url'
     ];
 
     /**
