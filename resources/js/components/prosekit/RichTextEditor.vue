@@ -96,4 +96,7 @@ watch(
       </div>
     </div>
   </ProseKit>
+  <note class="mt-1">
+    <span class="font-semibold">Note:</span> Partially overlapping bold and italic formatting is not supported and may render incorrectly.
+  </note>
 </template>
