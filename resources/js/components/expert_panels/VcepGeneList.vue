@@ -135,7 +135,7 @@
 
                     <!-- Disease -->
                     <div>
-                        <label class="block text-sm font-medium mb-1">Disease</label>
+                        <label class="block text-sm font-medium mb-1">Provisional Disease</label>
                         <DiseaseSearchSelect v-model="formGene.custom_disease" placeholder="Search disease..." />
                     </div>
 
