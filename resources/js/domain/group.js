@@ -17,6 +17,7 @@ class Group extends Entity {
         parent_id: null,
         group_type_id: null,
         group_status_id: null,
+        website_url: null,
         type: {},
         parent: {},
     };

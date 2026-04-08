@@ -88,6 +88,7 @@ class GroupAttributesUpdate
             'description' => 'string|nullable',
             'parent_id' => 'nullable|exists:groups,id',
             'group_status_id' => 'exists:group_statuses,id',
+            'website_url' => 'nullable|url',
         ];
     }
 
