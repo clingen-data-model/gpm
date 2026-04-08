@@ -146,6 +146,16 @@ export default {
         name = this.group.expert_panel.long_base_name;
       }
 
+      console.log('Creating group with data', {
+        name,
+        parent_id,
+        group_type_id,
+        group_status_id,
+        short_base_name,
+        affiliation_id,
+        website_url
+      })
+      
       return this.$store.dispatch(
         'groups/create',
         {
