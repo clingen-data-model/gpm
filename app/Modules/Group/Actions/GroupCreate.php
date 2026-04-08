@@ -30,6 +30,7 @@ class GroupCreate
             throw new \RuntimeException('Default group visibility is not configured. Set groups.visibility.public.id.');
         }
 
+        $uuid = isset($data['uuid']) ? $data['uuid'] : Uuid::uuid4();
         $group = Group::create([
             'uuid' => $uuid,
             'name' => $data['name'],
