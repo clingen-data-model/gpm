@@ -48,7 +48,7 @@ class StepApproved extends ExpertPanelEvent implements PublishableApplicationEve
         $groupType = $this->application->type->name;
         switch ($this->step) {
             case 1:
-                if ($isGcep) {
+                if ($groupType == config('groups.types.gcep.name')) {
                     return $groupType . '_final_approval';
                 }
                 return $groupType . '_definition_approval';
