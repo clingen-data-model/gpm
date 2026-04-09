@@ -7,11 +7,11 @@ use App\Modules\ExpertPanel\Models\Gene;
 use App\Actions\Utils\TransformArrayForCsv;
 use Lorisleiva\Actions\Concerns\AsController;
 
-class ReportVcepGenesMake
+class ReportScvcepGenesMake
 {
     use AsController;
 
-    public $commandSignature = 'reports:vcep-genes';
+    public $commandSignature = 'reports:scvcep-genes';
 
     public function __construct(private TransformArrayForCsv $csvTransformer)
     {
@@ -43,10 +43,13 @@ class ReportVcepGenesMake
     private function pullData(): array
     {
         $genes  = Gene::whereHas('expertPanel', function ($q) {
-                        $q->typeVcep();
+                        $q->typeScvcep();
                     })
                     ->orderBy('gene_symbol')
                     ->with([
+                        'disease' => function ($q) {
+                            $q->select(['mondo_id','name']);
+                        },
                         'expertPanel' => function ($q) {
                             $q->select(['id', 'long_base_name', 'expert_panel_type_id']);
                         },
@@ -57,20 +60,6 @@ class ReportVcepGenesMake
                         'expertPanel.group.type'
                     ])
                     ->get();
-        $gtApi = app(\App\Services\Api\GtApiService::class);
-
-        $mondoIds = $genes->pluck('mondo_id')->unique()->values()->all();
-        $diseaseData = $gtApi->getDiseasesByMondoIds($mondoIds);
-
-        $diseaseMap = collect($diseaseData)
-                        ->keyBy('mondo_id')
-                        ->map(fn($d) => (object)[
-                            'mondo_id' => $d['mondo_id'],
-                            'name' => $d['name']
-                        ]);
-        $genes->each(function ($gene) use ($diseaseMap) {
-            $gene->setRelation('disease', $diseaseMap[$gene->mondo_id] ?? (object)[]);
-        });
 
         return $genes
             ->groupBy(function ($g) {
@@ -82,7 +71,7 @@ class ReportVcepGenesMake
                     'hgnc_id' => $group->first()->hgnc_id,
                     'disease' => $group->first()->disease->name,
                     'mondo_id' => $group->first()->mondo_id,
-                    'VCEPs' => $group->map(function ($g) {
+                    'SC-VCEPs' => $group->map(function ($g) {
                         return $g->expertPanel->full_long_base_name;
                     })->join(', ')
                 ];
@@ -90,4 +79,5 @@ class ReportVcepGenesMake
             ->values()
             ->toArray();
     }
+
 }
