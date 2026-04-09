@@ -66,10 +66,9 @@ class ReportSummaryMake extends ReportMakeAbstract
         yield 'GCEPS' => Group::gcep()->count();
 
         yield 'VCEP applications in definition' => $vcep[1] ?? 0;
-        yield 'VCEP applications in draft specifications' => $vcep[2] ?? 0;
-        yield 'VCEP applications in pilot specifications' => $vcep[3] ?? 0;
+        yield 'VCEP applications in draft specs' => $vcep[2] ?? 0;
+        yield 'VCEP applications in pilot specs' => $vcep[3] ?? 0;
         yield 'VCEP applications in sustained curation' => $vcep[4] ?? 0;
-        yield 'VCEPs applying' => $this->getExpertPanelCount('typeVcep', 'applying');
         yield 'VCEPs approved' => $this->getExpertPanelCount('typeVcep', 'approved');
         yield 'VCEP genes' => $this->getGenesCountByExpertPanelType('typeVcep');
         
@@ -84,8 +83,9 @@ class ReportSummaryMake extends ReportMakeAbstract
 
         yield 'GCEPs applying' => $this->getExpertPanelCount('typeGcep', 'applying');
         yield 'GCEPs approved' => $this->getExpertPanelCount('typeGcep', 'approved');
+        yield 'VCEP genes' => $this->getGenesCountByExpertPanelType('typeVcep');
+        yield 'SC-VCEP genes' => $this->getGenesCountByExpertPanelType('typeScvcep');
         yield 'GCEP genes' => $this->getGenesCountByExpertPanelType('typeGcep');
-
         yield 'All Individuals' => Person::count();
         yield 'Active Individuals (has active group membership)' => $m['active_members'];
         yield 'Individuals in 1+ WGs' => $m['wg_members'];

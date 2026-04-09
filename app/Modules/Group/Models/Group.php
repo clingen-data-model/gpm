@@ -223,6 +223,7 @@ class Group extends Model implements HasMembers, RecordsEvents, HasDocuments, Ha
     {
         return $query->ofType(config('groups.types.scvcep.id'));
     }
+    
     public function scopeVcep($query)
     {
         return $query->ofType(config('groups.types.vcep.id'));
