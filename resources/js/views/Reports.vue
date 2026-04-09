@@ -13,12 +13,20 @@
             name: 'VCEP Application'
         },
         {
+            url: '/api/report/scvcep-application-summary',
+            name: 'SC-VCEP Application'
+        },
+        {
             url: '/api/report/gcep-genes',
             name: 'GCEP Genes'
         },
         {
             url: '/api/report/vcep-genes',
             name: 'VCEP Genes'
+        },
+        {
+            url: '/api/report/scvcep-genes',
+            name: 'SC-VCEP Genes'
         },
         {
             url: '/api/report/countries',
