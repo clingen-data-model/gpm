@@ -278,7 +278,7 @@ class Group extends Model implements HasMembers, RecordsEvents, HasDocuments, Ha
 
     public function getDisplayNameAttribute()
     {
-        $typeName = $this->type ? $this->type->name : '';
+        $typeName = $this->type ? $this->type->display_name : '';
         return $this->name.' '.strtoupper($typeName);
     }
 

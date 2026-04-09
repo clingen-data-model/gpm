@@ -68,10 +68,9 @@ const groupFields = ref([
         type: String
     },
     {
-        name: 'type.name',
+        name: 'type.display_name',
         label: 'Type',
         sortable: true,
-        resolveValue: item => upperCase(item.type.name)
     }
 ]);
 const groupSort = ref({
