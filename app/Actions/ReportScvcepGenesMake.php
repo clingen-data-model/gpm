@@ -7,11 +7,11 @@ use App\Modules\ExpertPanel\Models\Gene;
 use App\Actions\Utils\TransformArrayForCsv;
 use Lorisleiva\Actions\Concerns\AsController;
 
-class ReportVcepGenesMake
+class ReportScvcepGenesMake
 {
     use AsController;
 
-    public $commandSignature = 'reports:vcep-genes';
+    public $commandSignature = 'reports:scvcep-genes';
 
     public function __construct(private TransformArrayForCsv $csvTransformer)
     {
@@ -43,7 +43,7 @@ class ReportVcepGenesMake
     private function pullData(): array
     {
         $genes  = Gene::whereHas('expertPanel', function ($q) {
-                        $q->typeVcep();
+                        $q->typeScvcep();
                     })
                     ->orderBy('gene_symbol')
                     ->with([
@@ -71,7 +71,7 @@ class ReportVcepGenesMake
                     'hgnc_id' => $group->first()->hgnc_id,
                     'disease' => $group->first()->disease->name,
                     'mondo_id' => $group->first()->mondo_id,
-                    'VCEPs' => $group->map(function ($g) {
+                    'SC-VCEPs' => $group->map(function ($g) {
                         return $g->expertPanel->full_long_base_name;
                     })->join(', ')
                 ];
