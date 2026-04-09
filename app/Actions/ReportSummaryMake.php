@@ -59,7 +59,7 @@ class ReportSummaryMake extends ReportMakeAbstract
         yield 'Groups' => Group::count();
         yield 'Working Groups' => Group::wg()->count();
         yield 'CDWGs' => Group::cdwg()->count();
-        // yield 'SC-CDWGs' => Group::sccdwg()->count();
+        yield 'SC-CDWGs' => Group::sccdwg()->count();
 
         yield 'VCEPs' => Group::vcep()->count();
         yield 'SC-VCEPs' => Group::scvcep()->count();
@@ -72,14 +72,12 @@ class ReportSummaryMake extends ReportMakeAbstract
         yield 'VCEPs applying' => $this->getExpertPanelCount('typeVcep', 'applying');
         yield 'VCEPs approved' => $this->getExpertPanelCount('typeVcep', 'approved');
         yield 'VCEP genes' => $this->getGenesCountByExpertPanelType('typeVcep');
-        
-        // FOR FUTURE USE
-        // yield 'SC-VCEP applications in definition' => $scvcep[1] ?? 0;
-        // yield 'SC-VCEP applications in draft specifications' => $scvcep[2] ?? 0;
-        // yield 'SC-VCEP applications in pilot specifications' => $scvcep[3] ?? 0;
-        // yield 'SC-VCEP applications in sustained curation' => $scvcep[4] ?? 0;
-        // yield 'SC-VCEPs applying' => $this->getExpertPanelCount('typeScvcep', 'applying');
-        // yield 'SC-VCEPs approved' => $this->getExpertPanelCount('typeScvcep', 'approved');
+        yield 'SC-VCEP applications in definition' => $scvcep[1] ?? 0;
+        yield 'SC-VCEP applications in draft specifications' => $scvcep[2] ?? 0;
+        yield 'SC-VCEP applications in pilot specifications' => $scvcep[3] ?? 0;
+        yield 'SC-VCEP applications in sustained curation' => $scvcep[4] ?? 0;
+        yield 'SC-VCEPs applying' => $this->getExpertPanelCount('typeScvcep', 'applying');
+        yield 'SC-VCEPs approved' => $this->getExpertPanelCount('typeScvcep', 'approved');
         yield 'SC-VCEP genes' => $this->getGenesCountByExpertPanelType('typeScvcep');
 
         yield 'GCEPs applying' => $this->getExpertPanelCount('typeGcep', 'applying');
@@ -90,7 +88,7 @@ class ReportSummaryMake extends ReportMakeAbstract
         yield 'Active Individuals (has active group membership)' => $m['active_members'];
         yield 'Individuals in 1+ WGs' => $m['wg_members'];
         yield 'Individuals in 1+ CDWGs' => $m['cdwg_members'];
-        // yield 'Individuals in 1+ SC-CDWGs' => $m['sccdwg_members']; // FOR FUTURE USE
+        yield 'Individuals in 1+ SC-CDWGs' => $m['sccdwg_members'];
         yield 'Individuals in 1+ EPs' => $m['ep_members'];
         yield 'Individuals in 1+ GCEPs' => $m['gcep_members'];
         yield 'Individuals in 1+ VCEps' => $m['vcep_members'];
@@ -115,7 +113,7 @@ class ReportSummaryMake extends ReportMakeAbstract
     {
         $wgType   = config('groups.types.wg.id');
         $cdwgType = config('groups.types.cdwg.id');
-        // $sccdwgType = config('groups.types.sccdwg.id');
+        $sccdwgType = config('groups.types.sccdwg.id');
         $scvcepType = config('groups.types.scvcep.id');
         $vcepType = config('groups.types.vcep.id');
         $gcepType = config('groups.types.gcep.id');
@@ -128,7 +126,7 @@ class ReportSummaryMake extends ReportMakeAbstract
             ->selectRaw('COUNT(DISTINCT gm.person_id) as active_members')
             ->selectRaw('COUNT(DISTINCT CASE WHEN g.group_type_id = ? THEN gm.person_id END) as wg_members', [$wgType])
             ->selectRaw('COUNT(DISTINCT CASE WHEN g.group_type_id = ? THEN gm.person_id END) as cdwg_members', [$cdwgType])
-            // ->selectRaw('COUNT(DISTINCT CASE WHEN g.group_type_id = ? THEN gm.person_id END) as sccdwg_members', [$sccdwgType]) // FOR FUTURE USE
+            ->selectRaw('COUNT(DISTINCT CASE WHEN g.group_type_id = ? THEN gm.person_id END) as sccdwg_members', [$sccdwgType])
             ->selectRaw('COUNT(DISTINCT CASE WHEN g.group_type_id = ? THEN gm.person_id END) as scvcep_members', [$scvcepType])
             ->selectRaw('COUNT(DISTINCT CASE WHEN g.group_type_id = ? THEN gm.person_id END) as vcep_members', [$vcepType])
             ->selectRaw('COUNT(DISTINCT CASE WHEN g.group_type_id = ? THEN gm.person_id END) as gcep_members', [$gcepType])
