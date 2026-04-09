@@ -185,7 +185,7 @@ axios.interceptors.response.use(
                 store.commit('setAuthenticated', false)
                 return error;
             case 403:
-                if (error.response.data.includes('The request to access this resource was rejected.')) {
+                if (error.response.data.includes('Reference this support identifier')) {
                     const matches = error.response.data.match(/Reference this support identifier:\s*(\d+)/)
                     const supportId = matches[1] || null;
                     store.commit('pushError', `There is a Network Firewall issue.  Please contact support GPM Support ASAP at "gpm_support@clinicalgenome.org", providing details on your network connection and the following support ID: ${supportId}`)
