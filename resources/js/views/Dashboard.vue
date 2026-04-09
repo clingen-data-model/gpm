@@ -138,7 +138,7 @@ const navigateToGroup = (item) => {
             </badge>
           </template>
           <template #cell-displayName="{ item }">
-            {{ item.name }} {{ item.type.name.toUpperCase() }}
+            {{ item.name }} {{ item.type.display_name }}
           </template>
         </data-table>
       </tab-item>

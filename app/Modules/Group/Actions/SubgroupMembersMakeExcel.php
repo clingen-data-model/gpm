@@ -92,9 +92,9 @@ class SubgroupMembersMakeExcel {
 
     private function writeGroupSheet($writer, $group) {
         $sheet = $writer->addNewSheetAndMakeItCurrent();
-        $sheetName = $group->name.' '.strtoupper($group->type->name);
+        $sheetName = $group->name.' '.$group->type->display_name;
         if (strlen($group->name) > 26) {
-            $sheetName = substr($group->name, 0, 23).'... '.strtoupper($group->type->name);
+            $sheetName = substr($group->name, 0, 23).'... '. $group->type->display_name;
         }
         $sheet->setName(preg_replace('/[\/\?\*\[\]\\\:]/', '', $sheetName));
 

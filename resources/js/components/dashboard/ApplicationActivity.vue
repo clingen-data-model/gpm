@@ -22,6 +22,11 @@
             sortable: true
         },
         {
+            name: 'type.display_name',
+            label: 'Group Type',
+            sortable: true
+        },
+        {
             name: 'submission.type.name',
             label: 'Submitted Step',
             sortable: true

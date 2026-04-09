@@ -9,6 +9,6 @@
     </p>
 
     <p>
-        For further guidance on getting started, please reach out to your ClinGen PI liaison and/or parent CDWG coordinator.
+        For further guidance on getting started, please reach out to your ClinGen grant liaison and/or parent CDWG coordinator.
     </p>
 @endsection

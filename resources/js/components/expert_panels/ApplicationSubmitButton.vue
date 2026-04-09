@@ -62,9 +62,9 @@ export default {
             }
             switch (this.group.expert_panel.current_step) {
                 case 1:
-                    return 'VCEP Group Definition';
+                    return this.group.type.display_name + ' Group Definition';
                 case 4:
-                    return 'VCEP Sustained Curation Plans'
+                    return this.group.type.display_name + ' Sustained Curation Plans'
                 default:
                     // alert('Specifications approval is handled in the CSpec registry.  Please go there to develope your AMCG/AMP Guideline Specifications.')
                     break;

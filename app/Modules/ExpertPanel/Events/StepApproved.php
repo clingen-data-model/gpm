@@ -45,24 +45,20 @@ class StepApproved extends ExpertPanelEvent implements PublishableApplicationEve
 
     public function getEventType(): string
     {
-        $isVcep = $this->application->is_vcep;
-        $isGcep = $this->application->is_gcep;
-
+        $groupType = $this->application->type->name;
         switch ($this->step) {
             case 1:
-                if ($isVcep) {
-                    return 'vcep_definition_approval';
-                }
                 if ($isGcep) {
-                    return 'gcep_final_approval';
+                    return $groupType . '_final_approval';
                 }
+                return $groupType . '_definition_approval';
                 break;
             case 2:
-                return 'vcep_draft_specification_approval';
+                return $groupType . '_draft_specification_approval';
             case 3:
-                return 'vcep_pilot_approval';
+                return $groupType . '_pilot_approval';
             case 4:
-                return 'vcep_final_approval';
+                return $groupType . '_final_approval';
             default:
                 throw new Exception('Invalid step approved expected 1-4, received '.$this->step);
         }
