@@ -40,8 +40,10 @@ Route::get('/storage/profile-photos/{filename}', function ($filename) {
 Route::group(['prefix' => '/api/report'], function () {
     Route::get('/basic-summary', ReportSummaryMake::class);
     Route::get('/vcep-application-summary', ReportVcepApplicationMake::class);
+    Route::get('/scvcep-application-summary', ReportScvcepApplicationMake::class);
     Route::get('/gcep-genes', ReportGcepGenesMake::class);
     Route::get('/vcep-genes', ReportVcepGenesMake::class);
+    Route::get('/scvcep-genes', ReportScvcepGenesMake::class);
     Route::get('/institutions', ReportInstitutionsMake::class);
     Route::get('/countries', ReportCountriesMake::class);
     Route::get('/people', ReportPeopleMake::class);
