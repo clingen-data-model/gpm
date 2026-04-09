@@ -11,6 +11,8 @@ use App\Actions\ReportInstitutionsMake;
 use App\Http\Controllers\ViewController;
 use App\Actions\ReportVcepApplicationMake;
 use App\Actions\ReportPublicationsMake;
+use App\Actions\ReportScvcepApplicationMake;
+use App\Actions\ReportScvcepGenesMake;
 use App\Http\Controllers\DocumentController;
 use App\Modules\Group\Actions\GroupMembersMakeCsv;
 use App\Modules\ExpertPanel\Actions\CoiReportMakePdf;
