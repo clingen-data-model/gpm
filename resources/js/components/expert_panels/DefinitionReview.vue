@@ -4,6 +4,7 @@
     import ReviewSection from '@/components/expert_panels/ReviewSection.vue'
     import ReviewMembership from '@/components/expert_panels/ReviewMembership.vue'
     import { formatDate } from '@/date_utils'
+    import { htmlFromMarkdown } from '@/markdown-utils';
 
     const store = useStore();
     const group = computed(() => store.getters['groups/currentItemOrNew'])
@@ -17,7 +18,7 @@
 
     const basicInfo = computed(() => {
         return {
-            type: group.value.type.name ? group.value.type.name.toUpperCase() : '',
+            type: group.value.type.display_name,
             long_base_name: expertPanel.value.long_base_name,
             short_base_name: expertPanel.value.short_base_name,
         }
@@ -37,13 +38,13 @@
       <ReviewMembership :members="members" />
 
       <div v-if="group.is_vcep_or_scvcep" class="mt-6">
-        <h4>Expertise of VCEP members</h4>
-        <blockquote v-html="expertPanel.membership_description"></blockquote>
+        <h4>Expertise of {{ group.type.display_name }} members</h4>
+        <blockquote class="markdown-preview" v-html="htmlFromMarkdown(expertPanel.membership_description)"></blockquote>
       </div>
     </ReviewSection>
 
     <ReviewSection title="Website Description" name="website-description">
-      <blockquote v-html="group.description"></blockquote>
+      <blockquote v-html="htmlFromMarkdown(group.description)"></blockquote>
     </ReviewSection>
 
     <ReviewSection title="Scope" name="scope">
@@ -67,7 +68,7 @@
       </div>
 
       <h3>Description of scope</h3>
-      <blockquote v-html="expertPanel.scope_description"></blockquote>
+      <blockquote class="markdown-preview" v-html="htmlFromMarkdown(expertPanel.scope_description)"></blockquote>
     </ReviewSection>
 
     <ReviewSection v-if="group.is_gcep" title="Plans" name="plans">
@@ -110,3 +111,33 @@
     </ReviewSection>
   </div>
 </template>
+<style scoped>
+.markdown-preview :deep(p) {
+  margin: 0.5rem 0;
+}
+
+.markdown-preview :deep(ul) {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+  margin: 0.5rem 0;
+}
+
+.markdown-preview :deep(ol) {
+  list-style-type: decimal;
+  padding-left: 1.5rem;
+  margin: 0.5rem 0;
+}
+
+.markdown-preview :deep(li) {
+  display: list-item;
+  margin: 0.25rem 0;
+}
+
+.markdown-preview :deep(strong) {
+  font-weight: 600;
+}
+
+.markdown-preview :deep(em) {
+  font-style: italic;
+}
+</style>
