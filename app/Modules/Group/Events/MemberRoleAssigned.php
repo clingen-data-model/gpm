@@ -25,7 +25,7 @@ class MemberRoleAssigned extends GroupMemberEvent
     public function getProperties(): ?array
     {
         $props = parent::getProperties();
-        $props['roles'] = $this->roles->pluck('name')->toArray();
+        $props['roles'] = $this->roles->pluck('display_name')->toArray();
         return $props;
     }
 

@@ -27,7 +27,7 @@ class MemberRoleRemoved extends GroupMemberEvent
     public function getProperties(): ?array
     {
         $props = parent::getProperties();
-        $props['roles'][] = $this->role->name;
+        $props['roles'][] = $this->role->display_name;
         return $props;
     }
 
