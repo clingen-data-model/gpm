@@ -165,6 +165,42 @@ const store = createStore({
     //     : []
 })
 
+const reportClientsideEvent = (error) => {
+    const requestUrl = error?.config?.url
+    if (!requestUrl || requestUrl.includes('/api/clientside-event')) {
+        store.commit('pushError', 'An error occurred while reporting the previous error.  Please contact support at gpm_support@clinicalgenome.org.');
+        return // prevent recursion in case the event reporting itself fails
+    }
+
+    const responseData = typeof error?.response?.data === 'string'
+        ? error.response.data
+        : JSON.stringify(error?.response?.data);
+    const matches = responseData.match(/Reference this support identifier:\s*(\d+)/)
+    const supportId = matches?.[1] || null;
+
+    let message = responseData; // whole response as default
+    if (supportId) {
+        message = `CloudApps WAF problem, support ID: ${supportId}`;
+    }
+
+    window.fetch('/api/clientside-event', {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest',
+        },
+        body: JSON.stringify({
+            target: requestUrl,
+            method: error?.config?.method || 'get',
+            message,
+        }),
+    }).catch(() => {
+        // Ignore secondary reporting failures.
+    })
+}
+
 axios.interceptors.request.use((config) => {
     store.commit('addRequest');
     return config
@@ -185,9 +221,10 @@ axios.interceptors.response.use(
                 store.commit('setAuthenticated', false)
                 return error;
             case 403:
-                if (error.response.data.includes('Reference this support identifier')) {
+                if (typeof error.response.data === 'string' && error.response.data.includes('Reference this support identifier')) {
+                    reportClientsideEvent(error)
                     const matches = error.response.data.match(/Reference this support identifier:\s*(\d+)/)
-                    const supportId = matches[1] || null;
+                    const supportId = matches?.[1] || 'not provided';
                     store.commit('pushError', `There is a Network Firewall issue.  Please contact support GPM Support ASAP at "gpm_support@clinicalgenome.org", providing details on your network connection and the following support ID: ${supportId}`)
                 } else {
                     store.commit('pushError', 'You do not have permission to complete that action.  If you think this is an error please contact support at gpm_support@clinicalgenome.org')

@@ -13,6 +13,7 @@ use App\Actions\CommentResolve;
 use App\Actions\FeedbackSubmit;
 use App\Actions\CommentTypeList;
 use App\Actions\CommentUnresolve;
+use App\Actions\ClientsideEventReport;
 use App\Actions\LogEntrySearch;
 use App\Actions\NotificationMarkRead;
 use Illuminate\Support\Facades\Route;
@@ -60,6 +61,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/current-user', [CurrentUserController::class, 'show']);
 
     Route::post('/feedback', FeedbackSubmit::class);
+    Route::post('/clientside-event', ClientsideEventReport::class);
 
     Route::get('/email-drafts/groups/{group:uuid}', [MailDraftController::class, 'makeDraft']);
     // Route::get('/email-drafts/{applicationUuid}/{approvedStepNumber}', [MailDraftController::class, 'show']);
