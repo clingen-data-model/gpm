@@ -186,7 +186,7 @@ export default {
           <li v-for="permission in availableSystemPermissions" :key="permission.id" class="w-1/3 h-12">
             <checkbox
               v-if="checkedRolePermissionIds.includes(permission.id)"
-              :model-value="true" :disabled="true" :label="permission.display_name"
+              :model-value="true" :disabled="true" :label="titleCase(permission.display_name)"
             />
             <checkbox
               v-else

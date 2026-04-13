@@ -125,6 +125,14 @@ return [
             'scope' => 'system',
             'guard_name' => 'web',
         ],
+        'funding-sources-manage' => [
+            'id' => 60,
+            'name' => 'funding-sources-manage',
+            'display_name' => 'Manage Funding Sources',
+            'description' => 'Can edit/delete funding sources.',
+            'scope' => 'system',
+            'guard_name' => 'web',
+        ],
         'reports-pull' => [
             'id' => 6,
             'name' => 'reports-pull',
@@ -136,8 +144,8 @@ return [
     ],
 
     'role_permissions' => [
-        'super-user' => [1,2,3,4,5,6,10,20,30,31,40,50],
-        'super-admin' => [1,3,4,5,6,10,20,30,40,50],
+        'super-user' => [1,2,3,4,5,6,10,20,30,31,40,50,60],
+        'super-admin' => [1,3,4,5,6,10,20,30,40,50,60],
         'admin' => [3,4,6,10,20]
     ]
 ];
