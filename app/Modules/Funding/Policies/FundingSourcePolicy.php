@@ -7,33 +7,33 @@ use App\Modules\User\Models\User;
 
 class FundingSourcePolicy
 {
-    protected function isSuper(User $user): bool
+    protected function isEligebleUser(User $user): bool
     {
-        return $user->hasAnyRole(['super-user', 'super-admin']);
+        return $user->hasAnyRole(['super-user', 'super-admin']) || $user->hasAnyPermission(['funding-sources-manage']);
     }
 
     public function viewAny(User $user): bool
     {
-        return $this->isSuper($user);
+        return $this->isEligebleUser($user);
     }
 
     public function view(User $user, FundingSource $fundingSource): bool
     {
-        return $this->isSuper($user);
+        return $this->isEligebleUser($user);
     }
 
     public function create(User $user): bool
     {
-        return $this->isSuper($user);
+        return $this->isEligebleUser($user);
     }
 
     public function update(User $user, FundingSource $fundingSource): bool
     {
-        return $this->isSuper($user);
+        return $this->isEligebleUser($user);
     }
 
     public function delete(User $user, FundingSource $fundingSource): bool
     {
-        return $this->isSuper($user);
+        return $this->isEligebleUser($user);
     }
 }

@@ -392,12 +392,17 @@ watch(
           </div>
         </template>
 
-        <template #cell-actions="{ item }">
-          <div v-if="canManage" class="flex items-center gap-2 whitespace-nowrap">
-            <button class="btn btn-xs" @click.stop="startEdit(item)">Edit</button>
-            <button class="btn btn-xs" @click.stop="destroyAward(item)">Delete</button>
-          </div>
-        </template>
+        <template #cell-actions="{item}">
+        <dropdown-menu v-if="hasPermission('funding-sources-manage')" hide-cheveron>
+          <template #label>
+            <button class="btn btn-xs">
+              &hellip;
+            </button>
+          </template>
+          <dropdown-item @click="startEdit(item)">Update</dropdown-item>
+          <dropdown-item @click="destroyAward(item)">Delete</dropdown-item>
+        </dropdown-menu>
+      </template>
       </data-table>
 
       <div v-if="awards.length === 0" class="text-gray-600 mt-2">

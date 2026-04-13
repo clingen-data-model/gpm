@@ -282,7 +282,7 @@ onMounted(async () => {
     <h1 class="flex justify-between items-center">
       Funding Sources
       <button
-        v-if="hasRole('super-user') || hasRole('super-admin')"
+        v-if="hasPermission('funding-sources-manage')"
         class="btn btn-xs"
         @click="startCreate"
       >
@@ -331,11 +331,16 @@ onMounted(async () => {
         </button>
       </template>
 
-      <template #cell-actions="{ item }">
-        <div v-if="hasRole('super-user') || hasRole('super-admin')" class="flex items-center gap-2 whitespace-nowrap">
-          <button class="btn btn-xs" @click.stop="startEdit(item)">Edit</button>
-          <button class="btn btn-xs" @click.stop="destroy(item)">Delete</button>
-        </div>
+      <template #cell-actions="{item}">
+        <dropdown-menu v-if="hasPermission('funding-sources-manage')" hide-cheveron>
+          <template #label>
+            <button class="btn btn-xs">
+              &hellip;
+            </button>
+          </template>
+          <dropdown-item @click="startEdit(item)">Update</dropdown-item>
+          <dropdown-item @click="destroy(item)">Delete</dropdown-item>
+        </dropdown-menu>
       </template>
     </data-table>
 
