@@ -38,14 +38,13 @@ class EvidenceSummaryAdd
         }
 
         $evidenceSummary = $this->handle($group, $request->all());
-        $evidenceSummary->load('gene', 'gene.gene');
         return ['data' => $evidenceSummary];
     }
 
     public function rules()
     {
         return [
-            'gene_id' => 'required|exists:genes,id',
+            'gene_id' => 'required|exists:scope_genes,id',
             'variant' => 'required|max:255',
             'summary' => 'required|max:66535',
             'vci_url' => 'nullable|url'
