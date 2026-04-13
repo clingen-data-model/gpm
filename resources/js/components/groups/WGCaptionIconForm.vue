@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, watch } from 'vue'
+import { ref, watch } from 'vue'
 import { useStore } from 'vuex'
 import { api, isValidationError } from '@/http'
 import EditIconButton from '@/components/buttons/EditIconButton.vue'
@@ -22,48 +22,54 @@ function toggleEditing() {
 }
 
 async function save(e) {
-	e?.preventDefault?.()
-	if (!props.group?.uuid || saving.value) return
+  e?.preventDefault?.()
+  if (!props.group?.uuid || saving.value) return
 
-	errors.value = {}
-	saving.value = true
+  errors.value = {}
+  saving.value = true
 
-	try {
-		const data = new FormData()
+  try {
+    const data = new FormData()
 
-		if (caption.value !== undefined && caption.value !== null) {
-			data.append('caption', caption.value)
-		}
-		const file = iconInput.value?.files?.[0] || null
-		if (file) {
-			data.set('icon', file, file.name || 'icon.png')
-		}
-		data.append('_method', 'PUT')
+    if (caption.value !== undefined && caption.value !== null) {
+      data.append('caption', caption.value)
+    }
+    const file = iconInput.value?.files?.[0] || null
+    if (file) {
+      data.set('icon', file, file.name || 'icon.png')
+    }
+    data.append('_method', 'PUT')
 
-		await api.post(`/api/groups/${props.group.uuid}/caption-icon`, data , {
-			headers: { 'Content-Type': 'multipart/form-data' },
-		})
-		emit('saved')
-		store.commit('pushSuccess', 'Caption/Icon updated.')
-		editing.value = false
-		if (iconInput.value) iconInput.value.value = null
-	} catch (err) {
-		if (isValidationError(err)) {
-			errors.value = err.response?.data?.errors || {}
-		} else {
-			store.commit('pushError', err?.response?.data?.message || 'Failed to update branding.')
-		}
-	} finally {
-		saving.value = false
-	}
+    const response = await api.post(`/api/groups/${props.group.uuid}/caption-icon`, data , {
+        headers: { 'Content-Type': 'multipart/form-data' },
+    })
+    const updatedGroup = response.data?.data ?? response.data
+    props.group.caption = updatedGroup?.caption ?? caption.value
+    if (Object.prototype.hasOwnProperty.call(updatedGroup || {}, 'icon_url')) {
+      props.group.icon_url = updatedGroup?.icon_url ?? null
+    }
+    caption.value = props.group.caption ?? ''
+    emit('saved', updatedGroup)
+    store.commit('pushSuccess', 'Caption/Icon updated.')
+    editing.value = false
+    if (iconInput.value) iconInput.value.value = null
+  } catch (err) {
+    if (isValidationError(err)) {
+      errors.value = err.response?.data?.errors || {}
+    } else {
+      store.commit('pushError', err?.response?.data?.message || 'Failed to update branding.')
+    }
+  } finally {
+    saving.value = false
+  }
 }
 
 function cancelEdit(e) {
-	e?.preventDefault?.()
-	editing.value = false
-	errors.value = {}
-	if (iconInput.value) iconInput.value.value = null
-	caption.value = props.group?.caption ?? ''
+  e?.preventDefault?.()
+  editing.value = false
+  errors.value = {}
+  if (iconInput.value) iconInput.value.value = null
+  caption.value = props.group?.caption ?? ''
 }
 </script>
 

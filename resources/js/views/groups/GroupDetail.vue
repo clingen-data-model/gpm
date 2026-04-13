@@ -98,7 +98,7 @@ export default {
     };
 
     const getGroup = () => {
-      store.dispatch("groups/find", props.uuid).then(() => {
+      return store.dispatch("groups/find", props.uuid).then(() => {
         store.commit("groups/setCurrentItemIndexByUuid", props.uuid);
         store.dispatch('groups/getChildren', group.value);
         if (group.value.is_ep) {
@@ -112,7 +112,7 @@ export default {
         }
       });
     };
-
+    
     const needsToReviewSustainedCuration = computed(() => {
       return (
         group.value.pendingTasks &&
@@ -285,7 +285,30 @@ export default {
     },
     createAnnualUpdateForLatestWindow () {
       this.$store.dispatch('groups/createAnnualUpdateForLatestWindow', this.group);
-    }
+    },
+    async handleInfoSaved() {
+      const previousMembers = this.group?.members ? [...this.group.members] : null;
+      const previousChairs = this.group?.chairs ? [...this.group.chairs] : null;
+      const previousCoordinators = this.group?.coordinators ? [...this.group.coordinators] : null;
+
+      this.showInfoEdit = false;
+
+      await this.getGroup();
+
+      if ((!this.group.members || this.group.members.length === 0) && previousMembers?.length) {
+        this.group.members = previousMembers;
+      }
+
+      if ((!this.group.chairs || this.group.chairs.length === 0) && previousChairs?.length) {
+        this.group.chairs = previousChairs;
+      }
+
+      if ((!this.group.coordinators || this.group.coordinators.length === 0) && previousCoordinators?.length) {
+        this.group.coordinators = previousCoordinators;
+      }
+
+      this.$store.commit("pushSuccess", "Group info updated.");
+    },
   },
 };
 </script>
@@ -342,21 +365,19 @@ export default {
           <tab-item label="Website Description">
 
             <template v-if="group.is_vcep" >
-              <ClinvarForm :group="group" @saved="getGroup" />
+              <ClinvarForm :group="group" />
               <br />
             </template>
 
             <template v-if="(userInGroup(group) || hasPermission('groups-manage')) && group.is_working_group" >
-              <WGCaptionIconForm :group="group" @saved="getGroup" />
+              <WGCaptionIconForm :group="group" />
               <br />
             </template>
 
             <submission-wrapper
               :visible="group.is_ep"
               :show-controls="editingDescription"
-              @submitted="
-                submitForm('saveDescription', 'editingDescription')
-              "
+              @submitted="submitForm('saveDescription', 'editingDescription')"
               @canceled="cancelForm('editingDescription')"
             >
               <GroupDescriptionForm
@@ -596,7 +617,7 @@ export default {
           <GroupForm
             ref="infoForm"
             @canceled="showInfoEdit = false"
-            @saved="showInfoEdit = false"
+            @saved="handleInfoSaved"
           />
         </submission-wrapper>
       </modal-dialog>
