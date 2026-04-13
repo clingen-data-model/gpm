@@ -28,7 +28,15 @@ abstract class ReportMakeAbstract
 
         $this->streamRows(function (array $row) use ($out, &$wroteHeader) {
             foreach ($row as $k => $v) {
-                if (is_string($v)) $row[$k] = preg_replace('/\R/u', '; ', $v);
+                if (is_string($v)) {
+                    $row[$k] = preg_replace('/\R/u', '; ', $v);
+                } elseif (is_array($v)) {
+                    $row[$k] = json_encode($v, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+                } elseif (is_bool($v)) {
+                    $row[$k] = $v ? '1' : '0';
+                } elseif ($v === null) {
+                    $row[$k] = '';
+                }
             }
             if (!$wroteHeader) { fputcsv($out, array_keys($row)); $wroteHeader = true; }
             fputcsv($out, $row);
