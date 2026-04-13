@@ -9,12 +9,13 @@ use Lorisleiva\Actions\Concerns\AsObject;
 use Lorisleiva\Actions\ActionRequest;
 use Illuminate\Validation\Rules\File;
 use App\Modules\Group\Events\CaptionIconUpdated;
+use App\Modules\Group\Http\Resources\GroupResource;
 
 class CaptionIconUpdate
 {
     use AsController, AsObject;
 
-    public function handle(Group $group, ?string $caption, $iconFile = null): Group
+    public function handle(Group $group, ?string $caption, $iconFile = null)
     {
         // Only WG
         if ($group->group_type_id !== config('groups.types.wg.id')) {
@@ -62,7 +63,7 @@ class CaptionIconUpdate
             event(new CaptionIconUpdated($group, $changes));
         }
 
-        return $group->fresh();
+        return new GroupResource($group);
     }
 
     public function asController(ActionRequest $request, Group $group)

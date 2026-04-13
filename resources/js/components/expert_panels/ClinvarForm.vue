@@ -4,6 +4,7 @@ import { useStore } from 'vuex'
 import { api, isValidationError } from '@/http'
 import EditIconButton from '@/components/buttons/EditIconButton.vue'
 import { hasRole } from "@/auth_utils";
+
 const props = defineProps({ group: { type: Object, required: true } })
 const emit = defineEmits(['saved'])
 const store = useStore()
@@ -11,33 +12,39 @@ const clinvarOrgID = ref('')
 const editing = ref(false)
 const errors = ref({})
 const saving = ref(false)
+
 watch(() => props.group, g => { clinvarOrgID.value = g?.expert_panel?.clinvar_org_id ?? '' }, { immediate: true })
 function toggleEditing() { editing.value = !editing.value }
 async function save(e) {
-	e?.preventDefault?.()
-	if (!props.group?.uuid || saving.value) return
-	errors.value = {}
-	saving.value = true
-	try {
-		await api.put(`/api/applications/${props.group.expert_panel.uuid}/clinvar`, {clinvar_org_id: clinvarOrgID.value})
-		emit('saved')
-		store.commit('pushSuccess', 'ClinVar ID updated.')
-		editing.value = false
-	} catch (err) {
-		if (isValidationError(err)) {
-			errors.value = err.response?.data?.errors || {}
-		} else {
-			store.commit('pushError', err?.response?.data?.message || 'Failed to update ClinVar Organization ID.')
-		}
-	} finally {
-		saving.value = false
-	}
+  e?.preventDefault?.()
+  if (!props.group?.uuid || saving.value) return
+  errors.value = {}
+  saving.value = true
+  try {
+    const response = await api.put(`/api/applications/${props.group.expert_panel.uuid}/clinvar`, { clinvar_org_id: clinvarOrgID.value})
+    const updatedGroup = response.data?.data ?? response.data
+    if (props.group?.expert_panel) {
+      props.group.expert_panel.clinvar_org_id =
+        updatedGroup?.expert_panel?.clinvar_org_id ?? clinvarOrgID.value
+    }
+    emit('saved', updatedGroup)
+    store.commit('pushSuccess', 'ClinVar ID updated.')
+    editing.value = false
+  } catch (err) {
+    if (isValidationError(err)) {
+      errors.value = err.response?.data?.errors || {}
+    } else {
+      store.commit('pushError', err?.response?.data?.message || 'Failed to update ClinVar Organization ID.')
+    }
+  } finally {
+    saving.value = false
+  }
 }
 function cancelEdit(e) {
-	e?.preventDefault?.()
-	editing.value = false
-	errors.value = {}
-	clinvarOrgID.value = props.group?.expert_panel?.clinvar_org_id ?? ''
+  e?.preventDefault?.()
+  editing.value = false
+  errors.value = {}
+  clinvarOrgID.value = props.group?.expert_panel?.clinvar_org_id ?? ''
 }
 </script>
 <template>
