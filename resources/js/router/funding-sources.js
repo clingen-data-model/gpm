@@ -5,7 +5,7 @@ export default [
     component: () => import('@/views/FundingSourceList.vue'),
     meta: {
       protected: true,
-      permissions: ['ep-applications-manage'],
+      permissions: ['funding-sources-manage'],
     },
   },
 ]

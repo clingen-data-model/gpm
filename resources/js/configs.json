@@ -424,6 +424,14 @@
                 "scope": "system",
                 "guard_name": "web"
             },
+            "funding-sources-manage": {
+                "id": 60,
+                "name": "funding-sources-manage",
+                "display_name": "Manage Funding Sources",
+                "description": "Can edit/delete funding sources.",
+                "scope": "system",
+                "guard_name": "web"
+            },
             "reports-pull": {
                 "id": 6,
                 "name": "reports-pull",
@@ -446,7 +454,8 @@
                 30,
                 31,
                 40,
-                50
+                50,
+                60
             ],
             "super-admin": [
                 1,
@@ -458,7 +467,8 @@
                 20,
                 30,
                 40,
-                50
+                50,
+                60
             ],
             "admin": [
                 3,
