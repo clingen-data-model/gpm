@@ -9,6 +9,7 @@ use App\Modules\Person\Models\Person;
 use App\Modules\Person\Models\Country;
 use App\Modules\ExpertPanel\Models\Gene;
 use App\Modules\Group\Models\GroupMember;
+// use App\Modules\Group\Models\Publication; // FOR FUTURE USE
 use App\Modules\Person\Models\Institution;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Support\Facades\Cache;
@@ -51,36 +52,55 @@ class ReportSummaryMake extends ReportMakeAbstract
 
     private function metricsUncached(): iterable
     {
-        $v = $this->getVcepStepSummary();
+        $vcep = $this->getStepSummary(config('expert_panels.types.vcep.id'));
+        $scvcep = $this->getStepSummary(config('expert_panels.types.scvcep.id'));
         $m = $this->getMembershipCounts();
 
         yield 'Groups' => Group::count();
         yield 'Working Groups' => Group::wg()->count();
         yield 'CDWGs' => Group::cdwg()->count();
+        // yield 'SC-CDWGs' => Group::sccdwg()->count();
+
         yield 'VCEPs' => Group::vcep()->count();
+        yield 'SC-VCEPs' => Group::scvcep()->count();
         yield 'GCEPS' => Group::gcep()->count();
-        yield 'VCEP applications in definition' => $v[1] ?? 0;
-        yield 'VCEP applications in draft specs' => $v[2] ?? 0;
-        yield 'VCEP applications in pilot specs' => $v[3] ?? 0;
-        yield 'VCEP applications in sustained curation' => $v[4] ?? 0;
-        yield 'VCEPs approved' => $this->getVcepApprovedCount();
-        yield 'GCEPs applying' => $this->getGcepApplyingCount();
-        yield 'GCEPs approved' => $this->getGcepApprovedCount();
-        yield 'VCEP genes' => $this->getVcepGenesCount();
-        yield 'GCEP genes' => $this->getGcepGenesCount();
+
+        yield 'VCEP applications in definition' => $vcep[1] ?? 0;
+        yield 'VCEP applications in draft specs' => $vcep[2] ?? 0;
+        yield 'VCEP applications in pilot specs' => $vcep[3] ?? 0;
+        yield 'VCEP applications in sustained curation' => $vcep[4] ?? 0;
+        yield 'VCEPs applying' => $this->getExpertPanelCount('typeVcep', 'applying');
+        yield 'VCEPs approved' => $this->getExpertPanelCount('typeVcep', 'approved');
+        yield 'VCEP genes' => $this->getGenesCountByExpertPanelType('typeVcep');
+        
+        // FOR FUTURE USE
+        // yield 'SC-VCEP applications in definition' => $scvcep[1] ?? 0;
+        // yield 'SC-VCEP applications in draft specs' => $scvcep[2] ?? 0;
+        // yield 'SC-VCEP applications in pilot specs' => $scvcep[3] ?? 0;
+        // yield 'SC-VCEP applications in sustained curation' => $scvcep[4] ?? 0;
+        // yield 'SC-VCEPs applying' => $this->getExpertPanelCount('typeScvcep', 'applying');
+        // yield 'SC-VCEPs approved' => $this->getExpertPanelCount('typeScvcep', 'approved');
+        yield 'SC-VCEP genes' => $this->getGenesCountByExpertPanelType('typeScvcep');
+
+        yield 'GCEPs applying' => $this->getExpertPanelCount('typeGcep', 'applying');
+        yield 'GCEPs approved' => $this->getExpertPanelCount('typeGcep', 'approved');
+        yield 'GCEP genes' => $this->getGenesCountByExpertPanelType('typeGcep');
+
         yield 'All Individuals' => Person::count();
         yield 'Active Individuals (has active group membership)' => $m['active_members'];
         yield 'Individuals in 1+ WGs' => $m['wg_members'];
         yield 'Individuals in 1+ CDWGs' => $m['cdwg_members'];
+        // yield 'Individuals in 1+ SC-CDWGs' => $m['sccdwg_members']; // FOR FUTURE USE
         yield 'Individuals in 1+ EPs' => $m['ep_members'];
         yield 'Individuals in 1+ GCEPs' => $m['gcep_members'];
         yield 'Individuals in 1+ VCEps' => $m['vcep_members'];
+        yield 'Individuals in 1+ SC-VCEps' => $m['scvcep_members'];
         yield 'Countries represented' => $this->getCountriesRepresentedCount();
         yield 'Institutions represented' => $this->getInstitutionsRepresentedCount();
         yield 'People in 2+ EPs' => $this->getPeopleInManyEpsCount();
         yield 'Individuals with demographics info' => $this->getEverFilledDemographics();
         yield 'Individuals with current demographics info (within last year)' => $this->getFilledDemographicsInLastYear();
-
+        // yield 'Number of Publications' => $this->getNumberOfPublications(); // FOR FUTURE USE
         yield 'Individuals has taken Code of Conduct attestation and not expire per today\'s date' => $this->getPeopleWithCocCount();
     }
 
@@ -95,6 +115,8 @@ class ReportSummaryMake extends ReportMakeAbstract
     {
         $wgType   = config('groups.types.wg.id');
         $cdwgType = config('groups.types.cdwg.id');
+        // $sccdwgType = config('groups.types.sccdwg.id');
+        $scvcepType = config('groups.types.scvcep.id');
         $vcepType = config('groups.types.vcep.id');
         $gcepType = config('groups.types.gcep.id');
 
@@ -106,49 +128,44 @@ class ReportSummaryMake extends ReportMakeAbstract
             ->selectRaw('COUNT(DISTINCT gm.person_id) as active_members')
             ->selectRaw('COUNT(DISTINCT CASE WHEN g.group_type_id = ? THEN gm.person_id END) as wg_members', [$wgType])
             ->selectRaw('COUNT(DISTINCT CASE WHEN g.group_type_id = ? THEN gm.person_id END) as cdwg_members', [$cdwgType])
+            // ->selectRaw('COUNT(DISTINCT CASE WHEN g.group_type_id = ? THEN gm.person_id END) as sccdwg_members', [$sccdwgType]) // FOR FUTURE USE
+            ->selectRaw('COUNT(DISTINCT CASE WHEN g.group_type_id = ? THEN gm.person_id END) as scvcep_members', [$scvcepType])
             ->selectRaw('COUNT(DISTINCT CASE WHEN g.group_type_id = ? THEN gm.person_id END) as vcep_members', [$vcepType])
             ->selectRaw('COUNT(DISTINCT CASE WHEN g.group_type_id = ? THEN gm.person_id END) as gcep_members', [$gcepType])
+            ->selectRaw(
+                'COUNT(DISTINCT CASE WHEN g.group_type_id IN (?, ?, ?) THEN gm.person_id END) as ep_members',
+                [$vcepType, $gcepType, $scvcepType]
+            )
             ->first();
-
-        $vcep_members = $row->vcep_members ?? 0;
-        $gcep_members = $row->gcep_members ?? 0;
 
         return [
             'active_members' => (int) ($row->active_members ?? 0),
             'wg_members'     => (int) ($row->wg_members ?? 0),
             'cdwg_members'   => (int) ($row->cdwg_members ?? 0),
-            'vcep_members'   => $vcep_members,
-            'gcep_members'   => $gcep_members,
-            'ep_members'     => (int) ($gcep_members + $vcep_members ?? 0),
+            'sccdwg_members' => (int) ($row->sccdwg_members ?? 0),
+            'scvcep_members' => (int) ($row->scvcep_members ?? 0),
+            'vcep_members'   => (int) ($row->vcep_members ?? 0),
+            'gcep_members'   => (int) ($row->gcep_members ?? 0),
+            'ep_members'     => (int) ($row->ep_members ?? 0),
         ];
     }
 
-    private function getVcepGenesCount(): int
+    private function getGenesCountByExpertPanelType(string $typeScope): int
     {
         return Gene::query()
-                ->distinct('hgnc_id')
-                ->whereHas('expertPanel', function ($q) {
-                    $q->typeVcep();
-                })
-                ->count();
+            ->whereHas('expertPanel', function ($q) use ($typeScope) {
+                $q->{$typeScope}();
+            })
+            ->distinct()
+            ->count('hgnc_id');
     }
 
-    private function getGcepGenesCount(): int
-    {
-        return Gene::query()
-            ->distinct('hgnc_id')
-            ->whereHas('expertPanel', function ($q) {
-                        $q->typeGcep();
-                    })
-                    ->count();
-    }
-
-    private function getVcepStepSummary(): array
+    private function getStepSummary($groupTypeID): array
     {
         return DB::table('expert_panels')
                     ->select(['current_step'])
                     ->selectRaw('count(*) as count')
-                    ->where('expert_panel_type_id', config('expert_panels.types.vcep.id'))
+                    ->where('expert_panel_type_id', $groupTypeID)
                     ->whereNull('date_completed')
                     ->whereNull('deleted_at')
                     ->groupBy('current_step')
@@ -158,19 +175,12 @@ class ReportSummaryMake extends ReportMakeAbstract
                     ->toArray();
     }
 
-    private function getVcepApprovedCount(): int
+    private function getExpertPanelCount(string $typeScope, string $statusScope): int
     {
-        return ExpertPanel::typeVcep()->approved()->count();
-    }
-
-    private function getGcepApplyingCount(): int
-    {
-        return ExpertPanel::typeGcep()->applying()->count();
-    }
-
-    private function getGcepApprovedCount(): int
-    {
-        return ExpertPanel::typeGcep()->approved()->count();
+        return ExpertPanel::query()
+            ->{$typeScope}()
+            ->{$statusScope}()
+            ->count();
     }
 
     private function getCountriesRepresentedCount(): int
@@ -205,4 +215,10 @@ class ReportSummaryMake extends ReportMakeAbstract
             ->count();
     }
 
+    /* FOR FUTURE USE
+    private function getNumberOfPublications(): int
+    {
+        return Publication::count();
+    } */
+    
 }
