@@ -151,7 +151,7 @@ const pipelineRows = computed(() => [
   {
     status: 'Approved',
     vcep: getMetric('VCEPs approved'),
-    // scvcep: getMetric('SC-VCEPs approved'),
+    scvcep: getMetric('SC-VCEPs approved'),
     gcep: getMetric('GCEPs approved'),
   },
 ])
