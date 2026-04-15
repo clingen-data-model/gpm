@@ -96,7 +96,7 @@ export default {
             :key="gene.id"
             :value="gene.id"
           >
-            {{ gene.gene_symbol }}
+            Gene: {{ gene.gene_symbol }} {{ gene.mondo_id ? ' - Disease: ' + gene.mondo_id : '' }} {{ gene.moi ? ' - MoI: ' + gene.moi : '' }}
           </option>
         </select>
       </input-row>
