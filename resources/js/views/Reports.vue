@@ -91,9 +91,9 @@ const kpis = computed(() => [
     note: 'Across WG, CDWG, VCEP, and GCEP',
   },
   {
-    label: 'All individuals',
-    value: getMetric('All Individuals'),
-    note: `${formatNumber(getMetric('Active Individuals (has active group membership)'))} have active group membership`,
+    label: 'Active group members',
+    value: getMetric('Active Individuals (has active group membership)'),
+    note: `${formatNumber(getMetric('All Individuals'))} total individuals, ${formatPercent(getMetric('Active Individuals (has active group membership)'), getMetric('All Individuals'))} active`,
   },
   {
     label: 'Countries represented',
