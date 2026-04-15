@@ -36,10 +36,10 @@ class VcepGeneConflictService
     public function check(Group $currentGroup, ScopeGene|array $candidate): array
     {
         $normalized = $this->normalizeCandidate($candidate);
-        [$matches, $matchBasis] = $this->findMatches($currentGroup, $normalized);
-        $items = $this->mapMatches($matches, $matchBasis);
+        $matches = $this->findMatches($currentGroup, $normalized);
+        $items = $this->mapMatches($matches);
 
-        return [ 'vcep_conflict' => [
+        return ['vcep_conflict' => [
             'has_other_vcep_match' => !empty($items),
             'has_approved_other_vcep_match' => collect($items)->contains(
                 fn (array $item) => (int) ($item['group_status_id'] ?? 0) === (int) config('groups.statuses.active.id')
@@ -73,32 +73,47 @@ class VcepGeneConflictService
     /**
      * @return array{0: \Illuminate\Support\Collection<int, ScopeGene>, 1: string}
      */
-    protected function findMatches(Group $currentGroup, array $candidate): array
+    protected function findMatches(Group $currentGroup, array $candidate): Collection
     {
+        $matches = collect();
         if (filled($candidate['gt_curation_uuid'])) {
-            $matches = $this->baseQuery($currentGroup)
+            $this->baseQuery($currentGroup)
                 ->whereNotNull('gt_curation_uuid')
                 ->where('gt_curation_uuid', $candidate['gt_curation_uuid'])
-                ->get();
-            return [$matches, 'Matched by GT Curation UUID'];
+                ->get()
+                ->each(fn (ScopeGene $gene) => $matches->push([
+                    'gene' => $gene,
+                    'match_basis' => 'Matched by GT Curation UUID',
+                ]));
         }
 
         if (!filled($candidate['mondo_id'])) {
-            return [collect(), 'fallback'];
+            return $matches;
         }
 
-        $query = $this->baseQuery($currentGroup)->where('mondo_id', $candidate['mondo_id']);
         if (filled($candidate['hgnc_id'])) {
-            $query->where('hgnc_id', $candidate['hgnc_id']);
-            return [$query->get(), 'Matched by HGNC ID + Mondo ID'];
+            $this->baseQuery($currentGroup)
+                ->where('mondo_id', $candidate['mondo_id'])
+                ->where('hgnc_id', $candidate['hgnc_id'])
+                ->get()
+                ->each(fn (ScopeGene $gene) => $matches->push([
+                    'gene' => $gene,
+                    'match_basis' => 'Matched by HGNC ID + Mondo ID',
+                ]));
+        } else if (filled($candidate['gene_symbol'])) {
+            $this->baseQuery($currentGroup)
+                ->where('mondo_id', $candidate['mondo_id'])
+                ->where('gene_symbol', $candidate['gene_symbol'])
+                ->get()
+                ->each(fn (ScopeGene $gene) => $matches->push([
+                    'gene' => $gene,
+                    'match_basis' => 'Matched by Gene Symbol + Mondo ID',
+                ]));
         }
 
-        if (filled($candidate['gene_symbol'])) {
-            $query->where('gene_symbol', $candidate['gene_symbol']);
-            return [$query->get(), 'Matched by Gene Symbol + Mondo ID'];
-        }
-        return [collect(), 'fallback'];
+        return $matches;
     }
+
 
     protected function baseQuery(Group $currentGroup): Builder
     {
@@ -119,20 +134,35 @@ class VcepGeneConflictService
      *   match_basis: string
      * }>
      */
-    protected function mapMatches(Collection $matches, string $matchBasis): array
+    protected function mapMatches(Collection $matches): array
     {
         return $matches
-            ->map(fn (ScopeGene $gene) => $gene->expertPanel?->group)
-            ->filter()
-            ->unique('id')
-            ->map(function (Group $group) use ($matchBasis) {
+            ->map(function (array $match) {
+                $group = $match['gene']->expertPanel?->group;
+                if (!$group) { return null; }
+
                 return [
+                    'group_id' => $group->id,
                     'group_uuid' => $group->uuid,
                     'group_name' => $group->name,
                     'group_status_id' => $group->group_status_id,
                     'application_status' => $group->status?->name,
-                    'match_basis' => $matchBasis,
+                    'match_basis' => $match['match_basis'],
                 ];
+            })
+            ->filter()
+            ->groupBy('group_id')
+            ->map(function (Collection $groupMatches) {
+                $first = $groupMatches->first();
+
+                $first['match_basis'] = $groupMatches
+                    ->pluck('match_basis')
+                    ->unique()
+                    ->implode('; ');
+
+                unset($first['group_id']);
+
+                return $first;
             })
             ->values()
             ->all();
