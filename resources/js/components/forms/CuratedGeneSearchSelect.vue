@@ -15,12 +15,14 @@ export default {
                 return this.modelValue;
             },
             set(value) {
+				if (value?.is_no_result) return;
                 this.$emit('update:modelValue', value);
             }
         }
     },
     methods: {
         async search(searchText) {
+			/* Removed Other (Not Curated since for nwo it's only for super-admin/super-user ) 
 			const otherOption = {
 				curation_id: 'other',
 				hgnc_id: '',
@@ -40,17 +42,13 @@ export default {
 				excluded_phenotypes: '',
 				checkKey: '',
 				is_other: true
-			};
+			}; */
 
-            if (! searchText || searchText.length < 3) {
-				return [otherOption];
-			}
+            // if (! searchText || searchText.length < 3) { return [otherOption]; }
 
             const response = await api.get(`/api/curations`, { params: { query: searchText } })
 										.then(response => response.data);
-			if(response.data.length === 0) {
-				return [otherOption];
-			}
+			// if(response.data.length === 0) { return [otherOption]; }
 
 			const curatedResults = response.data
 				.filter(item => {
@@ -65,7 +63,15 @@ export default {
 					};
 				});
 
-            curatedResults.push(otherOption);
+            // curatedResults.push(otherOption);
+
+			if (curatedResults.length === 0) {
+				return [{
+					id: 'no-result',
+					is_no_result: true,
+					message: 'No matching curated gene-disease-MOI found.'
+				}];
+			}
 
 			return curatedResults;
         }
@@ -96,7 +102,10 @@ export default {
 
 		<!-- How dropdown options look -->
 		<template #option="{option}">
-			<div v-if="option?.is_other">
+			<div v-if="option?.is_no_result" class="text-sm text-gray-500 italic cursor-default">
+				{{ option.message }}
+			</div>
+			<div v-else-if="option?.is_other">
 				<strong>Other (Not curated)</strong>
 			</div>
 			<div v-else>

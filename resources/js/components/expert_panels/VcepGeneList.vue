@@ -89,13 +89,22 @@
                   </ul>
                 </div>
 
-                <button
-                    type="button"
-                    class="text-blue-600 underline text-sm hover:text-blue-800"
-                    @click="selectOther"
-                >
-                    Click here for <strong>Other (Not Curated)</strong>
-                </button>
+                <template v-if="hasRole('super-admin') || hasRole('super-user')">
+                    <button
+                        
+                        type="button"
+                        class="text-blue-600 underline text-sm hover:text-blue-800"
+                        @click="selectOther"
+                    >
+                        Click here for <strong>Other (Not Curated)</strong>
+                    </button>
+                    <note>This is Admin only, if you're seeing this and you're not an Admin, please contact your administrator.</note>
+                </template>
+                <template v-else>
+                    <p class="mt-3 text-sm text-gray-600">
+                        If the gene-disease-MOI you are looking for does not appear in the search results, please contact GPM support for assistance.
+                    </p>
+                </template>
 
                 <!-- Curated plan required for Moderate/Limited -->
                 <div
@@ -422,7 +431,7 @@ import GeneSearchSelect from '@/components/forms/GeneSearchSelect.vue';
 import DiseaseSearchSelect from '@/components/forms/DiseaseSearchSelect.vue';
 import CuratedGeneSearchSelect from '@/components/forms/CuratedGeneSearchSelect.vue';
 import { htmlFromMarkdown, markdownFromHTML } from '@/markdown-utils'
-import { hasAnyPermission } from '@/auth_utils';
+import { hasAnyPermission, hasRole } from '@/auth_utils';
 import RichTextEditor from '@/components/prosekit/RichTextEditor.vue';
 import EditIconButton from '@/components/buttons/EditIconButton.vue'
 
@@ -585,6 +594,9 @@ export default {
         });
 
         const selectOther = () => {
+            if (! (hasRole('super-admin') || hasRole('super-user'))) {
+                store.commit('pushError', 'You do not have permission to select Other. Please contact your administrator for assistance.')
+            }
             const originalId = formGene.value?.id || null;
             formGene.value = {
                 id: originalId,
