@@ -273,7 +273,7 @@ onMounted(() => {
         </div>
 
         <template v-else>
-          <section class="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+          <section class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
             <article
               v-for="card in kpis"
               :key="card.label"
