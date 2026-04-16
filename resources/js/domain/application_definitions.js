@@ -153,6 +153,7 @@ export const VcepApplication = applicationDefinitionFactory({
                 membership: {
                     name: 'Membership',
                     requirements: [
+                        requirements.grantliaisons,
                         requirements.chairs,
                         requirements.coordinators,
                         requirements.coisComplete,
@@ -299,6 +300,7 @@ export const GcepApplication = applicationDefinitionFactory({
                 membership: {
                     name: 'Membership',
                     requirements: [
+                        requirements.grantliaisons,
                         requirements.chairs,
                         requirements.coisComplete,
                         requirements.cocsComplete,
