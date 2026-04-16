@@ -66,8 +66,8 @@ class ReportSummaryMake extends ReportMakeAbstract
         yield 'GCEPS' => Group::gcep()->count();
 
         yield 'VCEP applications in definition' => $vcep[1] ?? 0;
-        yield 'VCEP applications in draft specs' => $vcep[2] ?? 0;
-        yield 'VCEP applications in pilot specs' => $vcep[3] ?? 0;
+        yield 'VCEP applications in draft specifications' => $vcep[2] ?? 0;
+        yield 'VCEP applications in pilot specifications' => $vcep[3] ?? 0;
         yield 'VCEP applications in sustained curation' => $vcep[4] ?? 0;
         yield 'VCEPs applying' => $this->getExpertPanelCount('typeVcep', 'applying');
         yield 'VCEPs approved' => $this->getExpertPanelCount('typeVcep', 'approved');
@@ -75,8 +75,8 @@ class ReportSummaryMake extends ReportMakeAbstract
         
         // FOR FUTURE USE
         // yield 'SC-VCEP applications in definition' => $scvcep[1] ?? 0;
-        // yield 'SC-VCEP applications in draft specs' => $scvcep[2] ?? 0;
-        // yield 'SC-VCEP applications in pilot specs' => $scvcep[3] ?? 0;
+        // yield 'SC-VCEP applications in draft specifications' => $scvcep[2] ?? 0;
+        // yield 'SC-VCEP applications in pilot specifications' => $scvcep[3] ?? 0;
         // yield 'SC-VCEP applications in sustained curation' => $scvcep[4] ?? 0;
         // yield 'SC-VCEPs applying' => $this->getExpertPanelCount('typeScvcep', 'applying');
         // yield 'SC-VCEPs approved' => $this->getExpertPanelCount('typeScvcep', 'approved');
