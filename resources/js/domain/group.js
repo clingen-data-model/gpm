@@ -50,6 +50,11 @@ class Group extends Entity {
 
     }
 
+    get grantliaisons () {
+        return this.findMembersWithRole('grant-liaison')
+                .filter(m => m.isActive)
+    }
+    
     get coordinators () {
         return this.findMembersWithRole('coordinator')
                 .filter(m => m.isActive)
