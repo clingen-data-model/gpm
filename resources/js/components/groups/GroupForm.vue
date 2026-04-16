@@ -117,7 +117,6 @@ export default {
                 parent_id,
                 group_type_id,
                 group_status_id,
-                group_visibility_id,
             } = this.group.attributes;
 
             const {short_base_name} = this.group.expert_panel;
@@ -134,7 +133,7 @@ export default {
                     group_type_id,
                     group_status_id,
                     short_base_name,
-                    group_visibility_id,
+                    group_visibility_id: this.group.group_visibility_id,
                 }
             );
         },
@@ -220,7 +219,7 @@ export default {
             return this.submitFormData({
                 method: 'put',
                 url: `/api/groups/${this.group.uuid}/visibility`,
-                data: {visibility_id: this.group.group_visibility_id}
+                data: {group_visibility_id: this.group.group_visibility_id}
             })
         },
         resetData () {

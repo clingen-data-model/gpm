@@ -34,7 +34,7 @@ class GroupVisibilityUpdate
 
     public function asController(ActionRequest $request, Group $group)
     {
-        $newVisibility = GroupVisibility::findOrFail($request->visibility_id);
+        $newVisibility = GroupVisibility::findOrFail($request->group_visibility_id);
         $group = $this->handle($group, $newVisibility);
         $group->load('expertPanel');
         return new GroupResource($group);
@@ -43,7 +43,7 @@ class GroupVisibilityUpdate
     public function rules(): array
     {
         return [
-            'visibility_id' => 'required|exists:group_visibilities,id',
+            'group_visibility_id' => 'required|exists:group_visibilities,id',
         ];
     }
 
