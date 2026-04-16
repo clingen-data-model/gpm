@@ -32,9 +32,7 @@ class MemberRemoveRole
         $role = config('permission.models.role')::findOrFail($roleId);
         
         $groupMember = $this->handle($groupMember, $role);
-        $groupMember->load('cois', 'permissions', 'roles');
-
-
+        $groupMember->load('cois', 'latestCoi', 'permissions', 'roles', 'person.expertises', 'person.latestCocAttestation');
         return new MemberResource($groupMember);
     }
 }

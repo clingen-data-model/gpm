@@ -43,7 +43,7 @@ class MemberAssignRole
     public function asController(ActionRequest $request, $groupUuid, $memberId)
     {
         $groupMember = $this->handle(GroupMember::findOrFail($memberId), $request->role_ids);
-        $groupMember->load('cois', 'permissions', 'roles');
+        $groupMember->load('cois', 'latestCoi', 'permissions', 'roles', 'person.expertises', 'person.latestCocAttestation');
         return new MemberResource($groupMember);
     }
 

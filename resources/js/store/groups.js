@@ -219,23 +219,28 @@ export const actions = {
                 });
     },
 
-    async memberSyncRoles ({ dispatch }, {group, member}) {
+    async memberSyncRoles ({ dispatch }, { group, member }) {
         const promises = [];
         if (member.addedRoles.length > 0) {
             promises.push(dispatch(
-                'memberAssignRole',
-                {uuid: group.uuid, memberId: member.id, roleIds: member.addedRoles.map(role => role.id)}
+                'memberAssignRole', {
+                    uuid: group.uuid,
+                    memberId: member.id,
+                    roleIds: member.addedRoles.map(role => role.id)
+                }
             ));
         }
 
-        member.removedRoles.forEach(role => {
-            promises.push(dispatch(
-                'memberRemoveRole',
-                {uuid: group.uuid, memberId: member.id, roleId: role.id}
+        for (const role of member.removedRoles) {
+            promises.push(dispatch('memberRemoveRole', {
+                    uuid: group.uuid,
+                    memberId: member.id,
+                    roleId: role.id
+                }
             ));
-        })
-
-        return promises;
+        }
+        await Promise.all(promises);
+        return dispatch('getMembers', group);
     },
 
     async memberGrantPermission ({ commit }, {uuid, memberId, permissionIds}) {
