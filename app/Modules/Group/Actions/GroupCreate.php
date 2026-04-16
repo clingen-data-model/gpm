@@ -24,9 +24,9 @@ class GroupCreate
 
     public function handle($data): Group
     {
-        $visibilityId = $data['group_visibility_id'] ?? config('groups.visibility.public.id');
+        $groupVisibilityId = $data['group_visibility_id'] ?? config('groups.visibility.public.id');
 
-        if ($visibilityId === null) {
+        if ($groupVisibilityId === null) {
             throw new \RuntimeException('Default group visibility is not configured. Set groups.visibility.public.id.');
         }
 
@@ -35,7 +35,7 @@ class GroupCreate
             'name' => $data['name'],
             'group_type_id' => $data['group_type_id'],
             'group_status_id' => $data['group_status_id'],
-            'group_visibility_id' => $visibilityId,
+            'group_visibility_id' => $groupVisibilityId,
             'coi_code' => $this->makeCoiCode->handle(),
             'parent_id' => $this->resolveParentId($data),
         ]);
