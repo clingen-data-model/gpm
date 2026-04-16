@@ -98,11 +98,11 @@
                     >
                         Click here for <strong>Other (Not Curated)</strong>
                     </button>
-                    <note>This is Admin only, if you're seeing this and you're not an Admin, please contact your administrator.</note>
+                    <note>This is Admin only, if you're seeing this and you're not an Admin, please contact <a href="mailto:gpm_support@clinicalgenome.com" class="text-blue-600 underline">GPM support</a>.</note>
                 </template>
                 <template v-else>
                     <p class="mt-3 text-sm text-gray-600">
-                        If the gene-disease-MOI you are looking for does not appear in the search results, please contact GPM support for assistance.
+                        If the gene-disease-MOI you are looking for does not appear in the search results, please contact <a href="mailto:gpm_support@clinicalgenome.com" class="text-blue-600 underline">GPM support</a>.
                     </p>
                 </template>
 
