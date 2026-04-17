@@ -1,58 +1,50 @@
-<script>
+<script setup>
+import { computed } from 'vue'
 import api from '@/http/api'
 import SearchSelect from '@/components/forms/SearchSelect.vue'
 
-export default {
-    name: 'GeneSearchSelect',
-    components: {
-        SearchSelect,
-    },
-    props: {
-        modelValue: {
-            required: true,
-        }
-    },
-    emits: [
-      'update:modelValue',
-    ],
-    computed: {
-        selectedGene: {
-            get () {
-                return this.modelValue;
-            },
-            set (value) {
-                this.$emit('update:modelValue', value);
-            }
-        }
-    },
-    methods: {
-        async search (searchText) {
-            return await api.get(`/api/genes/search?query_string=${searchText}`)
-                .then(response => {
-                    return response.data;
-                });
-        },
-    }
+const props = defineProps({
+  modelValue: {
+    required: true,
+  },
+})
+
+const emit = defineEmits([
+  'update:modelValue',
+])
+
+const selectedGene = computed({
+  get() {
+    return props.modelValue
+  },
+  set(value) {
+    emit('update:modelValue', value)
+  },
+})
+
+async function search(searchText) {
+  const response = await api.get(`/api/genes/search?query_string=${searchText}`)
+  return response.data
 }
 </script>
 <template>
-  <SearchSelect 
-    v-model="selectedGene" 
-    :search-function="search" 
-    style="z-index: 2" 
+  <SearchSelect
+    v-model="selectedGene"
+    :search-function="search"
+    style="z-index: 2"
     placeholder="HGNC ID or Gene Symbol"
     key-options-by="id"
   >
-    <template #selection-label="{selection}">
-      <div v-if="typeof selection == 'object'">
+    <template #selection-label="{ selection }">
+      <div v-if="typeof selection === 'object'">
         {{ selection.gene_symbol }}
       </div>
       <div v-else>
         {{ selection }}
       </div>
     </template>
-    <template #option="{option}">
-      <div v-if="typeof option == 'object'">
+    <template #option="{ option }">
+      <div v-if="typeof option === 'object'">
         {{ option.gene_symbol }}
       </div>
       <div v-else>
