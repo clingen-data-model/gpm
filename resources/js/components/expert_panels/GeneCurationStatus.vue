@@ -468,11 +468,8 @@ watch(
                     {{ (gene.statuses || []).join(', ') }}
                   </span>
                 </div>
-                <div class="mt-0.5 text-sm text-gray-700 truncate max-w-full">
-                  <template v-if="(gene.expert_panels || []).length">
+                <div v-if="(gene.expert_panels || []).length" class="mt-0.5 text-sm text-gray-700 truncate max-w-full">
                     {{ gene.expert_panels.join(', ') }}
-                  </template>
-                  <template v-else>—</template>
                 </div>
               </div>
             </div>
@@ -502,13 +499,14 @@ watch(
                   <option value="2">Secondary</option>
                 </select>
                 <span v-if="savingTierFor === gene.id" class="text-xs text-gray-500">Saving…</span>
-				<button class="rounded border px-2 py-1 text-xs bg-white hover:bg-red-50"
-					:disabled="removingId == gene.id"
-					@click="confirmRemove(gene)"
-					title="Remove gene"
-					>
-					{{ removingId == gene.id ? 'Removing…' : ' X ' }}
-				</button>
+                <button class="rounded px-2 py-1 text-xs"
+                  :disabled="removingId == gene.id"
+                  :class="(gene.details || []).length ? 'border border-red-300 bg-red-100' : 'border border-gray-400 bg-gray-50'"
+                  @click="confirmRemove(gene)"
+                  title="Remove gene"
+                  >
+                  {{ removingId == gene.id ? 'Removing…' : ' Remove? ' }}
+                </button>
               </template>
               <span v-else class="text-xs text-gray-700">Tier: {{ ! gene.tier ? '—' : gene.tier == 1 ? 'Primary' : 'Secondary' }}</span>
             </div>
@@ -541,12 +539,12 @@ watch(
                     </template>
                     <template v-if="entry.rationales || entry.phenotypes">
                     <div><span class="text-[11px] uppercase text-gray-500">Rationales</span><div class="text-gray-900">{{ entry.rationales || '—' }}</div></div>
-                    <div class="col-span-2"><span class="text-[11px] uppercase text-gray-500">Phenotype</span>
+                    <div v-if="entry.phenotypes" class="col-span-2"><span class="text-[11px] uppercase text-gray-500">Phenotype</span>
                       <div class="text-gray-900">
                         <span>{{ entry.phenotypes || '—' }}</span>
-                        <template v-if="entry.phenotypes">
-                          <span class="mx-2 font-bold">&middot;</span>
-                          <span class="font-bold">Excluded:</span> {{ entry.excluded_phenotypes }}
+                        <template v-if="entry.excluded_phenotypes !=''">
+                          <span class="mx-2 font-bold">&middot; Excluded: </span> 
+                          {{ entry.excluded_phenotypes }}
                         </template>
                       </div></div>
                     </template>
