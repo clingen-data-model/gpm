@@ -43,32 +43,56 @@ const bulkTier = ref('')
 const savingTierFor = ref(null)
 const savingBulk = ref(false)
 
-const showConfirmRemove = ref(false);
-const removingId = ref(null);
-const selectedGene = ref(null);
-const confirmRemove = (gene) => {
-	selectedGene.value = gene;
-	showConfirmRemove.value = true;
-};
+// Updated to support bulk removal
+const showConfirmRemove = ref(false)
+const genesPendingRemoval = ref([])
+const removingIds = ref([])
+const removingBulk = ref(false)
+
+const selectedGeneRows = computed(() => {
+  return props.genes.filter(g => selectedGenes.value.includes(g.id))
+})
+
+const removalCount = computed(() => genesPendingRemoval.value.length)
+
+const removalLabel = computed(() => {
+  if (removalCount.value === 0) return ''
+  if (removalCount.value === 1) return genesPendingRemoval.value[0]?.gene_symbol || ''
+  return `${removalCount.value} selected genes`
+})
+
+const confirmRemove = (geneOrGenes) => {
+  const list = Array.isArray(geneOrGenes) ? geneOrGenes : [geneOrGenes]
+  genesPendingRemoval.value = list.filter(Boolean)
+  if (!genesPendingRemoval.value.length) return
+  showConfirmRemove.value = true
+}
+
 const cancelRemove = () => {
-	selectedGene.value = null;
-	showConfirmRemove.value = false;
-};
-const removeGene = async () => {
-	if (!selectedGene.value) return;
-	try {
-    removingId.value = selectedGene.value.id;
-		await api.delete(`/api/groups/${props.groupID}/expert-panel/genes/${selectedGene.value.id}`);
-		showConfirmRemove.value = false;
-		store.commit('pushSuccess', `Successfully removed gene ${selectedGene.value.gene_symbol}`);
-		const removed = selectedGene.value;
-		selectedGene.value = null;
-		emit('removed', { id: removed.id, gene_symbol: removed.gene_symbol })
-    removingId.value = null;
-	} catch (error) {
-		store.commit('pushError', error.response?.data);
-	}
-};
+  genesPendingRemoval.value = []
+  showConfirmRemove.value = false
+}
+const removeGenes = async () => {
+  if (!genesPendingRemoval.value.length) return
+  const ids = genesPendingRemoval.value.map(g => g.id)
+  const names = genesPendingRemoval.value.map(g => g.gene_symbol).filter(Boolean)
+  removingIds.value = ids
+  removingBulk.value = ids.length > 1
+  try {
+    await api.delete(`/api/groups/${props.groupID}/expert-panel/genes`, { data: { ids } })
+    showConfirmRemove.value = false
+    store.commit('pushSuccess', ids.length === 1 ? `Successfully removed gene ${names[0]}` : `Successfully removed ${ids.length} genes`)
+    selectedGenes.value = selectedGenes.value.filter(id => !ids.includes(id))
+    genesPendingRemoval.value = []
+    emit('removed', { ids, gene_symbols: names })
+  } catch (error) {
+    store.commit('pushError', error.response?.data || 'Failed to remove gene(s)')
+  } finally {
+    removingIds.value = []
+    removingBulk.value = false
+  }
+}
+// End of updated removal logic
 
 const toggleStatus = (s) => {
   if (selectedStatuses.value.includes(s)) {
@@ -78,13 +102,11 @@ const toggleStatus = (s) => {
   }
 }
 const clearStatuses = () => { selectedStatuses.value = [] }
-
 const statusLabel = computed(() => {
   if (selectedStatuses.value.length === 0) return 'All'
   if (selectedStatuses.value.length === 1) return selectedStatuses.value[0]
   return `${selectedStatuses.value.length} selected`
 })
-
 
 const statusPriority = {
 	'Not Curated': 0,
@@ -302,7 +324,7 @@ watch(
           <button type="button" class="border rounded px-3 py-1 text-sm bg-white hover:bg-gray-50" @click="showFilters = !showFilters">
             Filters <span v-if="activeFilterCount"> ({{ activeFilterCount }})</span>
           </button>
-          <button v-if="activeFilterCount" type="button" class="text-sm text-blue-600 hover:underline" @click="clearFilters">Clear</button>
+          <button v-if="activeFilterCount" type="button" class="text-sm text-blue-600 hover:underline" @click="clearFilters">Clear filters</button>
         </div>
 
         <!-- Right -->
@@ -421,24 +443,35 @@ watch(
     </div>
 
     <!-- Bulk Tier Update Bar -->
-    <div v-if="selectedGenes.length > 0 && editing && !readonly" class="flex items-center gap-2 bg-gray-50 p-3 border rounded">
-      {{ selectedGenes.length }} gene(s) selected.
-      <span class="font-semibold">Bulk Tier Update:</span>
-      <select v-model="bulkTier" class="border rounded px-2 py-1 text-sm">
-        <option value="">Select Tier</option>
-        <option value="1">Primary</option>
-        <option value="2">Secondary</option>
-      </select>
-      <button
-        class="bg-blue-600 text-white px-3 py-1 rounded disabled:opacity-50"
-        @click="applyBulkTier"
-        :disabled="!bulkTier || selectedGenes.length === 0 || savingBulk"
-      >
-        {{ savingBulk ? 'Applying…' : 'Apply' }}
-      </button>
-      <button type="button" class="border rounded px-3 py-1 text-sm bg-white hover:bg-gray-50" @click="clearSelection" title="Clear selection">
-        Clear
-      </button>
+    <div v-if="selectedGenes.length > 0 && editing && !readonly" class="flex flex-col gap-3 rounded border bg-gray-50 p-3 lg:flex-row lg:items-center lg:justify-between">
+      <!-- Left: summary -->
+      <div class="flex items-center gap-2">
+        <span class="inline-flex items-center rounded-full bg-white border px-3 py-1 text-sm font-medium text-gray-700">
+          {{ selectedGenes.length }} gene(s) selected
+        </span>
+        <button type="button" class="border rounded px-3 py-1 text-sm bg-white hover:bg-gray-50" @click="clearSelection" title="Clear selection">Clear</button>
+      <!-- 
+      </div>
+
+        Middle: bulk tier action
+      <div class="flex flex-wrap items-center gap-2">  -->
+        <span class="mr-2 font-semibold text-sm text-gray-700">Bulk Tier Update:</span>
+        <select v-model="bulkTier" class="border rounded px-2 py-1 text-sm bg-white">
+          <option value="">Select Tier</option>
+          <option value="1">Primary</option>
+          <option value="2">Secondary</option>
+        </select>
+        <button class="bg-blue-600 text-white px-3 py-1 rounded disabled:opacity-50" @click="applyBulkTier" :disabled="!bulkTier || selectedGenes.length === 0 || savingBulk">
+          {{ savingBulk ? 'Applying…' : 'Apply' }}
+        </button>
+      </div>
+
+      <!-- Right: selection actions -->
+      <div class="flex flex-wrap items-center gap-2 lg:justify-end">
+        <button type="button" class="rounded bg-red-600 text-white px-3 py-1 text-sm hover:bg-red-700 disabled:opacity-50" @click="confirmRemove(selectedGeneRows)" :disabled="selectedGenes.length === 0 || removingBulk" title="Remove selected genes">
+          {{ removingBulk ? 'Removing…' : 'Remove Selected' }}
+        </button>
+      </div>
     </div>
 
     <!-- Empty -->
@@ -499,13 +532,13 @@ watch(
                   <option value="2">Secondary</option>
                 </select>
                 <span v-if="savingTierFor === gene.id" class="text-xs text-gray-500">Saving…</span>
-                <button class="rounded px-2 py-1 text-xs"
-                  :disabled="removingId == gene.id"
-                  :class="(gene.details || []).length ? 'border border-red-300 bg-red-100' : 'border border-gray-400 bg-gray-50'"
+                <button class="rounded px-2 py-1 text-xs border"
+                  :disabled="removingIds.includes(gene.id)"
+                  :class="(gene.details || []).length ? 'border-amber-400 bg-amber-50 font-semibold' : 'border-gray-400 bg-gray-50'"
                   @click="confirmRemove(gene)"
                   title="Remove gene"
-                  >
-                  {{ removingId == gene.id ? 'Removing…' : ' Remove? ' }}
+                >
+                  {{ removingIds.includes(gene.id) ? 'Removing…' : 'Remove?' }}
                 </button>
               </template>
               <span v-else class="text-xs text-gray-700">Tier: {{ ! gene.tier ? '—' : gene.tier == 1 ? 'Primary' : 'Secondary' }}</span>
@@ -559,19 +592,20 @@ watch(
 
     <!-- Pagination -->
     <div class="mt-4 flex justify-between items-center">
-		<button class="border rounded px-3 py-1 text-sm" :disabled="currentPage === 1" @click="currentPage--">Prev</button>
-		<span class="text-sm">Page {{ currentPage }} of {{ totalPages }}</span>
-		<button class="border rounded px-3 py-1 text-sm" :disabled="currentPage === totalPages" @click="currentPage++">Next</button>
+      <button class="border rounded px-3 py-1 text-sm" :disabled="currentPage === 1" @click="currentPage--">Prev</button>
+      <span class="text-sm">Page {{ currentPage }} of {{ totalPages }}</span>
+      <button class="border rounded px-3 py-1 text-sm" :disabled="currentPage === totalPages" @click="currentPage++">Next</button>
     </div>
-	<div v-if="showConfirmRemove" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-        <div class="bg-white rounded-lg shadow-lg w-96 p-6">
-            <h3 class="text-lg font-semibold mb-4">Confirm Removal</h3>
-            <p class="mb-6">Are you sure you want to remove <strong>{{ selectedGene?.gene_symbol }}</strong>?</p>
-            <div class="flex justify-end gap-2">
-                <button class="btn btn-gray" @click="cancelRemove">Cancel</button>
-                <button class="btn btn-red" @click="removeGene">Remove</button>
-            </div>
+	  <div v-if="showConfirmRemove" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+      <div class="bg-white rounded-lg shadow-lg w-96 p-6">
+        <h3 class="text-lg font-semibold mb-4">Confirm Removal</h3>
+        <p v-if="removalCount === 1" class="mb-6">Are you sure you want to remove <strong>{{ removalLabel }}</strong>?</p>
+        <p v-else class="mb-6">Are you sure you want to remove <strong>{{ removalCount }}</strong> selected genes?</p>
+        <div class="flex justify-end gap-2">
+          <button class="btn btn-gray" @click="cancelRemove">Cancel</button>
+          <button class="btn btn-red" @click="removeGenes">{{ removingBulk || removingIds.length ? 'Removing…' : 'Remove' }}</button>
         </div>
+      </div>
     </div>
   </div>
 </template>
