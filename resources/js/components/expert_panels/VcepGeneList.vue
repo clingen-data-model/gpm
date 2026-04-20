@@ -78,8 +78,14 @@
                     :key="curatedGeneKey"
                 />
                 <div v-if="formGene?.vcep_conflict?.has_other_vcep_match" :class="['mt-3 border rounded p-3 text-sm', formGene?.vcep_conflict?.has_approved_other_vcep_match ? 'border-red-300 bg-red-50 text-red-900' : 'border-amber-300 bg-amber-50 text-amber-900']">
-                  <div class="font-semibold mb-1">
-                    {{ formGene?.vcep_conflict?.has_approved_other_vcep_match ? 'This GDM is active in another VCEP.' : 'This GDM already exists in another VCEP.'}}
+                  <div class="mb-1">                    
+                    This Gene-Disease-MOI
+                    <span class="font-semibold">{{ formGene?.vcep_conflict?.has_approved_other_vcep_match ? 'has already been approved' : 'was already found' }}</span>
+                    in another VCEP. Are you sure you want to add
+                    <span class="font-semibold">{{ formGene?.gene_symbol }}
+                      <span v-if="formGene?.mondo_id"> - {{ formGene?.mondo_id }}</span><span v-if="formGene?.moi"> - {{ formGene?.moi }}</span>
+                    </span>
+                    to this VCEP?
                   </div>
                   <ul class="list-disc ml-5 space-y-1">
                     <li v-for="match in formGene?.vcep_conflict?.other_vcep_matches || []" :key="`${match.group_uuid}-${match.match_basis}`">
@@ -87,6 +93,10 @@
                       <span class="ml-1">({{ match.application_status }})</span>
                     </li>
                   </ul>
+                  <label class="inline-flex items-start gap-1 mt-2">
+                    <input v-model="confirmOtherVcepAdd" type="checkbox" class="mt-1">
+                    <span>Yes, add this Gene-Disease-MOI anyway.</span>
+                  </label>
                 </div>
 
                 <template v-if="hasRole('super-admin') || hasRole('super-user')">
@@ -164,39 +174,36 @@
             <!-- Buttons -->
             <div class="mt-4 flex justify-end gap-2">
                 <button class="btn btn-gray" @click="cancelForm">Cancel</button>                
-                <button
-                    class="btn blue"
-                    :disabled="isEditing ? false : (
-                        (formGene?.is_other && !isOtherFormValid) ||
-                        (!formGene?.is_other && !isCuratedPlanValid)
-                    )"
-                    @click="saveForm"
-                    >
-                    Save
-                </button>
+                <button class="btn blue" :disabled="isEditing ? false : (
+                        (formGene?.is_other && !isOtherFormValid) || (!formGene?.is_other && !isCuratedPlanValid) || (requiresOtherVcepConfirmation && !confirmOtherVcepAdd)
+                    )" @click="saveForm">Save</button>
             </div>
         </div>
     </transition>
 
     <!-- Bulk Tier Update Bar -->
-    <div v-if="selectedGenes.length > 0 && !readonly" class="flex items-center gap-2 bg-gray-50 p-3 border rounded mb-3">
-        {{ selectedGenes.length }} gene(s) selected.
+    <div v-if="selectedGenes.length > 0 && !readonly" class="flex items-center justify-between gap-3 bg-gray-50 p-3 border rounded mb-3">
+      <div class="flex items-center gap-2 flex-wrap">
+        <span>{{ selectedGenes.length }} gene(s) selected.</span>
         <span class="font-semibold">Bulk Tier Update:</span>
         <select v-model="bulkTier" class="border rounded px-2 py-1 text-sm">
-            <option value="">Select Tier</option>
-            <option value="1">Current</option>
-            <option value="2">Future</option>
+          <option value="">Select Tier</option>
+          <option value="1">Current</option>
+          <option value="2">Future</option>
         </select>
+        <button class="bg-blue-600 text-white px-3 py-1 rounded disabled:opacity-50" @click="applyBulkTier" :disabled="!bulkTier || selectedGenes.length === 0">Apply</button>
+      </div>
+
+      <div class="flex items-center gap-2 flex-wrap">
+        <button type="button" class="border rounded px-3 py-1 text-sm bg-white hover:bg-gray-50" @click="clearSelection" title="Clear selection">Clear</button>
         <button
-            class="bg-blue-600 text-white px-3 py-1 rounded disabled:opacity-50"
-            @click="applyBulkTier"
-            :disabled="!bulkTier || selectedGenes.length === 0"
-        >
-            Apply
-        </button>
-        <button type="button" class="border rounded px-3 py-1 text-sm bg-white hover:bg-gray-50" @click="clearSelection" title="Clear selection">
-            Clear
-        </button>
+          type="button"
+          class="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700 disabled:opacity-50"
+          @click="confirmRemove(selectedGeneRows)"
+          :disabled="selectedGenes.length === 0 || removingGenes"
+          title="Remove selected genes"
+        >{{ removingGenes ? 'Removing…' : 'Remove Selected' }}</button>
+      </div>
     </div>
 
     <!-- List toolbar -->
@@ -246,26 +253,29 @@
                         <div>
                             <div class="flex flex-wrap items-center gap-2">
                                 <span class="text-base font-semibold text-gray-900">{{ gene.gene_symbol }}</span>
-                                <span v-if="gene.mondo_id" class="rounded-full bg-gray-100 px-2 py-0.5 text-gray-700">
-                                    <span class="font-semibold">{{ gene.mondo_id }}</span>
-                                    {{ gene.disease_name }}
+                                <span v-if="gene.mondo_id" class="rounded-full bg-gray-100 px-2 py-0.5 text-gray-700" :title="`${gene.mondo_id} ${gene.disease_name || ''}`">
+                                    <span class="font-semibold">{{ gene.mondo_id }}</span> 
+                                    {{ gene.disease_name && gene.disease_name.length > 50 ? gene.disease_name.slice(0, 50) + '…' : gene.disease_name }}
                                 </span>
                                 <span v-if="gene.moi" class="rounded-full bg-gray-100 px-2 py-0.5 text-gray-700">{{ gene.moi }}</span>
                                 <template v-if="! gene.gt_curation_uuid">
                                     <span class="text-xs rounded-full px-2 py-0.5 text-gray-700 border border-rose-300 bg-rose-50">No Gene Curation</span>
-                                    <span class="'inline-flex h-2 w-2 rounded-full animate-pulse bg-rose-500" aria-hidden="true"></span>
                                 </template>
                                 <span
                                     v-if="gene.is_outdated && gene.gt_data"
                                     class="text-[11px] rounded-full bg-amber-100 text-amber-900 px-2 py-0.5 border border-amber-300"
                                 >Snapshot out of date</span>
                                 
-                                <span v-if="hasApprovedOtherVcepMatch(gene)" class="text-[11px] rounded-full bg-red-100 text-red-900 px-2 py-0.5 border border-red-300" :title="formatOtherVcepMatches(gene)">
-                                  Approved in another VCEP
-                                </span>
-                                <span v-else-if="hasOtherVcepMatch(gene)" class="text-[11px] rounded-full bg-amber-100 text-amber-900 px-2 py-0.5 border border-amber-300" :title="formatOtherVcepMatches(gene)">
-                                  Found in another VCEP
-                                </span>
+                                <button v-if="hasApprovedOtherVcepMatch(gene) || hasOtherVcepMatch(gene)" type="button" class="inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[11px] transition-colors"
+                                  :class="hasApprovedOtherVcepMatch(gene) ? 'border-red-300 bg-red-100 text-red-900 hover:bg-red-200' : 'border-amber-300 bg-amber-100 text-amber-900 hover:bg-amber-200'"
+                                  @click="toggleConflictDetails(gene.id)"
+                                  :aria-expanded="expandedConflict.includes(gene.id)"
+                                  :aria-controls="`vcep-conflict-${gene.id}`"
+                                  :title="expandedConflict.includes(gene.id) ? 'Hide details' : 'Show details'"
+                                >
+                                  <span>{{ hasApprovedOtherVcepMatch(gene) ? 'Approved in another VCEP' : 'Found in another VCEP' }}</span>
+                                  <span aria-hidden="true">{{ (expandedConflict || []).includes(gene.id) ? '&#128899;' : '&#128898;' }}</span>
+                                </button>
                             </div>
                             <!-- <div class="mt-0.5 text-sm text-gray-700 truncate"></div> -->
                         </div>
@@ -298,6 +308,19 @@
                         </template>
                     </div>
                 </div>
+
+                <!-- Details for Found/Approved in another VCEP -->
+                <transition name="fade">
+                  <div v-if="expandedConflict.includes(gene.id)" class="mx-3 mb-3 rounded-lg border px-3 py-2" :class="hasApprovedOtherVcepMatch(gene) ? 'border-red-300 bg-red-50 text-red-900': 'border-amber-300 bg-amber-50 text-amber-900'">
+                    <div class="font-semibold mb-1">{{ hasApprovedOtherVcepMatch(gene) ? 'Approved in another VCEP' : 'Found in another VCEP' }}</div>
+                    <ul class="list-disc ml-5 space-y-1">
+                      <li v-for="match in gene.vcep_conflict?.other_vcep_matches || []" :key="`${match.group_uuid}-${match.match_basis}`">
+                        <strong>{{ match.group_name }}</strong>
+                        <span class="ml-1">({{ match.application_status }})</span>
+                      </li>
+                    </ul>
+                  </div>
+                </transition>
 
                 <!-- Snapshot quick facts (COMPACT) -->
                 <div v-if="gene.plan && Object.keys(gene.plan).length > 0" class="px-3 pb-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 text-sm">
@@ -411,14 +434,15 @@
 
     <!-- Remove Confirmation Modal -->
     <div v-if="showConfirmRemove" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-        <div class="bg-white rounded-lg shadow-lg w-96 p-6">
-            <h3 class="text-lg font-semibold mb-4">Confirm Removal</h3>
-            <p class="mb-6">Are you sure you want to remove <strong>{{ selectedGene?.gene_symbol }}</strong>?</p>
-            <div class="flex justify-end gap-2">
-                <button class="btn btn-gray" @click="cancelRemove">Cancel</button>
-                <button class="btn btn-red" @click="removeGene">Remove</button>
-            </div>
+      <div class="bg-white rounded-lg shadow-lg w-96 p-6">
+        <h3 class="text-lg font-semibold mb-4">Confirm Removal</h3>
+        <p v-if="genesPendingRemoval.length === 1" class="mb-6">Are you sure you want to remove <strong>{{ genesPendingRemoval[0]?.gene_symbol }}</strong>?</p>
+        <p v-else class="mb-6">Are you sure you want to remove <strong>{{ genesPendingRemoval.length }}</strong> selected genes?</p>
+        <div class="flex justify-end gap-2">
+          <button class="btn btn-gray" @click="cancelRemove">Cancel</button>
+          <button class="btn btn-red" @click="removeGenes">{{ removingGenes ? 'Removing…' : 'Remove' }}</button>
         </div>
+      </div>
     </div>
 </div>
 </template>
@@ -472,27 +496,51 @@ export default {
 
         const canEdit = computed(() => hasAnyPermission(['ep-applications-manage', ['application-edit', group.value]]) && !props.readonly);
 
+        const confirmOtherVcepAdd = ref(false);
+        const requiresOtherVcepConfirmation = computed(() => { return !!formGene.value?.vcep_conflict?.has_other_vcep_match; });
+        const expandedConflict = ref([])
+        const toggleConflictDetails = (geneId) => {
+          if (expandedConflict.value.includes(geneId)) {
+            expandedConflict.value = expandedConflict.value.filter(id => id !== geneId)
+          } else {
+            expandedConflict.value.push(geneId)
+          }
+        }
+
         const showConfirmRemove = ref(false);
-        const selectedGene = ref(null);
-        const confirmRemove = (gene) => {
-            selectedGene.value = gene;
-            showConfirmRemove.value = true;
+        const genesPendingRemoval = ref([]);
+        const removingGenes = ref(false);
+        const selectedGeneRows = computed(() => genes.value.filter(g => selectedGenes.value.includes(g.id)));
+        const confirmRemove = (geneOrGenes) => {
+          const list = Array.isArray(geneOrGenes) ? geneOrGenes : [geneOrGenes];
+          genesPendingRemoval.value = list.filter(Boolean);
+          if (!genesPendingRemoval.value.length) return;
+          showConfirmRemove.value = true;
         };
+
         const cancelRemove = () => {
-            selectedGene.value = null;
-            showConfirmRemove.value = false;
+          genesPendingRemoval.value = [];
+          showConfirmRemove.value = false;
         };
-        const removeGene = async () => {
-            if (!selectedGene.value) return;
-            try {
-                await api.delete(`/api/groups/${group.value.uuid}/expert-panel/genes/${selectedGene.value.id}`);
-                showConfirmRemove.value = false;
-                store.commit('pushSuccess', `Successfully removed gene ${selectedGene.value.gene_symbol}`);
-                selectedGene.value = null;
-                await getGenes();                
-            } catch (error) {
-                store.commit('pushError', error.response.data);
-            }
+
+        const removeGenes = async () => {
+          if (!genesPendingRemoval.value.length) return;
+          const ids = genesPendingRemoval.value.map(g => g.id);
+          const count = ids.length;
+          try {
+            removingGenes.value = true;
+            await api.delete(`/api/groups/${group.value.uuid}/expert-panel/genes`, { data: { ids }});
+            store.commit('pushSuccess', count === 1 ? `Successfully removed gene ${genesPendingRemoval.value[0].gene_symbol}` : `Successfully removed ${count} genes`);
+            selectedGenes.value = selectedGenes.value.filter(id => !ids.includes(id));
+            genesPendingRemoval.value = [];
+            showConfirmRemove.value = false;
+
+            await getGenes();
+          } catch (error) {
+            store.commit('pushError', error.response?.data || 'Failed to remove gene(s)');
+          } finally {
+            removingGenes.value = false;
+          }
         };
 
         /* const getMois = async () => {
@@ -527,6 +575,7 @@ export default {
             isFormVisible.value = true;
             isEditing.value = false;
             formGene.value = null;
+            confirmOtherVcepAdd.value++;
             curatedGeneKey.value++;
         };
 
@@ -578,25 +627,27 @@ export default {
 
 
         const cancelForm = () => {
-            isFormVisible.value = false;
-            isEditing.value = false;
-            formGene.value = null;
-            errors.value = {};
+          isFormVisible.value = false;
+          isEditing.value = false;
+          formGene.value = null;
+          confirmOtherVcepAdd.value = false;
+          errors.value = {};
         };
 
         const isOtherFormValid = computed(() => {
-            if (!formGene.value?.is_other) return false;
-            return (
-                !!formGene.value.custom_gene?.hgnc_id &&
-                // !!formGene.value.custom_disease?.mondo_id &&
-                (formGene.value.custom_plan?.trim().length >= 20)
-            );
+          if (!formGene.value?.is_other) return false;
+          return (
+            !!formGene.value.custom_gene?.hgnc_id &&
+            // !!formGene.value.custom_disease?.mondo_id &&
+            (formGene.value.custom_plan?.trim().length >= 20)
+          );
         });
 
         const selectOther = () => {
             if (! (hasRole('super-admin') || hasRole('super-user'))) {
                 store.commit('pushError', 'You do not have permission to select Other. Please contact your administrator for assistance.')
             }
+            confirmOtherVcepAdd.value = false;
             const originalId = formGene.value?.id || null;
             formGene.value = {
                 id: originalId,
@@ -610,6 +661,7 @@ export default {
         };
         
         const handleCuratedSelection = async selected => {
+          confirmOtherVcepAdd.value = false;
           if (selected && !selected.is_other) {
             const vcepConflict = await checkOtherVcepMatch(selected)
 
@@ -752,15 +804,6 @@ export default {
                 } else {
                     store.commit('pushError', res?.data?.message || `Failed to add ${payload.gene_symbol}`)
                 }
-            }
-        };
-
-        const remove = async gene => {
-            try {
-                await api.delete(`/api/groups/${group.value.uuid}/expert-panel/genes/${gene.id}`);
-                await getGenes();
-            } catch (error) {
-                store.commit('pushError', error.response.data);
             }
         };
 
@@ -1045,9 +1088,10 @@ export default {
             moiOptions, classificationOptions,
             selectedGenes, bulkTier, savingTierFor, isAllSelected,
             canEdit, isOtherFormValid, isCuratedPlanValid, toggleExpanded, expanded,
-            showConfirmRemove, selectedGene, confirmRemove, cancelRemove, removeGene,
+            showConfirmRemove, genesPendingRemoval, removingGenes, confirmOtherVcepAdd, requiresOtherVcepConfirmation, 
+            expandedConflict, toggleConflictDetails, selectedGeneRows, confirmRemove, cancelRemove, removeGenes,
             setSort, startAdd, startEdit, cancelForm, selectOther, handleCuratedSelection, saveForm,
-            remove, updateTier, applyBulkTier, toggleSelect, toggleSelectAll, applyGtUpdate,
+            updateTier, applyBulkTier, toggleSelect, toggleSelectAll, applyGtUpdate,
             compactDiffRows, isDiff, htmlFromMarkdown, formEl, onFormEntered, clearSelection,
             showFilters, filterTier, activeFilterCount, clearFilters, formatOtherVcepMatches, hasOtherVcepMatch, hasApprovedOtherVcepMatch,
             emptyVcepConflict, checkOtherVcepMatch, save, cancel
