@@ -156,11 +156,11 @@ Route::group([
             // GENES
             Route::group(['prefix' => '/genes'], function () {
                 Route::post('/check-other-vcep-match', [GeneListController::class, 'checkOtherVcepMatch']);
-                Route::get('/', [GeneListController::class, 'index']);
-                Route::post('/', GenesAdd::class);                
                 Route::put('/update-tier', GenesUpdateTier::class);
-                Route::put('/{gene_id}', GeneUpdate::class);                
-                Route::delete('/{gene_id}', GeneRemove::class);
+                Route::put('/{gene_id}', GeneUpdate::class);
+                Route::get('/', [GeneListController::class, 'index']);
+                Route::post('/', GenesAdd::class);
+                Route::delete('/', GeneRemove::class);                                
             });
 
             // EVIDENCE SUMMARIES
