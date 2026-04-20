@@ -22,7 +22,7 @@ class GeneLookupController extends Controller
         $queryString = strtolower(($request->query_string ?? ''));
         
         if (strlen($queryString) < 3) {
-            return [];
+            return response()->json(['data' => []], 200);
         }
         return $this->gtApi->searchGenes($queryString);
     }
@@ -31,7 +31,7 @@ class GeneLookupController extends Controller
     {
         $symbols = $request->input('gene_symbol') ?? '';
         if (! $symbols) {
-            return response()->json([], 200);
+            return response()->json(['data' => []], 200);
         }
         return $this->gtApi->lookupGenesBulk($symbols);
     }
@@ -41,7 +41,7 @@ class GeneLookupController extends Controller
         $query = $request->get('query');
 
         if (! $query || strlen($query) < 3) {
-            return response()->json([], 200);
+            return response()->json(['data' => []], 200);
         }
 
         return $this->gtApi->searchCurations($query);
@@ -51,7 +51,7 @@ class GeneLookupController extends Controller
     {        
         $curationIDs = $request->input('curation_ids') ?? '';
         if (! $curationIDs) {
-            return response()->json([], 200);
+            return response()->json(['data' => []], 200);
         }
         return $this->gtApi->getCurationByID($curationIDs);
     }
@@ -60,7 +60,7 @@ class GeneLookupController extends Controller
     {        
         $geneSymbols = $request->input('genes') ?? '';
         if (trim($geneSymbols) === '') {
-            return response()->json([], 200);
+            return response()->json(['data' => []], 200);
         }
         return $this->gtApi->genesAvailability($geneSymbols);
     }
