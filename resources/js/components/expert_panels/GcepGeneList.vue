@@ -358,7 +358,7 @@ export default {
 
         <div v-if="editing && !readonly" class="border rounded bg-gray-50 p-4 mb-4">          
           <div class="flex items-center justify-between gap-3 mb-3">
-            <label class="block text-sm font-semibold">Add gene</label>
+            <label class="text-lg block font-semibold">Add gene</label>
             <button type="button" class="shrink-0 rounded border border-gray-300 px-3 py-1.5 text-sm hover:bg-gray-100" @click="openPasteModal">Bulk paste genes</button>
           </div>
           <div class="flex flex-wrap items-start gap-2">

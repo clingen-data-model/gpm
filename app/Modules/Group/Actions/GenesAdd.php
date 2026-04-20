@@ -95,7 +95,7 @@ class GenesAdd
             'genes.min'                     => 'Please provide at least one gene.',
             'genes.*.hgnc_id.required'      => 'Gene must have an HGNC ID.',
             'genes.*.hgnc_id.integer'       => 'The HGNC ID must be an integer.',
-            'genes.*.hgnc_id.unique'        => 'This gene is already on this Expert Panel.',
+            'genes.*.hgnc_id.unique'        => 'This gene is already on this Expert Panel Scope of Work.',
             'genes.*.gene_symbol.required'  => 'Gene must have a gene symbol.',
             'genes.*.gene_symbol.string'    => 'The Gene Symbol must be a string.',
             'genes.*.mondo_id.regex'        => 'The MONDO ID must follow the format "MONDO:#######".',
