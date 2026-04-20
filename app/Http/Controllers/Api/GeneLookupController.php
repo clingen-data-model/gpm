@@ -5,31 +5,63 @@ namespace App\Http\Controllers\Api;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Log;
+use App\Services\Api\GtApiService;
 
 class GeneLookupController extends Controller
 {
+    protected GtApiService $gtApi;
 
-    public function show($hgncId)
+    public function __construct(GtApiService $gtApi)
     {
-        return DB::connection(config('database.gt_db_connection'))->table('hgnc_genes')->where('hgnc_id', $hgncId)->sole();
+        $this->gtApi = $gtApi;
     }
-
 
     public function search(Request $request)
     {
         $queryString = strtolower(($request->query_string ?? ''));
         
         if (strlen($queryString) < 3) {
-            return [];
+            return response()->json(['data' => []], 200);
         }
-        $results = DB::connection(config('database.gt_db_connection'))->table('genes')
-                        ->where('gene_symbol', 'like', '%'.$queryString.'%')
-                        ->orWhere('hgnc_id', 'like', '%'.$queryString.'%')
-                        ->limit(250)
-                        ->get();
-
-        return $results->toArray();
+        return $this->gtApi->searchGenes($queryString);
     }
-    
-    
+
+    public function check(Request $request)
+    {
+        $symbols = $request->input('gene_symbol') ?? '';
+        if (! $symbols) {
+            return response()->json(['data' => []], 200);
+        }
+        return $this->gtApi->lookupGenesBulk($symbols);
+    }
+
+    public function curations(Request $request)
+    {        
+        $query = $request->get('query');
+
+        if (! $query || strlen($query) < 3) {
+            return response()->json(['data' => []], 200);
+        }
+
+        return $this->gtApi->searchCurations($query);
+    }
+
+    public function curationids(Request $request)
+    {        
+        $curationIDs = $request->input('curation_ids') ?? '';
+        if (! $curationIDs) {
+            return response()->json(['data' => []], 200);
+        }
+        return $this->gtApi->getCurationByID($curationIDs);
+    }
+
+    public function genesAvailability(Request $request)
+    {        
+        $geneSymbols = $request->input('genes') ?? '';
+        if (trim($geneSymbols) === '') {
+            return response()->json(['data' => []], 200);
+        }
+        return $this->gtApi->genesAvailability($geneSymbols);
+    }
 }

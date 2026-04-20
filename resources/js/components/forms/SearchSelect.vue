@@ -402,7 +402,7 @@ export default {
             :key="idx"
             class="filtered-option"
             :class="{highlighted: (idx === cursorPosition)}"
-            @click="setSelection(opt)"
+            @mousedown.prevent="setSelection(opt)"
           >
             <slot :option="opt" :index="idx" name="option">
               {{ resolveDefaultOptionLabel(opt) }}

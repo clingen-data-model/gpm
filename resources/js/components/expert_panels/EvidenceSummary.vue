@@ -73,7 +73,15 @@ export default {
         class="p-2 border rounded"
       >
         <header class="flex justify-between">
-          <h4>{{ summary.gene.gene_symbol }} - {{ summary.variant }}</h4>
+          <div class="flex flex-wrap items-center gap-2 text-sm text-gray-700">
+            <span class="text-base font-semibold text-gray-900">{{ summary.gene.gene_symbol }}</span>
+            <span v-if="summary.gene.mondo_id" class="rounded-full bg-gray-100 px-2 py-0.5 text-gray-700" :title="`${summary.gene.mondo_id} ${summary.gene.disease_name || ''}`">
+                <span class="font-semibold">{{ summary.gene.mondo_id }}</span> 
+                {{ summary.gene.disease_name && summary.gene.disease_name.length > 70 ? summary.gene.disease_name.slice(0, 70) + '…' : summary.gene.disease_name }}
+            </span>
+            <span v-if="summary.gene.moi" class="rounded-full bg-gray-100 px-2 py-0.5 text-gray-700">{{ summary.gene.moi }}</span>
+            <span class="rounded-full bg-blue-50 px-2 py-0.5 text-blue-800">Variant: {{ summary.variant }}</span>
+          </div>
           <dropdown-menu v-if="canEdit" :hide-cheveron="true" class="relative">
             <template #label>
               <button class="btn btn-xs">
