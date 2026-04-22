@@ -18,7 +18,7 @@ use App\Modules\Group\Events\JudgementUpdated;
 use App\Modules\Group\Actions\JudgementNotifyAboutEvent;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use App\Modules\ExpertPanel\Events\StepApproved;
-use App\Modules\ExpertPanel\Listeners\SendGenesToGtOnGcepApproval;
+// use App\Modules\ExpertPanel\Listeners\SendGenesToGtOnGcepApproval;
 use App\Modules\Group\Events\ApplicationStepSubmitted;
 use App\Modules\ExpertPanel\Listeners\CaptureScopeGeneSnapshots;
 

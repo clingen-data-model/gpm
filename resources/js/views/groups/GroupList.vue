@@ -19,8 +19,8 @@ export default {
         const store = useStore();
         const router = useRouter();
         const wgTypeId = configs.groups.types.wg.id        
-        const privateVisibilityId = configs.groups.visibilities.private.id
-        const privateVisibilityName = configs.groups.visibilities.private.name
+        const privateVisibilityId = configs.groups.visibility.private.id
+        const privateVisibilityName = configs.groups.visibility.private.name
         const tabDefinitions = computed( () => {
             const tabs = [
                 {
