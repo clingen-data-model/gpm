@@ -40,7 +40,14 @@ export const getters = {
     getItemById: (state) => (id) => {
         const item = state.items.find(i => i.id === id);
         return item;
-    }
+    },
+    membersLoaded: state => uuid => {
+        return Boolean(state.membersLoaded[uuid]);
+    },
+
+    membersLoading: state => uuid => {
+        return Boolean(state.membersLoading[uuid]);
+    },
 };
 
 export const mutations = {
@@ -104,7 +111,20 @@ export const mutations = {
             }
             throw new Error(`Item with uuid ${groupUuid} not found in groups.items with length ${state.items.length}`);
         }
-    }
+    },
+    setMembersLoaded(state, { uuid, value }) {
+        state.membersLoaded = {
+            ...state.membersLoaded,
+            [uuid]: value
+        };
+    },
+
+    setMembersLoading(state, { uuid, value }) {
+        state.membersLoading = {
+            ...state.membersLoading,
+            [uuid]: value
+        };
+    },
 };
 
 export const actions = {
@@ -166,13 +186,29 @@ export const actions = {
             });
     },
 
-    async getMembers ({commit}, group) {
-        const members = await api.get(`${baseUrl}/${group.uuid}/members`)
-                            .then(response => response.data.data);
+    async getMembers ({commit, getters}, payload) {
+      const group = payload.group || payload;
+      const force = payload.force || false;
+      const uuid = group.uuid;
 
-        members.forEach(member => {
-            commit('addMemberToGroup', member);
-        });
+      if (!uuid) { return; }
+
+      const groupInStore = getters.getItemByUuid(uuid);
+      const hasMembersOnGroup = Array.isArray(groupInStore?.members) && groupInStore.members.length > 0;
+
+      if (!force && getters.membersLoaded(uuid) && hasMembersOnGroup) { return groupInStore.members; }
+      if (!force && getters.membersLoading(uuid)) { return; }
+      commit('setMembersLoading', { uuid, value: true });
+      try {
+          const members = await api.get(`${baseUrl}/${uuid}/members`).then(response => response.data.data);
+          members.forEach(member => {
+              commit('addMemberToGroup', member);
+          });
+          commit('setMembersLoaded', { uuid, value: true });
+          return members;
+      } finally {
+          commit('setMembersLoading', { uuid, value: false });
+      }
     },
 
     async memberInvite ({ commit }, {uuid, data}) {
@@ -240,7 +276,7 @@ export const actions = {
             ));
         }
         await Promise.all(promises);
-        return dispatch('getMembers', group);
+        return dispatch('getMembers', { group, force: true });
     },
 
     async memberGrantPermission ({ commit }, {uuid, memberId, permissionIds}) {
@@ -580,6 +616,8 @@ export default {
         requests: [],
         items: [],
         currentItemIdx: null,
+        membersLoaded: {},
+        membersLoading: {},
     }),
     getters,
     mutations,

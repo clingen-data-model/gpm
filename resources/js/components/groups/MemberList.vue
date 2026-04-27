@@ -14,10 +14,10 @@ export default {
         // GroupMembersFilter
     },
     props: {
-        readonly: {
-            type: Boolean,
-            default: false
-        }
+      readonly: {
+        type: Boolean,
+        default: false
+      }
     },
     setup() {
         const {sort, filter} = sortAndFilter({field: 'person.last_name', desc: false});
@@ -165,14 +165,13 @@ export default {
         },
     },
     watch: {
-        group: {
-            immediate: true,
-            handler (to, from) {
-                if ((to.id && (!from || to.id !== from.id))) {
-                    this.$store.dispatch('groups/getMembers', this.group);
-                }
-            }
+      group: {
+        immediate: true,
+        handler (to, from) {
+          if (!to.id) { return; }
+          this.$store.dispatch('groups/getMembers', { group: this.group, force: true});
         }
+      }
     },
     methods: {
         toggleFilter() {
@@ -579,9 +578,6 @@ export default {
     }
     .transition-color {
         transition: background-color .3 linear;
-    }
-    .retired-member > td {
-        @apply text-gray-400;
     }
 
 </style>

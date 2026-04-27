@@ -97,20 +97,27 @@ export default {
       await fetchEntries(`/api/groups/${props.uuid}/activity-logs`);
     };
 
-    const getGroup = () => {
-      return store.dispatch("groups/find", props.uuid).then(() => {
-        store.commit("groups/setCurrentItemIndexByUuid", props.uuid);
-        store.dispatch('groups/getChildren', group.value);
-        if (group.value.is_ep) {
-          store.dispatch("groups/getGenes", group.value);
-          store.dispatch("groups/getDocuments", group.value);
-          if (group.value.is_vcep_or_scvcep) {
-            store.dispatch("groups/getEvidenceSummaries", group.value);
-          }
-          store.dispatch("groups/getPendingTasks", group.value);
-          store.dispatch("groups/getAnnualUpdate", group.value);
+    const getGroup = async () => {
+      await store.dispatch("groups/find", props.uuid);
+      store.commit("groups/setCurrentItemIndexByUuid", props.uuid);
+
+      const promises = [
+        store.dispatch("groups/getChildren", group.value),
+        store.dispatch("groups/getMembers", group.value),
+      ];
+
+      if (group.value.is_ep) {
+        promises.push(
+          store.dispatch("groups/getGenes", group.value),
+          store.dispatch("groups/getDocuments", group.value),
+          store.dispatch("groups/getPendingTasks", group.value),
+          store.dispatch("groups/getAnnualUpdate", group.value),
+        );
+        if (group.value.is_vcep_or_scvcep) {
+          promises.push(store.dispatch("groups/getEvidenceSummaries", group.value));
         }
-      });
+      }
+      await Promise.all(promises);
     };
     
     const needsToReviewSustainedCuration = computed(() => {
@@ -287,26 +294,8 @@ export default {
       this.$store.dispatch('groups/createAnnualUpdateForLatestWindow', this.group);
     },
     async handleInfoSaved() {
-      const previousMembers = this.group?.members ? [...this.group.members] : null;
-      const previousChairs = this.group?.chairs ? [...this.group.chairs] : null;
-      const previousCoordinators = this.group?.coordinators ? [...this.group.coordinators] : null;
-
       this.showInfoEdit = false;
-
       await this.getGroup();
-
-      if ((!this.group.members || this.group.members.length === 0) && previousMembers?.length) {
-        this.group.members = previousMembers;
-      }
-
-      if ((!this.group.chairs || this.group.chairs.length === 0) && previousChairs?.length) {
-        this.group.chairs = previousChairs;
-      }
-
-      if ((!this.group.coordinators || this.group.coordinators.length === 0) && previousCoordinators?.length) {
-        this.group.coordinators = previousCoordinators;
-      }
-
       this.$store.commit("pushSuccess", "Group info updated.");
     },
   },

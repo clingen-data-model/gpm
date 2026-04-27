@@ -93,9 +93,6 @@ export default {
                 if (this.group.id) {
                     await this.updateGroup();
                     this.$emit('saved');
-
-                    // this.$store.dispatch('groups/find', this.group.uuid);
-                    // this.$store.commit('pushSuccess', 'Group info updated.');
                     return;
                 }
 
@@ -210,14 +207,11 @@ export default {
                 data: {status_id: this.group.group_status_id}
             })
         },
-        resetData () {
-            if (this.group.uuid) {
-                this.$store.dispatch('groups/find', this.group.uuid);
-            }
-        },
         cancel() {
-            if (this.group.uuid) {
-                this.resetData();
+            this.resetErrors();
+
+            if (!this.group.uuid) {
+                this.newGroup = new Group();
             }
             this.$emit('canceled');
         },
