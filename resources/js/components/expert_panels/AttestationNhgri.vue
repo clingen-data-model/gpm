@@ -1,68 +1,53 @@
-<script>
-import api from '@/http/api';
-import is_validation_error from '../../http/is_validation_error';
+<script setup>
+import { computed } from 'vue'
+import { useStore } from 'vuex'
 
-export default {
-    name: 'NHGRIDataAvailability',
-    props: {
-        disabled: {
-            type: Boolean,
-            required: false,
-            default: false
-        }
-    },
-    emits: [
-        'update'
-    ],
-    data() {
-        return {
-            errors: {},
-        }
-    },
-    computed: {
-        group: {
-            get () {
-                return this.$store.getters['groups/currentItemOrNew'];
-            },
-            set (value) {
-                this.$store.commit('groups/addItem', value);
-            }
-        },
-        attestation: {
-            get () {
-                return Boolean(this.group.expert_panel.nhgri_attestation_date);
-            },
-            set (value) {
-                if (value) {
-                    this.group.expert_panel.nhgri_attestation_date = new Date();
-                } else {
-                    this.group.expert_panel.nhgri_attestation_date = null;
-                }
-                this.$emit('update');
-            }
-        },
-        checkboxLabel () {
-            if (this.group.is_vcep) {
-                return "I understand that once a variant is approved in the VCI it will become publicly available in the Evidence Repository. They should not be held for publication."
-            }
+defineProps({
+  disabled: {
+    type: Boolean,
+    default: false
+  }
+})
 
-            return "Please check box to confirm your understanding that once a gene is approved in the GCI, the group should utilize the “publish” functionality within the GCI to make the curation publicly available on the ClinGen website (https://clinicalgenome.org/). They should not be held for publication."
-        }
-    },
-    methods: {
-        async save () {
-            if (this.attestation) {
-                try {
-                    await api.post(`/api/groups/${this.group.uuid}/application/attestations/nhgri`, {'attestation': this.attestation})
-                } catch (error) {
-                    if (is_validation_error(error)) {
-                        this.errors = error.response.data.errors
-                    }
-                }
-            }
-        }
+const emit = defineEmits(['update'])
+const store = useStore()
+const group = computed({
+  get() {
+    return store.getters['groups/currentItemOrNew']
+  },
+  set(value) {
+    store.commit('groups/addItem', value)
+  }
+})
+
+const attestation = computed({
+  get() {
+    return Boolean(group.value?.expert_panel?.nhgri_attestation_date)
+  },
+  set(value) {
+    if (!group.value?.expert_panel) {
+      return
     }
-}
+
+    group.value.expert_panel.nhgri_attestation_date = value
+      ? new Date().toISOString()
+      : null
+
+    emit('update')
+  }
+})
+
+const checkboxLabel = computed(() => {
+  if (group.value?.is_vcep) {
+    return 'I understand that once a variant is approved in the VCI it will become publicly available in the Evidence Repository. They should not be held for publication.'
+  }
+
+  if (group.value?.is_scvcep) {
+    return 'Please check box to confirm your understanding that once a variant classification is approved in CIViC, the group should "publish" the record to make the curation publicly available on CIViC (https://civicdb.org/)'
+  }
+
+  return 'Please check box to confirm your understanding that once a gene is approved in the GCI, the group should utilize the “publish” functionality within the GCI to make the curation publicly available on the ClinGen website (https://clinicalgenome.org/). They should not be held for publication.'
+})
 </script>
 <template>
   <div>
@@ -75,7 +60,7 @@ export default {
     </p>
 
     <p class="my-4">
-      <input-row label="" :vertical="true">
+      <input-row :hide-label="true" :vertical="true">
         <checkbox
           id="nhgri-checkbox"
           v-model="attestation"

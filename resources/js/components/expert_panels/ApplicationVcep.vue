@@ -19,116 +19,120 @@ import VcepGeneList from '@/components/expert_panels/VcepGeneList.vue';
 import VcepOngoingPlansForm from '@/components/expert_panels/VcepOngoingPlansForm.vue';
 
 export default {
-    name: 'ApplicationVcep',
-    components: {
-        AppSection: ApplicationSection,
-        ApplicationStep,
-        AttestationNhgri,
-        AttestationReanalysis,
-        SpecificationsSection,
-        EvidenceSummaryList,
-        GroupForm,
-        MemberDesignationForm,
-        MemberList,
-        MembershipDescriptionForm,
-        GroupDescriptionForm,
-        ScopeDescriptionForm,
-        VcepGeneList,
-        VcepOngoingPlansForm,
+  name: 'ApplicationVcep',
+  components: {
+    AppSection: ApplicationSection,
+    ApplicationStep,
+    AttestationNhgri,
+    AttestationReanalysis,
+    SpecificationsSection,
+    EvidenceSummaryList,
+    GroupForm,
+    MemberDesignationForm,
+    MemberList,
+    MembershipDescriptionForm,
+    GroupDescriptionForm,
+    ScopeDescriptionForm,
+    VcepGeneList,
+    VcepOngoingPlansForm,
+  },
+  emits: [
+    'autosaved',
+    'saved',
+    'saving',
+  ],
+  setup () {
+    return { errors }
+  },
+  data () {
+    return {
+      genesChanged: false,
+      nhgriChanged: false,
+      saving: false,
+    }
+  },
+  computed: {
+    group: {
+      get () {
+        return this.$store.getters['groups/currentItemOrNew'];
+      },
+      set (value) {
+        this.$store.commit('groups/addItem', value);
+      }
     },
-    emits: [
-        'autosaved',
-        'saved',
-        'saving',
-    ],
-    setup () {
-        return {
-            errors
+  },
+  created() {
+    this.debounceAutoSave = debounce(this.autosave, 2000)
+  },
+  methods: {
+    async save() {
+      this.$emit('saving');
+
+      const promises = Object.keys(this.$refs)
+                          .map(key => {
+                            if (this.$refs[key] && this.$refs[key].save) {
+                              return this.$refs[key].save();
+                            }
+                              return null;
+                            });
+      promises.push(this.saveWebDescription());
+      promises.push(this.saveUpdates());
+
+      try {
+        await Promise.all(promises);
+        this.$emit('saved');
+        this.genesChanged = false;
+        this.nhgriChanged = false;
+
+        if (this.group?.markClean) this.group.markClean();
+        if (this.group?.expert_panel?.markClean) this.group.expert_panel.markClean();
+      } catch (error) {
+        if (isValidationError(error)) {
+          this.errors = error.response.data.errors;
+          return;
         }
+        throw error;
+      }
     },
-    data () {
-        return {
-            genesChanged: false,
-            saving: false,
-        }
+    saveUpdates () {
+      if (this.applicationIsDirty() ) {
+        return this.$store.dispatch('groups/saveApplicationData', this.group)
+                .then(() => {
+                  this.$emit('saved');
+                });
+      }
     },
-    computed: {
-        group: {
-            get () {
-                return this.$store.getters['groups/currentItemOrNew'];
-            },
-            set (value) {
-                this.$store.commit('groups/addItem', value);
-            }
-        },
+    saveWebDescription() {
+      if(this.webDescriptionIsDirty()) {
+        return this.$store.dispatch('groups/descriptionUpdate', {
+          uuid: this.group.uuid,
+          description: this.group.description
+        });
+      }
     },
-    created() {
-        this.debounceAutoSave = debounce(this.autosave, 2000)
+    async autosave () {
+      if (this.applicationIsDirty()) {
+        await this.save();
+        this.$emit('autosaved');
+      }
     },
-    methods: {
-        async save() {
-            this.$emit('saving');
-
-            const promises = Object.keys(this.$refs)
-                                .map(key => {
-                                    if (this.$refs[key] && this.$refs[key].save) {
-                                        return this.$refs[key].save();
-                                    }
-                                    return null;
-                                });
-            promises.push(this.saveWebDescription());
-            promises.push(this.saveUpdates());
-
-            try {
-                await Promise.all(promises);
-                this.$emit('saved');
-                this.genesChanged = false;
-
-                if (this.group?.markClean) this.group.markClean();
-                if (this.group?.expert_panel?.markClean) this.group.expert_panel.markClean();
-            } catch (error) {
-                if (isValidationError(error)) {
-                    this.errors = error.response.data.errors;
-                    return;
-                }
-                throw error;
-            }
-        },
-        saveUpdates () {
-            if (this.applicationIsDirty() ) {
-                return this.$store.dispatch('groups/saveApplicationData', this.group)
-                        .then(() => {
-                            this.$emit('saved');
-                        });
-            }
-        },
-        saveWebDescription() {
-          if(this.webDescriptionIsDirty()) {
-            return this.$store.dispatch('groups/descriptionUpdate', {
-              uuid: this.group.uuid,
-              description: this.group.description
-            });
-          }
-        },
-        async autosave () {
-            if (this.applicationIsDirty()) {
-                await this.save();
-                this.$emit('autosaved');
-            }
-        },
-        applicationIsDirty () {
-            return  this.group.expert_panel.isDirty()
-                || this.group.isDirty()
-                || this.genesChanged
-        },
-        webDescriptionIsDirty () {
-          return this.group.isDirty('description')
-        },
-        handleUpdate () {
-            this.debounceAutoSave();
-        }
-
+    applicationIsDirty () {
+        return  this.group.expert_panel.isDirty()
+          || this.group.isDirty()
+          || this.genesChanged
+          || this.nhgriChanged;
     },
+    webDescriptionIsDirty () {
+      return this.group.isDirty('description')
+    },
+    handleUpdate () {
+        this.debounceAutoSave();
+    },
+    handleNhgriUpdate () {
+      this.nhgriChanged = true;
+      this.handleUpdate();
+    },
+  },
 }
 </script>
 <template>
@@ -164,7 +168,7 @@ export default {
         <AttestationReanalysis @update="handleUpdate" />
       </AppSection>
       <AppSection id="nhgri" title="NHGRI Data Availability">
-        <AttestationNhgri @update="handleUpdate" />
+        <AttestationNhgri @update="handleNhgriUpdate" />
       </AppSection>
     </ApplicationStep>
     <ApplicationStep
