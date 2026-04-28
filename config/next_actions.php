@@ -26,6 +26,11 @@ return [
             'name' => 'CDWG OC chairs',
             'short_name' => 'Chairs',
             'id' => 5
+        ],
+        'somatic-curation-core-group' => [
+            'name' => 'Somatic Curation Core Group',
+            'short_name' => 'SC-VCEP Curation Core Group',
+            'id' => 6
         ]
     ],
     'types' => [
