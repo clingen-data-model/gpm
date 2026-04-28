@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string('funding_source_division')->nullable();
             $table->json('rep_contacts')->nullable();
             $table->text('notes')->nullable();
-
+            $table->string('partnership_agreement_file')->nullable();
             $table->timestamps();
             $table->softDeletes();
 

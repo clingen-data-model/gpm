@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Modules\ExpertPanel\Models\FundingAward;
 use App\Modules\Person\Models\Person;
+use Illuminate\Support\Facades\Storage;
 
 class FundingAwardController extends Controller
 {
@@ -83,6 +84,12 @@ class FundingAwardController extends Controller
             ->values();
     }
 
-
-
+    public function download(ExpertPanel $expertPanel, FundingAward $fundingAward)
+    {
+        abort_unless((int) $fundingAward->expert_panel_id === (int) $expertPanel->id, 404);
+        abort_unless($fundingAward->partnership_agreement_file, 404);
+        $path = config('app.funding_award_agreements_dir') . '/' . $fundingAward->partnership_agreement_file;
+        abort_unless(Storage::disk('public')->exists($path), 404);
+        return Storage::disk('public')->download($path, $fundingAward->partnership_agreement_file);
+    }
 }
