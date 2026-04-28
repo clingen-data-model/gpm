@@ -20,6 +20,7 @@ class ApplicationSubmissionAssignNextAction
 
     public function handle(Group $group)
     {
+        $assignedTo = $this->resolveAssignedGroup($group);
         $this->createNextAction
             ->handle(
                 expertPanel: $group->expertPanel,
@@ -27,9 +28,7 @@ class ApplicationSubmissionAssignNextAction
                 dateCreated: Carbon::now(),
                 entry: 'Review application and respond to EP.',
                 targetDate: Carbon::now()->addDays(14),
-                assignedTo: $group->expertPanel->isVcep 
-                    ? config('next_actions.assignees.cdwg-oc.id') 
-                    : config('next_actions.assignees.gene-curation-core-group.id'),
+                 assignedTo: $assignedTo,
                 typeId: config('next_actions.types.review-submission.id')
             );
     }
@@ -37,6 +36,19 @@ class ApplicationSubmissionAssignNextAction
     public function asListener(ApplicationStepSubmitted $event)
     {
         $this->handle($event->submission->group);
+    }
+
+    private function resolveAssignedGroup(Group $group): int
+    {
+        if ($group->expertPanel->isScvcep) {
+            return config('next_actions.assignees.somatic-curation-core-group.id');
+        }
+
+        if ($group->expertPanel->isVcep) {
+            return config('next_actions.assignees.cdwg-oc.id');
+        }
+
+        return config('next_actions.assignees.gene-curation-core-group.id');
     }
     
 }
