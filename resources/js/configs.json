@@ -63,6 +63,11 @@
                 "name": "CDWG OC chairs",
                 "short_name": "Chairs",
                 "id": 5
+            },
+            "somatic-curation-core-group": {
+                "name": "Somatic Curation Core Group",
+                "short_name": "SC-VCEP Curation Core Group",
+                "id": 6
             }
         },
         "types": {
@@ -142,7 +147,7 @@
                 "id": 6,
                 "name": "sccdwg",
                 "fullname": "Somatic Cancer-CDWG",
-                "display_name": "Somatic Cancer-Clinical Domain Working Group",
+                "display_name": "SC-CDWG",
                 "description": "A Somatic Cancer-Clinical Domain Working Group that oversees SC-VCEP Expert Panels.",
                 "can_be_parent": true,
                 "curation_product": null,
@@ -505,12 +510,12 @@
                 "definition": {
                     "id": 1,
                     "name": "Definition",
-                    "description": "VCEP step 1 and GCEP application"
+                    "description": "Step 1 Applications for VCEP and SC-VCEP, and GCEP Applications"
                 },
                 "sustained-curation": {
                     "id": 2,
                     "name": "Sustained Curation",
-                    "description": "VCEP step 4"
+                    "description": "Step 4 Applications for VCEP and SC-VCEP Applications"
                 }
             }
         },
@@ -518,14 +523,14 @@
             "1": {
                 "id": 1,
                 "name": "Definition",
-                "description": "VCEP step 1 and GCEP application"
+                "description": "Step 1 Applications for VCEP and SC-VCEP, and GCEP Applications"
             },
             "2": null,
             "3": null,
             "4": {
                 "id": 2,
                 "name": "Sustained Curation",
-                "description": "VCEP step 4"
+                "description": "Step 4 Applications for VCEP and SC-VCEP Applications"
             }
         },
         "statuses": {
