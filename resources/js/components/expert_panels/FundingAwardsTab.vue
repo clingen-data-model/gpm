@@ -26,7 +26,7 @@ const showForm = ref(false)
 const editing = ref(null)
 const errors = ref({})
 
-const canManage = computed(() => hasRole('super-user') || hasRole('super-admin'))
+const canManage = computed(() => hasRole('super-user') || hasRole('super-admin') || hasPermission('funding-sources-manage'))
 
 const selectedPiIds = ref([])
 const primaryPiId = ref(null)
@@ -329,6 +329,57 @@ async function destroyAward(item) {
   await fetchAwards()
 }
 
+/** Upload section */
+const showUploadForm = ref(false)
+const uploadingAward = ref(null)
+const uploadSaving = ref(false)
+const uploadErrors = ref({})
+const partnershipAgreementFile = ref(null)
+
+function uploadDocument(item) {
+  uploadingAward.value = item
+  partnershipAgreementFile.value = null
+  uploadErrors.value = {}
+  showUploadForm.value = true
+}
+
+function setPartnershipAgreementFile(event) {
+  partnershipAgreementFile.value = event.target.files?.[0] || null
+}
+
+function firstUploadError(field) {
+  const e = uploadErrors.value?.[field]
+  return Array.isArray(e) ? e[0] : ''
+}
+
+async function savePartnershipAgreement() {
+  if (!uploadingAward.value) return
+
+  uploadErrors.value = {}
+  uploadSaving.value = true
+
+  const payload = new FormData()
+  payload.append('partnership_agreement', partnershipAgreementFile.value)
+
+  try {
+    await api.post(`/api/applications/${expertPanelUuid.value}/funding-awards/${uploadingAward.value.id}/agreement`, payload, { headers: { 'Content-Type': 'multipart/form-data' }})
+    showUploadForm.value = false
+    await fetchAwards()
+  } catch (e) {
+    if (e?.response?.status === 422) {
+      uploadErrors.value = e.response.data.errors || {}
+      return
+    }
+    throw e
+  } finally {
+    uploadSaving.value = false
+  }
+}
+function partnershipAgreementDownloadUrl(item) {
+  return `/api/applications/${expertPanelUuid.value}/funding-awards/${item.id}/agreement`
+}
+
+
 watch(
   expertPanelUuid,
   async (uuid) => {
@@ -367,6 +418,13 @@ watch(
           </div>
         </template>
 
+        <template #cell-award_number="{ item }">
+          <div class="text-sm">{{ item.award_number || '—' }}</div>
+          <div v-if="item.partnership_agreement_file" class="text-xs mt-1 flex items-center gap-1">
+            <span aria-hidden="true">📎</span> <a class="link" :href="partnershipAgreementDownloadUrl(item)" target="_blank" rel="noopener">{{ item.partnership_agreement_file }}</a>
+          </div>
+        </template>
+
         <template #cell-dates="{ item }">
           <div class="text-sm">
             {{ fmtDates(item) }}
@@ -393,12 +451,13 @@ watch(
         </template>
 
         <template #cell-actions="{item}">
-        <dropdown-menu v-if="hasPermission('funding-sources-manage')" hide-cheveron>
+        <dropdown-menu v-if="canManage" hide-cheveron>
           <template #label>
             <button class="btn btn-xs">
               &hellip;
             </button>
           </template>
+          <dropdown-item @click="uploadDocument(item)">Upload Partnership Agreement</dropdown-item>
           <dropdown-item @click="startEdit(item)">Update</dropdown-item>
           <dropdown-item @click="destroyAward(item)">Delete</dropdown-item>
         </dropdown-menu>
@@ -645,6 +704,36 @@ watch(
             <div v-if="firstError('notes')" class="text-sm text-red-600 mt-1">
               {{ firstError('notes') }}
             </div>
+          </div>
+        </div>
+      </SubmissionWrapper>
+    </modal-dialog>
+
+    <modal-dialog
+      v-model="showUploadForm"
+      title="Upload Partnership Agreement"
+      size="md"
+    >
+      <SubmissionWrapper
+        @submitted="savePartnershipAgreement"
+        @canceled="showUploadForm = false"
+      >
+        <div class="space-y-3">
+          <div>
+            <label class="block text-sm font-semibold">Partnership Agreement</label>
+            <input
+              class="w-full"
+              type="file"
+              accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+              @change="setPartnershipAgreementFile"
+            />
+
+            <div class="text-xs text-gray-600 mt-1">Preferred format: PDF. Accepted file types: PDF, DOC, DOCX. Maximum file size: 3 MB.</div>
+            <div v-if="firstUploadError('partnership_agreement')" class="text-sm text-red-600 mt-1">{{ firstUploadError('partnership_agreement') }}</div>
+          </div>
+          <div v-if="uploadingAward?.partnership_agreement_filename" class="text-xs text-gray-600">
+            Uploading a new file will replace the current file:
+            <strong>{{ uploadingAward.partnership_agreement_filename }}</strong>
           </div>
         </div>
       </SubmissionWrapper>
