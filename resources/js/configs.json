@@ -161,16 +161,6 @@
                 "name": "inactive"
             }
         },
-        "visibilities": {
-            "public": {
-                "id": 1,
-                "name": "public"
-            },
-            "private": {
-                "id": 2,
-                "name": "private"
-            }
-        },
         "statusColors": {
             "1": "blue",
             "2": "green",
@@ -298,6 +288,16 @@
             "grant-liaison": [
                 1008
             ]
+        },
+        "visibilities": {
+            "public": {
+                "id": 1,
+                "name": "public"
+            },
+            "private": {
+                "id": 2,
+                "name": "private"
+            }
         }
     },
     "system": {

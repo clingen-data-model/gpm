@@ -399,7 +399,7 @@ class Group extends Model implements HasMembers, RecordsEvents, HasDocuments, Ha
     protected function isPrivate(): Attribute
     {
         return Attribute::get(
-            fn () => (int) $this->group_visibility_id === (int) config('groups.visibility.private.id')
+            fn () => (int) $this->group_visibility_id === (int) config('groups.visibilities.private.id')
         );
     }
 
@@ -407,7 +407,7 @@ class Group extends Model implements HasMembers, RecordsEvents, HasDocuments, Ha
     {
         $query = $this->members();
 
-        $isPrivateWg = (int) $this->group_type_id === (int) config('groups.types.wg.id') && (int) $this->group_visibility_id === (int) config('groups.visibility.private.id');
+        $isPrivateWg = (int) $this->group_type_id === (int) config('groups.types.wg.id') && (int) $this->group_visibility_id === (int) config('groups.visibilities.private.id');
 
         if (! $isPrivateWg) {
             return $query->get();

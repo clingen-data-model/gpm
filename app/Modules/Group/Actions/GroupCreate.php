@@ -24,10 +24,10 @@ class GroupCreate
 
     public function handle($data): Group
     {
-        $groupVisibilityId = $data['group_visibility_id'] ?? config('groups.visibility.public.id');
+        $groupVisibilityId = $data['group_visibility_id'] ?? config('groups.visibilities.public.id');
 
         if ($groupVisibilityId === null) {
-            throw new \RuntimeException('Default group visibility is not configured. Set groups.visibility.public.id.');
+            throw new \RuntimeException('Default group visibility is not configured. Set groups.visibilities.public.id.');
         }
 
         $group = Group::create([
