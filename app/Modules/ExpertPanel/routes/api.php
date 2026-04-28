@@ -28,6 +28,7 @@ use App\Modules\ExpertPanel\Actions\ClinvarOrganizationUpdate;
 
 use App\Modules\ExpertPanel\Http\Controllers\Api\FundingAwardController;
 use App\Modules\ExpertPanel\Actions\FundingAwardUpsert;
+use App\Modules\ExpertPanel\Actions\FundingAwardAgreementUpload;
 use App\Modules\ExpertPanel\Actions\FundingAwardDelete;
 
 Route::get('/next-actions/assignees', [NextActionAssigneeController::class, 'index']);
@@ -70,6 +71,8 @@ Route::group([
 
         Route::get('/{expertPanel:uuid}/funding-awards', [FundingAwardController::class, 'index']);
         Route::post('/{expertPanel:uuid}/funding-awards', FundingAwardUpsert::class);
+        Route::post('/{expertPanel:uuid}/funding-awards/{fundingAward}/agreement', FundingAwardAgreementUpload::class);
+        Route::get('/{expertPanel:uuid}/funding-awards/{fundingAward}/agreement', [FundingAwardController::class, 'download']);
         Route::put('/{expertPanel:uuid}/funding-awards/{fundingAward}', FundingAwardUpsert::class);
         Route::delete('/{expertPanel:uuid}/funding-awards/{fundingAward}', FundingAwardDelete::class);
         Route::get('/{expertPanel:uuid}/funding-awards/pi-options',[FundingAwardController::class, 'piOptions']

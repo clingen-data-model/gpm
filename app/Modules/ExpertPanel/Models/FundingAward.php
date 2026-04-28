@@ -26,6 +26,7 @@ class FundingAward extends Model
         'funding_source_division',
         'rep_contacts',
         'notes',
+        'partnership_agreement_file',
     ];
 
     protected $casts = [
