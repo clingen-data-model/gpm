@@ -3,6 +3,7 @@
 use App\Modules\Group\Models\Group;
 use Illuminate\Support\Facades\Route;
 use App\Modules\Group\Actions\GenesAdd;
+use App\Modules\Group\Actions\GenesUpdateTier;
 use App\Modules\Group\Actions\MemberAdd;
 use App\Modules\Group\Actions\GeneRemove;
 use App\Modules\Group\Actions\GeneUpdate;
@@ -154,10 +155,12 @@ Route::group([
 
             // GENES
             Route::group(['prefix' => '/genes'], function () {
+                Route::post('/check-other-vcep-match', [GeneListController::class, 'checkOtherVcepMatch']);
+                Route::put('/update-tier', GenesUpdateTier::class);
+                Route::put('/{gene_id}', GeneUpdate::class);
                 Route::get('/', [GeneListController::class, 'index']);
                 Route::post('/', GenesAdd::class);
-                Route::put('/{gene_id}', GeneUpdate::class);
-                Route::delete('/{gene_id}', GeneRemove::class);
+                Route::delete('/', GeneRemove::class);                                
             });
 
             // EVIDENCE SUMMARIES
