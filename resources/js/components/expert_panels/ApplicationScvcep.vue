@@ -21,78 +21,78 @@ import ScvcepOngoingPlansForm from '@/components/expert_panels/ScvcepOngoingPlan
 export default {
     name: 'ApplicationScvcep',
     components: {
-        AppSection: ApplicationSection,
-        ApplicationStep,
-        AttestationNhgri,
-        AttestationReanalysis,
-        SpecificationsSection,
-        EvidenceSummaryList,
-        GroupForm,
-        MemberDesignationForm,
-        MemberList,
-        MembershipDescriptionForm,
-        GroupDescriptionForm,
-        ScopeDescriptionForm,
-        ScvcepGeneList,
-        ScvcepOngoingPlansForm,
+      AppSection: ApplicationSection,
+      ApplicationStep,
+      AttestationNhgri,
+      AttestationReanalysis,
+      SpecificationsSection,
+      EvidenceSummaryList,
+      GroupForm,
+      MemberDesignationForm,
+      MemberList,
+      MembershipDescriptionForm,
+      GroupDescriptionForm,
+      ScopeDescriptionForm,
+      ScvcepGeneList,
+      ScvcepOngoingPlansForm,
     },
     emits: [
-        'autosaved',
-        'saved',
-        'saving',
+      'autosaved',
+      'saved',
+      'saving',
     ],
     setup () {
-        return {
-            errors
-        }
+      return { errors}
     },
     data () {
-        return {
-            genesChanged: false,
-            saving: false,
-        }
+      return {
+        genesChanged: false,
+        nhgriChanged: false,
+        saving: false,
+      }
     },
     computed: {
-        group: {
-            get () {
-                return this.$store.getters['groups/currentItemOrNew'];
-            },
-            set (value) {
-                this.$store.commit('groups/addItem', value);
-            }
+      group: {
+        get () {
+          return this.$store.getters['groups/currentItemOrNew'];
         },
+        set (value) {
+          this.$store.commit('groups/addItem', value);
+        }
+      },
     },
     created() {
-        this.debounceAutoSave = debounce(this.autosave, 2000)
+      this.debounceAutoSave = debounce(this.autosave, 2000)
     },
     methods: {
         async save() {
-            this.$emit('saving');
+          this.$emit('saving');
 
-            const promises = Object.keys(this.$refs)
-                                .map(key => {
-                                    if (this.$refs[key] && this.$refs[key].save) {
-                                        return this.$refs[key].save();
-                                    }
-                                    return null;
-                                });
-            promises.push(this.saveWebDescription());
-            promises.push(this.saveUpdates());
+          const promises = Object.keys(this.$refs)
+                              .map(key => {
+                                if (this.$refs[key] && this.$refs[key].save) {
+                                  return this.$refs[key].save();
+                                }
+                                return null;
+                              });
+          promises.push(this.saveWebDescription());
+          promises.push(this.saveUpdates());
 
-            try {
-                await Promise.all(promises);
-                this.$emit('saved');
-                this.genesChanged = false;
+          try {
+            await Promise.all(promises);
+            this.$emit('saved');
+            this.genesChanged = false;
+            this.nhgriChanged = false;
 
-                if (this.group?.markClean) this.group.markClean();
-                if (this.group?.expert_panel?.markClean) this.group.expert_panel.markClean();
-            } catch (error) {
-                if (isValidationError(error)) {
-                    this.errors = error.response.data.errors;
-                    return;
-                }
-                throw error;
+            if (this.group?.markClean) this.group.markClean();
+            if (this.group?.expert_panel?.markClean) this.group.expert_panel.markClean();
+          } catch (error) {
+            if (isValidationError(error)) {
+              this.errors = error.response.data.errors;
+              return;
             }
+            throw error;
+          }
         },
         saveUpdates () {
             if (this.applicationIsDirty() ) {
@@ -120,14 +120,18 @@ export default {
             return  this.group.expert_panel.isDirty()
                 || this.group.isDirty()
                 || this.genesChanged
+                || this.nhgriChanged;
         },
         webDescriptionIsDirty () {
           return this.group.isDirty('description')
         },
         handleUpdate () {
             this.debounceAutoSave();
-        }
-
+        },
+        handleNhgriUpdate () {
+          this.nhgriChanged = true;
+          this.handleUpdate();
+        },
     },
 }
 </script>
@@ -164,7 +168,7 @@ export default {
         <AttestationReanalysis @update="handleUpdate" />
       </AppSection>
       <AppSection id="nhgri" title="NHGRI Data Availability">
-        <AttestationNhgri @update="handleUpdate" />
+        <AttestationNhgri @update="handleNhgriUpdate" />
       </AppSection>
     </ApplicationStep>
     <ApplicationStep
