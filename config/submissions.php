@@ -3,12 +3,12 @@
 $definitionType = [
     'id' => 1,
     'name' => 'Definition',
-    'description' => 'VCEP step 1 and GCEP application'
+    'description' => 'Step 1 Applications for VCEP and SC-VCEP, and GCEP Applications'
 ];
 $sustainedCurationType = [
     'id' => 2,
     'name' => 'Sustained Curation',
-    'description' => 'VCEP step 4'
+    'description' => 'Step 4 Applications for VCEP and SC-VCEP Applications'
 ];
 
 return [
