@@ -35,7 +35,6 @@ import ClinvarForm from '@/components/expert_panels/ClinvarForm.vue';
 import FundingAwardsTab from '@/components/expert_panels/FundingAwardsTab.vue'
 import GroupPublications from "./GroupPublications.vue";
 import FundingAwardsTab from '@/components/expert_panels/FundingAwardsTab.vue'
-import GroupPublications from "./GroupPublications.vue";
 
 import { api, isValidationError } from "../../http";
 
@@ -74,7 +73,6 @@ export default {
     FundingAwardsTab,
     GroupPublications,
     FundingAwardsTab,
-    GroupPublications
   },
   props: {
     uuid: {

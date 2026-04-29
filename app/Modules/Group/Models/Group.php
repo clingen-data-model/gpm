@@ -434,31 +434,4 @@ class Group extends Model implements HasMembers, RecordsEvents, HasDocuments, Ha
     {
         return $this->hasMany(Publication::class);
     }
-     /**
-      * VISIBILITY STATUS RELATION
-      */
-    public function groupVisibility(): BelongsTo
-    {
-        return $this->belongsTo(GroupVisibility::class);
-    }
-
-    protected function isPrivate(): Attribute
-    {
-        return Attribute::get(
-            fn () => (int) $this->group_visibility_id === config('groups.visibility.private.id')
-        );
-    }
-
-    public function scopeVisibleTo(Builder $query, ?User $user): Builder
-    {
-        if ($user && $user->hasAnyRole(['super-user', 'super-admin', 'admin'])) { return $query; }
-
-        $privateId = config('groups.visibility.private.id');
-        $wgTypeId  = config('groups.types.wg.id');
-
-        return $query->where(function ($q) use ($privateId, $wgTypeId) {
-            $q->where('group_type_id', '!=', $wgTypeId)->orWhereNull('group_visibility_id')->orWhere('group_visibility_id', '!=', $privateId);
-        });
-    }
-
 }
