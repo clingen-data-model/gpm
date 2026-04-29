@@ -22,10 +22,9 @@ class FundingAwardAgreementUpload
             'partnership_agreement' => ['required', 'mimes:pdf,doc,docx', 'file', 'max:3072']
         ]);
         $file = $request->file('partnership_agreement');
-        $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
         $extension = $file->getClientOriginalExtension();
 
-        $filename = 'funding-award-agreement-' . $expertPanel->affiliation_id . '-' . $fundingAward->id . '-' . now()->format('YmdHi') . '.' . $extension;
+        $filename = 'gpm-funding-award-agreement-' . $fundingAward->id . '-' . now()->format('YmdHi') . '.' . $extension;
         if ($fundingAward->partnership_agreement_file) {
             Storage::disk('public')->delete(config('app.funding_award_agreements_dir') . '/' . $fundingAward->partnership_agreement_file);
         }
