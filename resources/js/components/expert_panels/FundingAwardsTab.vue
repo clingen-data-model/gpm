@@ -401,10 +401,9 @@ watch(
 
     <div v-if="loading" class="text-center w-full">Loading...</div>
 
-    <div v-else>
+    <div v-else :class="{ 'max-h-[600px] overflow-y-auto': awards.length > 20 }">
       <data-table
         v-model:sort="sort"
-        v-remaining-height
         :data="awards"
         :fields="fields"
         row-class="active:bg-blue-100"
