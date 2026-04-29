@@ -33,6 +33,8 @@ const primaryPiId = ref(null)
 const piById = reactive({})
 const groupMemberIdSet = computed(() => new Set((piOptions.value || []).map(p => Number(p.id))))
 
+const deletingAgreementAward = ref(null)
+
 function emptyRepContact() {
   return {
     role: '',
@@ -379,6 +381,17 @@ function partnershipAgreementDownloadUrl(item) {
   return `/api/applications/${expertPanelUuid.value}/funding-awards/${item.id}/agreement`
 }
 
+async function deleteAgreement(item) {
+  if (!item?.partnership_agreement_file) return
+  if (!confirm('Remove this partnership agreement file?')) return
+  deletingAgreementAward.value = item.id
+  try {
+    await api.delete(`/api/applications/${expertPanelUuid.value}/funding-awards/${item.id}/agreement`)
+    await fetchAwards()
+  } finally {
+    deletingAgreementAward.value = null
+  }
+}
 
 watch(
   expertPanelUuid,
@@ -420,8 +433,9 @@ watch(
         <template #cell-award_number="{ item }">
           <div class="text-sm">{{ item.award_number || '—' }}</div>
           <div v-if="item.partnership_agreement_file" class="text-xs mt-1 flex items-center gap-1">
-            <span aria-hidden="true">📎</span> <a class="link" :href="partnershipAgreementDownloadUrl(item)" target="_blank" rel="noopener">{{ item.partnership_agreement_file }}</a>
+            Partnership Agreement: <a class="link" :href="partnershipAgreementDownloadUrl(item)" target="_blank" rel="noopener">{{ item.partnership_agreement_file }}</a>
           </div>
+          <div v-if="deletingAgreementAward === item.id" class="text-xs text-gray-600 mt-1">Removing partnership agreement file...</div>
         </template>
 
         <template #cell-dates="{ item }">
@@ -456,7 +470,8 @@ watch(
               &hellip;
             </button>
           </template>
-          <dropdown-item @click="uploadDocument(item)">Upload Partnership Agreement</dropdown-item>
+          <dropdown-item @click="uploadDocument(item)">{{ item.partnership_agreement_file ? 'Replace Partnership Agreement File' : 'Upload Partnership Agreement File' }}</dropdown-item>
+          <dropdown-item v-if="item.partnership_agreement_file" @click="deleteAgreement(item)">Remove Partnership Agreement File</dropdown-item>
           <dropdown-item @click="startEdit(item)">Update</dropdown-item>
           <dropdown-item @click="destroyAward(item)">Delete</dropdown-item>
         </dropdown-menu>
