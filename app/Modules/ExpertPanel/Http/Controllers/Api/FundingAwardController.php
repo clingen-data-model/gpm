@@ -92,4 +92,21 @@ class FundingAwardController extends Controller
         abort_unless(Storage::disk('public')->exists($path), 404);
         return Storage::disk('public')->download($path, $fundingAward->partnership_agreement_file);
     }
+
+    public function deleteAgreement(ExpertPanel $expertPanel, FundingAward $fundingAward)
+    {        
+        abort_unless((int) $fundingAward->expert_panel_id === (int) $expertPanel->id, 404);
+
+        if ($fundingAward->partnership_agreement_file) {
+            $path = config('app.funding_award_agreements_dir') . '/' . $fundingAward->partnership_agreement_file;
+
+            Storage::disk('public')->delete($path);
+
+            $fundingAward->update([
+                'partnership_agreement_file' => null,
+            ]);
+        }
+
+        return response()->json($fundingAward->fresh());
+    }
 }
