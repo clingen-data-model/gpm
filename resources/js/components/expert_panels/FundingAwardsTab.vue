@@ -3,7 +3,7 @@ import { ref, reactive, computed, onMounted, watch } from 'vue'
 import api from '@/http/api'
 import SubmissionWrapper from '@/components/groups/SubmissionWrapper.vue'
 import PersonTypeaheadMultiSelect from '@/components/people/PersonTypeaheadMultiSelect.vue'
-import { hasRole } from '@/auth_utils'
+import { hasRole, hasPermission } from '@/auth_utils'
 
 const props = defineProps({
   expertPanel: { type: Object, default: true },
@@ -101,15 +101,19 @@ const form = reactive({
 })
 
 const sort = ref({ field: 'id', desc: true })
-const fields = [
+const baseFields = [
   { name: 'id', label: 'ID', sortable: true },
   { name: 'fundingSource', label: 'Funding Source', sortable: false },
   { name: 'award_number', label: 'Award #', sortable: false },
   { name: 'dates', label: 'Dates', sortable: false },
   { name: 'contactPis', label: 'Contact PI(s)', sortable: false },
   { name: 'nih', label: 'NIH', sortable: false },
-  { name: 'actions', label: '', sortable: false },
 ]
+const fields = computed(() => {
+  return canManage.value
+    ? [...baseFields, { name: 'actions', label: '', sortable: false }]
+    : baseFields
+})
 
 function resetForm() {
   form.funding_source_id = ''
@@ -397,9 +401,14 @@ watch(
   expertPanelUuid,
   async (uuid) => {
     if (!uuid) return
-    await Promise.all([fetchFundingSources(), fetchPiOptions(), fetchAwards()])
-  },
-  { immediate: true }
+    // always load awards for viewers
+    await fetchAwards()
+
+    // only load these for super admins/users (needed for the modal)
+    if (canManage.value) {
+      await Promise.all([fetchFundingSources(), fetchPiOptions()])
+    }
+  }, { immediate: true }
 )
 </script>
 
