@@ -15,34 +15,53 @@ function detectIdentifier(raw) {
 
   if (!value) return null;
 
+  // DOI URL
   if (/^https?:\/\/doi\.org\/10\.\S+$/i.test(value)) {
     const doi = stripDoiUrl(value);
     return { type: "doi", normalized: doi, path: `doi:${doi}` };
   }
 
+  // DOI: 10.xxxx
   if (/^doi:\s*10\.\S+$/i.test(value)) {
-    const doi = value.replace(/^doi:\s*/i, "");
+    const doi = value.replace(/^doi:\s*/i, "").trim();
     return { type: "doi", normalized: doi, path: `doi:${doi}` };
   }
 
+  // raw DOI
   if (/^10\.\S+$/i.test(value)) {
     return { type: "doi", normalized: value, path: `doi:${value}` };
   }
 
-  if (/^pmid:\d+$/i.test(value)) {
-    const pmid = value.replace(/^pmid:/i, "");
+  // PubMed URL
+  if (/^https?:\/\/pubmed\.ncbi\.nlm\.nih\.gov\/\d+\/?$/i.test(value)) {
+    const pmid = value.match(/\/(\d+)\/?$/)?.[1];
+    return pmid ? { type: "pmid", normalized: pmid, path: `pmid:${pmid}` } : null;
+  }
+
+  // PMID: 12345678 or PMID:12345678
+  if (/^pmid:\s*\d+$/i.test(value)) {
+    const pmid = value.replace(/^pmid:\s*/i, "").trim();
     return { type: "pmid", normalized: pmid, path: `pmid:${pmid}` };
   }
 
+  // raw PMID
   if (/^\d+$/.test(value)) {
     return { type: "pmid", normalized: value, path: `pmid:${value}` };
   }
 
-  if (/^pmcid:PMC\d+$/i.test(value)) {
-    const pmcid = value.replace(/^pmcid:/i, "").toUpperCase();
+  // PMC URL
+  if (/^https?:\/\/pmc\.ncbi\.nlm\.nih\.gov\/articles\/PMC\d+\/?$/i.test(value)) {
+    const pmcid = value.match(/\/(PMC\d+)\/?$/i)?.[1]?.toUpperCase();
+    return pmcid ? { type: "pmcid", normalized: pmcid, path: `pmcid:${pmcid}` } : null;
+  }
+
+  // PMCID: PMC1234567 or PMCID:PMC1234567
+  if (/^pmcid:\s*PMC\d+$/i.test(value)) {
+    const pmcid = value.replace(/^pmcid:\s*/i, "").trim().toUpperCase();
     return { type: "pmcid", normalized: pmcid, path: `pmcid:${pmcid}` };
   }
 
+  // raw PMCID
   if (/^PMC\d+$/i.test(value)) {
     return { type: "pmcid", normalized: value.toUpperCase(), path: `pmcid:${value.toUpperCase()}` };
   }

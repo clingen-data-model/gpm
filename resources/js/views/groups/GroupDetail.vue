@@ -485,7 +485,7 @@ export default {
             <note>Documents are only available to members of this group.</note>
           </tab-item>
 
-          <tab-item v-if="userInGroup(group) || hasPermission('groups-manage')" label="Publications">
+          <tab-item v-if="(userInGroup(group) || hasPermission('groups-manage')) && group.is_ep" label="Publications">
             <GroupPublications :key="group.uuid" :group="group" />
             <note>Publications are visible to members of this group (and admins).</note>
           </tab-item>
