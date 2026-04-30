@@ -409,17 +409,6 @@ export default {
         @update:model-value="emitUpdate"
       >
         <template #label>Visibility: <note>admin-only</note></template>
-      </input-row>      
-      
-      <input-row
-        v-model="group.group_visibility_id"
-        v-if="group.group_type_id == 1"
-        type="select"
-        :options="visibilityOptions"
-        :errors="errors.group_visibility_id"
-        @update:model-value="emitUpdate"
-      >
-        <template #label>Visibility: <note>admin-only</note></template>
       </input-row>
       
       <input-row
