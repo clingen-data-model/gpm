@@ -7,7 +7,7 @@ use App\Modules\User\Models\User;
 
 class FundingSourcePolicy
 {
-    protected function isEligebleUser(User $user): bool
+    protected function isEligibleUser(User $user): bool
     {
         return $user->hasAnyRole(['super-user', 'super-admin']) || $user->hasAnyPermission(['funding-sources-manage']);
     }

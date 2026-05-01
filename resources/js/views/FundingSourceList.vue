@@ -3,7 +3,7 @@ import { ref, reactive, computed, onMounted } from 'vue'
 import api from '@/http/api'
 import SubmissionWrapper from '@/components/groups/SubmissionWrapper.vue'
 import { useStore } from 'vuex'
-import { isValidationError } from '@/http'
+import { hasPermission } from '@/auth_utils.js'
 
 const store = useStore()
 const errors = ref({})
@@ -102,8 +102,12 @@ function clearLogoSelection(full = false) {
 }
 
 async function fetchFundingTypes() {
-  const res = await api.get('/api/funding-types')
-  fundingTypes.value = Array.isArray(res.data) ? res.data : []
+  try {
+    const res = await api.get('/api/funding-types')
+    fundingTypes.value = Array.isArray(res.data) ? res.data : []
+  } catch (e) {
+    store.commit('pushError', e?.response?.data?.message || 'Failed to load funding types.')
+  }
 }
 
 async function fetchItems() {

@@ -6,7 +6,7 @@ import PersonTypeaheadMultiSelect from '@/components/people/PersonTypeaheadMulti
 import { hasRole, hasPermission } from '@/auth_utils'
 
 const props = defineProps({
-  expertPanel: { type: Object, default: true },
+  expertPanel: { type: Object, required: true },
 })
 
 const MAX_REP_CONTACTS = 3
@@ -360,6 +360,10 @@ function firstUploadError(field) {
 
 async function savePartnershipAgreement() {
   if (!uploadingAward.value) return
+  if (!partnershipAgreementFile.value) {
+    uploadErrors.value = { partnership_agreement: ['Please select a file to upload.'] }
+    return
+  }
 
   uploadErrors.value = {}
   uploadSaving.value = true
@@ -754,9 +758,9 @@ watch(
             <div class="text-xs text-gray-600 mt-1">Preferred format: PDF. Accepted file types: PDF, DOC, DOCX. Maximum file size: 3 MB.</div>
             <div v-if="firstUploadError('partnership_agreement')" class="text-sm text-red-600 mt-1">{{ firstUploadError('partnership_agreement') }}</div>
           </div>
-          <div v-if="uploadingAward?.partnership_agreement_filename" class="text-xs text-gray-600">
+          <div v-if="uploadingAward?.partnership_agreement_file" class="text-xs text-gray-600">
             Uploading a new file will replace the current file:
-            <strong>{{ uploadingAward.partnership_agreement_filename }}</strong>
+            <strong>{{ uploadingAward.partnership_agreement_file }}</strong>
           </div>
         </div>
       </SubmissionWrapper>

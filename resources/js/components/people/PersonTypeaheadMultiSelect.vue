@@ -115,10 +115,6 @@ watch(q, () => {
   t = setTimeout(fetchOptions, 250)
 })
 
-onBeforeUnmount(() => {
-  if (t) clearTimeout(t)
-})
-
 const root = ref(null)
 
 function close() {
