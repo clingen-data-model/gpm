@@ -13,7 +13,7 @@ trait MapsFundingAwardsForDx
     {
         return [
             'uuid' => (string) $fundingAward->uuid,
-            'funding_source' => FundingSourceSchema::forMessage($this->fundingAward->fundingSource),
+            'funding_source' => FundingSourceSchema::forMessage($fundingAward->fundingSource),
             'award_number' => $fundingAward->award_number,
             'start_date'   => $fundingAward->start_date?->format('Y-m-d'),
             'end_date'     => $fundingAward->end_date?->format('Y-m-d'),

@@ -25,11 +25,13 @@ class FundingAwardAgreementUpload
         $extension = $file->getClientOriginalExtension();
 
         $filename = 'gpm-funding-award-agreement-' . $fundingAward->id . '-' . now()->format('YmdHi') . '.' . $extension;
-        if ($fundingAward->partnership_agreement_file) {
-            Storage::disk('public')->delete(config('app.funding_award_agreements_dir') . '/' . $fundingAward->partnership_agreement_file);
-        }
+        $oldFile = $fundingAward->partnership_agreement_file;
         $file->storeAs(config('app.funding_award_agreements_dir'), $filename, 'public');
         $fundingAward->update(['partnership_agreement_file' => $filename]);
+
+        if ($oldFile) {
+            Storage::disk('public')->delete(config('app.funding_award_agreements_dir') . '/' . $oldFile);
+        }
         return $fundingAward->fresh();
     }
 
