@@ -69,13 +69,13 @@ Route::group([
 
         Route::put('/{expertPanel:uuid}/clinvar', ClinvarOrganizationUpdate::class);
 
+        Route::get('/{expertPanel:uuid}/funding-awards/pi-options',[FundingAwardController::class, 'piOptions']);
+        Route::get('/{expertPanel:uuid}/funding-awards', [FundingAwardController::class, 'index']);
+        Route::post('/{expertPanel:uuid}/funding-awards', FundingAwardUpsert::class);
         Route::post('/{expertPanel:uuid}/funding-awards/{fundingAward}/agreement', FundingAwardAgreementUpload::class);
         Route::get('/{expertPanel:uuid}/funding-awards/{fundingAward}/agreement', [FundingAwardController::class, 'download']);
-        Route::delete('/{expertPanel:uuid}/funding-awards/{fundingAward}/agreement', [FundingAwardController::class, 'deleteAgreement']);        
-        Route::get('/{expertPanel:uuid}/funding-awards', [FundingAwardController::class, 'index']);
-        Route::post('/{expertPanel:uuid}/funding-awards', FundingAwardUpsert::class);        
+        Route::delete('/{expertPanel:uuid}/funding-awards/{fundingAward}/agreement', [FundingAwardController::class, 'deleteAgreement']);
         Route::put('/{expertPanel:uuid}/funding-awards/{fundingAward}', FundingAwardUpsert::class);
         Route::delete('/{expertPanel:uuid}/funding-awards/{fundingAward}', FundingAwardDelete::class);
-        Route::get('/{expertPanel:uuid}/funding-awards/pi-options',[FundingAwardController::class, 'piOptions']);        
     });
 });

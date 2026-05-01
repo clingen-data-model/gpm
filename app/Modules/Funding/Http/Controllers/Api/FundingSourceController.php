@@ -25,6 +25,11 @@ class FundingSourceController extends Controller
     public function logo(Request $request, string $logo_path)
     {
         $dir  = config('app.funding_sources_logo_dir', 'funding_sources/logos');
+        // sanitize the filename to prevent directory traversal
+        $logo_path = basename($logo_path);
+        if (empty($logo_path) || $logo_path !== basename($logo_path)) {
+            abort(404);
+        }
         $rel  = "{$dir}/{$logo_path}";
         $disk = Storage::disk('public');
 
