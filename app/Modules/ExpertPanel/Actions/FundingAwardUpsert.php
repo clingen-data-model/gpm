@@ -36,8 +36,9 @@ class FundingAwardUpsert
         }
 
         $this->syncContactPis($fundingAward, $originalData, $isCreate);
+        $fundingAward = $fundingAward->fresh(['fundingSource.fundingType', 'contactPis']);
         Event::dispatch($isCreate ? new FundingAwardCreated($expertPanel, $fundingAward) : new FundingAwardUpdated($expertPanel, $fundingAward));
-        return $fundingAward->fresh(['fundingSource.fundingType', 'contactPis']);
+        return $fundingAward;
     }
 
     public function asController(ActionRequest $request, ExpertPanel $expertPanel, ?FundingAward $fundingAward = null) 
