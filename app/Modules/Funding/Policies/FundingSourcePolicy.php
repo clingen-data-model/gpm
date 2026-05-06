@@ -14,26 +14,26 @@ class FundingSourcePolicy
 
     public function viewAny(User $user): bool
     {
-        return $this->isEligebleUser($user);
+        return $this->isEligibleUser($user);
     }
 
     public function view(User $user, FundingSource $fundingSource): bool
     {
-        return $this->isEligebleUser($user);
+        return $this->isEligibleUser($user);
     }
 
     public function create(User $user): bool
     {
-        return $this->isEligebleUser($user);
+        return $this->isEligibleUser($user);
     }
 
     public function update(User $user, FundingSource $fundingSource): bool
     {
-        return $this->isEligebleUser($user);
+        return $this->isEligibleUser($user);
     }
 
     public function delete(User $user, FundingSource $fundingSource): bool
     {
-        return $this->isEligebleUser($user);
+        return $this->isEligibleUser($user);
     }
 }
