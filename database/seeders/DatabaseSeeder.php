@@ -12,6 +12,7 @@ use Database\Seeders\InstitutionSeeder;
 use Database\Seeders\DocumentTypesTableSeeder;
 use Database\Seeders\GroupRoleAndPermissionsSeeder;
 use Database\Seeders\NextActionAssigneesTableSeeder;
+use Database\Seeders\FundingTypeSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -40,6 +41,7 @@ class DatabaseSeeder extends Seeder
             RolesAndPermissionsSeeder::class,
             SubmissionTypeAndStatusSeeder::class,
             TaskTypeSeeder::class,
+            FundingTypeSeeder::class,
         ]);
 
         if (app()->environment('testing')) {
