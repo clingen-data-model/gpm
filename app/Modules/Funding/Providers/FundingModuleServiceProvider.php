@@ -18,6 +18,10 @@ class FundingModuleServiceProvider extends ModuleServiceProvider
     public function register()
     {
         parent::register();
+        $this->mergeConfigFrom(
+            __DIR__.'/../funding.php',
+            'funding'
+        );
     }
 
     public function boot()
