@@ -41,7 +41,7 @@ class PublicationAdd
 
     protected function authorize($user, Group $group): void
     {
-        if (optional($user)->cannot('groups-manage') && optional($user)->cannot('application-edit', $group)) {
+        if (!$user || ($user->cannot('groups-manage') && $user->cannot('application-edit', $group))) {
             abort(403);
         }
     }
