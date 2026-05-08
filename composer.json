@@ -24,7 +24,8 @@
         "lorisleiva/laravel-actions": "^2.1",
         "rap2hpoutre/laravel-log-viewer": "^2.0",
         "spatie/laravel-activitylog": "^4.0",
-        "spatie/laravel-permission": "^6.0"
+        "spatie/laravel-permission": "^6.0",
+        "svix/svix": "^1.93"
     },
     "require-dev": {
         "brianium/paratest": "^7.16",
