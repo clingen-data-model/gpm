@@ -11,12 +11,19 @@ class PublicationReportController extends Controller
 {
     public function index(Request $req)
     {
+        $validated = $req->validate([
+            'start'    => 'nullable|date',
+            'end'      => 'nullable|date',
+            'group_id' => 'nullable|integer|exists:groups,id',
+            'type'     => 'nullable|string',
+        ]);
+
         $q = Publication::query()
             ->with(['group.expertPanel'])
-            ->when($req->start, fn($qq)=>$qq->whereDate('published_at','>=',$req->start))
-            ->when($req->end,   fn($qq)=>$qq->whereDate('published_at','<=',$req->end))
-            ->when($req->group_id, fn($qq,$gid)=>$qq->where('group_id',$gid))
-            ->when($req->type, fn($qq,$t)=>$qq->where('pub_type',$t));
+            ->when($validated['start'] ?? null, fn($qq,$start)=>$qq->whereDate('published_at','>=',$start))
+            ->when($validated['end'] ?? null,   fn($qq,$end)=>$qq->whereDate('published_at','<=',$end))
+            ->when($validated['group_id'] ?? null, fn($qq,$gid)=>$qq->where('group_id',$gid))
+            ->when($validated['type'] ?? null, fn($qq,$t)=>$qq->where('pub_type',$t));
 
         if ($req->boolean('csv')) {
             $headers = [
