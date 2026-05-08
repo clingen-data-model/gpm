@@ -37,6 +37,8 @@ class User extends Authenticatable implements CanResetPassword, HasLogEntries
         'name',
         'email',
         'password',
+        'clerk_user_id',
+        'active',
     ];
 
     /**
@@ -57,6 +59,7 @@ class User extends Authenticatable implements CanResetPassword, HasLogEntries
     protected $casts = [
         'id' => 'integer',
         'email_verified_at' => 'datetime',
+        'active' => 'boolean',
     ];
 
     /**
