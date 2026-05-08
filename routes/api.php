@@ -54,7 +54,10 @@ Route::get('/document-types', function () {
 
 Route::get('/authenticated', [AuthController::class, 'isAuthenticated']);
 
-Route::group(['middleware' => ['auth:sanctum']], function () {
+// auth.clerk: accepts Clerk JWT Bearer tokens; passes through if none present.
+// auth: accepts web-guard sessions (existing Sanctum SPA sessions via EnsureFrontendRequestsAreStateful).
+// Both resolve to Auth::user() on the web guard, so downstream code is unchanged.
+Route::group(['middleware' => ['auth.clerk', 'auth']], function () {
     Route::get('/system-info', [SystemInfoController::class, 'index']);
     Route::get('/user', function (Request $request) {
         return $request->user();
