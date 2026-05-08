@@ -17,7 +17,6 @@ use App\Actions\ClientsideEventReport;
 use App\Actions\LogEntrySearch;
 use App\Actions\NotificationMarkRead;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CdwgController;
 use App\Http\Controllers\Api\RolesController;
 use App\Http\Controllers\Api\MailLogController;
@@ -42,19 +41,12 @@ use App\Modules\User\Http\Controllers\CurrentUserController;
 |
 */
 
-Route::group(['middleware' => ['guest']], function () {
-    Route::post('/send-reset-password-link', [AuthController::class, 'sendResetPasswordLink']);
-    Route::post('/reset-password', [AuthController::class, 'resetPassword']);
-});
-
 Route::get('/document-types', function () {
     return DocumentType::all();
 });
 
 // Clerk webhooks: unauthenticated; signature verification is done inside the action.
 Route::post('/webhooks/clerk', \App\Modules\User\Actions\HandleClerkWebhook::class);
-
-Route::get('/authenticated', [AuthController::class, 'isAuthenticated']);
 
 Route::group(['middleware' => ['auth.clerk']], function () {
     Route::get('/system-info', [SystemInfoController::class, 'index']);

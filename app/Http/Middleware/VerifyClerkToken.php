@@ -17,11 +17,8 @@ class VerifyClerkToken
 
     public function handle(Request $request, Closure $next): Response
     {
-        // Only intercept requests that carry a Bearer token.
-        // Requests without one fall through to the next middleware (e.g. Sanctum)
-        // so both auth paths can coexist during the transition period.
         if (! $request->bearerToken()) {
-            return $next($request);
+            return response()->json(['message' => 'Unauthenticated.'], Response::HTTP_UNAUTHORIZED);
         }
 
         $options = new AuthenticateRequestOptions(

@@ -9,7 +9,6 @@ import PeopleStore from '@/store/people.js'
 import CredentialStore from '@/store/credentials.js'
 import ExpertiseStore from '@/store/expertises.js'
 import axios from '@/http/api'
-import isAuthError from '@/http/is_auth_error'
 import module_factory from '@/store/module_factory';
 import User from '@/domain/user'
 // import router from '../router'
@@ -104,44 +103,15 @@ const store = createStore({
 
             return currentUserPromise
         },
-        async login({commit}, {email, password}) {
-            await axios.get('/sanctum/csrf-cookie')
-            await axios.post('/api/login', {email, password})
-                .then(() => {
-                    commit('setAuthenticated', true);
-                    store.dispatch('getCurrentUser', true);
-                });
-        },
         async logout({commit}) {
             if (window.Clerk) {
                 await window.Clerk.signOut()
-                commit('clearCurrentUser')
-                return
             }
-            try {
-                await axios.post('/api/logout')
-                    .then(() => {
-                        commit('clearCurrentUser')
-                    });
-            } catch (error) {
-                if (isAuthError(error)) {
-                    // eslint-disable-next-line no-alert
-                    alert('You cannot log out because you are not logged in');
-                }
-            }
+            commit('clearCurrentUser')
         },
-        async checkAuth({commit, state}) {
-            if (!state.authenticated) {
-                await axios.get('/api/authenticated')
-                    .then(() => {
-                        commit('setAuthenticated', true)
-                    })
-                    .catch(error => {
-                        if (error.response.status && error.response.status === 401) {
-                            commit('setAuthenticated', false)
-                        }
-                    })
-            }
+        async checkAuth({state, dispatch}) {
+            if (state.authenticated) return
+            await dispatch('forceGetCurrentUser')
         },
         getSystemInfo ({state}) {
             if (state.authenticated) {

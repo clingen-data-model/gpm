@@ -56,7 +56,7 @@ Route::group([
     Route::post('/coc/attest', CocAttest::class);
 
     Route::group([
-        'middleware' => ['auth:sanctum']
+        'middleware' => ['auth.clerk']
     ], function () {
         Route::get('/', [PeopleController::class, 'index']);
         Route::get('/invites/', [InviteController::class, 'index']);
@@ -105,7 +105,7 @@ Route::group([
 
 Route::group([
     'prefix' => 'api/institutions',
-    'middleware' => ['api', 'auth:sanctum']
+    'middleware' => ['api', 'auth.clerk']
 ], function () {
     Route::get('/', [InstitutionController::class, 'index']);
     Route::post('/', InstitutionCreate::class);
@@ -117,7 +117,7 @@ Route::group([
 
 Route::group([
     'prefix' => 'api/credentials',
-    'middleware' => ['api', 'auth:sanctum']
+    'middleware' => ['api', 'auth.clerk']
 ], function () {
     Route::post('/', CredentialCreate::class);
     Route::get('/', CredentialSearch::class);
@@ -128,7 +128,7 @@ Route::group([
 
 Route::group([
     'prefix' => 'api/expertises',
-    'middleware' => ['api', 'auth:sanctum']
+    'middleware' => ['api', 'auth.clerk']
 ], function () {
     Route::post('/', ExpertiseCreate::class);
     Route::get('/', ExpertiseSearch::class);
@@ -139,7 +139,7 @@ Route::group([
 
 Route::group([
     'prefix' => 'api/countries',
-    // 'middleware' => ['api', 'auth:sanctum']
+    // 'middleware' => ['api', 'auth.clerk']
 ], function () {
     Route::get('/', [CountryController::class, 'index']);
 });
