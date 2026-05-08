@@ -30,4 +30,9 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'openalex' => [
+        'base_url' => env('OPENALEX_BASE_URL', 'https://api.openalex.org'),
+        'api_key' => env('OPENALEX_API_KEY'),
+    ],
+
 ];
