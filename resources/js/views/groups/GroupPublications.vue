@@ -132,9 +132,9 @@ async function copyMeta(){
     } catch {}
 }
 
-function detailsLink(){
-    const row = detailsModal.item;
-    return row?.meta?.url || null;
+function detailsLink() {
+  const row = detailsModal.item;
+  return row?.link || row?.meta?.doi?.link || row?.meta?.pmid?.link || row?.meta?.pmcid?.link || null;
 }
 
 watch(groupUuid, (val, old) => { if (val && val !== old) fetchPublications(); }, { immediate: true });
@@ -249,8 +249,8 @@ function clearAddModal() {
 
               <div class="flex items-center gap-2 pt-2">
                 <a
-                  v-if="addModal.preview.url"
-                  :href="addModal.preview.url"
+                  v-if="addModal.preview.link"
+                  :href="addModal.preview.link"
                   target="_blank"
                   rel="noopener"
                   class="underline text-sm"
