@@ -2,7 +2,6 @@ import axios from 'axios'
 
 const api = axios.create({
     baseURL: '',
-    withCredentials: true,
     headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
@@ -12,10 +11,8 @@ const api = axios.create({
     },
 });
 
-// Attach Clerk session token when available. window.Clerk is populated by
-// @clerk/vue after the plugin initialises. When VITE_CLERK_PUBLISHABLE_KEY is
-// not set (local dev without Clerk) this interceptor is a no-op and the
-// existing Sanctum session cookie handles authentication instead.
+// Attach the Clerk session token to every request. window.Clerk is populated
+// by @clerk/vue after plugin initialisation.
 api.interceptors.request.use(async (config) => {
     const session = window.Clerk?.session
     if (session) {
