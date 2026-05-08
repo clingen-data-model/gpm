@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Event;
 use App\Modules\User\Events\UserCreated;
 use Illuminate\Support\Facades\Validator;
 use Lorisleiva\Actions\Concerns\AsAction;
+use App\Modules\User\Services\ClerkApiService;
 
 class UserCreate
 {
@@ -44,7 +45,13 @@ class UserCreate
     public function handle(string $name, string $email, ?string $password = null): User
     {
         $pass = $password ?? uniqid();
-        $user = User::create(['name' => $name, 'email' => $email, 'password' => Hash::make($pass)]);
+        $user = User::create(['name' => $name, 'email' => $email, 'password' => Hash::make($pass), 'active' => true]);
+
+        $clerkUserId = app(ClerkApiService::class)->findOrCreateByEmail($name, $email);
+        if ($clerkUserId) {
+            $user->update(['clerk_user_id' => $clerkUserId]);
+        }
+
         Event::dispatch(new UserCreated(user: $user));
 
         return $user;
