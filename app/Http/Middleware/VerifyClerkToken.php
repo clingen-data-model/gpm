@@ -6,6 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
+use App\Modules\User\Models\ActiveImpersonation;
 use App\Modules\User\Services\ClerkUserResolver;
 use Clerk\Backend\Helpers\Jwks\AuthenticateRequest;
 use Clerk\Backend\Helpers\Jwks\AuthenticateRequestOptions;
@@ -40,14 +41,33 @@ class VerifyClerkToken
             return response()->json(['message' => 'Unauthenticated.'], Response::HTTP_UNAUTHORIZED);
         }
 
-        $user = $this->resolver->resolve($clerkUserId);
+        $realUser = $this->resolver->resolve($clerkUserId);
 
-        if (! $user) {
+        if (! $realUser) {
             // Valid Clerk identity, but not provisioned or active in this application.
             return response()->json(['message' => 'Access to this application has not been granted.'], Response::HTTP_FORBIDDEN);
         }
 
-        Auth::setUser($user);
+        // Check for an active impersonation session started by this admin.
+        $impersonation = ActiveImpersonation::where('impersonator_id', $realUser->id)
+            ->with('target')
+            ->first();
+
+        if ($impersonation && $impersonation->target?->active) {
+            // Swap to the target user for all downstream code, but preserve the
+            // real admin identity in request attributes so impersonation-aware
+            // actions (ImpersonateStop, canBeImpersonated checks) and the
+            // is_impersonating flag can reference the original actor.
+            $request->attributes->set('is_impersonating', true);
+            $request->attributes->set('impersonating_user', $realUser);
+            Auth::setUser($impersonation->target);
+        } else {
+            if ($impersonation) {
+                // Target was deactivated; clean up the stale impersonation row.
+                $impersonation->delete();
+            }
+            Auth::setUser($realUser);
+        }
 
         return $next($request);
     }

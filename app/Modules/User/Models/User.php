@@ -13,10 +13,8 @@ use Spatie\Permission\Traits\HasRoles;
 use App\Models\Contracts\HasLogEntries;
 use App\Modules\User\Models\Preference;
 use Illuminate\Notifications\Notifiable;
-use Lab404\Impersonate\Models\Impersonate;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Contracts\Auth\CanResetPassword;
-use Lab404\Impersonate\Services\ImpersonateManager;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use App\Models\Traits\HasLogEntries as HasLogEntriesTrait;
@@ -25,7 +23,6 @@ use Illuminate\Auth\Passwords\CanResetPassword as CanResetPasswordTrait;
 class User extends Authenticatable implements CanResetPassword, HasLogEntries
 {
     use HasFactory, Notifiable, CanResetPasswordTrait, HasApiTokens, HasEmail, HasRoles;
-    use Impersonate;
     use HasLogEntriesTrait;
 
     /**
@@ -146,18 +143,14 @@ class User extends Authenticatable implements CanResetPassword, HasLogEntries
         return true;
     }
 
-    public function getImpersonatedByAttribute()
+    public function getImpersonatedByAttribute(): ?self
     {
-        if ($this->isImpersonated()) {
-            return app(ImpersonateManager::class)->getImpersonator();
-        }
-
-        return null;
+        return request()->attributes->get('impersonating_user');
     }
 
-    public function getIsImpersonatingAttribute()
+    public function getIsImpersonatingAttribute(): bool
     {
-        return app(ImpersonateManager::class)->isImpersonating();
+        return (bool) request()->attributes->get('is_impersonating', false);
     }
 
 

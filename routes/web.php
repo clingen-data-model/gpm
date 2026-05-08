@@ -33,7 +33,7 @@ Route::get('/coi-group/{group:uuid}', function (Group $group) { return app(CoiRe
 Route::get('/funding-sources/logo/{logo_path}', [FundingSourceController::class, 'logo'])->where('logo_path', '^[A-Za-z0-9_-]+\.(png|jpg|jpeg|gif)$')->name('funding.logo');
 
 Route::get('/{any}', [ViewController::class, 'app'])
-    ->where('any', '^(?!(api|sanctum|impersonate|dev|documents|downloads|clockwork|profile-photos|storage)).*$');
+    ->where('any', '^(?!(api|sanctum|dev|documents|downloads|clockwork|profile-photos|storage)).*$');
 
 Route::get('/documents/{uuid?}', [DocumentController::class, 'show'])->middleware('auth:sanctum');
 Route::get('/downloads/groups/{group:uuid}/final-specification/{document:uuid}', [DocumentController::class, 'downloadGroupFinalSpecification'])->name('groups.final-specification.download');
@@ -63,4 +63,5 @@ Route::group(['prefix' => '/api/report'], function () {
 
 });
 
-Route::impersonate();
+// Impersonation is now handled via API routes (POST/DELETE /api/impersonate)
+// using DB-tracked sessions in active_impersonations.

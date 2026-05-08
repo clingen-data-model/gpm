@@ -1,8 +1,11 @@
 import {api} from '@/http';
 
 export const impersonate = (userId) => {
-    sessionStorage.clear();
-    window.location.href = `/impersonate/take/${userId}`;
+    return api.post(`/api/impersonate/${userId}`);
+}
+
+export const stopImpersonating = () => {
+    return api.delete('/api/impersonate');
 }
 
 export const search = (searchString) => {
@@ -14,5 +17,6 @@ export const search = (searchString) => {
 
 export default {
     impersonate,
+    stopImpersonating,
     search
 }
