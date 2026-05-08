@@ -113,6 +113,11 @@ const store = createStore({
                 });
         },
         async logout({commit}) {
+            if (window.Clerk) {
+                await window.Clerk.signOut()
+                commit('clearCurrentUser')
+                return
+            }
             try {
                 await axios.post('/api/logout')
                     .then(() => {
