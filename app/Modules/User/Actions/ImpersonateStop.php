@@ -25,7 +25,9 @@ class ImpersonateStop
 
     public function asController(ActionRequest $request): JsonResponse
     {
-        $this->handle(Auth::user()->id);
+        // Use the real admin identity, not the swapped target user.
+        $actor = $request->attributes->get('impersonating_user') ?? Auth::user();
+        $this->handle($actor->id);
 
         return response()->json(['message' => 'Impersonation stopped.']);
     }

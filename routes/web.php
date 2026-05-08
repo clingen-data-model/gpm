@@ -29,7 +29,7 @@ use App\Http\Controllers\PublicIconController;
 Route::get('/coi-group/{group:uuid}', function (Group $group) { return app(CoiReportMakePdf::class)->handle($group); })->whereUuid('group')->name('coi.pdf');
 Route::get('/workinggroups/icon/{icon_path}', [PublicIconController::class, 'show'])->where('icon_path', '^[A-Fa-f0-9-]+\.(png|jpg|jpeg|gif)$')->name('wg.icon');
 Route::get('/{any}', [ViewController::class, 'app'])
-    ->where('any', '^(?!(api|sanctum|impersonate|dev|documents|downloads|clockwork|profile-photos|storage)).*$');
+    ->where('any', '^(?!(api|sanctum|dev|documents|downloads|clockwork|profile-photos|storage)).*$');
 
 Route::get('/documents/{uuid?}', [DocumentController::class, 'show'])->middleware('auth:sanctum');
 Route::get('/storage/profile-photos/{filename}', function ($filename) {
@@ -55,4 +55,5 @@ Route::group(['prefix' => '/api/report'], function () {
 
 });
 
-Route::impersonate();
+// Impersonation is now handled via API routes (POST/DELETE /api/impersonate)
+// using DB-tracked sessions in active_impersonations.

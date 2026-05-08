@@ -23,16 +23,19 @@ class ImpersonateStart
 
     public function authorize(ActionRequest $request): bool
     {
-        return Auth::user()->canImpersonate();
+        $actor = $request->attributes->get('impersonating_user') ?? Auth::user();
+        return $actor->canImpersonate();
     }
 
     public function asController(ActionRequest $request, User $user): JsonResponse
     {
+        $actor = $request->attributes->get('impersonating_user') ?? Auth::user();
+
         if (! $user->canBeImpersonated()) {
             return response()->json(['message' => 'This user cannot be impersonated.'], 403);
         }
 
-        $this->handle(Auth::user(), $user);
+        $this->handle($actor, $user);
 
         return response()->json(['message' => 'Impersonation started.']);
     }
