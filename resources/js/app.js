@@ -2,11 +2,20 @@
 
 import {camelCase, kebabCase, sentenceCase, snakeCase, titleCase} from '@/string_utils'
 import { createApp } from 'vue'
+import { clerkPlugin } from '@clerk/vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
 
 const app = createApp(App)
+
+// clerkPlugin is registered only when a publishable key is configured.
+// During local development without Clerk credentials, the app falls back to
+// the existing Sanctum session-based auth.
+const CLERK_PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY
+if (CLERK_PUBLISHABLE_KEY) {
+    app.use(clerkPlugin, { publishableKey: CLERK_PUBLISHABLE_KEY })
+}
 
 const registerComponents = (modules) => {
     for (const path in modules) {
