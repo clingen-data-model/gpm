@@ -3,7 +3,6 @@
 namespace App\Modules\User\Models;
 
 use App\Models\Traits\HasEmail;
-use Laravel\Sanctum\HasApiTokens;
 use App\Modules\Group\Models\Group;
 use Database\Factories\UserFactory;
 use Illuminate\Support\Facades\Auth;
@@ -22,7 +21,7 @@ use Illuminate\Auth\Passwords\CanResetPassword as CanResetPasswordTrait;
 
 class User extends Authenticatable implements CanResetPassword, HasLogEntries
 {
-    use HasFactory, Notifiable, CanResetPasswordTrait, HasApiTokens, HasEmail, HasRoles;
+    use HasFactory, Notifiable, CanResetPasswordTrait, HasEmail, HasRoles;
     use HasLogEntriesTrait;
 
     /**
