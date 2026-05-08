@@ -35,7 +35,7 @@ Route::get('/funding-sources/logo/{logo_path}', [FundingSourceController::class,
 Route::get('/{any}', [ViewController::class, 'app'])
     ->where('any', '^(?!(api|sanctum|dev|documents|downloads|clockwork|profile-photos|storage)).*$');
 
-Route::get('/documents/{uuid?}', [DocumentController::class, 'show'])->middleware('auth:sanctum');
+Route::get('/documents/{uuid?}', [DocumentController::class, 'show'])->middleware('auth.clerk');
 Route::get('/downloads/groups/{group:uuid}/final-specification/{document:uuid}', [DocumentController::class, 'downloadGroupFinalSpecification'])->name('groups.final-specification.download');
 Route::get('/storage/profile-photos/{filename}', function ($filename) {
     return redirect('/profile-photos/'.$filename, 301);
