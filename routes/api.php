@@ -51,6 +51,9 @@ Route::get('/document-types', function () {
     return DocumentType::all();
 });
 
+// Clerk webhooks: unauthenticated; signature verification is done inside the action.
+Route::post('/webhooks/clerk', \App\Modules\User\Actions\HandleClerkWebhook::class);
+
 Route::get('/authenticated', [AuthController::class, 'isAuthenticated']);
 
 // auth.clerk: accepts Clerk JWT Bearer tokens; passes through if none present.
