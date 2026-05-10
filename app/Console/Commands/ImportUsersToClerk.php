@@ -11,6 +11,7 @@ use Clerk\Backend\Models\Operations\GetUserListRequest;
 class ImportUsersToClerk extends Command
 {
     protected $signature = 'clerk:import-users
+                            {users?* : Optional user selectors (email, id, or uuid)}
                             {--dry-run : Show what would be done without making any changes}
                             {--skip-linked : Skip users that already have a clerk_user_id}';
 
@@ -25,6 +26,7 @@ class ImportUsersToClerk extends Command
         }
 
         $clerk = ClerkBackend::builder()->setSecurity($secretKey)->build();
+        $userSelectors = (array) $this->argument('users');
         $dryRun = $this->option('dry-run');
         $skipLinked = $this->option('skip-linked');
 
@@ -33,6 +35,14 @@ class ImportUsersToClerk extends Command
         }
 
         $query = User::query();
+
+        if (! empty($userSelectors)) {
+            $query->where(function ($builder) use ($userSelectors) {
+                $builder->whereIn('email', $userSelectors)
+                    ->orWhereIn('id', $userSelectors);
+            });
+        }
+
         if ($skipLinked) {
             $query->whereNull('clerk_user_id');
         }
