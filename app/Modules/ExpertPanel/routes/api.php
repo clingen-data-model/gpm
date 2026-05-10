@@ -41,6 +41,7 @@ Route::group([
     Route::get('/', [ApplicationController::class, 'index']);
 
     Route::group(['middleware' => ['auth.clerk']], function () {
+        Route::get('/next-actions/assignees', [NextActionAssigneeController::class, 'index']);
         Route::post('/', ExpertPanelCreate::class);
         Route::get('/{app_uuid}', [ApplicationController::class, 'show']);
         Route::put('/{app_uuid}', ExpertPanelUpdateAttributes::class);

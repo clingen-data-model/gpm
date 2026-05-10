@@ -12,6 +12,12 @@ Route::group([
 ], function () {
     Route::get('/', [UserController::class, 'index']);
     Route::get('/{user}', [UserController::class, 'show']);
+});
+
+Route::group([
+    'prefix' => 'api/users',
+    'middleware' => ['api', 'auth.clerk']
+], function () {
     Route::put('/{user}/roles-and-permissions', UserRolesAndPermissionsUpdate::class);
 });
 

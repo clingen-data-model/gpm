@@ -51,12 +51,12 @@ Route::group(['prefix' => 'api/people', 'middleware' => ['api'] ], function () {
         return Institution::select('name', 'abbreviation', 'id')->get();
     });
 
-    Route::get('/coc', [CocController::class, 'show']);
-    Route::post('/coc/attest', CocAttest::class);
-
     Route::group([
         'middleware' => ['auth.clerk']
     ], function () {
+        Route::get('/coc', [CocController::class, 'show']);
+        Route::post('/coc/attest', CocAttest::class);
+
         Route::get('/', [PeopleController::class, 'index']);
         Route::get('/invites/', [InviteController::class, 'index']);
         Route::put('/merge', PersonMerge::class);
