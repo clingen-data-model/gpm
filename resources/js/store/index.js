@@ -192,6 +192,9 @@ axios.interceptors.response.use(
     },
     error => {
         store.commit('removeRequest');
+        if (!error.response) {
+            return Promise.reject(error);
+        }
         switch (error.response.status) {
             case 401:
                 store.commit('setAuthenticated', false)
