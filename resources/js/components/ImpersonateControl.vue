@@ -1,6 +1,6 @@
 <script>
 import {mapGetters} from 'vuex';
-import {impersonate, search} from '../domain/impersonate_service';
+import {impersonate, stopImpersonating, search} from '../domain/impersonate_service';
 import SearchSelect from '@/components/forms/SearchSelect.vue';
 
 export default {
@@ -39,9 +39,16 @@ export default {
             if (this.selectedUser) {
                 this.$emit('impersonated');
                 this.showProgress = true;
-                impersonate(this.selectedUser.id)
+                impersonate(this.selectedUser.id).then(() => {
+                    window.location.reload();
+                });
             }
-            
+        },
+        stopImpersonating() {
+            this.clearingImpersonate = true;
+            stopImpersonating().then(() => {
+                window.location.reload();
+            });
         },
         async search (keyword) {
             return await search(keyword);
@@ -63,14 +70,13 @@ export default {
       >
         Impersonate a user
       </button>
-      <a
+      <button
         v-else
-        href="/impersonate/leave"
         class="btn btn-secondary btn-xs"
-        @click="clearingImpersonate = true"
+        @click="stopImpersonating"
       >
         Stop impersonating
-      </a>
+      </button>
       <teleport to="body">
         <modal-dialog
           v-model="showSelector" 
