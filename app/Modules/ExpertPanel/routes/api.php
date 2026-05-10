@@ -26,8 +26,6 @@ use App\Modules\ExpertPanel\Http\Controllers\Api\ApplicationContactController;
 use App\Modules\ExpertPanel\Http\Controllers\Api\NextActionAssigneeController;
 use App\Modules\ExpertPanel\Actions\ClinvarOrganizationUpdate;
 
-Route::get('/next-actions/assignees', [NextActionAssigneeController::class, 'index']);
-
 Route::group([
     'prefix' => 'api/applications',
     'middleware' => ['api']
@@ -35,6 +33,7 @@ Route::group([
     Route::get('/', [ApplicationController::class, 'index']);
 
     Route::group(['middleware' => ['auth.clerk']], function () {
+        Route::get('/next-actions/assignees', [NextActionAssigneeController::class, 'index']);
         Route::post('/', ExpertPanelCreate::class);
         Route::get('/{app_uuid}', [ApplicationController::class, 'show']);
         Route::put('/{app_uuid}', ExpertPanelUpdateAttributes::class);

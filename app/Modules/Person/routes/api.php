@@ -52,12 +52,12 @@ Route::group([
         return Institution::select('name', 'abbreviation', 'id')->get();
     });
 
-    Route::get('/coc', [CocController::class, 'show']);
-    Route::post('/coc/attest', CocAttest::class);
-
     Route::group([
         'middleware' => ['auth.clerk']
     ], function () {
+        Route::get('/coc', [CocController::class, 'show']);
+        Route::post('/coc/attest', CocAttest::class);
+
         Route::get('/', [PeopleController::class, 'index']);
         Route::get('/invites/', [InviteController::class, 'index']);
 
