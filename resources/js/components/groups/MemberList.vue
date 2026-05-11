@@ -571,13 +571,15 @@ export default {
   </div>
 </template>
 <style>
-    .inset {
-        box-shadow:
-            inset 0px 11px 15px -10px #CCC,
-            inset 0px -11px 10px -10px #EEE;
-    }
-    .transition-color {
-        transition: background-color .3 linear;
-    }
-
+.inset {
+  box-shadow:
+    inset 0px 11px 15px -10px #CCC,
+    inset 0px -11px 10px -10px #EEE;
+}
+.transition-color {
+  transition: background-color .3 linear;
+}
+.retired-member > td {
+  @apply text-gray-400;
+}
 </style>
