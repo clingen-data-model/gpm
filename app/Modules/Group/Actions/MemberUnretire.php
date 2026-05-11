@@ -29,9 +29,10 @@ class MemberUnretire
     public function asController(ActionRequest $request, Group $group, $groupMemberId)
     {
         $groupMember = GroupMember::findOrFail($groupMemberId);
-        $endDate = Carbon::parse($request->endDate);
-
-        return new MemberResource($this->handle($groupMember, $endDate));
+        $member = $this->handle($groupMember);
+        $member->load('roles', 'permissions', 'cois', 'latestCoi', 'person', 'person.institution', 'person.credentials', 'person.expertises', 'person.country', 'person.latestCocAttestation');
+        unset($member->group);
+        return new MemberResource($member);
     }
 
     public function authorize(ActionRequest $request): bool

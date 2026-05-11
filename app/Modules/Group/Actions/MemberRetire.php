@@ -39,7 +39,7 @@ class MemberRetire
         $endDate = Carbon::parse($request->endDate);
 
         $member = $this->handle($groupMember, $endDate);
-        $member->load('roles', 'permissions', 'cois', 'person', 'person.institution');
+        $member->load('roles', 'permissions', 'cois', 'latestCoi', 'person', 'person.institution', 'person.credentials', 'person.expertises', 'person.country', 'person.latestCocAttestation');
         unset($member->group);
 
         return new MemberResource($member);
