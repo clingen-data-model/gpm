@@ -346,9 +346,11 @@ export const ScvcepApplication = applicationDefinitionFactory({
                 membership: {
                     name: 'Membership',
                     requirements: [
+                        requirements.grantliaisons,
                         requirements.chairs,
                         requirements.coordinators,
                         requirements.coisComplete,
+                        requirements.cocsComplete,
                         requirements.institutions,
                         requirements.expertiseDescription,
                         requirements.memberExpertise

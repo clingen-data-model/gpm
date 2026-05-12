@@ -71,7 +71,7 @@ export default {
           </th>
           <th v-if="group.is_scvcep">
             CIViC editor
-            <popover arrow hover>
+            <popover arrow hover content="Indicates whether this member has a CIViC user account for curation-related work.">
               <icon-info class="inline-block cursor-pointer" :width="16" :height="16" />
             </popover>
           </th>
