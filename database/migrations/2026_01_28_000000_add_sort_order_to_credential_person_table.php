@@ -18,15 +18,31 @@ class AddSortOrderToCredentialPersonTable extends Migration
             $table->unsignedInteger('sort_order')->default(0)->after('person_id')->nullable(false);
         });
 
-        // Populate sort_order for existing records based on credential_id-- will need to fix this but it at least matched prior behavior
-        DB::statement("
-            UPDATE credential_person cp
-            JOIN (
-                SELECT person_id, credential_id, ROW_NUMBER() OVER (PARTITION BY person_id ORDER BY credential_id ASC) as credrank
-                FROM credential_person
-            ) ordered_set ON cp.person_id = ordered_set.person_id AND cp.credential_id = ordered_set.credential_id
-            SET cp.sort_order = ordered_set.credrank - 1
-        ");
+        // Populate sort_order for existing records based on credential_id.
+        if (DB::connection()->getDriverName() === 'sqlite') {
+            DB::statement("
+                WITH ordered_set AS (
+                    SELECT person_id, credential_id, ROW_NUMBER() OVER (PARTITION BY person_id ORDER BY credential_id ASC) as credrank
+                    FROM credential_person
+                )
+                UPDATE credential_person
+                SET sort_order = (
+                    SELECT credrank - 1
+                    FROM ordered_set
+                    WHERE ordered_set.person_id = credential_person.person_id
+                        AND ordered_set.credential_id = credential_person.credential_id
+                )
+            ");
+        } else {
+            DB::statement("
+                UPDATE credential_person cp
+                JOIN (
+                    SELECT person_id, credential_id, ROW_NUMBER() OVER (PARTITION BY person_id ORDER BY credential_id ASC) as credrank
+                    FROM credential_person
+                ) ordered_set ON cp.person_id = ordered_set.person_id AND cp.credential_id = ordered_set.credential_id
+                SET cp.sort_order = ordered_set.credrank - 1
+            ");
+        }
     }
 
     /**
