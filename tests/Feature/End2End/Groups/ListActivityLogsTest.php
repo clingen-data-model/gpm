@@ -3,7 +3,7 @@
 namespace Tests\Feature\End2End\Groups;
 
 use App\Models\Activity;
-use App\Modules\Group\Models\Group;
+use App\Modules\Group\Models\Group as GroupModel;
 use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -24,7 +24,7 @@ class ListActivityLogsTest extends TestCase
         $this->setupForGroupTest();
 
         $this->user = $this->setupUserWithPerson(permissions: ['groups-manage']);
-        $this->group = Group::factory()->create();
+        $this->group = GroupModel::factory()->create();
         $this->url = '/api/groups/'.$this->group->uuid.'/activity-logs/';
 
         Sanctum::actingAs($this->user);

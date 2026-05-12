@@ -4,7 +4,7 @@ namespace Tests\Feature\End2End\Groups\Members;
 
 use Tests\TestCase;
 use Laravel\Sanctum\Sanctum;
-use App\Modules\Group\Models\Group;
+use App\Modules\Group\Models\Group as GroupModel;
 use App\Modules\Group\Models\GroupMember;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Feature\End2End\Groups\Members\SetsUpGroupPersonAndMember;
@@ -17,7 +17,7 @@ class GrantMemberPermissionTest extends TestCase
 {
     use RefreshDatabase;
     use SetsUpGroupPersonAndMember;
-    
+
     public function setup():void
     {
         parent::setup();
@@ -31,7 +31,7 @@ class GrantMemberPermissionTest extends TestCase
         $this->url = 'api/groups/'.$this->group->uuid.'/members/'.$this->groupMember->id.'/permissions/';
         Sanctum::actingAs($this->user);
     }
-    
+
     #[Test]
     public function can_grant_group_permissions_to_group_member()
     {
@@ -55,7 +55,7 @@ class GrantMemberPermissionTest extends TestCase
 
         $this->assertDatabaseHas('activity_log', [
              'activity_type' => 'member-permission-granted',
-             'subject_type' => Group::class,
+             'subject_type' => GroupModel::class,
              'subject_id' => $this->group->id,
              'description' => $this->person->name.' granted permissions '.$this->permissions->pluck('name')->join(', ', ', and '),
              'properties->group_member_id' => $this->groupMember->id,
@@ -63,8 +63,8 @@ class GrantMemberPermissionTest extends TestCase
              'properties->person->id' => $this->person->id
         ]);
     }
-    
-    
+
+
     #[Test]
     public function validates_required_params()
     {
@@ -97,9 +97,9 @@ class GrantMemberPermissionTest extends TestCase
             'permission_ids' => ['The selection is invalid.']
         ]);
     }
-    
-    
-    
+
+
+
     #[Test]
     public function validates_permission_is_scoped_to_group()
     {

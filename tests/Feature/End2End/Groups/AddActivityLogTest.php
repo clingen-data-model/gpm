@@ -3,7 +3,7 @@
 namespace Tests\Feature\End2End\Groups;
 
 use App\Models\Activity;
-use App\Modules\Group\Models\Group;
+use App\Modules\Group\Models\Group as GroupModel;
 use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -25,7 +25,7 @@ class AddActivityLogTest extends TestCase
         $this->setupPermission('groups-manage');
 
         $this->user = User::factory()->create();
-        $this->group = Group::factory()->create();
+        $this->group = GroupModel::factory()->create();
         $this->url = '/api/groups/'.$this->group->uuid.'/activity-logs/';
 
         Sanctum::actingAs($this->user);
@@ -72,7 +72,7 @@ class AddActivityLogTest extends TestCase
                 'log_date' => ['The log date is not a valid date.']
             ]);
     }
-    
+
 
     private function makeRequest($data = null)
     {

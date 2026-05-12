@@ -4,7 +4,7 @@ namespace Tests\Feature\End2End\Person;
 
 use Tests\TestCase;
 use Laravel\Sanctum\Sanctum;
-use App\Modules\Group\Models\Group;
+use App\Modules\Group\Models\Group as GroupModel;
 use App\Modules\Person\Models\Invite;
 use App\Modules\Person\Models\Person;
 use App\Modules\Group\Actions\MemberAdd;
@@ -24,7 +24,7 @@ class PersonDeleteTest extends TestCase
         parent::setup();
         $this->setupForGroupTest();
         $this->user = $this->setupUserWithPerson(permissions: ['people-manage']);
-        $this->group = Group::factory()->create();
+        $this->group = GroupModel::factory()->create();
         $this->person = $this->user->person;
         $this->invite = Invite::factory()->create(['person_id' => $this->person->id]);
         $this->membership = app()->make(MemberAdd::class)->handle($this->group, $this->person);

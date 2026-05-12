@@ -6,7 +6,7 @@ use Carbon\Carbon;
 use Tests\TestCase;
 use App\Models\Permission;
 use Laravel\Sanctum\Sanctum;
-use App\Modules\Group\Models\Group;
+use App\Modules\Group\Models\Group as GroupModel;
 use Database\Seeders\TaskTypeSeeder;
 use Illuminate\Support\Facades\Mail;
 use App\Modules\Person\Models\Person;
@@ -35,7 +35,7 @@ class SubmitApplicationStepTest extends TestCase
 {
     use RefreshDatabase;
     use SetsUpGroupPersonAndMember;
-    
+
     public function setup():void
     {
         parent::setup();
@@ -73,7 +73,7 @@ class SubmitApplicationStepTest extends TestCase
                 'notes' => 'Notes from the submitter!',
                 'submitter_id' => $this->user->person->id
             ]);
-        
+
         $this->user->revokePermissionTo('ep-applications-manage');
         $person = $this->user->person()->save(Person::factory()->make());
         $membership = $this->user->person->memberships()->save(GroupMember::factory()->make([
@@ -168,7 +168,7 @@ class SubmitApplicationStepTest extends TestCase
             ->assertStatus(201);
 
         $this->assertDatabaseHas('activity_log', [
-            'subject_type' => Group::class,
+            'subject_type' => GroupModel::class,
             'subject_id' => $this->expertPanel->group_id,
             'activity_type' => 'application-step-submitted'
         ]);
@@ -178,7 +178,7 @@ class SubmitApplicationStepTest extends TestCase
     public function cdwg_oc_receives_mail_of_submitted_vcep()
     {
         Mail::fake();
-        
+
         $this->makeRequest();
 
         Mail::assertSent(ApplicationSubmissionAdminMail::class, function ($mailable) {
@@ -194,7 +194,7 @@ class SubmitApplicationStepTest extends TestCase
         $this->expertPanel->group->update(['group_type_id' => config('groups.types.gcep.id')]);
 
         Mail::fake();
-        
+
         $this->makeRequest();
 
         Mail::assertSent(ApplicationSubmissionAdminMail::class, function ($mailable) {
@@ -211,7 +211,7 @@ class SubmitApplicationStepTest extends TestCase
         $this->setupMember($this->expertPanel->group, $person, ['is_contact' => true]);
 
         Mail::fake();
-        
+
         $this->makeRequest();
 
         Mail::assertSent(ApplicationStepSubmittedReceiptMail::class, function ($mailable) {
@@ -239,11 +239,11 @@ class SubmitApplicationStepTest extends TestCase
             'date_completed' => Carbon::now()
         ]);
     }
-       
+
     #[Test]
     public function next_action_created_for_admin_group()
     {
-        
+
         Carbon::setTestNow('2022-06-01');
         $this->makeRequest();
         $this->assertDatabaseHas('next_actions', [
@@ -254,7 +254,7 @@ class SubmitApplicationStepTest extends TestCase
             'type_id' => config('next_actions.types.review-submission.id')
         ]);
 
-        
+
         $gcep = ExpertPanel::factory()->gcep()->create();
         $this->makeRequest(null, $gcep);
 
@@ -279,9 +279,9 @@ class SubmitApplicationStepTest extends TestCase
             'version' => 1,
         ]);
     }
-    
 
-        
+
+
     private function makeRequest($data = null, $expertPanel = null)
     {
         $expertPanel = $expertPanel ?? $this->expertPanel;
@@ -292,7 +292,7 @@ class SubmitApplicationStepTest extends TestCase
         $url = '/api/groups/'.$expertPanel->group->uuid.'/application/submission';
         return $this->json('post', $url, $data);
     }
-    
+
 
     private function setupGcep($data = null)
     {

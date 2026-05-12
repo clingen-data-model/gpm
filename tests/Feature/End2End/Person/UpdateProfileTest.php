@@ -9,7 +9,7 @@ use App\Models\Credential;
 use App\Models\Permission;
 use Laravel\Sanctum\Sanctum;
 use App\Modules\User\Models\User;
-use App\Modules\Group\Models\Group;
+use App\Modules\Group\Models\Group as GroupModel;
 use App\Modules\Person\Models\Person;
 use Database\Seeders\CredentialSeeder;
 use App\Modules\Group\Actions\MemberAdd;
@@ -114,7 +114,7 @@ class UpdateProfileTest extends TestCase
     #[Test]
     public function a_user_with_group_permission_cannot_update_profile()
     {
-        $group = Group::factory()->create();
+        $group = GroupModel::factory()->create();
         MemberAdd::run($group, $this->person);
 
         $userPerson = Person::factory()->create(['user_id' => $this->user->id]);
@@ -136,7 +136,7 @@ class UpdateProfileTest extends TestCase
     #[Test]
     public function a_coordinator_can_edit_some_profile_fields_of_members()
     {
-        $group = Group::factory()->create();
+        $group = GroupModel::factory()->create();
         MemberAdd::run($group, $this->person);
 
         $role = Role::where('name', 'coordinator')->first();

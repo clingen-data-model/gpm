@@ -5,7 +5,7 @@ namespace Tests\Feature;
 use Tests\TestCase;
 use App\Models\Role;
 use App\Models\Permission;
-use App\Modules\Group\Models\Group;
+use App\Modules\Group\Models\Group as GroupModel;
 use App\Modules\Person\Models\Person;
 use App\Modules\Group\Actions\MemberAdd;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -19,13 +19,13 @@ use PHPUnit\Framework\Attributes\Test;
 class IsGroupMemberTest extends TestCase
 {
     use RefreshDatabase;
-    
+
     public function setup():void
     {
         parent::setup();
         $this->setupForGroupTest();
 
-        $this->group = Group::factory()->create();
+        $this->group = GroupModel::factory()->create();
         $this->person = Person::factory()->create();
         $this->groupPerm = Permission::factory()->create(['name' => 'test-permission', 'scope' => 'group']);
         $this->groupRole = Role::factory()->create(['name' => 'group-role', 'scope'=>'group']);

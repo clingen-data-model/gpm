@@ -8,7 +8,7 @@ use Laravel\Sanctum\Sanctum;
 use App\Modules\User\Models\User;
 use App\Models\Role as ModelsRole;
 use Spatie\Permission\Models\Role;
-use App\Modules\Group\Models\Group;
+use App\Modules\Group\Models\Group as GroupModel;
 use App\Modules\Person\Models\Person;
 use Illuminate\Support\Facades\Event;
 use App\Modules\Group\Events\MemberAdded;
@@ -32,7 +32,7 @@ class AddGroupMemberTest extends TestCase
     {
         parent::setup();
         $this->setupForGroupTest();
-        $this->group = Group::factory()->create(['group_type_id'=> 1]);
+        $this->group = GroupModel::factory()->create(['group_type_id'=> 1]);
         $this->person = Person::factory()->create();
         $this->user = $this->setupUser(permissions: ['groups-manage']);
         Sanctum::actingAs($this->user);
@@ -54,7 +54,7 @@ class AddGroupMemberTest extends TestCase
 
         $response = $this->json('POST', $url, $data)->assertStatus(404);
     }
-    
+
     #[Test]
     public function unprivileged_user_cannot_add_a_group_member()
     {
@@ -70,11 +70,11 @@ class AddGroupMemberTest extends TestCase
         $this->user->revokePermissionTo('groups-manage');
         $this->setupPermission('ep-applications-manage');
         $this->user->givePermissionTo('ep-applications-manage');
-        
+
         $this->makeRequest()
             ->assertStatus(201);
     }
-    
+
     #[Test]
     public function user_with_annualReviewsManage_permission_can_add_group_member()
     {
@@ -84,7 +84,7 @@ class AddGroupMemberTest extends TestCase
         $this->makeRequest()
             ->assertStatus(201);
     }
-    
+
 
     #[Test]
     public function user_with_with_group_inviteMembers_permission_can_add_group_member()
@@ -98,7 +98,7 @@ class AddGroupMemberTest extends TestCase
         $this->makeRequest()
             ->assertStatus(201);
     }
-    
+
 
     #[Test]
     public function can_add_member_to_expert_panel()
@@ -111,7 +111,7 @@ class AddGroupMemberTest extends TestCase
             'person_id' => $this->person->id
         ]);
     }
-    
+
     #[Test]
     public function returns_new_member_with_person_roles_and_start_date()
     {
@@ -129,7 +129,7 @@ class AddGroupMemberTest extends TestCase
         ]);
         $this->assertEquals($this->role->id, $response->original->roles[0]->id);
     }
-    
+
     #[Test]
     public function adds_group_roles_to_new_member()
     {
@@ -168,12 +168,12 @@ class AddGroupMemberTest extends TestCase
         $this->makeRequest();
 
         $this->assertDatabaseHas('activity_log', [
-            'subject_type' => Group::class,
+            'subject_type' => GroupModel::class,
             'subject_id' => $this->group->id,
             'properties->email' => $this->person->email
         ]);
     }
-    
+
     #[Test]
     public function saves_is_contact_attribute()
     {
@@ -185,7 +185,7 @@ class AddGroupMemberTest extends TestCase
             'is_contact' => 1
         ]);
     }
-    
+
     #[Test]
     public function person_is_notified_of_being_added_to_group()
     {
@@ -195,7 +195,7 @@ class AddGroupMemberTest extends TestCase
 
         Notification::assertSentTo($this->person, AddedToGroupNotification::class);
     }
-    
+
 
     private function makeRequest($personId = null, ?array $roleIds = null, bool $isContact = false)
     {

@@ -9,7 +9,7 @@ use Illuminate\Support\Str;
 use Laravel\Sanctum\Sanctum;
 use App\Modules\User\Models\User;
 use Illuminate\Http\UploadedFile;
-use App\Modules\Group\Models\Group;
+use App\Modules\Group\Models\Group as GroupModel;
 use App\Modules\Person\Models\Person;
 use App\Modules\ExpertPanel\Models\Coi;
 use App\Modules\Group\Actions\MemberAdd;
@@ -33,7 +33,7 @@ class SimpleCoiEndpointTest extends TestCase
         parent::setup();
         $this->setupForGroupTest();
 
-        $this->group = Group::factory()->create();
+        $this->group = GroupModel::factory()->create();
         $user = $this->setupUserWithPerson();
         $this->groupMember = GroupMember::factory()->create(['group_id' => $this->group, 'person_id' => $user->person]);
         $this->actingAs($user);

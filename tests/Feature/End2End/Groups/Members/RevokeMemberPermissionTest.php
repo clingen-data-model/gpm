@@ -9,7 +9,7 @@ use App\Modules\Group\Models\GroupMember;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Modules\Group\Actions\MemberGrantPermissions;
-use App\Modules\Group\Models\Group;
+use App\Modules\Group\Models\Group as GroupModel;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 
@@ -27,14 +27,14 @@ class RevokeMemberPermissionTest extends TestCase
 
         $this->user = $this->setupUser();
         Sanctum::actingAs($this->user);
-        
+
         $this->setupEntities()->setupMember();
         $this->permissions = config('permission.models.permission')::factory(2)->create(['scope' => 'group']);
         MemberGrantPermissions::run($this->groupMember, $this->permissions);
 
         $this->url = '/api/groups/'.$this->group->uuid.'/members/'.$this->groupMember->id.'/permissions';
     }
-    
+
     #[Test]
     public function can_revoke_a_permission()
     {
@@ -67,7 +67,7 @@ class RevokeMemberPermissionTest extends TestCase
         $response->assertStatus(200);
 
         $this->assertDatabaseHas('activity_log', [
-            'subject_type' => Group::class,
+            'subject_type' => GroupModel::class,
             'subject_id' => $this->group->id,
             'activity_type' => 'member-permission-revoked',
             'description' => 'Permission '.$this->permissions->first()->name.' revoked from member '.$this->person->name.'.',

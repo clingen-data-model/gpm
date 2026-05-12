@@ -6,7 +6,7 @@ use DateTime;
 use Tests\TestCase;
 use Laravel\Sanctum\Sanctum;
 use App\Modules\User\Models\User;
-use App\Modules\Group\Models\Group;
+use App\Modules\Group\Models\Group as GroupModel;
 use App\Modules\Person\Models\Person;
 use App\Modules\Group\Actions\MemberAdd;
 use Carbon\Carbon;
@@ -55,7 +55,7 @@ class RetireMemberTest extends TestCase
             'end_date' => $endDate->format('Y-m-d H:i:s')
         ]);
     }
-    
+
     #[Test]
     public function validates_required_information()
     {
@@ -99,8 +99,8 @@ class RetireMemberTest extends TestCase
             'end_date' => ['The end date must be a date after or equal to the member\'s start date.']
         ]);
     }
-    
-    
+
+
 
     #[Test]
     public function logs_member_retired_activity()

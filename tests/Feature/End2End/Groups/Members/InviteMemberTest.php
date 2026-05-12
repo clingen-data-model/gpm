@@ -5,7 +5,7 @@ namespace Tests\Feature\End2End\Groups\Members;
 use Tests\TestCase;
 use Laravel\Sanctum\Sanctum;
 use App\Modules\User\Models\User;
-use App\Modules\Group\Models\Group;
+use App\Modules\Group\Models\Group as GroupModel;
 use App\Modules\Person\Models\Person;
 use App\Modules\Group\Actions\MemberAdd;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -31,7 +31,7 @@ class InviteMemberTest extends TestCase
         $this->user = $this->setupUser();
         $this->user->person()->create(Person::factory()->make()->toArray());
 
-        $this->group = Group::factory()->create();
+    $this->group = GroupModel::factory()->create();
         $this->userMember = MemberAdd::run($this->group, $this->user->person);
 
         $this->url = 'api/groups/'.$this->group->uuid.'/invites';
@@ -191,7 +191,7 @@ class InviteMemberTest extends TestCase
             'properties->last_name' => 'Testerson',
             'properties->email' => 'test@test.com',
             'properties->inviter_id' => $this->group->id,
-            'properties->inviter_type' => Group::class,
+            'properties->inviter_type' => GroupModel::class,
         ]);
     }
 

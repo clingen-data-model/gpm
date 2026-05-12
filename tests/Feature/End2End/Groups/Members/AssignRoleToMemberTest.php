@@ -4,7 +4,7 @@ namespace Tests\Feature\End2End\Groups\Members;
 
 use Tests\TestCase;
 use Laravel\Sanctum\Sanctum;
-use App\Modules\Group\Models\Group;
+use App\Modules\Group\Models\Group as GroupModel;
 use App\Modules\Group\Models\GroupMember;
 use App\Modules\Person\Models\Person;
 use App\Modules\User\Models\User;
@@ -19,13 +19,13 @@ class AssignRoleToMemberTest extends TestCase
     use RefreshDatabase;
     use SetsUpGroupPersonAndMember;
 
-    private Group $group;
+    private GroupModel $group;
     private GroupMember $groupMember;
     private Person $person;
     private User $user;
     private $roles;
     private $url;
-    
+
     public function setup():void
     {
         parent::setup();
@@ -33,7 +33,7 @@ class AssignRoleToMemberTest extends TestCase
 
         $this->user = $this->setupUser();
         $this->setupEntities()->setupMember();
-        
+
         $this->roles = config('permission.models.role')::factory(2)->create(['scope' => 'group']);
 
         $this->url = 'api/groups/'.$this->group->uuid.'/members/'.$this->groupMember->id.'/roles';
@@ -119,7 +119,7 @@ class AssignRoleToMemberTest extends TestCase
         $this->groupMember->refresh();
 
         $this->assertDatabaseHas('activity_log', [
-            'subject_type' => Group::class,
+            'subject_type' => GroupModel::class,
             'subject_id' => $this->groupMember->group->id,
             'activity_type' => 'member-role-assigned',
             'properties->member->id' => $this->groupMember->person->id,

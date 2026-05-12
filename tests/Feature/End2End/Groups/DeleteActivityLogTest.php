@@ -3,7 +3,7 @@
 namespace Tests\Feature\End2End\Groups;
 
 use App\Models\Activity;
-use App\Modules\Group\Models\Group;
+use App\Modules\Group\Models\Group as GroupModel;
 use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -24,9 +24,9 @@ class DeleteActivityLogTest extends TestCase
         $this->setupForGroupTest();
 
         $this->user = $this->setupUser(permissions: ['groups-manage']);
-        $this->group = Group::factory()->create();
+        $this->group = GroupModel::factory()->create();
         $this->logEntry = Activity::factory()->create([
-            'subject_type' => Group::class,
+            'subject_type' => GroupModel::class,
             'subject_id' => $this->group->id
         ]);
 
