@@ -24,6 +24,7 @@ import GcepRationaleForm from "@/components/expert_panels/GcepRationaleForm.vue"
 import VcepGeneList from "@/components/expert_panels/VcepGeneList.vue";
 import ScvcepGeneList from "@/components/expert_panels/ScvcepGeneList.vue";
 import VcepOngoingPlansForm from "@/components/expert_panels/VcepOngoingPlansForm.vue";
+import ScvcepOngoingPlansForm from "@/components/expert_panels/ScvcepOngoingPlansForm.vue";
 import GroupDocuments from "./GroupDocuments.vue";
 import AnnualUpdateAlert from "@/components/groups/AnnualUpdateAlert.vue";
 import StepTabs from "@/components/applications/StepTabs.vue";
@@ -61,6 +62,7 @@ export default {
     VcepGeneList,
     ScvcepGeneList,
     VcepOngoingPlansForm,
+    ScvcepOngoingPlansForm,
     AnnualUpdateAlert,
     StepTabs,
     ProgressChart,
@@ -96,7 +98,7 @@ export default {
       }
       if(group.value.is_scvcep) {
         return ScvcepGeneList;
-      } else if(group.value.is_vcep_or_scvcep) {
+      } else if(group.value.is_vcep) {
         return VcepGeneList;
       } else if (group.value.is_gcep) {
         return GcepGeneList;
@@ -104,7 +106,15 @@ export default {
     });
 
     const ongoingPlansFormComponent = computed(() => {
-      return group.value.is_vcep_or_scvcep ? VcepOngoingPlansForm : GcepOngoingPlansForm;
+      if (group.value.is_vcep) {
+        return VcepOngoingPlansForm;
+      }
+
+      if (group.value.is_scvcep) {
+        return ScvcepOngoingPlansForm;
+      }
+
+      return GcepOngoingPlansForm;
     });
 
     const getLogEntries = async () => {

@@ -1,4 +1,13 @@
-import { GcepApplication, VcepApplication } from "@/domain";
+import { GcepApplication, VcepApplication, ScvcepApplication } from "@/domain";
 
-export const getApplicationForGroup = (group) =>
-    group.is_vcep_or_scvcep ? VcepApplication : GcepApplication;
+export const getApplicationForGroup = (group) => {
+    if (group.is_vcep) {
+        return VcepApplication;
+    }
+
+    if (group.is_scvcep) {
+        return ScvcepApplication;
+    }
+
+    return GcepApplication;
+};
