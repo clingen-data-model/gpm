@@ -52,7 +52,7 @@ class DxMessageFactoryTest extends TestCase
         $event = new StepApproved($this->expertPanel, 1, Carbon::now());
         $message = $this->factory->makeFromEvent($event);
 
-        $this->assertEquals('ep_definition_approved', $message['event_type']);
+        $this->assertEquals('gcep_final_approval', $message['event_type']);
         $this->assertExpertPanelInMessage($message);
         $this->assertMembersInMessage($this->expertPanel->group->members->all(), $message);
         $this->assertArrayHasKey('scope', $message['data']);
@@ -198,18 +198,27 @@ class DxMessageFactoryTest extends TestCase
 
     private function assertMembersInMessage($members, $message)
     {
-        $membersMsg = array_map(function ($member) {
-            return [
-                'uuid' => $member->person->uuid,
-                'first_name' => $member->person->first_name,
-                'last_name' => $member->person->last_name,
-                'roles' => $member->roles->pluck('name')->toArray(),
-                'institution' => $member->person->institution->name ?? null,
-                'credentials' => $member->person->credentials->pluck('name')->toArray(),
-            ];
-        }, $members);
         $this->assertArrayHasKey('members', $message['data']);
-        $this->assertEquals($membersMsg, $message['data']['members']);
+
+        $actualMembers = $message['data']['members'];
+        $this->assertCount(count($members), $actualMembers);
+
+        foreach ($members as $index => $member) {
+            $actual = $actualMembers[$index];
+
+            $this->assertEquals($member->person->uuid, $actual['uuid']);
+            $this->assertEquals($member->person->first_name, $actual['first_name']);
+            $this->assertEquals($member->person->last_name, $actual['last_name']);
+            $this->assertEquals($member->roles->pluck('display_name')->toArray(), $actual['roles']);
+            $this->assertEquals($member->permissions->pluck('name')->toArray(), $actual['additional_permissions']);
+            $this->assertEquals($member->person->institution->name ?? null, $actual['institution']);
+            $this->assertEquals($member->person->credentials->pluck('name')->toArray(), $actual['credentials']);
+
+            $this->assertArrayHasKey('code_of_conduct', $actual);
+            if (is_array($actual['code_of_conduct'])) {
+                $this->assertArrayHasKey('status', $actual['code_of_conduct']);
+            }
+        }
     }
 
 
@@ -223,6 +232,7 @@ class DxMessageFactoryTest extends TestCase
             'type' => $this->expertPanel->group->fullType->name,
             'caption' => $this->expertPanel->group->caption,
             'coi' => url('/coi-group/'.$this->expertPanel->group->uuid),
+            'visibility' => optional($this->expertPanel->group->groupVisibility)->name,
             'expert_panel' => [
                 'uuid' => $this->expertPanel->uuid,
                 'affiliation_id' => (string) $this->expertPanel->affiliation_id,
@@ -233,8 +243,7 @@ class DxMessageFactoryTest extends TestCase
                 'type' => $this->expertPanel->type->name,
                 'date_completed' => $this->expertPanel->date_completed,
                 'current_step' => $this->expertPanel->current_step,
-                'gcep_define_group' => $this->expertPanel->step_1_received_date,
-                'gcep_approval' => $this->expertPanel->step_4_approval_date,
+                'gcep_final_approval' => $this->expertPanel->step_1_approval_date,
                 'inactive_date' => null,
             ],
             'status_date' => $this->expertPanel->group->groupStatus->updated_at->toISO8601String(),
