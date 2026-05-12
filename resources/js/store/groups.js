@@ -427,7 +427,7 @@ export const actions = {
                 expert_panels: statusLookup[gene.gene_symbol]?.expert_panels || [],
                 details: statusLookup[gene.gene_symbol]?.entries || [],
             }))
-        } else if (group.is_vcep_or_scvcep) {
+        } else if (group.is_vcep) {
             const response = await api.post('/api/curationids', { curation_ids: curationIDs.join(',') });
             const gtCurations = response.data?.data ?? [];
 

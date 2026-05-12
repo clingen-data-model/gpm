@@ -49,7 +49,7 @@ export default {
   >
     <template #selection-label="{selection}">
       <div v-if="typeof selection == 'object'">
-        {{ selection.mondo_id }} - {{ selection.name }}
+        {{ selection.mondo_id }} - {{ selection.name }} ({{ selection.doid_id ?? 'DOID: N/A' }})
       </div>
       <div v-else>
         {{ selection }}
@@ -57,7 +57,7 @@ export default {
     </template>
     <template #option="{option}">
       <div v-if="typeof option == 'object'">
-        {{ option.mondo_id }} - {{ option.name }}
+        {{ option.mondo_id }} - {{ option.name }} ({{ option.doid_id ?? 'DOID: N/A' }})
       </div>
       <div v-else>
         {{ option }}
