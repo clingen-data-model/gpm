@@ -12,6 +12,7 @@ use App\DataExchange\Models\IncomingStreamMessage;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\DataExchange\Actions\PilotRulesApprovedProcessor;
 use App\DataExchange\Exceptions\DataSynchronizationException;
+use PHPUnit\Framework\Attributes\Test;
 
 class PilotRulesApprovedProcessorTest extends TestCase
 {
@@ -35,9 +36,7 @@ class PilotRulesApprovedProcessorTest extends TestCase
         $this->action = app()->make(PilotRulesApprovedProcessor::class);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_throws_exception_if_expert_panel_is_not_draft_approved()
     {
         try {
@@ -49,9 +48,7 @@ class PilotRulesApprovedProcessorTest extends TestCase
         }
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_creates_a_new_SustainedCurationReviewTask_when_expert_panel_already_has_approved_pilot()
     {
         $this->expertPanel->step_1_approval_date = Carbon::parse('2020-01-01');
@@ -78,9 +75,7 @@ class PilotRulesApprovedProcessorTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_approves_pilot_specifications_if_ep_draftApproved_and_not_pilotApproved()
     {
         $this->expertPanel->step_1_approval_date = Carbon::parse('2020-01-01');

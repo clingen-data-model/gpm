@@ -15,6 +15,7 @@ use App\Modules\Group\Notifications\CommentActivityNotification;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 
 class ResolveCommentTest extends CommentTest
 {
@@ -26,9 +27,7 @@ class ResolveCommentTest extends CommentTest
         $this->comment = $this->createComment();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function permissioned_user_can_resolve_comment()
     {
         Carbon::setTestNow('2022-07-11');
@@ -45,9 +44,7 @@ class ResolveCommentTest extends CommentTest
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function unpermissioned_user_cannot_resolve_comment()
     {
         $this->user->revokePermissionTo('ep-applications-comment');
@@ -55,9 +52,7 @@ class ResolveCommentTest extends CommentTest
             ->assertStatus(403);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function does_not_overwrite_not_null_resolved_at()
     {
         Carbon::setTestNow('2021-07-11');
@@ -78,9 +73,7 @@ class ResolveCommentTest extends CommentTest
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function resolve_assertNotificationSent()
     {
         $submission = Submission::factory()->create([
@@ -110,9 +103,7 @@ class ResolveCommentTest extends CommentTest
     }
 
 
-    /**
-     * @test
-     */
+    #[Test]
     public function resolve_assertNotificationNotSent()
     {
         $submission = Submission::factory()->create([

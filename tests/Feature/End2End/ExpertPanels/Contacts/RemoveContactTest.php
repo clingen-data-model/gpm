@@ -12,13 +12,13 @@ use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Actions\ContactAdd;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 
-/**
- * @group applications
- * @group expert-panels
- * @group contacts
- * @group membership
- */
+#[Group('applications')]
+#[Group('expert-panels')]
+#[Group('contacts')]
+#[Group('membership')]
 class RemoveContactTest extends TestCase
 {
     use RefreshDatabase;
@@ -36,9 +36,7 @@ class RemoveContactTest extends TestCase
         Sanctum::actingAs($this->user);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function removes_contact_from_application()
     {
         $this->json('DELETE', '/api/applications/'.$this->expertPanel->uuid.'/contacts/'.$this->person->uuid)
@@ -50,9 +48,7 @@ class RemoveContactTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function responds_with_404_if_application_or_person_not_found()
     {
         $this->json('DELETE', '/api/applications/'.$this->expertPanel->uuid.'/contacts/bob-is-your-uncle')
@@ -62,9 +58,7 @@ class RemoveContactTest extends TestCase
             ->assertStatus(404);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function response_with_422_if_person_not_a_contact_of_application()
     {
         $person2 = Person::factory()->create();

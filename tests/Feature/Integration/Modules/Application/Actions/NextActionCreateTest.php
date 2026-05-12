@@ -12,10 +12,10 @@ use App\Modules\ExpertPanel\Actions\NextActionCreate;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Modules\ExpertPanel\Events\NextActionAdded;
 use Database\Seeders\NextActionAssigneesTableSeeder;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 
-/**
- * @group next-actions
- */
+#[Group('next-actions')]
 class NextActionCreateTest extends TestCase
 {
     use RefreshDatabase;
@@ -29,9 +29,7 @@ class NextActionCreateTest extends TestCase
         $this->expertPanel = ExpertPanel::factory()->create();
     }
     
-    /**
-     * @test
-     */
+    #[Test]
     public function raises_NextActionAdded_event()
     {
         $nextAction = NextAction::factory()->make();
@@ -49,9 +47,7 @@ class NextActionCreateTest extends TestCase
         Event::assertDispatched(NextActionAdded::class);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function logs_next_action_added()
     {
         $nextAction = NextAction::factory()->make(['step'=>3]);

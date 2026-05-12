@@ -9,6 +9,7 @@ use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Modules\ExpertPanel\Actions\ApplicationComplete;
 use App\Modules\ExpertPanel\Events\ApplicationCompleted;
+use PHPUnit\Framework\Attributes\Test;
 
 class ApplicationCompleteTest extends TestCase
 {
@@ -23,9 +24,7 @@ class ApplicationCompleteTest extends TestCase
     }
     
 
-    /**
-     * @test
-     */
+    #[Test]
     public function raises_ApplicationCompleted_event()
     {
         $expertPanel = ExpertPanel::factory()->gcep()->create([
@@ -38,9 +37,7 @@ class ApplicationCompleteTest extends TestCase
         Event::assertDispatched(ApplicationCompleted::class);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function logs_Application_completed()
     {
         $expertPanel = ExpertPanel::factory()->gcep()->create([

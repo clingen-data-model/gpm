@@ -7,6 +7,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class ResetPasswordTest extends TestCase
 {
@@ -17,9 +18,7 @@ class ResetPasswordTest extends TestCase
         parent::setup();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validates_required_fields()
     {
         $response = $this->json('POST', '/api/reset-password', []);
@@ -34,9 +33,7 @@ class ResetPasswordTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validates_field_requirements()
     {
         $data = [
@@ -54,9 +51,7 @@ class ResetPasswordTest extends TestCase
             ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function resets_password_if_data_is_valid()
     {
         $user = User::factory()->create();

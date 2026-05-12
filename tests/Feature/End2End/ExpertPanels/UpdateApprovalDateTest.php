@@ -9,6 +9,7 @@ use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;
 use Laravel\Sanctum\Sanctum;
+use PHPUnit\Framework\Attributes\Test;
 
 class UpdateApprovalDateTest extends TestCase
 {
@@ -30,10 +31,7 @@ class UpdateApprovalDateTest extends TestCase
     }
     
 
-    /**
-     * @test
-     *
-     */
+    #[Test]
     public function it_validates_request_params()
     {
         Sanctum::actingAs($this->user);
@@ -56,9 +54,7 @@ class UpdateApprovalDateTest extends TestCase
             ]]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_stores_new_date_and_returns_the_document()
     {
         Sanctum::actingAs($this->user);

@@ -14,12 +14,12 @@ use Database\Factories\NextActionAssigneeFactory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Database\Seeders\NextActionAssigneesTableSeeder;
 use App\Modules\ExpertPanel\Models\NextActionAssignee;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 
-/**
- * @group next-actions
- * @group next_actions
- * @group nextactions
- */
+#[Group('next-actions')]
+#[Group('next_actions')]
+#[Group('nextactions')]
 class AddNextActionTest extends TestCase
 {
     use RefreshDatabase;
@@ -37,9 +37,7 @@ class AddNextActionTest extends TestCase
         Sanctum::actingAs($this->user);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function user_can_create_next_action()
     {
         $this->json('POST', $this->baseUrl, [
@@ -64,9 +62,7 @@ class AddNextActionTest extends TestCase
             ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validates_required_fields()
     {
         $this->json('POST', $this->baseUrl, [])
@@ -79,9 +75,7 @@ class AddNextActionTest extends TestCase
             ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validates_field_types()
     {
         $this->json('POST', $this->baseUrl, [

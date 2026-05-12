@@ -8,10 +8,10 @@ use Illuminate\Testing\TestResponse;
 use App\Modules\Person\Models\Person;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 
-/**
- * @group expertises
- */
+#[Group('expertises')]
 class MergeExpertisesTest extends TestCase
 {
     use RefreshDatabase;
@@ -23,18 +23,14 @@ class MergeExpertisesTest extends TestCase
         $this->authority = Expertise::factory()->has(Person::factory())->create();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function guest_cannot_merge_expertises()
     {
         $this->makeRequest()
             ->assertStatus(401);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function unpermissioned_user_cannot_merge_expertises()
     {
         $this->login();
@@ -42,9 +38,7 @@ class MergeExpertisesTest extends TestCase
             ->assertStatus(403);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function permissioned_user_can_merge_expertises()
     {
         $this->login(permissions: ['people-manage']);
@@ -60,9 +54,7 @@ class MergeExpertisesTest extends TestCase
         $this->assertEquals($this->authority->people()->count(), 2);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validates_required_params()
     {
         $this->login(permissions: ['people-manage']);
@@ -75,9 +67,7 @@ class MergeExpertisesTest extends TestCase
     }
 
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validates_both_expertises_exist()
     {
         $this->login(permissions: ['people-manage']);
@@ -89,9 +79,7 @@ class MergeExpertisesTest extends TestCase
             ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validates_obsolete_is_not_authority()
     {
         $this->login(permissions: ['people-manage']);

@@ -9,6 +9,7 @@ use Illuminate\Testing\TestResponse;
 use App\Modules\Person\Models\Institution;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 
 class InstitutionDeleteTest extends TestCase
 {
@@ -21,17 +22,13 @@ class InstitutionDeleteTest extends TestCase
     }
 
 
-    /**
-     * @test
-     */
+    #[Test]
     public function guest_cannot_delete_an_institution()
     {
         $this->makeRequest()->assertStatus(401);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function user_without_permission_cannot_delete_an_institution()
     {
         $user = $this->setupUser();
@@ -40,9 +37,7 @@ class InstitutionDeleteTest extends TestCase
         $this->makeRequest()->assertStatus(403);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function permissioned_user_can_delete_an_institution()
     {
         $user = $this->setupUser(permissions: ['people-manage']);

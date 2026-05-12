@@ -11,6 +11,7 @@ use App\Modules\Group\Models\GroupMember;
 use App\Modules\Group\Models\GroupStatus;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Modules\ExpertPanel\Models\ExpertPanelType;
+use PHPUnit\Framework\Attributes\Test;
 
 class ModelSnapshotterTest extends TestCase
 {
@@ -28,9 +29,7 @@ class ModelSnapshotterTest extends TestCase
     }
     
 
-    /**
-     * @test
-     */
+    #[Test]
     public function creates_snapshot_of_model_with_no_relations_loaded()
     {
         $snapshot = $this->snapshotter->createSnapshot($this->model);
@@ -44,9 +43,7 @@ class ModelSnapshotterTest extends TestCase
         $this->assertEquals($expected, $snapshot);        
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function creates_snapshot_of_model_with_scalar_relations()
     {
         $typeAttr = [ 'name' => 'Monkey' ];
@@ -69,9 +66,7 @@ class ModelSnapshotterTest extends TestCase
         $this->assertEquals($expected, $snapshot);        
     }
     
-    /**
-     * @test
-     */
+    #[Test]
     public function can_create_snapshot_for_model_with_nonscalar_relation()
     {
         $memberAttrs = [
@@ -102,9 +97,7 @@ class ModelSnapshotterTest extends TestCase
         $this->assertEquals($expected, $snapshot);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function can_create_snapshot_with_null_relations()
     {
         $this->model->setRelation('type', null);
@@ -115,9 +108,7 @@ class ModelSnapshotterTest extends TestCase
     }
     
 
-    /**
-     * @test
-     */
+    #[Test]
     public function can_create_snapshot_with_nested_relations()
     {
         $epAttr = ['long_base_name' => 'Long VCEP Name'];
@@ -151,9 +142,7 @@ class ModelSnapshotterTest extends TestCase
         $this->assertEquals($expected, $snapshot);
     }
     
-    /**
-     * @test
-     */
+    #[Test]
     public function can_init_model_with_nested_relations_from_snapshot()
     {
         $snapshot = [

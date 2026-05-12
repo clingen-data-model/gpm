@@ -11,13 +11,13 @@ use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Traits\SeedsHgncGenesAndDiseases;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 
-/**
- * @group groups
- * @group applications
- * @group expert-panels
- * @group gene-list
- */
+#[Group('groups')]
+#[Group('applications')]
+#[Group('expert-panels')]
+#[Group('gene-list')]
 class SyncGenesToGcepTest extends TestCase
 {
     use RefreshDatabase;
@@ -37,9 +37,7 @@ class SyncGenesToGcepTest extends TestCase
         Sanctum::actingAs($this->user);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function unprivileged_user_can_not_add_genes_to_an_gcep()
     {
         $this->user->revokePermissionTo('ep-applications-manage');
@@ -52,9 +50,7 @@ class SyncGenesToGcepTest extends TestCase
         ->assertStatus(403);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validates_input_for_gceps()
     {
         $this->json('POST', $this->url, ['genes'=>['ZXC', 'ABC1']])
@@ -67,9 +63,7 @@ class SyncGenesToGcepTest extends TestCase
             ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function privileged_user_can_add_new_genes_to_a_gcep()
     {
         $this->json('POST', $this->url, [
@@ -94,9 +88,7 @@ class SyncGenesToGcepTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function privileged_user_can_remove_genes()
     {
 
@@ -124,9 +116,7 @@ class SyncGenesToGcepTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function logs_appropriate_activities()
     {
         $this->seedGenes([

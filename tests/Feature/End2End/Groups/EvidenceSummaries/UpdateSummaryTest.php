@@ -12,6 +12,7 @@ use Tests\Traits\SeedsHgncGenesAndDiseases;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 
 class UpdateSummaryTest extends TestCase
 {
@@ -34,9 +35,7 @@ class UpdateSummaryTest extends TestCase
         $this->url = '/api/groups/'.$this->vcep->group->uuid.'/expert-panel/evidence-summaries/'.$this->evidenceSummary->id;
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function unprivileged_user_cannot_update_new_evidenceSummary()
     {
         $this->user->revokePermissionTo('ep-applications-manage');
@@ -44,9 +43,7 @@ class UpdateSummaryTest extends TestCase
             ->assertStatus(403);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validates_required_data()
     {
         $this->makeRequest([])
@@ -58,9 +55,7 @@ class UpdateSummaryTest extends TestCase
             ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validates_data_format()
     {
         $this->makeRequest([
@@ -76,9 +71,7 @@ class UpdateSummaryTest extends TestCase
     }
     
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validates_group_is_vcep()
     {
         $this->vcep->group->update(['group_type_id' => config('groups.types.gcep.id')]);
@@ -89,9 +82,7 @@ class UpdateSummaryTest extends TestCase
             ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function privileged_user_can_update_an_evidence_summary()
     {
         $expectedData = [
@@ -111,9 +102,7 @@ class UpdateSummaryTest extends TestCase
         $this->assertDatabaseHas('evidence_summaries', $expectedData);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function logs_activity()
     {
         $expectedData = [

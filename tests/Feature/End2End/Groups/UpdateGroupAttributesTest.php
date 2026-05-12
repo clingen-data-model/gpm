@@ -7,6 +7,7 @@ use Laravel\Sanctum\Sanctum;
 use App\Modules\User\Models\User;
 use App\Modules\Group\Models\Group;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 
 class UpdateGroupAttributesTest extends TestCase
 {
@@ -25,9 +26,7 @@ class UpdateGroupAttributesTest extends TestCase
         Sanctum::actingAs($this->user);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function unauthorized_user_cannot_update_group_attributes()
     {
         $this->user->revokePermissionTo('groups-manage');
@@ -35,9 +34,7 @@ class UpdateGroupAttributesTest extends TestCase
             ->assertStatus(403);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validates_parameters()
     {
         $this->makeRequest(['name' => $this->getLongString()])
@@ -59,9 +56,7 @@ class UpdateGroupAttributesTest extends TestCase
             ]);
     }
     
-    /**
-     * @test
-     */
+    #[Test]
     public function authorized_user_can_update_group_description()
     {
         $oldDesc = $this->group->description;
@@ -84,9 +79,7 @@ class UpdateGroupAttributesTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function authorized_user_can_update_group_name()
     {
         $this->makeRequest()
@@ -101,9 +94,7 @@ class UpdateGroupAttributesTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function logs_name_updated()
     {
         $oldName = $this->group->name;
@@ -116,9 +107,7 @@ class UpdateGroupAttributesTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function logs_status_updated()
     {
         $oldStatus = $this->group->status->name;

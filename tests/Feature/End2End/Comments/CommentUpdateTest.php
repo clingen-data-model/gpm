@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Notification;
 use Tests\Feature\End2End\Comments\CommentTest;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Modules\Group\Notifications\CommentActivityNotification;
+use PHPUnit\Framework\Attributes\Test;
 
 class CommentUpdateTest extends CommentTest
 {
@@ -22,9 +23,7 @@ class CommentUpdateTest extends CommentTest
         $this->comment = $this->createComment();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function creator_can_update_own_comment()
     {
         $expectedData = $this->getDefaultData();
@@ -36,9 +35,7 @@ class CommentUpdateTest extends CommentTest
         $this->assertDatabaseHas('comments', $this->jsonifyArrays($expectedData));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function user_with_comments_manage_perm_can_update_others_comment()
     {
         $otherUser = $this->setupUser(null, ['comments-manage']);
@@ -52,9 +49,7 @@ class CommentUpdateTest extends CommentTest
         $this->assertDatabaseHas('comments', $this->jsonifyArrays($expectedData));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function user_cannot_update_others_comment()
     {
         $otherUser = $this->setupUser();
@@ -66,9 +61,7 @@ class CommentUpdateTest extends CommentTest
         $this->assertDatabaseMissing('comments', $this->jsonifyArrays($expectedData));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function assertNotificationSent()
     {
         $submission = Submission::factory()->create([
@@ -97,9 +90,7 @@ class CommentUpdateTest extends CommentTest
     }
 
 
-    /**
-     * @test
-     */
+    #[Test]
     public function assertNotificationNotSent()
     {
         $submission = Submission::factory()->create([

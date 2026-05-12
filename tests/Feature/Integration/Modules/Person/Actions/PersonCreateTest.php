@@ -8,6 +8,8 @@ use App\Modules\Person\Models\Person;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Feature\End2End\Person\TestEventPublished;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 
 class PersonCreateTest extends TestCase
 {
@@ -15,12 +17,9 @@ class PersonCreateTest extends TestCase
     use TestEventPublished;
     use RefreshDatabase;
 
-    /**
-     * @test
-     *
-     * @group dx
-     * @group gpm-person-events
-     */
+    #[Test]
+    #[Group('dx')]
+    #[Group('gpm-person-events')]
     public function publishes_created_event_to_gpm_person_events()
     {
         $user = $this->setupUser();

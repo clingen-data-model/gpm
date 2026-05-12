@@ -9,6 +9,7 @@ use App\DataExchange\Models\IncomingStreamMessage;
 use App\DataExchange\Exceptions\UnsupportedIncomingMessage;
 use App\DataExchange\Actions\ClassifiedRulesApprovedProcessor;
 use App\DataExchange\Actions\CspecDataSyncProcessor;
+use PHPUnit\Framework\Attributes\Test;
 
 class MessageHandlerFactoryTest extends TestCase
 {
@@ -18,9 +19,7 @@ class MessageHandlerFactoryTest extends TestCase
         $this->factory = app()->make(MessageHandlerFactory::class);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function throws_unsupportedIncomingMessage_exception_if_type_not_supported()
     {
         $message = new IncomingStreamMessage([
@@ -39,9 +38,7 @@ class MessageHandlerFactoryTest extends TestCase
         $this->factory->make($message);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function returns_CspecDataSyncProcessor_if_cspec_general_topic_by_default()
     {
         $message = new IncomingStreamMessage([
@@ -59,9 +56,7 @@ class MessageHandlerFactoryTest extends TestCase
         $this->assertInstanceOf(CspecDataSyncProcessor::class, $this->factory->make($message));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function returns_event_type_based_handler()
     {
         $message = new IncomingStreamMessage([
@@ -76,9 +71,7 @@ class MessageHandlerFactoryTest extends TestCase
         $this->assertInstanceOf(ClassifiedRulesApprovedProcessor::class, $this->factory->make($message));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function returns_ErrorMessageHandler_if_error_code_not_0()
     {
         $message = new IncomingStreamMessage(['error_code' => 30]);

@@ -14,6 +14,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\Group\Actions\MemberAssignRole;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Feature\End2End\Groups\Members\SetsUpGroupPersonAndMember;
+use PHPUnit\Framework\Attributes\Test;
 
 class MailContactsTest extends TestCase
 {
@@ -32,9 +33,7 @@ class MailContactsTest extends TestCase
         $this->assignRole = app()->make(MemberAssignRole::class);
     }
     
-    /**
-     * @test
-     */
+    #[Test]
     public function sends_mailable_to_all_contacts()
     {
         $group = Group::factory()->create();

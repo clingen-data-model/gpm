@@ -12,10 +12,10 @@ use App\Modules\Group\Actions\ExpertPanelAffiliationIdUpdate;
 use App\Modules\Group\Actions\ExpertPanelNameUpdate;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Traits\SeedsHgncGenesAndDiseases;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 
-/**
- * @group dx
- */
+#[Group('dx')]
 class PublishApplicationEventsTest extends TestCase
 {
     use RefreshDatabase;
@@ -35,9 +35,7 @@ class PublishApplicationEventsTest extends TestCase
         Sanctum::actingAs($this->user);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_publishes_definitionApproved_message_when_definition_approved()
     {
         $this->approveEpDef();
@@ -49,9 +47,7 @@ class PublishApplicationEventsTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_should_not_publish_memberAdded_when_def_not_yet_approved()
     {
         $this->addPerson();
@@ -63,9 +59,7 @@ class PublishApplicationEventsTest extends TestCase
     }
 
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_publishes_memberAdded_when_member_added_and_def_already_approved()
     {
         $this->approveEpDef();
@@ -78,9 +72,7 @@ class PublishApplicationEventsTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_should_not_publish_GeneAdded_when_def_not_yet_approved()
     {
         $this->addGene();
@@ -92,9 +84,7 @@ class PublishApplicationEventsTest extends TestCase
     }
 
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_publishes_GeneAdded_when_gene_added_and_def_already_approved()
     {
         $this->approveEpDef();
@@ -107,9 +97,7 @@ class PublishApplicationEventsTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_publishes_ep_info_updated_when_affiliation_id_added(): void
     {
         $this->approveEpDef();
@@ -124,9 +112,7 @@ class PublishApplicationEventsTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_publishes_ep_info_updated_when_name_changed(): void
     {
         $this->approveEpDef();

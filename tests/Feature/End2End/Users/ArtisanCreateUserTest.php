@@ -6,6 +6,7 @@ use Tests\TestCase;
 use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 
 class ArtisanCreateUserTest extends TestCase
 {
@@ -24,9 +25,7 @@ class ArtisanCreateUserTest extends TestCase
         $this->email = 'louise@bobsburgers.com';
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_exits_if_credentials_are_bad()
     {
         $this->artisan('user:create')
@@ -36,9 +35,7 @@ class ArtisanCreateUserTest extends TestCase
             ->assertExitCode(1);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_asks_for_auth_info_if_and_new_user_info_and_creates_a_user()
     {
         $this->artisan('user:create')
@@ -47,9 +44,7 @@ class ArtisanCreateUserTest extends TestCase
             ->expectsOutput('Authenticated as '.$this->admin->name);
     }
     
-    /**
-     * @test
-     */
+    #[Test]
     public function it_asks_for_user_info_if_not_provided()
     {
         $this->artisan('user:create')
@@ -63,9 +58,7 @@ class ArtisanCreateUserTest extends TestCase
             ->assertExitCode(0);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_takes_user_email_new_name_and_email_as_options()
     {
         $this->artisan('user:create --actingas='.$this->admin->email.' --name="'.$this->name.'" --email="'.$this->email.'"')
@@ -80,9 +73,7 @@ class ArtisanCreateUserTest extends TestCase
     }
     
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validates_new_name_and_email()
     {
         $this->artisan('user:create --actingas='.$this->admin->email)

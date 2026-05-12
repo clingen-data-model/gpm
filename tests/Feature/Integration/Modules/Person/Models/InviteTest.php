@@ -6,18 +6,16 @@ use Tests\TestCase;
 use App\Modules\Person\Models\Invite;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 
-/**
- * @group groups
- * @group invites
- */
+#[Group('groups')]
+#[Group('invites')]
 class InviteTest extends TestCase
 {
     use RefreshDatabase;
 
-    /**
-     * @test
-     */
+    #[Test]
     public function generates_code_before_saving_if_null()
     {
         $invite = Invite::factory()->make(['code' => null]);

@@ -9,6 +9,7 @@ use App\Modules\Group\Models\Group;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 
 class UpdateScopeDescriptionTest extends TestCase
 {
@@ -23,9 +24,7 @@ class UpdateScopeDescriptionTest extends TestCase
         $this->url = '/api/groups/'.$this->expertPanel->group->uuid.'/expert-panel/scope-description';
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function unprivileged_users_cannot_save_scope_description()
     {
         $unprivileged = User::factory()->create();
@@ -34,9 +33,7 @@ class UpdateScopeDescriptionTest extends TestCase
             ->assertStatus(403);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validates_input()
     {
         Sanctum::actingAs($this->user);
@@ -47,9 +44,7 @@ class UpdateScopeDescriptionTest extends TestCase
             ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function privileged_user_can_store_scope_description()
     {
         Sanctum::actingAs($this->user);
@@ -67,9 +62,7 @@ class UpdateScopeDescriptionTest extends TestCase
         ]);
     }
     
-    /**
-     * @test
-     */
+    #[Test]
     public function logs_activity()
     {
         $description = 'Test description';
@@ -87,9 +80,7 @@ class UpdateScopeDescriptionTest extends TestCase
         ]);
     }
     
-    /**
-     * @test
-     */
+    #[Test]
     public function throws_validation_error_if_group_is_not_an_expert_panel()
     {
         $this->expertPanel->group->update(['group_type_id' => config('groups.types.wg.id')]);

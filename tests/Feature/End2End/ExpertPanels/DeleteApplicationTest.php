@@ -8,6 +8,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
+use PHPUnit\Framework\Attributes\Test;
 
 class DeleteApplicationTest extends TestCase
 {
@@ -24,18 +25,14 @@ class DeleteApplicationTest extends TestCase
         $this->url = '/api/applications/'.$this->expertPanel->uuid;
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function user_must_be_authenticated_to_delete()
     {
         $this->json('DELETE', $this->url)
             ->assertStatus(401);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function authenticated_user_can_delete_application()
     {
         Sanctum::actingAs($this->user);
@@ -48,9 +45,7 @@ class DeleteApplicationTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function activity_is_logged_when_application_is_deleted()
     {
         Sanctum::actingAs($this->user);

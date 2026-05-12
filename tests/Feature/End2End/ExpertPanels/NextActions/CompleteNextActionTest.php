@@ -10,12 +10,12 @@ use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Database\Seeders\NextActionAssigneesTableSeeder;
 use App\Modules\ExpertPanel\Actions\NextActionCreate;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 
-/**
- * @group next-actions
- * @group next_actions
- * @group nextactions
- */
+#[Group('next-actions')]
+#[Group('next_actions')]
+#[Group('nextactions')]
 class CompleteNextActionTest extends TestCase
 {
     use RefreshDatabase;
@@ -42,9 +42,7 @@ class CompleteNextActionTest extends TestCase
         Sanctum::actingAs($this->user);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function can_mark_next_action_complete()
     {
         $this->makeRequest()
@@ -55,9 +53,7 @@ class CompleteNextActionTest extends TestCase
             ]);
     }
     
-    /**
-     * @test
-     */
+    #[Test]
     public function validates_input()
     {
         $this->makeRequest([])

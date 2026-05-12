@@ -9,6 +9,7 @@ use App\Modules\User\Models\User;
 use Database\Seeders\CurationReviewProtocolsSeeder;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 
 class UpdateCurationProcessTest extends TestCase
 {
@@ -27,9 +28,7 @@ class UpdateCurationProcessTest extends TestCase
         Sanctum::actingAs($this->user);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function unprivileged_user_cannot_update_curationReviewProtocol()
     {
         $this->user->revokePermissionTo('ep-applications-manage');
@@ -38,9 +37,7 @@ class UpdateCurationProcessTest extends TestCase
             ->assertStatus(403);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validates_required_data()
     {
         $this->makeRequest(['expert_panel_type_id' => $this->expertPanel->expert_panel_type_id])
@@ -59,9 +56,7 @@ class UpdateCurationProcessTest extends TestCase
             ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validates_data_formats()
     {
         $this->makeRequest([
@@ -73,9 +68,7 @@ class UpdateCurationProcessTest extends TestCase
             ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function priveleged_user_can_update_curation_protocol_information()
     {
         $this->makeRequest()

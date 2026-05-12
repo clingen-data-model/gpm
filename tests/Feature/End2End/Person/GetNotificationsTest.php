@@ -9,6 +9,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Notification;
 use Tests\Stubs\TestDatabaseNotification;
+use PHPUnit\Framework\Attributes\Test;
 
 class GetNotificationsTest extends TestCase
 {
@@ -26,9 +27,7 @@ class GetNotificationsTest extends TestCase
         Notification::send($this->person, new TestDatabaseNotification('bonkers'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function person_can_get_their_own_notifications()
     {
         $this->json('get', '/api/people/'.$this->person->uuid.'/notifications/unread')

@@ -7,6 +7,7 @@ use App\Models\Comment;
 use App\Modules\Group\Models\Group;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 
 class CommentListTest extends CommentTest
 {
@@ -33,9 +34,7 @@ class CommentListTest extends CommentTest
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function can_retrieve_all_comments()
     {
         $this->makeRequest()
@@ -43,9 +42,7 @@ class CommentListTest extends CommentTest
             ->assertJsonCount(3);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function can_retrieve_all_comments_for_a_subject()
     {
         $expectedComments = Comment::where([

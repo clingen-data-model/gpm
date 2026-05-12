@@ -11,10 +11,10 @@ use App\DataExchange\Contracts\MessageStream;
 use Lorisleiva\Actions\Decorators\JobDecorator;
 use App\DataExchange\Contracts\MessageProcessor;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 
-/**
- * @group dx
- */
+#[Group('dx')]
 class DxConsumeTest extends TestCase
 {
     use RefreshDatabase;
@@ -38,9 +38,7 @@ class DxConsumeTest extends TestCase
 
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function consumes_dx_messages_and_dispatches_processor()
     {
         config(['queue.default' => 'redis']);
@@ -55,9 +53,7 @@ class DxConsumeTest extends TestCase
         });
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function consums_limited_number_of_messages_if_limit_supplied()
     {
         config(['queue.default' => 'redis']);

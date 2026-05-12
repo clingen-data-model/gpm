@@ -9,6 +9,7 @@ use App\Modules\Person\Models\Person;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 
 class PersonPhotoStoreTest extends TestCase
 {
@@ -24,9 +25,7 @@ class PersonPhotoStoreTest extends TestCase
         Sanctum::actingAs($this->user);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function unprivileged_users_cannot_upload_profile_photos()
     {
         $this->user->revokePermissionTo('people-manage');
@@ -38,18 +37,14 @@ class PersonPhotoStoreTest extends TestCase
 
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function user_w_people_manage_can_upload_photo()
     {
         $this->makeRequest()
             ->assertStatus(200);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function person_can_upload_their_own_profile_photo()
     {
         $this->user->revokePermissionTo('people-manage');
@@ -59,9 +54,7 @@ class PersonPhotoStoreTest extends TestCase
             ->assertStatus(200);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function stores_photo_and_updates_person()
     {
         $this->makeRequest()
@@ -75,9 +68,7 @@ class PersonPhotoStoreTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function publishses_updated_event_to_gpm_person_events()
     {
         $this->makeRequest()
@@ -91,9 +82,7 @@ class PersonPhotoStoreTest extends TestCase
     }
 
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validates_data()
     {
         $this->makeRequest([])

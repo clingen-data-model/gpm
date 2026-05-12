@@ -9,6 +9,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Notification;
 use App\Notifications\UserDefinedMailNotification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 
 class RecordsOutgoingMailTest extends TestCase
 {
@@ -22,9 +23,7 @@ class RecordsOutgoingMailTest extends TestCase
         $this->person = Person::factory()->create();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function stores_email_in_emails_table()
     {
         $inviteNotification = new UserDefinedMailNotification('test subject', 'body body body', template: 'email.empty_template');
@@ -37,9 +36,7 @@ class RecordsOutgoingMailTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function associates_email_record_with_person()
     {
         $inviteNotification = new UserDefinedMailNotification('test subject', 'body body body');

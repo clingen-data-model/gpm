@@ -10,10 +10,10 @@ use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 
-/**
- * @group documents
- */
+#[Group('documents')]
 class UpdateDocumentInfoTest extends TestCase
 {
     use RefreshDatabase;
@@ -32,9 +32,7 @@ class UpdateDocumentInfoTest extends TestCase
         Carbon::setTestNow('2021-02-01');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_updates_info_for_a_document()
     {
         $this->json('PUT', $this->docUrl, [
@@ -48,9 +46,7 @@ class UpdateDocumentInfoTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_validates_required_data()
     {
         $this->json('PUT', $this->docUrl, [])

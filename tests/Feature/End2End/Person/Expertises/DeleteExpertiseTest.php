@@ -8,10 +8,10 @@ use Illuminate\Testing\TestResponse;
 use App\Modules\Person\Models\Person;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 
-/**
- * @group expertises
- */
+#[Group('expertises')]
 class DeleteExpertiseTest extends TestCase
 {
     use RefreshDatabase;
@@ -25,18 +25,14 @@ class DeleteExpertiseTest extends TestCase
         $this->person = $this->expertise->people->first();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function guest_cannot_delete_a_expertise()
     {
         $this->makeRequest()
             ->assertStatus(401);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function unpermissioned_user_cannot_delete_a_expertise()
     {
         $this->login();
@@ -44,9 +40,7 @@ class DeleteExpertiseTest extends TestCase
             ->assertStatus(403);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function permissioned_user_can_delete_a_expertise()
     {
         $this->login(permissions: ['people-manage']);

@@ -8,26 +8,22 @@ use App\ControlledVocabularies\Synonym;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\ControlledVocabularies\HasSynonymInterface;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 
-/**
- * @group credentials
- */
+#[Group('credentials')]
 class CredentialTest extends TestCase
 {
     use RefreshDatabase;
 
-    /**
-     * @test
-     */
+    #[Test]
     public function implements_HasSynonymsInterface()
     {
         $cred = Credential::factory()->make();
         $this->assertTrue(implementsInterface($cred, HasSynonymInterface::class));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function can_add_synonyms()
     {
         $cred = Credential::factory()->create();
@@ -42,9 +38,7 @@ class CredentialTest extends TestCase
         $this->assertEquals(['elenor', 'chidi'], $cred->synonyms->pluck('name')->toArray());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function only_adds_a_synonym_once()
     {
         $cred = Credential::factory()->create();
@@ -55,9 +49,7 @@ class CredentialTest extends TestCase
     }
 
 
-    /**
-     * @test
-     */
+    #[Test]
     public function can_search_synonyms()
     {
         $cred1 = Credential::factory()->create();

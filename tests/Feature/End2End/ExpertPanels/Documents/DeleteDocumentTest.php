@@ -11,10 +11,10 @@ use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 
-/**
- * @group documents
- */
+#[Group('documents')]
 class DeleteDocumentTest extends TestCase
 {
     use RefreshDatabase;
@@ -35,9 +35,7 @@ class DeleteDocumentTest extends TestCase
         Carbon::setTestNow('2021-02-01');
     }
     
-    /**
-     * @test
-     */
+    #[Test]
     public function it_can_delete_a_document()
     {
         $this->json('DELETE', $this->docUrl)
@@ -49,9 +47,7 @@ class DeleteDocumentTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_logs_a_document_deleted_event()
     {
         $this->json('DELETE', $this->docUrl)

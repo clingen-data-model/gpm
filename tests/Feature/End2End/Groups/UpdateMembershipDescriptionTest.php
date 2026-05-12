@@ -9,6 +9,7 @@ use App\Modules\Group\Models\Group;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 
 class UpdateMembershipDescriptionTest extends TestCase
 {
@@ -25,9 +26,7 @@ class UpdateMembershipDescriptionTest extends TestCase
         $this->url = '/api/groups/'.$this->expertPanel->group->uuid.'/expert-panel/membership-description';
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function unprivileged_users_cannot_save_membership_description()
     {
         $unprivileged = User::factory()->create();
@@ -36,9 +35,7 @@ class UpdateMembershipDescriptionTest extends TestCase
             ->assertStatus(403);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validates_input()
     {
         Sanctum::actingAs($this->user);
@@ -49,9 +46,7 @@ class UpdateMembershipDescriptionTest extends TestCase
             ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function privileged_user_can_store_membership_description()
     {
         Sanctum::actingAs($this->user);
@@ -69,9 +64,7 @@ class UpdateMembershipDescriptionTest extends TestCase
         ]);
     }
     
-    /**
-     * @test
-     */
+    #[Test]
     public function logs_activity()
     {
         $description = 'Test description';
@@ -89,9 +82,7 @@ class UpdateMembershipDescriptionTest extends TestCase
         ]);
     }
     
-    /**
-     * @test
-     */
+    #[Test]
     public function throws_validation_error_if_group_is_not_an_expert_panel()
     {
         $this->expertPanel->group->update(['group_type_id' => config('groups.types.gcep.id')]);

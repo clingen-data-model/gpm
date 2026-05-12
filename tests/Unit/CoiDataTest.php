@@ -4,6 +4,7 @@ namespace Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
 use App\Modules\ExpertPanel\CoiData;
+use PHPUnit\Framework\Attributes\Test;
 
 class CoiDataTest extends TestCase
 {
@@ -15,17 +16,13 @@ class CoiDataTest extends TestCase
         $this->coiData = new CoiData((object)['coi' => 1, 'coi_detail' => 'Bob\'s Burgers']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function returns_null_if_data_element_not_found()
     {
         $this->assertNull($this->coiData->beans);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function returns_value_if_data_element_found()
     {
         $this->assertEquals(1, $this->coiData->coi);

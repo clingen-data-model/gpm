@@ -14,6 +14,7 @@ use App\Modules\Person\Actions\PermissionRemove;
 use App\Modules\Person\Events\InviteRedeemed;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 
 class PermissionRemoveTest extends TestCase
 {
@@ -26,9 +27,7 @@ class PermissionRemoveTest extends TestCase
     }
     
 
-    /**
-     * @test
-     */
+    #[Test]
     public function throws_Exception_if_permission_not_found()
     {
         $user = $this->setupUserWithPerson();
@@ -37,9 +36,7 @@ class PermissionRemoveTest extends TestCase
         $this->action->handle($user->person, 'skate-ramp');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function throws_exception_if_perm_scoped_for_group()
     {
         $person = new Person();
@@ -49,9 +46,7 @@ class PermissionRemoveTest extends TestCase
         $this->action->handle($person, 'test-perm');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function removes_permission_to_acivated_person()
     {
         $user = $this->setupUserWithPerson();

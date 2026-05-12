@@ -9,10 +9,10 @@ use App\Modules\Person\Models\Person;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Ramsey\Uuid\Uuid;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 
-/**
- * @group people
- */
+#[Group('people')]
 class PersonEndpointTest extends TestCase
 {
     use RefreshDatabase;
@@ -30,9 +30,7 @@ class PersonEndpointTest extends TestCase
         Sanctum::actingAs($this->user);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function authed_user_can_get_a_person()
     {
         $person = $this->people->first();

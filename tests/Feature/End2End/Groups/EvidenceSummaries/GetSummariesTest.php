@@ -11,6 +11,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Modules\ExpertPanel\Models\EvidenceSummary;
+use PHPUnit\Framework\Attributes\Test;
 
 class GetSummariesTest extends TestCase
 {
@@ -36,9 +37,7 @@ class GetSummariesTest extends TestCase
         Sanctum::actingAs($this->user);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function retrieves_evidence_summaries_for_expert_panel()
     {
         $this->json('GET', '/api/groups/'.$this->vcep->group->uuid.'/expert-panel/evidence-summaries')

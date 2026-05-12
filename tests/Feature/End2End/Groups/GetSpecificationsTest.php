@@ -11,6 +11,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Modules\ExpertPanel\Models\Specification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 
 class GetSpecificationsTest extends TestCase
 {
@@ -32,9 +33,7 @@ class GetSpecificationsTest extends TestCase
         Sanctum::actingAs($this->setupUser());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function gets_specifications_with_rulesets_for_vcep()
     {
         $this->makeRequest()
@@ -42,9 +41,7 @@ class GetSpecificationsTest extends TestCase
             ->assertJsonCount(2);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function throws_404_if_group_is_not_a_vcep()
     {
         $gcep = ExpertPanel::factory()->gcep()->create();

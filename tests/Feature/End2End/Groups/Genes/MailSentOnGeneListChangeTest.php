@@ -12,6 +12,7 @@ use Tests\Traits\SeedsHgncGenesAndDiseases;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 
 class MailSentOnGeneListChangeTest extends TestCase
 {
@@ -33,9 +34,7 @@ class MailSentOnGeneListChangeTest extends TestCase
         $this->url = '/api/groups/'.$this->expertPanel->group->uuid.'/expert-panel/genes';
     }
     
-    /**
-     * @test
-     */
+    #[Test]
     public function nothing_sent_on_gene_added_to_applying_ep()
     {
         Mail::fake();
@@ -46,9 +45,7 @@ class MailSentOnGeneListChangeTest extends TestCase
         Mail::assertNotSent(GeneAddedMail::class);
     }
     
-    /**
-     * @test
-     */
+    #[Test]
     public function nothing_sent_on_gene_removed_from_applying_ep()
     {
         Mail::fake();
@@ -65,9 +62,7 @@ class MailSentOnGeneListChangeTest extends TestCase
         Mail::assertNotSent(GeneRemovedMail::class);
     }
     
-    /**
-     * @test
-     */
+    #[Test]
     public function added_mail_not_sent_if_notify_scope_change_disabled()
     {
         $this->expertPanel->step_1_approval_date = Carbon::now();
@@ -84,9 +79,7 @@ class MailSentOnGeneListChangeTest extends TestCase
     }
     
 
-    /**
-     * @test
-     */
+    #[Test]
     public function remove_mail_not_sent_if_notify_scope_change_disabled()
     {
         $this->expertPanel->step_1_approval_date = Carbon::now();
@@ -109,9 +102,7 @@ class MailSentOnGeneListChangeTest extends TestCase
     }
     
 
-    /**
-     * @test
-     */
+    #[Test]
     public function email_sent_on_gene_added_to_approved_ep()
     {
         $this->expertPanel->step_1_approval_date = Carbon::now();
@@ -128,9 +119,7 @@ class MailSentOnGeneListChangeTest extends TestCase
         });
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function email_sent_on_gene_removed_from_approved_ep()
     {
         $this->gene1 = $this->expertPanel->genes()->create([

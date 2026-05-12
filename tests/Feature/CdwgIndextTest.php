@@ -8,6 +8,7 @@ use App\Modules\User\Models\User;
 use App\Modules\Group\Models\Group;
 use Database\Seeders\GroupTypeSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 
 class CdwgIndextTest extends TestCase
 {
@@ -25,9 +26,7 @@ class CdwgIndextTest extends TestCase
         $this->cdwgs = Group::factory()->cdwg()->count(10)->create();
     }
         
-    /**
-     * @test
-     */
+    #[Test]
     public function lists_all_cdwgs_sorted_by_name()
     {
         $this->json('GET', '/api/cdwgs', ['*'])

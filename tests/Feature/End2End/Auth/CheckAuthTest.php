@@ -6,6 +6,7 @@ use Tests\TestCase;
 use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 
 class CheckAuthTest extends TestCase
 {
@@ -17,18 +18,14 @@ class CheckAuthTest extends TestCase
         $this->user = User::factory()->create();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function returns_401_if_not_authed()
     {
         $this->json('GET', '/api/authenticated')
             ->assertStatus(401);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function returns_200_if_authenticated()
     {
         \Laravel\Sanctum\Sanctum::actingAs($this->user);

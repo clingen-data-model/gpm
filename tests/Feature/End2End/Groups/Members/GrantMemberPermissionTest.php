@@ -8,11 +8,11 @@ use App\Modules\Group\Models\Group;
 use App\Modules\Group\Models\GroupMember;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Feature\End2End\Groups\Members\SetsUpGroupPersonAndMember;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 
-/**
- * @group groups
- * @group members
- */
+#[Group('groups')]
+#[Group('members')]
 class GrantMemberPermissionTest extends TestCase
 {
     use RefreshDatabase;
@@ -32,9 +32,7 @@ class GrantMemberPermissionTest extends TestCase
         Sanctum::actingAs($this->user);
     }
     
-    /**
-     * @test
-     */
+    #[Test]
     public function can_grant_group_permissions_to_group_member()
     {
         $response = $this->json('POST', $this->url, ['permission_ids' => $this->permissions->pluck('id')->toArray()]);
@@ -49,9 +47,7 @@ class GrantMemberPermissionTest extends TestCase
         }
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function logs_permission_granted_to_member()
     {
         $response = $this->json('POST', $this->url, ['permission_ids' => $this->permissions->pluck('id')->toArray()]);
@@ -69,9 +65,7 @@ class GrantMemberPermissionTest extends TestCase
     }
     
     
-    /**
-     * @test
-     */
+    #[Test]
     public function validates_required_params()
     {
         $response = $this->json('POST', $this->url, []);
@@ -82,9 +76,7 @@ class GrantMemberPermissionTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validates_permission_ids_is_array()
     {
         $response = $this->json('POST', $this->url, ['permission_ids' => 1]);
@@ -95,9 +87,7 @@ class GrantMemberPermissionTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validates_permissions_exist()
     {
         $response = $this->json('POST', $this->url, ['permission_ids' => [666]]);
@@ -110,9 +100,7 @@ class GrantMemberPermissionTest extends TestCase
     
     
     
-    /**
-     * @test
-     */
+    #[Test]
     public function validates_permission_is_scoped_to_group()
     {
         $sysPerm = config('permission.models.permission')::factory()->create(['scope' => 'system']);

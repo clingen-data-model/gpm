@@ -14,6 +14,7 @@ use App\Modules\Group\Events\JudgementCreated;
 use App\Modules\Group\Models\SubmissionStatus;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 
 class JudgementCreateTest extends TestCase
 {
@@ -34,9 +35,7 @@ class JudgementCreateTest extends TestCase
     }
 
 
-    /**
-     * @test
-     */
+    #[Test]
     public function fires_JudgementCreated_test()
     {
         $action = app()->make(JudgementCreate::class);

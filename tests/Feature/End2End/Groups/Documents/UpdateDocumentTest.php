@@ -11,6 +11,7 @@ use App\Modules\Group\Models\Group;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 
 class UpdateDocumentTest extends TestCase
 {
@@ -34,9 +35,7 @@ class UpdateDocumentTest extends TestCase
         Sanctum::actingAs($this->user);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function unprivileged_user_cannot_update_document_in_group()
     {
         $this->user->revokePermissionTo('groups-manage');
@@ -44,9 +43,7 @@ class UpdateDocumentTest extends TestCase
             ->assertStatus(403);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validates_data()
     {
         $this->makeRequest([])
@@ -62,9 +59,7 @@ class UpdateDocumentTest extends TestCase
             ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function privilged_user_can_update_file_info()
     {
         $this->makeRequest()

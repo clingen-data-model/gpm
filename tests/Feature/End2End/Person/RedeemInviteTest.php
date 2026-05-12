@@ -9,6 +9,7 @@ use App\Modules\Person\Models\Invite;
 use App\Modules\Person\Models\Person;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 
 class RedeemInviteTest extends TestCase
 {
@@ -27,9 +28,7 @@ class RedeemInviteTest extends TestCase
         ];
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function can_check_if_code_is_valid()
     {
         $this->json('GET', static::URL.'/'.$this->invite->code)
@@ -40,7 +39,6 @@ class RedeemInviteTest extends TestCase
     }
 
     /**
-     * @test
      */
     // public function can_check_if_validation_code_has_been_used()
     // {
@@ -54,8 +52,8 @@ class RedeemInviteTest extends TestCase
     // }
 
     /**
-     * @test
      */
+    #[Test]
     public function returns_404_if_invite_not_found_by_code()
     {
         $this->json('PUT', static::URL.'/gobbeldy-guk', $this->validData)
@@ -64,7 +62,6 @@ class RedeemInviteTest extends TestCase
 
 
     /**
-     * @test
      */
     // public function validates_code_is_valid_before_redeeming()
     // {
@@ -78,8 +75,8 @@ class RedeemInviteTest extends TestCase
     // }
 
     /**
-     * @test
      */
+    #[Test]
     public function validates_params()
     {
         $this->json('PUT', static::URL.'/'.$this->invite->code, ['email' => 'bob', 'password' => 'beans', 'password_confirmation' => 'farts'])
@@ -98,9 +95,7 @@ class RedeemInviteTest extends TestCase
     }
 
 
-    /**
-     * @test
-     */
+    #[Test]
     public function sets_redeemed_at_date_for_invite()
     {
         Carbon::setTestNow('2021-09-16');
@@ -113,9 +108,7 @@ class RedeemInviteTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function user_created_and_linked_to_invited_person()
     {
         $this->json('PUT', static::URL.'/'.$this->invite->code, $this->validData)
@@ -133,9 +126,7 @@ class RedeemInviteTest extends TestCase
     }
 
 
-    /**
-     * @test
-     */
+    #[Test]
     public function logs_invite_redemption_activity()
     {
         $this->json('PUT', static::URL.'/'.$this->invite->code, $this->validData)

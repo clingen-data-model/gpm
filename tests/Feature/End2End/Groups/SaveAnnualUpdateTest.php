@@ -10,6 +10,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Database\Seeders\AnnualUpdateWindowSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 
 class SaveAnnualUpdateTest extends TestCase
 {
@@ -31,9 +32,7 @@ class SaveAnnualUpdateTest extends TestCase
         Sanctum::actingAs($this->user);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function unprivileged_user_cannot_save_annual_update()
     {
         $this->user->revokePermissionTo('annual-updates-manage');
@@ -42,9 +41,7 @@ class SaveAnnualUpdateTest extends TestCase
             ->assertStatus(403);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function saves_data_submitted_by_privileged_user()
     {
         $this->makeRequest()
@@ -60,9 +57,7 @@ class SaveAnnualUpdateTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function does_not_save_data_field_not_in_list()
     {
         $expectedData = $this->makeRequestData();

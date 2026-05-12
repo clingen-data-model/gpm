@@ -20,6 +20,7 @@ use App\Modules\Group\Actions\MemberRetire;
 use App\Modules\Group\Events\MemberRemoved;
 use App\Modules\Group\Events\MemberRetired;
 use Carbon\Carbon;
+use PHPUnit\Framework\Attributes\Test;
 
 class RemoveSystemPermissionFromRemovedOrRetiredGroupMemberTest extends TestCase
 {
@@ -45,9 +46,7 @@ class RemoveSystemPermissionFromRemovedOrRetiredGroupMemberTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function permission_removed_when_member_removed()
     {
         $user = $this->setupUserWithPerson(permissions:['test-perm']);
@@ -62,9 +61,7 @@ class RemoveSystemPermissionFromRemovedOrRetiredGroupMemberTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function permission_removed_when_member_retired()
     {
         $user = $this->setupUserWithPerson(permissions:['test-perm']);
@@ -79,9 +76,7 @@ class RemoveSystemPermissionFromRemovedOrRetiredGroupMemberTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function permission_not_removed_to_activited_person_when_added_to_other_group()
     {
         $user = $this->setupUserWithPerson(permissions: ['test-perm']);

@@ -16,10 +16,10 @@ use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Modules\ExpertPanel\Actions\ApplicationDocumentAdd;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 
-/**
- * @group documents
- */
+#[Group('documents')]
 class DownloadTest extends TestCase
 {
     use RefreshDatabase;
@@ -46,9 +46,7 @@ class DownloadTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function responds_with_404_if_document_not_found()
     {
         $url = '/documents/'.Uuid::uuid4()->toString();
@@ -56,9 +54,7 @@ class DownloadTest extends TestCase
         $response->assertStatus(404);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function responds_with_404_if_file_not_found()
     {
         $this->doc->storage_path = 'beans.txt';
@@ -66,9 +62,7 @@ class DownloadTest extends TestCase
                         ->assertStatus(404);
     }
     
-    /**
-     * @test
-     */
+    #[Test]
     public function authed_user_can_download_a_file()
     {
         $data = $this->makeDocumentUploadRequestData(filename: 'test_download.docx');

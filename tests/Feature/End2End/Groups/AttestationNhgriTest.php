@@ -9,6 +9,7 @@ use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
+use PHPUnit\Framework\Attributes\Test;
 
 class AttestationNhgriTest extends TestCase
 {
@@ -26,9 +27,7 @@ class AttestationNhgriTest extends TestCase
         Carbon::setTestNow('2021-11-14');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function unprivileged_user_cannot_submit_nhgri_attestation()
     {
         $this->user->revokePermissionTo('ep-applications-manage');
@@ -36,9 +35,7 @@ class AttestationNhgriTest extends TestCase
             ->assertStatus(403);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validates_data()
     {
         $this->submitRequest([])
@@ -55,9 +52,7 @@ class AttestationNhgriTest extends TestCase
     }
     
 
-    /**
-     * @test
-     */
+    #[Test]
     public function privileged_user_can_submit_nhgri_attestation()
     {
         $this->submitRequest()
@@ -69,9 +64,7 @@ class AttestationNhgriTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function logs_activity()
     {
         $this->submitRequest()

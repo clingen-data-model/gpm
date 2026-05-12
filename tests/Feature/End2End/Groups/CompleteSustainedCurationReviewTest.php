@@ -10,6 +10,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Database\Seeders\TaskTypeSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 
 class CompleteSustainedCurationReviewTest extends TestCase
 {
@@ -34,9 +35,7 @@ class CompleteSustainedCurationReviewTest extends TestCase
         Sanctum::actingAs($this->user);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function unprivileged_user_cannot_complete_sustained_curation_task()
     {
         $this->user->revokePermissionTo('ep-applications-manage');
@@ -45,9 +44,7 @@ class CompleteSustainedCurationReviewTest extends TestCase
     }
     
 
-    /**
-     * @test
-     */
+    #[Test]
     public function privileged_user_can_complete_sustained_curation_review()
     {
         Carbon::setTestNow('2022-01-01');

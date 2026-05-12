@@ -8,6 +8,8 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 
 class UpdateEpNameTest extends TestCase
 {
@@ -25,9 +27,7 @@ class UpdateEpNameTest extends TestCase
         Sanctum::actingAs($this->user);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function unprivileged_user_cannot_update_short_or_log_base_name()
     {
         $this->user->revokePermissionTo('groups-manage');
@@ -35,9 +35,7 @@ class UpdateEpNameTest extends TestCase
             ->assertStatus(403);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validates_data_types()
     {
         $this->makeRequest([
@@ -51,10 +49,8 @@ class UpdateEpNameTest extends TestCase
             ]);
     }
 
-    /**
-     * @test
-     * @group thisone
-     */
+    #[Test]
+    #[Group('thisone')]
     public function validates_long_base_name_must_be_unique_for_type_if_not_null()
     {
         $existingGcep = ExpertPanel::factory()->gcep()->create(['long_base_name' => 'Early is a bad dog']);
@@ -82,9 +78,7 @@ class UpdateEpNameTest extends TestCase
         ->assertStatus(200);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validates_short_base_name_must_be_unique_for_type_if_not_null()
     {
         $existingGcep = ExpertPanel::factory()->gcep()->create(['short_base_name' => 'Early']);
@@ -112,9 +106,7 @@ class UpdateEpNameTest extends TestCase
         ->assertStatus(200);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function a_privileged_user_can_update_ep_names()
     {
         $this->makeRequest()

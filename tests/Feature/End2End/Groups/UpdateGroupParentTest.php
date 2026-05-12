@@ -8,6 +8,7 @@ use App\Modules\User\Models\User;
 use App\Modules\Group\Models\Group;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 
 class UpdateGroupParentTest extends TestCase
 {
@@ -27,9 +28,7 @@ class UpdateGroupParentTest extends TestCase
         $this->group = Group::factory()->create();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function unprivileged_user_cannot_update_parent()
     {
         $this->user->revokePermissionTo('groups-manage');
@@ -37,18 +36,14 @@ class UpdateGroupParentTest extends TestCase
             ->assertStatus(403);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validates_parameters()
     {
         $this->makeRequest([])
             ->assertStatus(422);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function privileged_user_can_update_group_parent()
     {
 
@@ -64,9 +59,7 @@ class UpdateGroupParentTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function nulls_parent_id_if_parent_id_is_0()
     {
         $parent = Group::factory()->create();
@@ -85,9 +78,7 @@ class UpdateGroupParentTest extends TestCase
     }
     
 
-    /**
-     * @test
-     */
+    #[Test]
     public function logs_activity()
     {
         $oldParent = Group::factory()->create();

@@ -8,6 +8,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class ImpersonateSearchTest extends TestCase
 {
@@ -34,9 +35,7 @@ class ImpersonateSearchTest extends TestCase
         Sanctum::actingAs($this->user);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function superUser_gets_matching_except_superUsers()
     {
         $this->user->assignRole('super-user');
@@ -49,9 +48,7 @@ class ImpersonateSearchTest extends TestCase
         $this->assertResponseMissing($response, 'jason');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function superAdmin_gets_matching_except_superUsers_and_superAdmins()
     {
         $this->user->assignRole('super-admin');
@@ -63,9 +60,7 @@ class ImpersonateSearchTest extends TestCase
         $this->assertResponseHas($response, 'tehani');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function admin_gets_matching_except_superUsers_and_superAdmins_and_admins()
     {
         $this->user->assignRole('admin');

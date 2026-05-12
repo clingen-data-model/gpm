@@ -9,6 +9,7 @@ use App\Actions\CommentResolve;
 use Illuminate\Testing\TestResponse;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 
 class UnresolveCommentTest extends CommentTest
 {
@@ -22,9 +23,7 @@ class UnresolveCommentTest extends CommentTest
         $act->handle($this->comment);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function permissioned_user_can_resolve_comment()
     {
         Carbon::setTestNow('2022-07-11');
@@ -41,9 +40,7 @@ class UnresolveCommentTest extends CommentTest
         ]);
     }
     
-    /**
-     * @test
-     */
+    #[Test]
     public function unpermissioned_user_cannot_resolve_comment()
     {
         $this->user->revokePermissionTo('ep-applications-comment');

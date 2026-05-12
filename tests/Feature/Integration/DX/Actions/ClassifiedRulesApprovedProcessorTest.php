@@ -10,6 +10,7 @@ use App\DataExchange\Models\IncomingStreamMessage;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\DataExchange\Exceptions\DataSynchronizationException;
 use App\DataExchange\Actions\ClassifiedRulesApprovedProcessor;
+use PHPUnit\Framework\Attributes\Test;
 
 class ClassifiedRulesApprovedProcessorTest extends TestCase
 {
@@ -33,9 +34,7 @@ class ClassifiedRulesApprovedProcessorTest extends TestCase
         $this->action = app()->make(ClassifiedRulesApprovedProcessor::class);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_throws_exception_if_expert_panel_is_not_draft_approved()
     {
         try {
@@ -47,9 +46,7 @@ class ClassifiedRulesApprovedProcessorTest extends TestCase
         }
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_throws_exception_if_expert_panel_not_draft_approved_current_step_not_2()
     {
         $this->expertPanel->step_1_approval_date = Carbon::parse('2020-01-01');
@@ -64,9 +61,7 @@ class ClassifiedRulesApprovedProcessorTest extends TestCase
         }
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_does_nothing_when_expert_panel_already_has_approved_draft()
     {
         $this->expertPanel->step_1_approval_date = Carbon::parse('2020-01-01');
@@ -84,9 +79,7 @@ class ClassifiedRulesApprovedProcessorTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_approves_draft_specifications_if_ep_defApproved_and_not_draftSpecApproved()
     {
         $this->expertPanel->step_1_approval_date = Carbon::parse('2020-01-01');

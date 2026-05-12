@@ -5,14 +5,14 @@ namespace Tests\Unit\Models;
 use Tests\TestCase;
 use App\Modules\Group\Models\Group;
 use App\Modules\Group\Models\GroupType;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 
 use function PHPUnit\Framework\assertFalse;
 use function PHPUnit\Framework\assertTrue;
 use function Psy\debug;
 
-/**
- * @group group-model
- */
+#[Group('group-model')]
 class GroupTest extends TestCase
 {
     private Group $wg;
@@ -31,9 +31,7 @@ class GroupTest extends TestCase
         $this->assertTrue(true);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_knows_if_it_is_an_expert_panel():void
     {
         $nonEpGroupType = GroupType::whereNull('curation_product')->firstOrFail();
@@ -43,9 +41,7 @@ class GroupTest extends TestCase
         $this->assertTrue(Group::factory()->make(['group_type_id' => $epGroupType->id])->isEp);
     }
   
-    /**
-     * @test
-     */
+    #[Test]
     public function it_knows_if_it_is_a_vcep():void
     {
       $this->assertTrue($this->vcep->isVcep);
@@ -55,9 +51,7 @@ class GroupTest extends TestCase
       $this->assertFalse($this->scvcep->isVcep);
     }
   
-    /**
-     * @test
-     */
+    #[Test]
     public function it_knows_if_it_curates_variants():void
     {
       $this->assertTrue($this->scvcep->curatesVariants);
@@ -67,9 +61,7 @@ class GroupTest extends TestCase
       $this->assertFalse($this->gcep->curatesVariants);  
     }
   
-    /**
-     * @test
-     */
+    #[Test]
     public function it_knows_if_it_is_a_somatic_cancer():void
     {
       $this->assertTrue($this->scvcep->isSomaticCancer);

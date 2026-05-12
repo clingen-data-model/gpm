@@ -5,12 +5,11 @@ namespace Tests\Unit;
 use PHPUnit\Framework\TestCase;
 use App\Modules\ExpertPanel\CoiData;
 use App\Modules\ExpertPanel\CoiDataCaster;
+use PHPUnit\Framework\Attributes\Test;
 
 class CoiDataCasterTest extends TestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function it_gets_a_CoiData_object_from_a_json_string()
     {
         $json = json_encode([
@@ -24,9 +23,7 @@ class CoiDataCasterTest extends TestCase
         $this->assertEquals(json_decode($json), $coiData->data);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_converts_a_CoiData_object_to_a_json_string()
     {
         $data = (object)['coi' => 1, 'coi_detail' => 'bob\''];

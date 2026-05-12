@@ -12,6 +12,7 @@ use App\Modules\Group\Events\GroupNameUpdated;
 use App\Modules\Group\Actions\GroupStatusUpdate;
 use App\Modules\Group\Events\GroupStatusUpdated;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 
 class FollowActionsTest extends TestCase
 {
@@ -31,9 +32,7 @@ class FollowActionsTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function runs_followAction_on_target_event()
     {
         app()->make(GroupStatusUpdate::class)->handle($this->group, GroupStatus::find(2));
@@ -49,9 +48,7 @@ class FollowActionsTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function completes_followAction_if_follower_returns_true()
     {
         Carbon::setTestNow('2022-07-15');

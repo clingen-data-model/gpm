@@ -13,6 +13,7 @@ use Database\Seeders\NextActionAssigneesTableSeeder;
 use App\Modules\ExpertPanel\Actions\NextActionCreate;
 use App\Modules\ExpertPanel\Actions\NextActionComplete;
 use App\Modules\ExpertPanel\Events\NextActionCompleted;
+use PHPUnit\Framework\Attributes\Test;
 
 class CompleteNextActionTest extends TestCase
 {
@@ -27,9 +28,7 @@ class CompleteNextActionTest extends TestCase
         $this->expertPanel = ExpertPanel::factory()->create();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function raises_NextActionCompleted_event()
     {
         $nextAction = NextAction::factory()->make();
@@ -54,9 +53,7 @@ class CompleteNextActionTest extends TestCase
         Event::assertDispatched(NextActionCompleted::class);
     }
     
-    /**
-     * @test
-     */
+    #[Test]
     public function NextActionCompleted_logged()
     {
          $nextAction = NextActionCreate::run(

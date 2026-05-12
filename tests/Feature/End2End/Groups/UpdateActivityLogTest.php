@@ -9,11 +9,11 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 
-/**
- * @group groups
- * @group activity-log
- */
+#[Group('groups')]
+#[Group('activity-log')]
 class UpdateActivityLogTest extends TestCase
 {
     use RefreshDatabase;
@@ -35,9 +35,7 @@ class UpdateActivityLogTest extends TestCase
         Sanctum::actingAs($this->user);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function unprivileged_user_cannot_update_a_log_entry()
     {
         $this->user->revokePermissionTo('groups-manage');
@@ -45,9 +43,7 @@ class UpdateActivityLogTest extends TestCase
             ->assertStatus(403);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function privileged_user_can_update_a_log_entry()
     {
         $this->makeRequest(['entry' => 'farts!', 'log_date' => '2021-12-01T00:00:00'])
@@ -62,9 +58,7 @@ class UpdateActivityLogTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validates_data()
     {
         $this->makeRequest([])

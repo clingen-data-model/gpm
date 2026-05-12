@@ -11,11 +11,11 @@ use App\Modules\Group\Actions\MemberAdd;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\Group\Actions\MemberAssignRole;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 
-/**
- * @group groups
- * @group members
- */
+#[Group('groups')]
+#[Group('members')]
 class RemoveRoleFromMemberTest extends TestCase
 {
     use RefreshDatabase;
@@ -35,9 +35,7 @@ class RemoveRoleFromMemberTest extends TestCase
         $this->url = 'api/groups/'.$this->group->uuid.'/members/'.$this->groupMember->id.'/roles';
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function can_remove_a_role_from_a_group_member()
     {
         // (new MemberRemoveRole)->handle($this->groupMember, [$this->roles->first()]);
@@ -57,9 +55,7 @@ class RemoveRoleFromMemberTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function logs_role_removed_activity()
     {
         Sanctum::actingAs($this->user);

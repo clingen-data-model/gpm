@@ -14,6 +14,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Database\Seeders\SubmissionTypeAndStatusSeeder;
 use App\Modules\Group\Actions\ApplicationSubmitStep;
 use Database\Seeders\NextActionAssigneesTableSeeder;
+use PHPUnit\Framework\Attributes\Test;
 
 class ApplicationActivityTest extends TestCase
 {
@@ -37,9 +38,7 @@ class ApplicationActivityTest extends TestCase
 
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function user_without_permission_unauthorized()
     {
         $this->user->revokePermissionTo('ep-applications-manage');
@@ -47,9 +46,7 @@ class ApplicationActivityTest extends TestCase
             ->assertStatus(403);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function application_managers_see_submitted_applications_not_completed()
     {
         $this->user->givePermissionTo('ep-applications-manage');
@@ -62,9 +59,7 @@ class ApplicationActivityTest extends TestCase
             ->assertJsonCount(3, 'data');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function application_commenters_see_submitted_applications_that_are_not_completed()
     {
         $this->setupPermission(['ep-applications-comment']);
@@ -78,9 +73,7 @@ class ApplicationActivityTest extends TestCase
         $rsp->assertJsonCount(2, 'data');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function application_approvers_only_see_applications_under_chair_review()
     {
         $this->setupPermission(['ep-applications-approve', 'ep-applications-comment']);

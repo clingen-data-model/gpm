@@ -9,10 +9,10 @@ use App\Modules\User\Models\User;
 use App\Modules\Person\Models\Person;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 
-/**
- * @group people
- */
+#[Group('people')]
 class PersonDetailTest extends TestCase
 {
     use RefreshDatabase;
@@ -23,9 +23,7 @@ class PersonDetailTest extends TestCase
         $this->user = User::factory()->create();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function user_can_retrieve_a_person_with_uuid()
     {
         Sanctum::actingAs($this->user);
@@ -35,9 +33,7 @@ class PersonDetailTest extends TestCase
             ->assertJsonFragment($person->toArray());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function responds_with_404_when_person_not_found()
     {
         Sanctum::actingAs($this->user);
@@ -45,9 +41,7 @@ class PersonDetailTest extends TestCase
             ->assertStatus(404);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function guest_cannot_retrieve_person_with_uuid()
     {
         $person = Person::factory()->create();

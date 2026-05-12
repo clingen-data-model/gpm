@@ -9,6 +9,7 @@ use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Database\Seeders\TaskTypeSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
+use PHPUnit\Framework\Attributes\Test;
 
 class TaskIndexTest extends TestCase
 {
@@ -32,9 +33,7 @@ class TaskIndexTest extends TestCase
         Sanctum::actingAs($this->user);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function can_get_all_tasks_for_a_single_assignee()
     {
         $this->makeRequest([
@@ -47,9 +46,7 @@ class TaskIndexTest extends TestCase
         ->assertJsonCount(2);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function can_get_all_tasks_for_multiple_assignees_of_the_same_type()
     {
 

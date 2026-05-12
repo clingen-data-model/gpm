@@ -13,6 +13,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Modules\ExpertPanel\Models\EvidenceSummary;
+use PHPUnit\Framework\Attributes\Test;
 
 class DeleteSummaryTest extends TestCase
 {
@@ -35,9 +36,7 @@ class DeleteSummaryTest extends TestCase
         $this->url = '/api/groups/'.$this->vcep->group->uuid.'/expert-panel/evidence-summaries/'.$this->evidenceSummary->id;
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function unprivileged_user_cannot_delete_evidenceSummary()
     {
         $this->user->revokePermissionTo('ep-applications-manage');
@@ -50,9 +49,7 @@ class DeleteSummaryTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function privileged_user_can_delete_an_evidence_summary()
     {
         Carbon::setTestNow('2021-01-01');
@@ -65,9 +62,7 @@ class DeleteSummaryTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function logs_activity()
     {
         $this->makeRequest();

@@ -11,6 +11,7 @@ use App\Modules\Group\Models\Group;
 use Illuminate\Testing\TestResponse;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 
 class UpdateExpertPanelAttributesTest extends TestCase
 {
@@ -31,9 +32,7 @@ class UpdateExpertPanelAttributesTest extends TestCase
         $this->longText = "Sint nisi commodo nisi tempor adipisicing. Velit officia exercitation voluptate anim consequat eiusmod nisi officia consequat duis aute enim. Eu cupidatat nostrud dolore esse exercitation tempor anim magna ex eiusmod incididunt pariatur. Laboris est eu aup";
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function sets_ep_attributes()
     {
         $expertPanel = ExpertPanel::factory()->gcep()->create();
@@ -45,9 +44,7 @@ class UpdateExpertPanelAttributesTest extends TestCase
             ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function will_not_update_other_non_ep_attributes()
     {
         $expertPanel = ExpertPanel::factory()->gcep()->create();
@@ -81,9 +78,7 @@ class UpdateExpertPanelAttributesTest extends TestCase
             ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validates_data_types()
     {
         $expertPanel = ExpertPanel::factory()->gcep()->create();
@@ -102,9 +97,7 @@ class UpdateExpertPanelAttributesTest extends TestCase
             ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validates_long_base_name_must_be_unique_for_type_if_not_null()
     {
         $nullLongName = ExpertPanel::factory()->gcep()->create();
@@ -141,9 +134,7 @@ class UpdateExpertPanelAttributesTest extends TestCase
         ->assertStatus(200);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validates_short_base_name_must_be_unique_for_type_if_not_null()
     {
         $nullShortName = ExpertPanel::factory()->gcep()->create();
@@ -180,9 +171,7 @@ class UpdateExpertPanelAttributesTest extends TestCase
         ->assertStatus(200);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function ep_info_updated_event_published_if_EP_definition_approved()
     {
         Carbon::setTestNow('2022-09-26');
@@ -205,9 +194,7 @@ class UpdateExpertPanelAttributesTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function ep_info_updated_event_NOT_published_if_EP_definition_NOT_approved()
     {
         Carbon::setTestNow('2022-09-26');

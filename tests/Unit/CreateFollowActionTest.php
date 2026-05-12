@@ -6,12 +6,11 @@ use App\Actions\FollowActionCreate;
 use App\Modules\Group\Actions\MemberAddSystemPermission;
 use App\Modules\Group\Events\MemberAdded;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class CreateFollowActionTest extends TestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function generates_name()
     {
         $action = app()->make(FollowActionCreate::class);

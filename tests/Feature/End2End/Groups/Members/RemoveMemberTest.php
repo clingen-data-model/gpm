@@ -12,11 +12,11 @@ use App\Modules\Person\Models\Person;
 use App\Modules\Group\Actions\MemberAdd;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 
-/**
- * @group groups
- * @group members
- */
+#[Group('groups')]
+#[Group('members')]
 class RemoveMemberTest extends TestCase
 {
     use RefreshDatabase;
@@ -35,9 +35,7 @@ class RemoveMemberTest extends TestCase
         Carbon::setTestNow('2022-09-22');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function can_remove_member_from_group()
     {
         $endDate = Carbon::now();
@@ -53,9 +51,7 @@ class RemoveMemberTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validates_required_information()
     {
         $response = $this->json('DELETE', $this->url, []);
@@ -66,9 +62,7 @@ class RemoveMemberTest extends TestCase
         ]]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validates_end_date_is_a_valid_date()
     {
         $response = $this->json('DELETE', $this->url, ['end_date' => uniqid()]);
@@ -79,9 +73,7 @@ class RemoveMemberTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function logs_member_retired_activity()
     {
         $response = $this->json('DELETE', $this->url, [

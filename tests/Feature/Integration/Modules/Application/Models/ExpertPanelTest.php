@@ -11,11 +11,11 @@ use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Modules\ExpertPanel\Events\ApplicationCompleted;
 use App\Modules\ExpertPanel\Events\ExpertPanelAttributesUpdated;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 
-/**
- * @group applications
- * @group expert-panels
- */
+#[Group('applications')]
+#[Group('expert-panels')]
 class ExpertPanelTest extends TestCase
 {
     use RefreshDatabase;
@@ -27,9 +27,7 @@ class ExpertPanelTest extends TestCase
         Carbon::setTestNow('2021-01-01');
     }
     
-    /**
-     * @test
-     */
+    #[Test]
     public function name_is_working_name_if_long_base_name_is_null()
     {
         $expertPanel = ExpertPanel::factory()->create(['long_base_name' => null]);
@@ -37,9 +35,7 @@ class ExpertPanelTest extends TestCase
         $this->assertEquals($expertPanel->name, $expertPanel->working_name);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function name_is_long_base_name_if_not_null()
     {
         $expertPanel = ExpertPanel::factory()->create(['long_base_name' => 'Beans']);
@@ -47,9 +43,7 @@ class ExpertPanelTest extends TestCase
         $this->assertEquals($expertPanel->name, $expertPanel->long_base_name);
     }
     
-    /**
-     * @test
-     */
+    #[Test]
     public function appends_clingen_url_based_on_affiliation_id()
     {
         $expertPanel = ExpertPanel::factory()->make();
@@ -61,9 +55,7 @@ class ExpertPanelTest extends TestCase
         $this->assertEquals('https://clinicalgenome.org/affiliation/4000123', $expertPanel->clingen_url);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function can_get_first_scope_document()
     {
         $expertPanel = ExpertPanel::factory()->create();
@@ -85,9 +77,7 @@ class ExpertPanelTest extends TestCase
         $this->assertEquals($expertPanel->firstScopeDocument->id, $document1->id);
     }
     
-    /**
-     * @test
-     */
+    #[Test]
     public function can_get_first_final_document()
     {
         $expertPanel = ExpertPanel::factory()->create();
@@ -110,9 +100,7 @@ class ExpertPanelTest extends TestCase
         $this->assertEquals($expertPanel->firstFinalDocument->id, $document1->id);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function removes_epType_display_name_suffix_when_storing_long_and_short_base_name()
     {
         $expertPanel = ExpertPanel::factory()->make();

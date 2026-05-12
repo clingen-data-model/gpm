@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 
 class IndexTest extends TestCase
 {
@@ -36,9 +37,7 @@ class IndexTest extends TestCase
                                 ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function sorts_results_by_name()
     {
         \Laravel\Sanctum\Sanctum::actingAs($this->user);
@@ -47,9 +46,7 @@ class IndexTest extends TestCase
         $this->assertResultsSorted($this->expertPanels->sortByDesc('group.name'), $response);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function sorts_results_by_current_step()
     {
         \Laravel\Sanctum\Sanctum::actingAs($this->user);
@@ -57,9 +54,7 @@ class IndexTest extends TestCase
         $this->assertResultsSorted($this->expertPanels->sortBy('current_step')->slice(0, 20), $response);
     }
     
-    /**
-     * @test
-     */
+    #[Test]
     public function sorts_results_by_cdwg_name()
     {
         $this->expertPanels->load('group.parent');
@@ -68,9 +63,7 @@ class IndexTest extends TestCase
         $this->assertResultsSorted($this->expertPanels->sortBy('cdwg.name')->slice(0, 20), $response);
     }
     
-    /**
-     * @test
-     */
+    #[Test]
     public function sorts_results_by_last_activity()
     {
         $this->expertPanels->each(function ($app) {
@@ -92,9 +85,7 @@ class IndexTest extends TestCase
         $this->assertResultsSorted($this->expertPanels->sortBy('latestLogEntry.created_at')->slice(0, 20), $response);
     }
     
-    /**
-     * @test
-     */
+    #[Test]
     public function can_filter_applications_by_last_updated()
     {
         $this->expertPanels = ExpertPanel::factory(3)

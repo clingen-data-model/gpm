@@ -20,6 +20,7 @@ use Database\Seeders\SubmissionTypeAndStatusSeeder;
 use Database\Seeders\NextActionAssigneesTableSeeder;
 use App\Modules\ExpertPanel\Models\NextActionAssignee;
 use App\Modules\Group\Events\ApplicationRevisionsRequested;
+use PHPUnit\Framework\Attributes\Test;
 
 class RejectSubmissionTest extends TestCase
 {
@@ -47,9 +48,7 @@ class RejectSubmissionTest extends TestCase
         Sanctum::actingAs($this->admin);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function unprivileged_user_cannot_reject_submission()
     {
         $this->admin->revokePermissionTo('ep-applications-manage');
@@ -58,9 +57,7 @@ class RejectSubmissionTest extends TestCase
             ->assertStatus(403);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function permissioned_user_can_reject_a_submission()
     {
         Carbon::setTestNow('2022-07-12');
@@ -78,9 +75,7 @@ class RejectSubmissionTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function emails_group_contacts_when_specified_and_saves_email_body_to_response_content()
     {
         Carbon::setTestNow('2022-07-12');
@@ -115,9 +110,7 @@ class RejectSubmissionTest extends TestCase
 
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function records_revisions_requested_activity()
     {
         $this->makeRequest();
@@ -133,9 +126,7 @@ class RejectSubmissionTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function assigns_make_revisions_next_action_to_expert_panel()
     {
         $this->makeRequest()
@@ -148,9 +139,7 @@ class RejectSubmissionTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function completes_review_submission_action_if_any()
     {
         Carbon::setTestNow('2022-06-01');

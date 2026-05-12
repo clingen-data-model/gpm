@@ -14,6 +14,7 @@ use App\Modules\ExpertPanel\Models\Specification;
 use App\DataExchange\Models\IncomingStreamMessage;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\DataExchange\Actions\CspecDataSyncProcessor;
+use PHPUnit\Framework\Attributes\Test;
 
 class CspecDataSyncProcessorTest extends TestCase
 {
@@ -51,9 +52,7 @@ class CspecDataSyncProcessorTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function creates_specification_and_rulset_if_none_exists()
     {
         app()->make(CspecDataSyncProcessor::class)
@@ -62,9 +61,7 @@ class CspecDataSyncProcessorTest extends TestCase
         $this->assertDatabaseSynced();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function updates_specification_and_ruleset_if_exists()
     {
         $specification = Specification::factory()->create([
@@ -85,9 +82,7 @@ class CspecDataSyncProcessorTest extends TestCase
         $this->assertDatabaseSynced();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function status_change_is_logged()
     {
         $specification = Specification::factory()->create([

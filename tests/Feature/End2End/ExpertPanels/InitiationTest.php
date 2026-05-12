@@ -7,6 +7,7 @@ use Laravel\Sanctum\Sanctum;
 use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 
 class InitiationTest extends TestCase
 {
@@ -22,9 +23,7 @@ class InitiationTest extends TestCase
     }
 
 
-    /**
-     * @test
-     */
+    #[Test]
     public function can_create_initiate_an_application()
     {
         $data = $this->makeApplicationData();
@@ -41,9 +40,7 @@ class InitiationTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validates_required_parameters_before_initiating_application()
     {
         $data = [];
@@ -59,9 +56,7 @@ class InitiationTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validates_uuid_is_a_uuid()
     {
         $data = ['uuid'=>'bob is yer uncle'];
@@ -71,9 +66,7 @@ class InitiationTest extends TestCase
         $response->assertJsonFragment(['uuid' => ['The uuid must be a valid UUID.']]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validates_date_initiated_is_a_date()
     {
         $data = ['date_initiated'=>'bob is yer uncle'];
@@ -83,9 +76,7 @@ class InitiationTest extends TestCase
         $response->assertJsonFragment(['date_initiated' => ['The date initiated is not a valid date.']]);
     }
     
-    /**
-     * @test
-     */
+    #[Test]
     public function validates_working_name_lenghth()
     {
         $data = ['working_name'=>'Aliqua anim et excepteur amet exercitation. Consequat duis fugiat qui labore laborum culpa amet. Exercitation eiusmod id velit excepteur incididunt minim magna cupidatat. Excepteur ullamco culpa ut labore exercitation laborum veniam. Cupidatat ex laborum di'];
@@ -102,9 +93,7 @@ class InitiationTest extends TestCase
         $response->assertJsonFragment(['working_name' => ['The working name must be at least 3 characters.']]);
     }
     
-    /**
-     * @test
-     */
+    #[Test]
     public function validates_cdwg_id_exists()
     {
         $data = ['cdwg_id'=>'2'];
@@ -114,9 +103,7 @@ class InitiationTest extends TestCase
         $response->assertJsonFragment(['cdwg_id' => ['The selection is invalid.']]);
     }
     
-    /**
-     * @test
-     */
+    #[Test]
     public function validates_expert_panel_types_id_exists()
     {
         $data = ['expert_panel_type_id'=>999];

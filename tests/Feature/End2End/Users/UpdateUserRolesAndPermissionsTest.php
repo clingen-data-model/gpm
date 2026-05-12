@@ -8,6 +8,7 @@ use Database\Seeders\RolesAndPermissionsSeeder;
 use Laravel\Sanctum\Sanctum;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 
 class UpdateUserRolesAndPermissionsTest extends TestCase
 {
@@ -25,9 +26,7 @@ class UpdateUserRolesAndPermissionsTest extends TestCase
         $this->user->assignRole('admin');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function unprivileged_user_cannot_update_user_roles_and_permissions()
     {
         $this->actingUser->revokePermissionTo('users-manage');
@@ -42,9 +41,7 @@ class UpdateUserRolesAndPermissionsTest extends TestCase
         // $this->assertUserMissingPermission(config('system.permissions.ep-applications-manage.id'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function privileged_can_update_user_roles_and_permissions()
     {
         $this->makeRequest()

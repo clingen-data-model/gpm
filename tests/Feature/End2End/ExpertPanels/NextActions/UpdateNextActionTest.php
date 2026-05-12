@@ -12,12 +12,12 @@ use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Database\Seeders\NextActionAssigneesTableSeeder;
 use App\Modules\ExpertPanel\Actions\NextActionCreate;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 
-/**
- * @group next-actions
- * @group next_actions
- * @group nextactions
- */
+#[Group('next-actions')]
+#[Group('next_actions')]
+#[Group('nextactions')]
 class UpdateNextActionTest extends TestCase
 {
     use RefreshDatabase;
@@ -45,9 +45,7 @@ class UpdateNextActionTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function updates_next_action()
     {
         $this->json(
@@ -74,9 +72,7 @@ class UpdateNextActionTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function logs_next_action_updated()
     {
         $this->json(

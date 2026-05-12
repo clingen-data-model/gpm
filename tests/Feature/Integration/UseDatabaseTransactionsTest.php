@@ -10,6 +10,7 @@ use App\Jobs\Pipes\UseDatabaseTransactions;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 
 class UseDatabaseTransactionsTest extends TestCase
 {
@@ -24,9 +25,7 @@ class UseDatabaseTransactionsTest extends TestCase
         $this->dispatcher->pipeThrough([UseDatabaseTransactions::class]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function rollsback_transaction_on_error()
     {
         $this->markTestSkipped('somehow this throws a signal 11...');
@@ -41,9 +40,7 @@ class UseDatabaseTransactionsTest extends TestCase
         $this->assertDatabaseMissing('users', $user->getAttributes());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function commits_transaction_if_no_exceptions()
     {
         $user = User::factory()->make();

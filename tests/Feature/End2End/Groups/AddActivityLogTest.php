@@ -9,11 +9,11 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 
-/**
- * @group groups
- * @group activity-log
- */
+#[Group('groups')]
+#[Group('activity-log')]
 class AddActivityLogTest extends TestCase
 {
     use RefreshDatabase;
@@ -31,18 +31,14 @@ class AddActivityLogTest extends TestCase
         Sanctum::actingAs($this->user);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function unprivileged_user_cannot_create_a_log_entry()
     {
         $this->makeRequest()
             ->assertStatus(403);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function privileged_user_can_create_a_log_entry()
     {
         $this->user->givePermissionTo('groups-manage');
@@ -55,9 +51,7 @@ class AddActivityLogTest extends TestCase
             ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validates_data()
     {
         $this->user->givePermissionTo('groups-manage');

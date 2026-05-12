@@ -14,10 +14,10 @@ use App\DataExchange\Contracts\MessageStream;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Database\Seeders\SpecificationStatusSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 
-/**
- * @group dx
- */
+#[Group('dx')]
 class ConsumeCspecMessagesTest extends TestCase
 {
     use RefreshDatabase;
@@ -41,9 +41,7 @@ class ConsumeCspecMessagesTest extends TestCase
         $this->consumer = new DxConsume();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function does_not_consume_if_dx_consume_config_is_false()
     {
         config(['dx.consume' => false]);
@@ -67,9 +65,9 @@ class ConsumeCspecMessagesTest extends TestCase
     }
 
     /**
-     * @test
      * @return void
      */
+    #[Test]
     public function cspec_draft_rules_approved_message_consumed_and_handled()
     {
         $topic = 'cspec_general_events_test';
@@ -95,9 +93,7 @@ class ConsumeCspecMessagesTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function cspec_pilot_rules_approved_message_consumed_and_handled()
     {
         $topic = 'cspec_general_events_test';

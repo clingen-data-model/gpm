@@ -13,6 +13,7 @@ use App\Modules\Group\Actions\MemberRetire;
 use Illuminate\Support\Facades\Notification;
 use App\Notifications\CoiReminderNotification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 
 class CoiReminderTest extends TestCase
 {
@@ -31,9 +32,7 @@ class CoiReminderTest extends TestCase
         $this->membership1 = app()->make(MemberAdd::class)->handle($this->group, $this->user1->person);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function groupMember_can_scope_by_hasPendingCois()
     {
         $user2 = $this->setupUserWithPerson();
@@ -46,9 +45,7 @@ class CoiReminderTest extends TestCase
         $this->assertEquals(1, GroupMember::hasPendingCoi()->count());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function person_can_scope_by_hasPendingCois()
     {
         $user2 = $this->setupUserWithPerson();
@@ -63,9 +60,7 @@ class CoiReminderTest extends TestCase
         $this->assertEquals($this->user1->person->id, $peopleWithPendingCois->first()->id);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function person_related_to_memberships_with_pending_coi()
     {
         $group2 = Group::factory()->create();
@@ -84,9 +79,7 @@ class CoiReminderTest extends TestCase
         $this->assertEquals($this->membership1->id, $membershipsWithPendingCoi->first()->id);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function sends_notification_to_activited_person_with_pending_coi()
     {
         $user2 = $this->setupUserWithPerson();
@@ -111,9 +104,7 @@ class CoiReminderTest extends TestCase
         Notification::assertNotSentTo($user2->person, CoiReminderNotification::class);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function only_sends_notifications_on_monday_at_6am()
     {
         Carbon::setTestNow('2022-02-14 06:01:00');
@@ -123,9 +114,7 @@ class CoiReminderTest extends TestCase
         Notification::assertNotSentTo($this->user1->person, CoiReminderNotification::class);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function does_not_send_email_for_inactive_memberships()
     {
         $group2 = Group::factory()->create();
@@ -136,9 +125,7 @@ class CoiReminderTest extends TestCase
         Notification::assertNothingSent();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function sends_email_to_members_of_non_eps()
     {
         $user = $this->setupUserWithPerson();
@@ -152,9 +139,7 @@ class CoiReminderTest extends TestCase
         Notification::assertSentTo($user->person, CoiReminderNotification::class);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function does_not_send_coi_reminder_to_nonactivated_people()
     {
         $person = Person::factory()->create();

@@ -8,10 +8,10 @@ use Database\Seeders\CredentialSeeder;
 use Illuminate\Testing\TestResponse;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 
-/**
- * @group credentials
- */
+#[Group('credentials')]
 class SearchCredentialsTest extends TestCase
 {
     use RefreshDatabase;
@@ -22,18 +22,14 @@ class SearchCredentialsTest extends TestCase
         $this->credentials = $this->seedCredentials();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function guests_cannot_search_credentials()
     {
         $this->makeRequest()
             ->assertStatus(401);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function gets_all_credentials_if_no_keyword()
     {
         $this->login();
@@ -43,9 +39,7 @@ class SearchCredentialsTest extends TestCase
             ->assertJsonCount($this->credentials->count());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function gets_matching_credentials_if_keyword_given()
     {
         $this->login();
@@ -59,9 +53,7 @@ class SearchCredentialsTest extends TestCase
             ->assertJsonCount(1);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function ignores_case_and_punctuation()
     {
         $this->login();
@@ -70,9 +62,7 @@ class SearchCredentialsTest extends TestCase
             ->assertJsonCount(1);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function searches_against_synonyms()
     {
         $this->login();

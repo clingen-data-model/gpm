@@ -13,6 +13,7 @@ use App\Modules\Person\Actions\PermissionAdd;
 use App\Modules\Person\Events\InviteRedeemed;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 
 class PermissionAddTest extends TestCase
 {
@@ -25,9 +26,7 @@ class PermissionAddTest extends TestCase
     }
     
 
-    /**
-     * @test
-     */
+    #[Test]
     public function throws_Exception_if_permission_not_found()
     {
         $person = new Person();
@@ -36,9 +35,7 @@ class PermissionAddTest extends TestCase
         $this->action->handle($person, 'skate-ramp');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function throws_exception_if_perm_scoped_for_group()
     {
         $person = new Person();
@@ -48,9 +45,7 @@ class PermissionAddTest extends TestCase
         $this->action->handle($person, 'test-perm');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function adds_permission_to_acivated_person()
     {
         $user = $this->setupUserWithPerson();
@@ -65,9 +60,7 @@ class PermissionAddTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function adds_follow_action_if_person_not_activated()
     {
         $person = Person::factory()->create();
@@ -84,9 +77,7 @@ class PermissionAddTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function runs_as_follow_action()
     {
         // Setup

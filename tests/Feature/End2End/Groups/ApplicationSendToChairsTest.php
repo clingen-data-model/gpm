@@ -21,6 +21,7 @@ use Database\Seeders\SubmissionTypeAndStatusSeeder;
 use App\Modules\Group\Actions\ApplicationSubmitStep;
 use Database\Seeders\NextActionAssigneesTableSeeder;
 use App\Modules\Group\Notifications\ApplicationReadyForApproverReview;
+use PHPUnit\Framework\Attributes\Test;
 
 class ApplicationSendToChairsTest extends TestCase
 {
@@ -40,9 +41,7 @@ class ApplicationSendToChairsTest extends TestCase
         $this->group = $this->expertPanel->group;
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function unpermissioned_user_cannot_send_to_chairs()
     {
         $this->user->revokePermissionTo('ep-applications-manage');
@@ -50,9 +49,7 @@ class ApplicationSendToChairsTest extends TestCase
             ->assertStatus(403);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function next_action_assigned_to_oc_chairs()
     {
         $this->runSeeder(SubmissionTypeAndStatusSeeder::class);
@@ -69,9 +66,7 @@ class ApplicationSendToChairsTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function logs_that_chairs_sent_application()
     {
         $this->runSeeder(SubmissionTypeAndStatusSeeder::class);
@@ -93,9 +88,7 @@ class ApplicationSendToChairsTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function pending_submission_status_updated_to_under_chair_review()
     {
         $this->runSeeder(SubmissionTypeAndStatusSeeder::class);
@@ -109,9 +102,7 @@ class ApplicationSendToChairsTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function sent_to_chairs_at_timestamp_set()
     {
         Carbon::setTestNow('2022-08-01');
@@ -127,9 +118,7 @@ class ApplicationSendToChairsTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function sends_notification_to_chairs()
     {
         $approver1 = $this->setupUserWithPerson(permissions: ['ep-applications-approve']);

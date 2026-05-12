@@ -7,6 +7,7 @@ use Laravel\Sanctum\Sanctum;
 use App\Modules\User\Models\User;
 use Database\Seeders\CountrySeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 
 class PersonLookupsEndpointTest extends TestCase
 {
@@ -22,9 +23,7 @@ class PersonLookupsEndpointTest extends TestCase
     }
 
 
-    /**
-     * @test
-     */
+    #[Test]
     public function can_get_list_of_countries()
     {
         $response = $this->json('GET', '/api/people/lookups/countries');
@@ -33,9 +32,7 @@ class PersonLookupsEndpointTest extends TestCase
         $response->assertJsonFragment([['id' => 1, 'name' => 'Afghanistan']]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function get_get_a_single_country()
     {
         $response = $this->json('GET', '/api/people/lookups/countries/226');
@@ -43,9 +40,7 @@ class PersonLookupsEndpointTest extends TestCase
         $response->assertJsonFragment([['id' => 226, 'name' => 'United States']]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function can_get_a_list_of_primary_occupations()
     {
         $response = $this->json('GET', '/api/people/lookups/primary-occupations');
@@ -54,9 +49,7 @@ class PersonLookupsEndpointTest extends TestCase
         $response->assertJsonFragment([['id' => 1, 'name' => 'Clinical Laboratory Director']]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function can_get_a_list_of_genders()
     {
         $response = $this->json('GET', '/api/people/lookups/genders');

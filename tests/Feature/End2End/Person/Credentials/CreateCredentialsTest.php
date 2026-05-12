@@ -8,10 +8,10 @@ use Laravel\Sanctum\Sanctum;
 use Illuminate\Testing\TestResponse;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 
-/**
- * @group credentials
- */
+#[Group('credentials')]
 class CreateCredentialsTest extends TestCase
 {
     use RefreshDatabase;
@@ -21,18 +21,14 @@ class CreateCredentialsTest extends TestCase
         parent::setup();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function guest_cannot_create_credential()
     {
         $this->makeRequest()
             ->assertStatus(401);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function authed_user_can_created_a_credential()
     {
 
@@ -53,9 +49,7 @@ class CreateCredentialsTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validates_input()
     {
         $this->login();

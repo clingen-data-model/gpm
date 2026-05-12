@@ -26,11 +26,11 @@ use App\Modules\ExpertPanel\Actions\NextActionCreate;
 use App\Modules\Group\Events\ApplicationStepSubmitted;
 use Tests\Feature\End2End\Groups\Members\SetsUpGroupPersonAndMember;
 use App\Modules\Group\Notifications\ApplicationSubmissionNotification;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 
-/**
- * @group submissions
- * @group applications
- */
+#[Group('submissions')]
+#[Group('applications')]
 class SubmitApplicationStepTest extends TestCase
 {
     use RefreshDatabase;
@@ -51,9 +51,7 @@ class SubmitApplicationStepTest extends TestCase
         Sanctum::actingAs($this->user);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function unprivileged_user_cannot_submit_application()
     {
         $this->user->revokePermissionTo('ep-applications-manage');
@@ -61,9 +59,7 @@ class SubmitApplicationStepTest extends TestCase
             ->assertStatus(403);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function a_privileged_user_can_submit_application()
     {
         $this->makeRequest()
@@ -98,9 +94,7 @@ class SubmitApplicationStepTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function automatically_sets_type_to_match_current_step()
     {
         $this->expertPanel->current_step = 4;
@@ -115,9 +109,7 @@ class SubmitApplicationStepTest extends TestCase
             ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function sets_step_1_date_received_set_when_definition_submitted()
     {
         Carbon::setTestNow('2022-01-01');
@@ -138,9 +130,7 @@ class SubmitApplicationStepTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function sets_step_4_date_received_set_when_sustainedcuration_submitted()
     {
         Carbon::setTestNow('2022-01-01');
@@ -161,9 +151,7 @@ class SubmitApplicationStepTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function fires_ApplicationStepSubmitted_event()
     {
         Event::fake(ApplicationStepSubmitted::class);
@@ -173,9 +161,7 @@ class SubmitApplicationStepTest extends TestCase
         Event::assertDispatched(ApplicationStepSubmitted::class);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function records_ApplicationStepSubmitted_activity()
     {
         $this->makeRequest()
@@ -188,9 +174,7 @@ class SubmitApplicationStepTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function cdwg_oc_receives_mail_of_submitted_vcep()
     {
         Mail::fake();
@@ -204,9 +188,7 @@ class SubmitApplicationStepTest extends TestCase
         });
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function gcwg_receives_mail_of_submitted_vcep()
     {
         $this->expertPanel->group->update(['group_type_id' => config('groups.types.gcep.id')]);
@@ -222,9 +204,7 @@ class SubmitApplicationStepTest extends TestCase
         });
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function contacts_receive_receipt_of_submission_email()
     {
         $person = Person::factory()->create();
@@ -241,9 +221,7 @@ class SubmitApplicationStepTest extends TestCase
         });
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function completes_pending_revise_and_resubmit_next_actions()
     {
         Carbon::setTestNow('2022-06-01');
@@ -262,9 +240,7 @@ class SubmitApplicationStepTest extends TestCase
         ]);
     }
        
-    /**
-     * @test
-     */
+    #[Test]
     public function next_action_created_for_admin_group()
     {
         
@@ -291,9 +267,7 @@ class SubmitApplicationStepTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function stores_snapshot_of_application_when_submitted()
     {
         $this->makeRequest()

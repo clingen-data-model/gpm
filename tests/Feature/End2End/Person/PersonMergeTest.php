@@ -14,6 +14,7 @@ use App\Modules\Person\Models\Person;
 use App\Modules\Group\Actions\MemberAdd;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 
 class PersonMergeTest extends TestCase
 {
@@ -39,9 +40,7 @@ class PersonMergeTest extends TestCase
         Sanctum::actingAs($this->user);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function unprivileged_user_cannot_delete_person()
     {
         $this->user->revokePermissionTo('people-manage');
@@ -49,9 +48,7 @@ class PersonMergeTest extends TestCase
         $this->makeRequest()->assertStatus(403);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validates_params()
     {
         $this->makeRequest([])
@@ -85,9 +82,7 @@ class PersonMergeTest extends TestCase
     }
     
 
-    /**
-     * @test
-     */
+    #[Test]
     public function merge_gives_authority_memberships_matching_obsolete_and_deletes_obsolete_membeships()
     {
         Carbon::setTestNow('2022-03-15');
@@ -118,9 +113,7 @@ class PersonMergeTest extends TestCase
         $this->assertEquals('members-invite', $this->person1->memberships()->get()->last()->permissions->first()->name);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function merge_migrates_obsoletes_cois_to_authority()
     {
         Carbon::setTestNow('2022-04-25');
@@ -141,9 +134,7 @@ class PersonMergeTest extends TestCase
         ]);
     }
    
-    /**
-     * @test
-     */
+    #[Test]
     public function obsolete_user_transfered_to_unlinked_authority()
     {
         $user = User::factory()->create();
@@ -164,9 +155,7 @@ class PersonMergeTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function obsolete_user_not_transfered_if_authority_has_user()
     {
         $user1 = User::factory()->create();
@@ -188,9 +177,7 @@ class PersonMergeTest extends TestCase
     }
     
 
-    /**
-     * @test
-     */
+    #[Test]
     public function records_merge_activity()
     {
         Carbon::setTestNow('2022-04-25');

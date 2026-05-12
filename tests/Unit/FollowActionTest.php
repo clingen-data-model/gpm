@@ -7,14 +7,13 @@ use App\Models\FollowAction;
 use Tests\Dummies\TestEvent;
 use Tests\Dummies\TestFollower;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 
 class FollowActionTest extends TestCase
 {
     use RefreshDatabase;
 
-    /**
-     * @test
-     */
+    #[Test]
     public function can_exec_a_follower()
     {
         $fa = new FollowAction([

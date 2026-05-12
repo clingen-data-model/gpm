@@ -10,6 +10,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Modules\Group\Actions\AttestationReanalysisStore;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 
 class AttestationReanalysisTest extends TestCase
 {
@@ -27,9 +28,7 @@ class AttestationReanalysisTest extends TestCase
         Carbon::setTestNow('2021-11-14');
     }
     
-    /**
-     * @test
-     */
+    #[Test]
     public function unprivileged_user_cannot_submit_reanalysis_attestation()
     {
         $this->user->revokePermissionTo('ep-applications-manage');
@@ -37,9 +36,7 @@ class AttestationReanalysisTest extends TestCase
             ->assertStatus(403);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validates_data()
     {
         $this->submitRequest([])
@@ -59,9 +56,7 @@ class AttestationReanalysisTest extends TestCase
     }
     
 
-    /**
-     * @test
-     */
+    #[Test]
     public function privileged_user_can_submit_reanalysis_attestation()
     {
         $this->submitRequest()
@@ -77,9 +72,7 @@ class AttestationReanalysisTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function logs_activity()
     {
         $this->submitRequest()
@@ -93,9 +86,7 @@ class AttestationReanalysisTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function handler_does_not_set_attestation_date_if_requirements_not_met()
     {
         $data = [

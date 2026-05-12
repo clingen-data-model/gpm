@@ -7,6 +7,7 @@ use App\Modules\Group\Models\Group;
 use App\Modules\Person\Models\Person;
 use App\Modules\Group\Models\GroupMember;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 
 class PersonTest extends TestCase
 {
@@ -18,9 +19,7 @@ class PersonTest extends TestCase
         $this->setupForGroupTest();
     }
     
-    /**
-     * @test
-     */
+    #[Test]
     public function can_determine_if_person_in_group()
     {
         $groupMember = GroupMember::factory()->create();

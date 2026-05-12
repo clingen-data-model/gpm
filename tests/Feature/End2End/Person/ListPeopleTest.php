@@ -8,10 +8,10 @@ use App\Modules\User\Models\User;
 use App\Modules\Person\Models\Person;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 
-/**
- * @group people
- */
+#[Group('people')]
 class ListPeopleTest extends TestCase
 {
     use RefreshDatabase;
@@ -27,18 +27,14 @@ class ListPeopleTest extends TestCase
         $this->people = Person::factory(5)->create();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function guests_cannot_get_list_of_people()
     {
         $this->json('GET', static::URL)
             ->assertStatus(401);
     }
     
-    /**
-     * @test
-     */
+    #[Test]
     public function authed_user_can_get_paginated_list_of_people()
     {
         Sanctum::actingAs($this->user);

@@ -10,13 +10,13 @@ use App\Modules\ExpertPanel\Actions\ContactAdd;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Modules\ExpertPanel\Events\ContactAdded;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 
-/**
- * @group applications
- * @group expert-panels
- * @group contacts
- * @group membership
- */
+#[Group('applications')]
+#[Group('expert-panels')]
+#[Group('contacts')]
+#[Group('membership')]
 class ContactAddTest extends TestCase
 {
     use RefreshDatabase;
@@ -32,9 +32,7 @@ class ContactAddTest extends TestCase
     }
     
 
-    /**
-     * @test
-     */
+    #[Test]
     public function ContactAdded_event_logged_when_dispatched()
     {
         $this->action->handle($this->expertPanel->uuid, $this->person->uuid);
@@ -46,9 +44,7 @@ class ContactAddTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function Person_added_ast_contact_for_ExpertPanel()
     {
         $this->action->handle($this->expertPanel->uuid, $this->person->uuid);

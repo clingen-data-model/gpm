@@ -8,6 +8,7 @@ use Laravel\Sanctum\Sanctum;
 use App\Modules\Person\Models\Institution;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 
 class InstitutionMarkApprovedTest extends TestCase
 {
@@ -21,9 +22,7 @@ class InstitutionMarkApprovedTest extends TestCase
         Sanctum::actingAs($this->user);
     }
     
-    /**
-     * @test
-     */
+    #[Test]
     public function unprivileged_user_cannot_approve_institution()
     {
         $this->user->revokePermissionTo('people-manage');
@@ -32,9 +31,7 @@ class InstitutionMarkApprovedTest extends TestCase
             ->assertStatus(403);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function privileged_use_can_approve_institution()
     {
         $this->makeRequest()

@@ -25,6 +25,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Database\Seeders\SubmissionTypeAndStatusSeeder;
 use Database\Seeders\NextActionAssigneesTableSeeder;
 use App\Modules\ExpertPanel\Notifications\ApplicationStepApprovedNotification;
+use PHPUnit\Framework\Attributes\Test;
 
 class ApplicationApprovalTest extends TestCase
 {
@@ -48,9 +49,7 @@ class ApplicationApprovalTest extends TestCase
         Carbon::setTestNow('2022-06-01');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function can_approve_step()
     {
         $approvalData = [
@@ -70,9 +69,7 @@ class ApplicationApprovalTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function returns_404_if_application_not_found()
     {
         $approvalData = [
@@ -86,9 +83,7 @@ class ApplicationApprovalTest extends TestCase
             ->assertStatus(404);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validates_date_approved()
     {
         $approvalData = [
@@ -101,9 +96,7 @@ class ApplicationApprovalTest extends TestCase
             ->assertJsonFragment(['date_approved' => ['The date approved is not a valid date.']]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function sends_no_mail_if_not_specified()
     {
         $approvalData = [
@@ -119,9 +112,7 @@ class ApplicationApprovalTest extends TestCase
         Mail::assertNotSent(UserDefinedMailable::class);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function sends_mail_to_contacts_if_specified()
     {
         $person1 = Person::factory()->create();
@@ -159,9 +150,7 @@ class ApplicationApprovalTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function sends_database_notification_to_contacts_if_specified()
     {
         $person1 = Person::factory()->create();
@@ -186,9 +175,7 @@ class ApplicationApprovalTest extends TestCase
     }
 
 
-    /**
-     * @test
-     */
+    #[Test]
     public function test_mailable_content()
     {
         $subject = 'This is a <strong>test</strong> custom message';
@@ -209,9 +196,7 @@ class ApplicationApprovalTest extends TestCase
         $this->assertEquals([], $mailable->attachments);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function marks_submission_approved_if_exists()
     {
         $person = Person::factory()->create();
@@ -234,9 +219,7 @@ class ApplicationApprovalTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function records_submission_approved_if_exists()
     {
         $person = Person::factory()->create();
@@ -260,9 +243,7 @@ class ApplicationApprovalTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function group_status_set_to_active_when_last_step_is_approved()
     {
         $this->expertPanel->current_step = 4;
@@ -287,9 +268,7 @@ class ApplicationApprovalTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function completes_review_submission_next_action_if_any_pending()
     {
         $this->runSeeder(NextActionAssigneesTableSeeder::class);

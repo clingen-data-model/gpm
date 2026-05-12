@@ -7,6 +7,7 @@ use Illuminate\Testing\TestResponse;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Modules\Group\Notifications\JudgementActivityNotification;
+use PHPUnit\Framework\Attributes\Test;
 
 class JudgementUpdateTest extends JudgementTest
 {
@@ -20,9 +21,7 @@ class JudgementUpdateTest extends JudgementTest
         Sanctum::actingAs($this->user);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function person_other_than_approver_cannot_update_anothers_judgment()
     {
         $this->otherUser = $this->setupUserWithPerson(permissions: ['ep-applications-approve']);
@@ -32,9 +31,7 @@ class JudgementUpdateTest extends JudgementTest
             ->assertStatus(403);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function user_with_ep_manage_applications_can_update_another_users_judgement()
     {
         $this->otherUser = $this->setupUserWithPerson(permissions: ['ep-applications-manage']);
@@ -52,9 +49,7 @@ class JudgementUpdateTest extends JudgementTest
 
 
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validates_judgement_data()
     {
         $this->makeRequest([])
@@ -68,9 +63,7 @@ class JudgementUpdateTest extends JudgementTest
             ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function notifies_other_notifiables_when_judgement_updated()
     {
         $otherApprover = $this->setupUserWithPerson(permissions: ['ep-applications-approve']);

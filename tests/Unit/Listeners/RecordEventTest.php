@@ -10,6 +10,7 @@ use App\Events\RecordableEvent;
 use App\Modules\User\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 
 class RecordEventTest extends TestCase
 {
@@ -24,9 +25,7 @@ class RecordEventTest extends TestCase
         $this->listener = new RecordEvent();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_records_event_uuid()
     {
         $this->listener->handle($this->event);
@@ -34,9 +33,7 @@ class RecordEventTest extends TestCase
         $this->assertEquals('test_uuid', Activity::first()->event_uuid);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function when_no_authed_user_it_does_not_record_causer():void
     {
         $this->listener->handle($this->event);
@@ -44,9 +41,7 @@ class RecordEventTest extends TestCase
         $this->assertNull(Activity::first()->causer_id);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function when_authed_user_it_records_causer():void
     {
         $user = User::factory()->create();
@@ -58,9 +53,7 @@ class RecordEventTest extends TestCase
         $this->assertEquals($user->id, Activity::first()->causer_id);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_records_properties():void
     {
         $this->listener->handle($this->event);
@@ -68,9 +61,7 @@ class RecordEventTest extends TestCase
         $this->assertEquals('test_value', Activity::first()->properties['test_property']);
     }
     
-    /**
-     * @test
-     */
+    #[Test]
     public function it_records_the_subject():void
     {
         $this->listener->handle($this->event);
@@ -79,9 +70,7 @@ class RecordEventTest extends TestCase
         $this->assertEquals(999, Activity::first()->subject_id);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_records_the_log_entry():void
     {
         $this->listener->handle($this->event);
@@ -89,9 +78,7 @@ class RecordEventTest extends TestCase
         $this->assertEquals($this->event->getLogEntry(), Activity::first()->description);
     }
     
-    /**
-     * @test
-     */
+    #[Test]
     public function it_sets_the_event_log_date_as_created_at():void
     {
         $this->listener->handle($this->event);

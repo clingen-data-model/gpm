@@ -10,11 +10,11 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Modules\Group\Actions\MemberGrantPermissions;
 use App\Modules\Group\Models\Group;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 
-/**
- * @group groups
- * @group members
- */
+#[Group('groups')]
+#[Group('members')]
 class RevokeMemberPermissionTest extends TestCase
 {
     use RefreshDatabase;
@@ -35,9 +35,7 @@ class RevokeMemberPermissionTest extends TestCase
         $this->url = '/api/groups/'.$this->group->uuid.'/members/'.$this->groupMember->id.'/permissions';
     }
     
-    /**
-     * @test
-     */
+    #[Test]
     public function can_revoke_a_permission()
     {
         $response = $this->json('DELETE', $this->url.'/'.$this->permissions->first()->id);
@@ -62,9 +60,7 @@ class RevokeMemberPermissionTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function logs_permission_revoked_activity()
     {
         $response = $this->json('DELETE', $this->url.'/'.$this->permissions->first()->id);

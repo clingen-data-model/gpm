@@ -14,10 +14,10 @@ use Tests\CreatesDocumentUploadRequestData;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 
-/**
- * @group documents
- */
+#[Group('documents')]
 class UploadTest extends TestCase
 {
     use RefreshDatabase;
@@ -32,9 +32,7 @@ class UploadTest extends TestCase
         $this->expertPanel = ExpertPanel::factory()->create();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function can_upload_step_1_document_to_application()
     {
         Carbon::setTestNow('2021-01-01');
@@ -64,9 +62,7 @@ class UploadTest extends TestCase
         Storage::disk('local')->assertExists($doc->storage_path);
     }
     
-    /**
-     * @test
-     */
+    #[Test]
     public function sets_version_based_existing_versions()
     {
         $document = Document::factory()->make(['document_type_id' => 1]);
@@ -91,9 +87,7 @@ class UploadTest extends TestCase
             ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validates_required_fields()
     {
         \Laravel\Sanctum\Sanctum::actingAs($this->user);
@@ -106,9 +100,7 @@ class UploadTest extends TestCase
             ]);
     }
     
-    /**
-     * @test
-     */
+    #[Test]
     public function validates_field_types()
     {
         $data = [
@@ -129,9 +121,7 @@ class UploadTest extends TestCase
             ]);
     }
     
-    /**
-     * @test
-     */
+    #[Test]
     public function sets_is_final_based_on_input()
     {
         Carbon::setTestNow('2021-01-01');

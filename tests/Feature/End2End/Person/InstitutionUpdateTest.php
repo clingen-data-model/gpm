@@ -8,6 +8,7 @@ use App\Modules\Person\Models\Country;
 use App\Modules\Person\Models\Institution;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 
 class InstitutionUpdateTest extends TestCase
 {
@@ -23,9 +24,7 @@ class InstitutionUpdateTest extends TestCase
         $this->institution = Institution::factory()->create(['country_id' => null]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function unprivileged_user_cannot_update_institution()
     {
         $this->user->revokePermissionTo('people-manage');
@@ -34,9 +33,7 @@ class InstitutionUpdateTest extends TestCase
             ->assertStatus(403);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function privileged_user_can_update_institution()
     {
         $this->makeRequest()
@@ -56,9 +53,7 @@ class InstitutionUpdateTest extends TestCase
         ]);
     }
     
-    /**
-     * @test
-     */
+    #[Test]
     public function validates_data()
     {
         $this->makeRequest(['country_id' => 777])

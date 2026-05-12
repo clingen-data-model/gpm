@@ -13,6 +13,7 @@ use App\Modules\Group\Events\AttestationSigned;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Modules\Group\Actions\AttestationGcepStore;
 use App\Modules\Group\Models\Group;
+use PHPUnit\Framework\Attributes\Test;
 
 class AttestationGcepTest extends TestCase
 {
@@ -31,18 +32,14 @@ class AttestationGcepTest extends TestCase
         Carbon::setTestNow('2021-11-14');
     }
     
-    /**
-     * @test
-     */
+    #[Test]
     public function unprivileged_user_cannot_submit_gcep_attestation()
     {
         $this->submitRequest()
             ->assertStatus(403);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validates_required_data()
     {
         $this->user->givePermissionTo('ep-applications-manage');
@@ -78,9 +75,7 @@ class AttestationGcepTest extends TestCase
             ]);
     }
     
-    /**
-     * @test
-     */
+    #[Test]
     public function privileged_user_can_submit_gcep_attestation()
     {
         $this->user->givePermissionTo('ep-applications-manage');
@@ -103,9 +98,7 @@ class AttestationGcepTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function logs_activity()
     {
         $this->user->givePermissionTo('ep-applications-manage');
@@ -121,9 +114,7 @@ class AttestationGcepTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function does_not_update_gcep_attestation_fields_if_already_completed()
     {
         $this->user->givePermissionTo('ep-applications-manage');
@@ -154,8 +145,8 @@ class AttestationGcepTest extends TestCase
      */
 
     /**
-     * @test
      */
+    #[Test]
     public function handler_does_not_set_gcep_attestation_date_if_not_all_fields_are_true()
     {
         $action = new AttestationGcepStore();
@@ -187,9 +178,7 @@ class AttestationGcepTest extends TestCase
         ]);
     }
     
-    /**
-     * @test
-     */
+    #[Test]
     public function does_not_fire_event_if_not_all_attestation_fields_are_true()
     {
         $action = new AttestationGcepStore();

@@ -10,6 +10,7 @@ use App\Modules\User\Jobs\UpdateUser;
 use App\Modules\User\Actions\UserUpdate;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 
 class UpdateUserTest extends TestCase
 {
@@ -23,9 +24,7 @@ class UpdateUserTest extends TestCase
     }
     
 
-    /**
-     * @test
-     */
+    #[Test]
     public function updates_user_details()
     {
         UserUpdate::run(id: $this->user->id, name: 'Lana Kain', email: 'lana.kain@archer.com');
@@ -33,9 +32,7 @@ class UpdateUserTest extends TestCase
         $this->assertDatabaseHas('users', ['name' => 'Lana Kain', 'email' => 'lana.kain@archer.com']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function logs_user_created_event()
     {
         $user = UserUpdate::run(id: $this->user->id, name: 'Lana Kain', email: 'lana.kain@archer.com');
@@ -51,9 +48,7 @@ class UpdateUserTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function does_not_create_activity_log_entry_if_no_change()
     {
         UserUpdate::run(id: $this->user->id, name: 'Lana Kane', email: 'lana@archer.com');

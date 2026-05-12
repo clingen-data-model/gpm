@@ -8,6 +8,7 @@ use App\Modules\Person\Models\Country;
 use App\Modules\Person\Models\Institution;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 
 class CreateInstitutionTest extends TestCase
 {
@@ -21,9 +22,7 @@ class CreateInstitutionTest extends TestCase
         Sanctum::actingAs($this->user);
     }
     
-    /**
-     * @test
-     */
+    #[Test]
     public function can_create_an_institution()
     {
         $this->makeRequest()
@@ -39,9 +38,7 @@ class CreateInstitutionTest extends TestCase
             ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validates_required_params()
     {
         $this->makeRequest([])
@@ -51,9 +48,7 @@ class CreateInstitutionTest extends TestCase
             ]);
     }
     
-    /**
-     * @test
-     */
+    #[Test]
     public function validates_unique_params()
     {
         Institution::factory([
@@ -69,9 +64,7 @@ class CreateInstitutionTest extends TestCase
             ]);
     }
     
-    /**
-     * @test
-     */
+    #[Test]
     public function validates_country_exists()
     {
         $this->makeRequest(['country_id' => 666])

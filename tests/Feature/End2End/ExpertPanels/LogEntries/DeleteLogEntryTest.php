@@ -10,11 +10,11 @@ use App\Modules\ExpertPanel\Actions\StepApprove;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Modules\ExpertPanel\Actions\LogEntryAdd;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 
-/**
- * @group applications
- * @group log-entries
- */
+#[Group('applications')]
+#[Group('log-entries')]
 class DeleteLogEntryTest extends TestCase
 {
     use RefreshDatabase;
@@ -39,9 +39,7 @@ class DeleteLogEntryTest extends TestCase
         $this->logEntry = $this->expertPanel->group->logEntries->last();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function prevents_deleting_typed_log_entries()
     {
         Sanctum::actingAs($this->user);
@@ -58,9 +56,7 @@ class DeleteLogEntryTest extends TestCase
             ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function deletes_manual_log_entries()
     {
         Sanctum::actingAs($this->user);

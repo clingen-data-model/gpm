@@ -7,6 +7,7 @@ use App\Modules\Group\Models\Group;
 use App\Modules\Person\Models\Person;
 use App\Modules\Group\Models\GroupMember;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 
 class CoiApplyingActiveTest extends TestCase
 {
@@ -18,9 +19,7 @@ class CoiApplyingActiveTest extends TestCase
         $this->setupForGroupTest();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function pending_coi_applies_to_applying_and_active_groups()
     {
         $groupMember = GroupMember::factory()->create();
@@ -38,9 +37,7 @@ class CoiApplyingActiveTest extends TestCase
         $this->assertEquals(1, $person->hasPendingCois()->count());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function pending_coi_does_not_apply_to_inactive_groups()
     {
         $groupMember = GroupMember::factory()->create();

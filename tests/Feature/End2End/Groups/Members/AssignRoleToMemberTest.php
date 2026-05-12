@@ -9,11 +9,11 @@ use App\Modules\Group\Models\GroupMember;
 use App\Modules\Person\Models\Person;
 use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 
-/**
- * @group groups
- * @group members
- */
+#[Group('groups')]
+#[Group('members')]
 class AssignRoleToMemberTest extends TestCase
 {
     use RefreshDatabase;
@@ -39,9 +39,7 @@ class AssignRoleToMemberTest extends TestCase
         $this->url = 'api/groups/'.$this->group->uuid.'/members/'.$this->groupMember->id.'/roles';
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function can_assign_group_roles_to_a_group_member()
     {
         $this->withoutExceptionHandling();
@@ -78,9 +76,7 @@ class AssignRoleToMemberTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validates_role_ids_are_present()
     {
         Sanctum::actingAs($this->user);
@@ -94,9 +90,7 @@ class AssignRoleToMemberTest extends TestCase
         $response->assertJsonFragment(['role_ids' => ['This is required.']]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validates_that_all_roles_are_scoped_to_group()
     {
         $systemRole = config('permission.models.role')::factory()->create(['scope' => 'system']);
@@ -110,9 +104,7 @@ class AssignRoleToMemberTest extends TestCase
         ];
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function logs_member_role_assignment_activity()
     {
         Sanctum::actingAs($this->user);

@@ -11,6 +11,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Database\Seeders\TaskTypeSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 
 class GetTasksTest extends TestCase
 {
@@ -31,9 +32,7 @@ class GetTasksTest extends TestCase
         Sanctum::actingAs($this->user);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function retrieves_all_tasks()
     {
         $this->json('get', '/api/groups/'.$this->expertPanel->group->uuid.'/tasks')
@@ -41,9 +40,7 @@ class GetTasksTest extends TestCase
             ->assertJsonCount(2);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function retrieves_pending_tasks()
     {
         $this->json('get', '/api/groups/'.$this->expertPanel->group->uuid.'/tasks?pending')
@@ -54,9 +51,7 @@ class GetTasksTest extends TestCase
             ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function retrieves_complete_tasks()
     {
         $this->json('get', '/api/groups/'.$this->expertPanel->group->uuid.'/tasks?completed')

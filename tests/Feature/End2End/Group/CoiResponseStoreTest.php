@@ -8,6 +8,7 @@ use Illuminate\Testing\TestResponse;
 use App\Modules\Group\Models\GroupMember;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 
 class CoiResponseStoreTest extends TestCase
 {
@@ -26,18 +27,14 @@ class CoiResponseStoreTest extends TestCase
         Sanctum::actingAs($this->user);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function responds_404_if_group_with_code_not_found()
     {
         $this->makeRequest(code: 'blahblahblah')
             ->assertStatus(404);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function responds_404_if_group_member_not_found()
     {
         $data = $this->makeDefaultData();
@@ -46,9 +43,7 @@ class CoiResponseStoreTest extends TestCase
             ->assertStatus(404);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validates_base_required_data()
     {
         $this->makeRequest(data: [])
@@ -66,9 +61,7 @@ class CoiResponseStoreTest extends TestCase
             ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validates_follow_required_questions()
     {
         $data = $this->makeDefaultData();
@@ -82,9 +75,7 @@ class CoiResponseStoreTest extends TestCase
             ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validates_attetestations_are_accepted()
     {
         $data = $this->makeDefaultData();
@@ -98,9 +89,7 @@ class CoiResponseStoreTest extends TestCase
             ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function stores_a_valid_coi_response()
     {
         $this->makeRequest()

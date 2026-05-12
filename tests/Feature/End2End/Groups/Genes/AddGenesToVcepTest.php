@@ -17,13 +17,13 @@ use Illuminate\Support\Facades\Notification;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Modules\Group\Mail\GeneAddedToVcepMail;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 
-/**
- * @group groups
- * @group applications
- * @group expert-panels
- * @group gene-list
- */
+#[Group('groups')]
+#[Group('applications')]
+#[Group('expert-panels')]
+#[Group('gene-list')]
 class AddGenesToVcepTest extends TestCase
 {
     use RefreshDatabase;
@@ -66,9 +66,7 @@ class AddGenesToVcepTest extends TestCase
         });
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function unprivileged_user_can_not_add_genes_to_an_ep()
     {
         $this->user->revokePermissionTo('ep-applications-manage');
@@ -83,9 +81,7 @@ class AddGenesToVcepTest extends TestCase
         ->assertStatus(403);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validates_input_for_vceps()
     {
         Sanctum::actingAs($this->user);
@@ -97,9 +93,7 @@ class AddGenesToVcepTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validates_group_is_an_vcep()
     {
         $this->expertPanel->group->update(['group_type_id' => config('groups.types.wg.id')]);
@@ -112,9 +106,7 @@ class AddGenesToVcepTest extends TestCase
             ]);
     }
     
-    /**
-     * @test
-     */
+    #[Test]
     public function privileged_user_can_add_new_genes_to_a_vcep()
     {
         $this->seedGenes(['hgnc_id' => 789012, 'gene_symbol' => 'ABC12']);
@@ -147,9 +139,7 @@ class AddGenesToVcepTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function activity_logged()
     {
         Carbon::setTestNow('2022-01-01');

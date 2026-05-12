@@ -9,6 +9,7 @@ use App\DataExchange\MessagePushers\MessageLogger;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\DataExchange\MessagePushers\DisabledPusher;
 use App\DataExchange\MessagePushers\MessagePusherFactory;
+use PHPUnit\Framework\Attributes\Test;
 
 class MessagePusherFactoryTest extends TestCase
 {
@@ -21,27 +22,21 @@ class MessagePusherFactoryTest extends TestCase
     }
 
 
-    /**
-     * @test
-     */
+    #[Test]
     public function returns_disabled_pusher_if_disabled()
     {
         config(['dx.push-enable' => false]);
         $this->assertInstanceOf(DisabledPusher::class, ($this->factory)());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function returns_log_pusher_if_driver_is_log()
     {
         config(['dx.push-enable' => true, 'dx.driver' => 'log']);
         $this->assertInstanceOf(MessageLogger::class, ($this->factory)());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function returns_kafka_produce_if_driver_is_kafka()
     {
         config(['dx.push-enable' => true, 'dx.driver' => 'kafka']);

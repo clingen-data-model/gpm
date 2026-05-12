@@ -11,6 +11,7 @@ use App\Modules\Person\Models\Person;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Modules\Group\Notifications\AddedToGroupNotification;
+use PHPUnit\Framework\Attributes\Test;
 
 class AddedToGroupNotificationTest extends TestCase
 {
@@ -28,9 +29,7 @@ class AddedToGroupNotificationTest extends TestCase
                         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function includes_invite_info_if_invite_pending()
     {
         $group = Group::factory()->create();
@@ -41,9 +40,7 @@ class AddedToGroupNotificationTest extends TestCase
         $this->assertStringContainsString($this->invite->url, $mailBody);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function does_not_include_invite_info_if_invite_redeemed()
     {
         $group = Group::factory()->create();

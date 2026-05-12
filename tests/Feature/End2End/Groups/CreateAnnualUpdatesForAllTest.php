@@ -7,6 +7,7 @@ use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 
 class CreateAnnualUpdatesForAllTest extends TestCase
 {
@@ -21,9 +22,7 @@ class CreateAnnualUpdatesForAllTest extends TestCase
         $this->expertPanel2 = ExpertPanel::factory()->create(['step_1_approval_date' => '2020-01-01']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function can_create_annual_updates_for_all_expert_panels_via_artisan()
     {
         $start = Carbon::tomorrow()->format('Y-m-d');

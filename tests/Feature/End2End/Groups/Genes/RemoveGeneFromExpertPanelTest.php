@@ -9,13 +9,13 @@ use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 
-/**
- * @group groups
- * @group applications
- * @group expert-panels
- * @group gene-list
- */
+#[Group('groups')]
+#[Group('applications')]
+#[Group('expert-panels')]
+#[Group('gene-list')]
 class RemoveGeneFromExpertPanelTest extends TestCase
 {
     use RefreshDatabase;
@@ -36,9 +36,7 @@ class RemoveGeneFromExpertPanelTest extends TestCase
         $this->url = '/api/groups/'.$this->expertPanel->group->uuid.'/expert-panel/genes';
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function unprivileged_users_cannot_remove_genes()
     {
         $this->user->revokePermissionTo('ep-applications-manage');
@@ -54,9 +52,7 @@ class RemoveGeneFromExpertPanelTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function does_not_try_to_delete_if_group_is_not_an_expert_panel()
     {
         $this->expertPanel->group->update(['group_type_id' => config('groups.types.wg.id')]);
@@ -66,9 +62,7 @@ class RemoveGeneFromExpertPanelTest extends TestCase
     }
     
 
-    /**
-     * @test
-     */
+    #[Test]
     public function privileged_user_can_remove_genes()
     {
         Carbon::setTestNow('2021-11-01');
@@ -83,9 +77,7 @@ class RemoveGeneFromExpertPanelTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function activity_logged()
     {
         Sanctum::actingAs($this->user);

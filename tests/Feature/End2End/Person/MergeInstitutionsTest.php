@@ -8,6 +8,7 @@ use App\Modules\Person\Models\Person;
 use App\Modules\Person\Models\Institution;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 
 class MergeInstitutionsTest extends TestCase
 {
@@ -29,9 +30,7 @@ class MergeInstitutionsTest extends TestCase
         $this->person3 = Person::factory()->create(['institution_id' => $this->institution3->id]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function unprivileged_user_cannot_merge_institutions()
     {
         $this->user->revokePermissionTo('people-manage');
@@ -39,18 +38,14 @@ class MergeInstitutionsTest extends TestCase
             ->assertStatus(403);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function privileged_user_can_merge_institutions()
     {
         $this->makeRequest()
             ->assertStatus(200);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function obsolete_institutions_are_deleted()
     {
         $this->makeRequest()
@@ -61,9 +56,7 @@ class MergeInstitutionsTest extends TestCase
         $this->assertSoftDeleted($this->institution3);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function people_belonging_to_obsolete_are_moved_to_authority()
     {
         $this->makeRequest()
@@ -79,9 +72,7 @@ class MergeInstitutionsTest extends TestCase
         ]);
     }
     
-    /**
-     * @test
-     */
+    #[Test]
     public function validates_required_data()
     {
         $this->makeRequest([])
@@ -90,9 +81,7 @@ class MergeInstitutionsTest extends TestCase
             ->assertJsonFragment(['obsolete_ids' => ['This is required.']]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validates_existing_institutions()
     {
         $this->makeRequest(['authority_id' => 777, 'obsolete_ids' => [555, 666]])
@@ -102,9 +91,7 @@ class MergeInstitutionsTest extends TestCase
             ->assertJsonFragment(['obsolete_ids.1' => ['The selection is invalid.']]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validates_obsolete_cannot_match_authority()
     {
         $this->makeRequest([

@@ -10,6 +10,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Modules\ExpertPanel\Actions\LogEntryAdd;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 
 class UpdateLogEntryTest extends TestCase
 {
@@ -29,9 +30,7 @@ class UpdateLogEntryTest extends TestCase
     }
     
 
-    /**
-     * @test
-     */
+    #[Test]
     public function updates_log_entry()
     {
         Sanctum::actingAs($this->user);

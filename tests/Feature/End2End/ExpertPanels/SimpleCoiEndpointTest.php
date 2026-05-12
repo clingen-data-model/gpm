@@ -17,10 +17,10 @@ use App\Modules\Group\Models\GroupMember;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 
-/**
- * @group coi
- */
+#[Group('coi')]
 class SimpleCoiEndpointTest extends TestCase
 {
     use RefreshDatabase;
@@ -39,9 +39,7 @@ class SimpleCoiEndpointTest extends TestCase
         $this->actingAs($user);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function can_get_group_from_coi_code()
     {
         $this->json('GET', '/api/coi/'.$this->group->coi_code.'/group')
@@ -49,9 +47,7 @@ class SimpleCoiEndpointTest extends TestCase
             ->assertJson(['id' => $this->group->id, 'name' => $this->group->name]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function returns_404_if_group_not_found_for_code()
     {
         $this->json('GET', '/api/coi/some-fake-code/group')

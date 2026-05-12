@@ -9,6 +9,7 @@ use App\Modules\Group\Models\Group;
 use App\Modules\User\Models\User;
 use Illuminate\Support\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 
 class AddLogEntryTest extends TestCase
 {
@@ -24,9 +25,7 @@ class AddLogEntryTest extends TestCase
         $this->baseUrl = '/api/applications/'.$this->expertPanel->uuid.'/log-entries';
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function user_can_add_a_log_entry()
     {
         \Laravel\Sanctum\Sanctum::actingAs($this->user);
@@ -56,9 +55,7 @@ class AddLogEntryTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validates_required_fields()
     {
         \Laravel\Sanctum\Sanctum::actingAs($this->user);
@@ -70,9 +67,7 @@ class AddLogEntryTest extends TestCase
             ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validates_field_types()
     {
         \Laravel\Sanctum\Sanctum::actingAs($this->user);

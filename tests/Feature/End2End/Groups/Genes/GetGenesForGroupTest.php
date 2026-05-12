@@ -10,13 +10,13 @@ use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
 use Tests\Traits\SeedsHgncGenesAndDiseases;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 
-/**
- * @group applications
- * @group expert-panels
- * @group gene-list
- * @group genes
- */
+#[Group('applications')]
+#[Group('expert-panels')]
+#[Group('gene-list')]
+#[Group('genes')]
 class GetGenesForGroupTest extends TestCase
 {
     use RefreshDatabase;
@@ -45,9 +45,7 @@ class GetGenesForGroupTest extends TestCase
         Sanctum::actingAs($this->user);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function returns_404_if_group_is_not_an_expert_panel()
     {
         $this->expertPanel->group->update(['group_type_id' => config('groups.types.wg.id')]);
@@ -56,9 +54,7 @@ class GetGenesForGroupTest extends TestCase
     }
     
 
-    /**
-     * @test
-     */
+    #[Test]
     public function gets_all_genes_for_a_group()
     {
         $response = $this->json('GET', $this->url);

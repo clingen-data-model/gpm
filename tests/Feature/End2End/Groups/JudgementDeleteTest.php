@@ -8,6 +8,7 @@ use Illuminate\Testing\TestResponse;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Modules\Group\Notifications\JudgementActivityNotification;
+use PHPUnit\Framework\Attributes\Test;
 
 class JudgementDeleteTest extends JudgementTest
 {
@@ -17,9 +18,7 @@ class JudgementDeleteTest extends JudgementTest
         $this->judgement = $this->setupJudgement($this->expertPanel->group);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function person_other_than_approver_cannot_delete_anothers_judgment()
     {
         $this->otherUser = $this->setupUserWithPerson(permissions: ['ep-applications-approve']);
@@ -29,9 +28,7 @@ class JudgementDeleteTest extends JudgementTest
             ->assertStatus(403);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function user_with_ep_manage_applications_can_delete_another_users_judgement()
     {
         $this->otherUser = $this->setupUserWithPerson(permissions: ['ep-applications-manage']);
@@ -45,9 +42,7 @@ class JudgementDeleteTest extends JudgementTest
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function user_who_made_judgement_can_delete_it()
     {
         $this->makeRequest()
@@ -58,9 +53,7 @@ class JudgementDeleteTest extends JudgementTest
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function notifies_other_notifiables_when_judgement_deleted()
     {
         $otherApprover = $this->setupUserWithPerson(permissions: ['ep-applications-approve']);

@@ -9,6 +9,7 @@ use Tests\Traits\SeedsHgncGenesAndDiseases;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 
 class UpdateGeneTest extends TestCase
 {
@@ -34,9 +35,7 @@ class UpdateGeneTest extends TestCase
         Sanctum::actingAs($this->user);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function unprivileged_users_cannot_update_genes()
     {
         $this->user->revokePermissionTo('ep-applications-manage');
@@ -50,9 +49,7 @@ class UpdateGeneTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function checks_group_is_an_expert_panel()
     {
         $this->expertPanel->group->update(['group_type_id' => config('groups.types.wg.id')]);
@@ -69,9 +66,7 @@ class UpdateGeneTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validates_input_for_vceps()
     {
         Sanctum::actingAs($this->user);
@@ -106,9 +101,7 @@ class UpdateGeneTest extends TestCase
             ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validates_input_for_gceps()
     {
         Sanctum::actingAs($this->user);
@@ -132,9 +125,7 @@ class UpdateGeneTest extends TestCase
             ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function privileged_user_can_update_gene()
     {
         $this->seedGenes(['hgnc_id'=>67890, 'gene_symbol' => 'BRD1']);

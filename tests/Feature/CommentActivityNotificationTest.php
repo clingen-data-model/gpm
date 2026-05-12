@@ -10,6 +10,7 @@ use App\Modules\Person\Models\Person;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 
 class CommentActivityNotificationTest extends TestCase
 {
@@ -25,9 +26,7 @@ class CommentActivityNotificationTest extends TestCase
         $this->comment = Comment::factory()->create(['subject_type' => get_class($this->group), 'subject_id' => $this->group->id]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function gets_single_notification_for_a_comment_if_no_deleted_notification()
     {
         Notification::send($this->person, new CommentActivityNotification($this->group, $this->comment, 'created'));
@@ -38,9 +37,7 @@ class CommentActivityNotificationTest extends TestCase
         $this->assertEquals(1, CommentActivityNotification::getValidUnique($this->person->unreadNotifications)->count());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function returns_no_notification_if_comment_is_deleted()
     {
         Notification::send($this->person, new CommentActivityNotification($this->group, $this->comment, 'created'));

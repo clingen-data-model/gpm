@@ -4,6 +4,7 @@ namespace Tests\Feature\End2End\Comments;
 
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\Feature\End2End\Comments\CommentTest;
+use PHPUnit\Framework\Attributes\Test;
 
 class CommentFindTest extends CommentTest
 {
@@ -13,9 +14,7 @@ class CommentFindTest extends CommentTest
         $this->comment = $this->createComment();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function can_get_a_comment()
     {
         $this->json('get', '/api/comments/'.$this->comment->id)

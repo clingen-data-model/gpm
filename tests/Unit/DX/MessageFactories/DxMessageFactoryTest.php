@@ -22,10 +22,10 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Modules\Group\Events\MemberPermissionRevoked;
 use App\Modules\Group\Events\MemberPermissionGranted;
 use App\DataExchange\MessageFactories\DxMessageFactory;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 
-/**
- * @group dx
- */
+#[Group('dx')]
 class DxMessageFactoryTest extends TestCase
 {
     use RefreshDatabase;
@@ -46,9 +46,7 @@ class DxMessageFactoryTest extends TestCase
         $this->factory = new DxMessageFactory();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_creates_a_definition_approved_message()
     {
         $event = new StepApproved($this->expertPanel, 1, Carbon::now());
@@ -62,9 +60,7 @@ class DxMessageFactoryTest extends TestCase
         $this->assertEquals(config('dx.schema_versions.gpm-general-events'), $message['schema_version']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_creates_a_member_added_message()
     {
         $event = new MemberAdded($this->expertPanel->group->members->first());
@@ -75,9 +71,7 @@ class DxMessageFactoryTest extends TestCase
         $this->assertMembersInMessage([$this->expertPanel->group->members->first()], $message);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_creates_member_role_assigned_message()
     {
         $roles = Role::where('name', 'coordinator')->get();
@@ -88,9 +82,7 @@ class DxMessageFactoryTest extends TestCase
         $this->assertMembersInMessage([$this->expertPanel->group->members->first()], $message);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_creates_member_role_removed_message()
     {
         $roles = Role::where('name', 'coordinator')->get();
@@ -101,9 +93,7 @@ class DxMessageFactoryTest extends TestCase
         $this->assertMembersInMessage([$this->expertPanel->group->members->first()], $message);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_creates_member_permission_granted_message()
     {
         $permissions = Permission::where('name', 'application-edit')->get();
@@ -114,9 +104,7 @@ class DxMessageFactoryTest extends TestCase
         $this->assertMembersInMessage([$this->expertPanel->group->members->first()], $message);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_creates_member_permission_revoked_message()
     {
         $permissions = Permission::where('name', 'application-edit')->get();
@@ -129,9 +117,7 @@ class DxMessageFactoryTest extends TestCase
 
 
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_creates_a_member_removed_event()
     {
         $groupMember = $this->expertPanel->group->members->first();
@@ -147,9 +133,7 @@ class DxMessageFactoryTest extends TestCase
         $this->assertMembersInMessage([$this->expertPanel->group->members->first()], $message);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_creates_a_member_retired_event()
     {
         $groupMember = $this->expertPanel->group->members->first();
@@ -163,9 +147,7 @@ class DxMessageFactoryTest extends TestCase
         $this->assertMembersInMessage([$groupMember], $message);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_creates_a_member_unretired_event()
     {
         $event = new MemberUnretired($this->expertPanel->group->members->first());
@@ -176,9 +158,7 @@ class DxMessageFactoryTest extends TestCase
         $this->assertMembersInMessage([$this->expertPanel->group->members->first()], $message);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_creates_a_gene_added_message_when_new_gene_added_to_scope()
     {
         $event = new GenesAdded($this->expertPanel->group, collect([$this->expertPanel->genes->first()]));
@@ -188,9 +168,7 @@ class DxMessageFactoryTest extends TestCase
         $this->assertGenesInMessage([$this->expertPanel->genes->first()], $message);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_creates_a_gene_removed_message_when_removed_gene_approved()
     {
         $event = new GeneRemoved($this->expertPanel->group, $this->expertPanel->genes->first());

@@ -10,6 +10,7 @@ use App\Modules\Group\Models\Group;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 
 class AddDocumentTest extends TestCase
 {
@@ -26,9 +27,7 @@ class AddDocumentTest extends TestCase
         Sanctum::actingAs($this->user);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function unprivileged_user_cannot_add_document_for_group()
     {
         $this->user->revokePermissionTo('groups-manage');
@@ -36,9 +35,7 @@ class AddDocumentTest extends TestCase
             ->assertStatus(403);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validates_data()
     {
         $this->makeRequest([])
@@ -49,9 +46,7 @@ class AddDocumentTest extends TestCase
             ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function privilged_user_can_upload_a_file()
     {
         $this->makeRequest()

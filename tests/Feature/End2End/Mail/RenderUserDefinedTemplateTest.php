@@ -12,6 +12,7 @@ use App\Mail\UserDefinedMailTemplates\SpecificationDraftMailTemplate;
 use App\Mail\UserDefinedMailTemplates\SpecificationPilotMailTemplate;
 use App\Mail\UserDefinedMailTemplates\SustainedCurationApprovalMailTemplate;
 use App\Modules\ExpertPanel\Notifications\ApplicationStepApprovedNotification;
+use PHPUnit\Framework\Attributes\Test;
 
 class RenderUserDefinedTemplateTest extends TestCase
 {
@@ -26,9 +27,7 @@ class RenderUserDefinedTemplateTest extends TestCase
         Sanctum::actingAs($this->user);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function returns_data_for_step_1_approved()
     {
         $response = $this->makeRequest();
@@ -46,9 +45,7 @@ class RenderUserDefinedTemplateTest extends TestCase
             ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function renders_draft_email()
     {
         $response = $this->makeRequest(null, SpecificationDraftMailTemplate::class);
@@ -60,9 +57,7 @@ class RenderUserDefinedTemplateTest extends TestCase
             ]);
     }
     
-    /**
-     * @test
-     */
+    #[Test]
     public function renders_pilot_email()
     {
         $response = $this->makeRequest(null, SpecificationPilotMailTemplate::class);
@@ -74,9 +69,7 @@ class RenderUserDefinedTemplateTest extends TestCase
             ]);
     }
     
-    /**
-     * @test
-     */
+    #[Test]
     public function renders_sustained_curation_email()
     {
         $response = $this->makeRequest(null, SustainedCurationApprovalMailTemplate::class);

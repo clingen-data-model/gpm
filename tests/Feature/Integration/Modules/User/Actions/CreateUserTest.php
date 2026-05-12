@@ -10,6 +10,7 @@ use App\Modules\User\Jobs\CreateUser;
 use App\Modules\User\Actions\UserCreate;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 
 class CreateUserTest extends TestCase
 {
@@ -21,9 +22,7 @@ class CreateUserTest extends TestCase
     }
     
 
-    /**
-     * @test
-     */
+    #[Test]
     public function creates_user()
     {
         UserCreate::run(name: 'Lana Kane', email: 'lana@archer.com');
@@ -31,9 +30,7 @@ class CreateUserTest extends TestCase
         $this->assertDatabaseHas('users', ['name' => 'Lana Kane', 'email' => 'lana@archer.com']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function logs_user_created_event()
     {
         $user = UserCreate::run(name: 'Lana Kane', email: 'lana@archer.com');

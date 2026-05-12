@@ -18,11 +18,11 @@ use Illuminate\Support\Facades\Notification;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Modules\Group\Notifications\AddedToGroupNotification;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 
-/**
- * @group groups
- * @group members
- */
+#[Group('groups')]
+#[Group('members')]
 class AddGroupMemberTest extends TestCase
 {
     use RefreshDatabase;
@@ -42,9 +42,7 @@ class AddGroupMemberTest extends TestCase
                         ->create(['scope' => 'group']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function returns_404_if_group_not_found()
     {
         $data = $data ?? [
@@ -57,9 +55,7 @@ class AddGroupMemberTest extends TestCase
         $response = $this->json('POST', $url, $data)->assertStatus(404);
     }
     
-    /**
-     * @test
-     */
+    #[Test]
     public function unprivileged_user_cannot_add_a_group_member()
     {
         $this->user->revokePermissionTo('groups-manage');
@@ -68,9 +64,7 @@ class AddGroupMemberTest extends TestCase
             ->assertStatus(403);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function user_with_epApplicationsManage_permission_can_add_group_member()
     {
         $this->user->revokePermissionTo('groups-manage');
@@ -81,9 +75,7 @@ class AddGroupMemberTest extends TestCase
             ->assertStatus(201);
     }
     
-    /**
-     * @test
-     */
+    #[Test]
     public function user_with_annualReviewsManage_permission_can_add_group_member()
     {
         $this->user->revokePermissionTo('groups-manage');
@@ -94,9 +86,7 @@ class AddGroupMemberTest extends TestCase
     }
     
 
-    /**
-     * @test
-     */
+    #[Test]
     public function user_with_with_group_inviteMembers_permission_can_add_group_member()
     {
         $this->user->revokePermissionTo('groups-manage');
@@ -110,9 +100,7 @@ class AddGroupMemberTest extends TestCase
     }
     
 
-    /**
-     * @test
-     */
+    #[Test]
     public function can_add_member_to_expert_panel()
     {
         $response = $this->makeRequest();
@@ -124,9 +112,7 @@ class AddGroupMemberTest extends TestCase
         ]);
     }
     
-    /**
-     * @test
-     */
+    #[Test]
     public function returns_new_member_with_person_roles_and_start_date()
     {
         Carbon::setTestNow('2021-10-07');
@@ -144,9 +130,7 @@ class AddGroupMemberTest extends TestCase
         $this->assertEquals($this->role->id, $response->original->roles[0]->id);
     }
     
-    /**
-     * @test
-     */
+    #[Test]
     public function adds_group_roles_to_new_member()
     {
         $role2 = ModelsRole::factory()->create(['scope' => 'group']);
@@ -166,9 +150,7 @@ class AddGroupMemberTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function fires_MemberAdded_event()
     {
         Event::fake();
@@ -180,9 +162,7 @@ class AddGroupMemberTest extends TestCase
         });
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function member_added_activity_logged()
     {
         $this->makeRequest();
@@ -194,9 +174,7 @@ class AddGroupMemberTest extends TestCase
         ]);
     }
     
-    /**
-     * @test
-     */
+    #[Test]
     public function saves_is_contact_attribute()
     {
         $this->makeRequest(isContact: true);
@@ -208,9 +186,7 @@ class AddGroupMemberTest extends TestCase
         ]);
     }
     
-    /**
-     * @test
-     */
+    #[Test]
     public function person_is_notified_of_being_added_to_group()
     {
         Notification::fake(AddedToGroupNotificaiton::class);

@@ -10,6 +10,7 @@ use App\Modules\Group\Models\GroupMember;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 
 class DeleteGroupTest extends TestCase
 {
@@ -30,9 +31,7 @@ class DeleteGroupTest extends TestCase
         Sanctum::actingAs($this->user);
     }
     
-    /**
-     * @test
-     */
+    #[Test]
     public function unprivileged_user_cannot_delete_group()
     {
         $this->user->revokePermissionTo('groups-manage');
@@ -41,9 +40,7 @@ class DeleteGroupTest extends TestCase
             ->assertStatus(403);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function privileged_user_can_delete_group()
     {
         $this->makeRequest()
@@ -52,9 +49,7 @@ class DeleteGroupTest extends TestCase
         $this->assertSoftDeleted($this->group);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function group_memberships_are_marked_deleted_when_group_deleted()
     {
         $groupMember = GroupMember::factory()->create(['group_id' => $this->group->id]);
@@ -69,9 +64,7 @@ class DeleteGroupTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function group_expert_panel_and_ep_is_deleted()
     {
         $expertPanel = ExpertPanel::factory()->create(['group_id' => $this->group->id]);

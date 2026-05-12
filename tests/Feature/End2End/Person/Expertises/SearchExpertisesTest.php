@@ -8,10 +8,10 @@ use Database\Seeders\ExpertiseSeeder;
 use Illuminate\Testing\TestResponse;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 
-/**
- * @group expertises
- */
+#[Group('expertises')]
 class SearchExpertisesTest extends TestCase
 {
     use RefreshDatabase;
@@ -22,18 +22,14 @@ class SearchExpertisesTest extends TestCase
         $this->expertises = $this->seedExpertises();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function guests_cannot_search_expertises()
     {
         $this->makeRequest()
             ->assertStatus(401);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function gets_all_expertises_if_no_keyword()
     {
         $this->login();
@@ -43,9 +39,7 @@ class SearchExpertisesTest extends TestCase
             ->assertJsonCount($this->expertises->count());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function gets_matching_expertises_if_keyword_given()
     {
         $this->login();
@@ -59,9 +53,7 @@ class SearchExpertisesTest extends TestCase
             ->assertJsonCount(1);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function ignores_case()
     {
         $this->login();
@@ -70,9 +62,7 @@ class SearchExpertisesTest extends TestCase
             ->assertJsonCount(1);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function searches_against_synonyms()
     {
         $this->login();

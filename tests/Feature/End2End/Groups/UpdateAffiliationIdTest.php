@@ -7,6 +7,7 @@ use Laravel\Sanctum\Sanctum;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 
 class UpdateAffiliationIdTest extends TestCase
 {
@@ -22,9 +23,7 @@ class UpdateAffiliationIdTest extends TestCase
         Sanctum::actingAs($this->user);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function unprivileged_user_cannot_update_affiliation_id()
     {
         $this->user->revokePermissionTo('groups-manage');
@@ -32,9 +31,7 @@ class UpdateAffiliationIdTest extends TestCase
             ->assertStatus(403);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function privileged_user_can_set_affiliation_id()
     {
         $this->makeRequest()
@@ -50,9 +47,7 @@ class UpdateAffiliationIdTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validates_affiliation_id_format()
     {
         $this->makeRequest('400000')
@@ -75,9 +70,7 @@ class UpdateAffiliationIdTest extends TestCase
             ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validates_that_affiliation_id_is_not_already_in_use()
     {
         $otherEp = ExpertPanel::factory()->gcep()->create(['affiliation_id' => '40666']);
@@ -89,9 +82,7 @@ class UpdateAffiliationIdTest extends TestCase
             ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function records_affiliation_id_updated()
     {
         $this->makeRequest()

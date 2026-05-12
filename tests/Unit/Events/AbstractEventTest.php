@@ -5,6 +5,7 @@ namespace Tests\Unit\Events;
 use App\Events\AbstractEvent;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Validator\GenericValidator;
+use PHPUnit\Framework\Attributes\Test;
 
 final class AbstractEventTest extends TestCase
 {
@@ -12,23 +13,18 @@ final class AbstractEventTest extends TestCase
 
     public function setup(): void
     {
-        $this->event = $this->getMockBuilder(AbstractEvent::class)
-            ->getMockForAbstractClass();
+        $this->event = new AbstractEvent();
         $this->validator = new GenericValidator();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_should_return_an_event_uuid()
     {
         $this->assertIsString($this->event->getEventUuid());
         $this->assertTrue($this->validator->validate($this->event->getEventUuid()));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_should_return_the_same_uuid_every_time()
     {
         $this->assertEquals($this->event->getEventUuid(), $this->event->getEventUuid());

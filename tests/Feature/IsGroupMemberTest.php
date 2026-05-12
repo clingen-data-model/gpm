@@ -12,10 +12,10 @@ use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\Group\Actions\MemberAssignRole;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Modules\Group\Actions\MemberGrantPermissions;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 
-/**
- * @group members
- */
+#[Group('members')]
 class IsGroupMemberTest extends TestCase
 {
     use RefreshDatabase;
@@ -36,9 +36,7 @@ class IsGroupMemberTest extends TestCase
         MemberGrantPermissions::run($groupMember, collect([$this->groupPerm]));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function determines_if_person_has_permission_for_group()
     {
         $this->assertTrue($this->person->hasGroupPermissionTo('test-permission', collect([$this->group])));

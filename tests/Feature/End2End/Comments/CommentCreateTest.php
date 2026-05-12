@@ -15,6 +15,7 @@ use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Database\Seeders\SubmissionTypeAndStatusSeeder;
 use App\Modules\Group\Notifications\CommentActivityNotification;
+use PHPUnit\Framework\Attributes\Test;
 
 class CommentCreateTest extends CommentTest
 {
@@ -22,9 +23,7 @@ class CommentCreateTest extends CommentTest
 
     protected $expertPanel, $user;
 
-    /**
-     * @test
-     */
+    #[Test]
     public function user_can_create_a_comment()
     {
         $expectedData = $this->getDefaultData();
@@ -38,9 +37,7 @@ class CommentCreateTest extends CommentTest
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function unprivileged_user_cannot_create_a_comment()
     {
         $this->user->revokePermissionTo('ep-applications-comment');
@@ -48,9 +45,7 @@ class CommentCreateTest extends CommentTest
             ->assertStatus(403);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validates_input()
     {
         $this->makeRequest([])
@@ -68,9 +63,7 @@ class CommentCreateTest extends CommentTest
             ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function comment_created_assertNotificationSent()
     {
         $submission = Submission::factory()->create([
@@ -99,9 +92,7 @@ class CommentCreateTest extends CommentTest
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function notification_sent_if_subject_is_reply_to_group_comment()
     {
         Submission::factory()->create([
@@ -139,9 +130,7 @@ class CommentCreateTest extends CommentTest
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function notification_not_sent_if_submission_not_sent_to_chairs()
     {
         Submission::factory()->create([
@@ -160,9 +149,7 @@ class CommentCreateTest extends CommentTest
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function notification_not_sent_to_comment_creator()
     {
         $submission = Submission::factory()->create([

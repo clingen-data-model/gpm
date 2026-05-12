@@ -10,6 +10,7 @@ use Tests\Stubs\TestDatabaseNotification;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 
 class MarkNotificationReadTest extends TestCase
 {
@@ -27,9 +28,7 @@ class MarkNotificationReadTest extends TestCase
         Sanctum::actingAs($this->user);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function user_who_is_not_notifiable_cannot_mark_notification_read()
     {
         $otherUser = $this->setupUser();
@@ -46,9 +45,7 @@ class MarkNotificationReadTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function user_who_i_not_notifiable_can_mark_notification_read()
     {
         Carbon::setTestNow();

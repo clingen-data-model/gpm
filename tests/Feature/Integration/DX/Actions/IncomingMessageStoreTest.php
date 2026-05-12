@@ -7,14 +7,13 @@ use App\DataExchange\DxMessage;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class IncomingMessageStoreTest extends TestCase
 {
     use RefreshDatabase;
 
-    /**
-     * @test
-     */
+    #[Test]
     public function stores_a_message_with_key_value_as_key()
     {
         $dxMessage = $this->makeDxMessage();
@@ -28,9 +27,7 @@ class IncomingMessageStoreTest extends TestCase
         $this->assertEquals($inStrMsg->key, $dxMessage->key);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function stores_a_message_with_uuid_value_if_no_key_and_is_present()
     {
         $data = $this->makeData();
@@ -48,9 +45,7 @@ class IncomingMessageStoreTest extends TestCase
         $this->assertEquals($inStrMsg->key, $dxMessage->payload->uuid);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function stores_message_with_topic_and_timestamp_as_key_if_no_key_or_uuid()
     {
         $data = $this->makeData();

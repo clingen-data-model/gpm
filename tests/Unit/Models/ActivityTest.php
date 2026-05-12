@@ -4,12 +4,11 @@ namespace Tests\Unit\Models;
 
 use Tests\TestCase;
 use App\Models\Activity;
+use PHPUnit\Framework\Attributes\Test;
 
 class ActivityTest extends TestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function has_fillable_activity_type_attribute(): void
     {
         $activity = new Activity();
@@ -18,9 +17,7 @@ class ActivityTest extends TestCase
         $this->assertEquals('test_type', $activity->activity_type);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function has_fillable_event_uuid_attribute(): void
     {
         $activity = new Activity();
@@ -29,9 +26,7 @@ class ActivityTest extends TestCase
         $this->assertEquals('test_uuid', $activity->event_uuid);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function has_type_accessor_and_mutator()
     {
         $activity = new Activity(['activity_type' => 'test']);

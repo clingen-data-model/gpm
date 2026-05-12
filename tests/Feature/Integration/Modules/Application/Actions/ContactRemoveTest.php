@@ -9,12 +9,12 @@ use App\Modules\ExpertPanel\Actions\ContactAdd;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Modules\ExpertPanel\Actions\ContactRemove;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 
-/**
- * @group applications
- * @group expert-panels
- * @group contacts
- */
+#[Group('applications')]
+#[Group('expert-panels')]
+#[Group('contacts')]
 class ContactRemoveTest extends TestCase
 {
     use RefreshDatabase;
@@ -26,9 +26,7 @@ class ContactRemoveTest extends TestCase
     }
     
 
-    /**
-     * @test
-     */
+    #[Test]
     public function logs_contact_removed()
     {
         $expertPanel = ExpertPanel::factory()->create();

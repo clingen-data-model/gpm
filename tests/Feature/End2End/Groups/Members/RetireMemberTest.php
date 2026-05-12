@@ -12,11 +12,11 @@ use App\Modules\Group\Actions\MemberAdd;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 
-/**
- * @group groups
- * @group members
- */
+#[Group('groups')]
+#[Group('members')]
 class RetireMemberTest extends TestCase
 {
     use RefreshDatabase;
@@ -35,9 +35,7 @@ class RetireMemberTest extends TestCase
 
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function can_retire_member_from_group()
     {
         $endDate = Carbon::now();
@@ -58,9 +56,7 @@ class RetireMemberTest extends TestCase
         ]);
     }
     
-    /**
-     * @test
-     */
+    #[Test]
     public function validates_required_information()
     {
         $response = $this->json('POST', $this->url, []);
@@ -72,9 +68,7 @@ class RetireMemberTest extends TestCase
         ]]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validates_start_and_end_date_is_a_valid_date()
     {
         $response = $this->json('POST', $this->url, ['start_date' => uniqid(), 'end_date' => uniqid()]);
@@ -88,9 +82,7 @@ class RetireMemberTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validates_end_date_is_gte_start_date()
     {
         $response = $this->json(
@@ -110,9 +102,7 @@ class RetireMemberTest extends TestCase
     
     
 
-    /**
-     * @test
-     */
+    #[Test]
     public function logs_member_retired_activity()
     {
         $response = $this->json('POST', $this->url, [

@@ -9,6 +9,7 @@ use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Modules\Group\Actions\AnnualUpdateCreate;
 use Database\Seeders\AnnualUpdateWindowSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 
 class CreateAnnualUpdateTest extends TestCase
 {
@@ -23,9 +24,7 @@ class CreateAnnualUpdateTest extends TestCase
         $this->expertPanel = ExpertPanel::factory()->create();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_creates_an_annual_update_for_the_expert_panel()
     {
         $action = new AnnualUpdateCreate();
@@ -37,9 +36,7 @@ class CreateAnnualUpdateTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function unpriveleged_user_cannot_create_via_post()
     {
         $user = $this->setupUser();
@@ -54,9 +51,7 @@ class CreateAnnualUpdateTest extends TestCase
     }
 
 
-    /**
-     * @test
-     */
+    #[Test]
     public function priveleged_user_can_create_via_post()
     {
         $user = $this->setupUser(permissions: ['annual-updates-manage']);

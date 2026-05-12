@@ -8,14 +8,13 @@ use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Actions\StepApprove;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 
 class StepApproveTest extends TestCase
 {
     use RefreshDatabase;
         
-    /**
-     * @test
-     */
+    #[Test]
     public function fires_StepApproved_event_when_step_approved_and_logs_activity()
     {
         $this->setupForGroupTest();

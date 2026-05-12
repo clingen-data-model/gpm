@@ -7,6 +7,7 @@ use Illuminate\Support\Str;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
+use PHPUnit\Framework\Attributes\Test;
 
 class CreateGroupTest extends TestCase
 {
@@ -21,9 +22,7 @@ class CreateGroupTest extends TestCase
         Sanctum::actingAs($this->user);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function unauthoried_user_cannot_create_a_group()
     {
         $this->user->revokePermissionTo('groups-manage');
@@ -31,9 +30,7 @@ class CreateGroupTest extends TestCase
             ->assertStatus(403);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validates_params()
     {
         $this->makeRequest([])
@@ -61,9 +58,7 @@ class CreateGroupTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function authorized_user_can_create_a_new_group()
     {
         $this->makeRequest()
@@ -83,9 +78,7 @@ class CreateGroupTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function creates_expert_panel_if_group_type_is_ep()
     {
         $response = $this->makeRequest([

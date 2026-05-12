@@ -18,6 +18,7 @@ use App\Modules\Group\Notifications\ApprovalReminder;
 use App\Notifications\UserDefinedDatabaseNotification;
 use App\Modules\Group\Notifications\CommentActivityNotification;
 use App\Modules\Group\Notifications\JudgementActivityNotification;
+use PHPUnit\Framework\Attributes\Test;
 
 class SendSubmissionDigestNotificationsTest extends TestCase
 {
@@ -32,9 +33,7 @@ class SendSubmissionDigestNotificationsTest extends TestCase
         SubmissionType::factory()->create();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function does_not_send_notification_if_no_unsent_digestible_submission_notifications()
     {
         $person = Person::factory()->create();
@@ -46,9 +45,7 @@ class SendSubmissionDigestNotificationsTest extends TestCase
         Notification::assertNothingSent();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function sends_notification_if_unsent_digestible_submission_notifications()
     {
 
@@ -87,9 +84,7 @@ class SendSubmissionDigestNotificationsTest extends TestCase
     }
 
 
-    /**
-     * @test
-     */
+    #[Test]
     public function marks_all_submission_notifications_read()
     {
         $group = ExpertPanel::factory()->create()->group;
@@ -108,9 +103,7 @@ class SendSubmissionDigestNotificationsTest extends TestCase
     }
 
 
-    /**
-     * @test
-     */
+    #[Test]
     public function does_not_include_non_digestible_notifications()
     {
         $group = ExpertPanel::factory()->create()->group;
@@ -135,9 +128,7 @@ class SendSubmissionDigestNotificationsTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function correctly_renders_email()
     {
         $group = ExpertPanel::factory()->create()->group;
@@ -177,9 +168,7 @@ class SendSubmissionDigestNotificationsTest extends TestCase
 
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function approval_digests_sent_on_monday_at_610_am()
     {
        ['person' => $person] = $this->setupForScheduleTest();
@@ -190,9 +179,7 @@ class SendSubmissionDigestNotificationsTest extends TestCase
         Notification::assertSentTo($person, ApprovalDigestNotification::class);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function approval_digests_sent_on_thursday_at_610_am()
     {
         ['person' => $person] = $this->setupForScheduleTest();
@@ -204,9 +191,7 @@ class SendSubmissionDigestNotificationsTest extends TestCase
     }
 
 
-    /**
-     * @test
-     */
+    #[Test]
     public function does_not_send_any_other_day()
     {
         $this->setupForScheduleTest();

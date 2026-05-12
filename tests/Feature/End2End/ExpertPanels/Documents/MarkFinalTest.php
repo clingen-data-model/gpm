@@ -11,10 +11,10 @@ use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Bus;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 
-/**
- * @group documents
- */
+#[Group('documents')]
 class MarkFinalTest extends TestCase
 {
     use RefreshDatabase;
@@ -32,9 +32,7 @@ class MarkFinalTest extends TestCase
         Carbon::setTestNow('2021-02-01');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function marks_a_document_final()
     {
         Sanctum::actingAs($this->user);
@@ -45,9 +43,7 @@ class MarkFinalTest extends TestCase
             ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function marks_any_previous_final_documents_for_same_application_and_type_as_not_final()
     {
         Sanctum::actingAs($this->user);
@@ -66,9 +62,7 @@ class MarkFinalTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function event_recorded_when_marked_final()
     {
         Sanctum::actingAs($this->user);

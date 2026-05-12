@@ -10,6 +10,7 @@ use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Modules\ExpertPanel\Actions\ExpertPanelUpdateAttributes;
 use App\Modules\ExpertPanel\Events\ExpertPanelAttributesUpdated;
+use PHPUnit\Framework\Attributes\Test;
 
 class ExpertPanelUpdateAttributesTest extends TestCase
 {
@@ -22,9 +23,7 @@ class ExpertPanelUpdateAttributesTest extends TestCase
     }
     
 
-    /**
-     * @test
-     */
+    #[Test]
     public function raises_ExpertPanelAttributesUpdated_event()
     {
         $expertPanel = ExpertPanel::factory()->gcep()->create();
@@ -35,9 +34,7 @@ class ExpertPanelUpdateAttributesTest extends TestCase
         Event::assertDispatched(ExpertPanelAttributesUpdated::class);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function logs_ExpertPanelAttributesUpdated()
     {
         $expertPanel = ExpertPanel::factory()->gcep()->create(['long_base_name'=>'aabb']);
@@ -49,9 +46,7 @@ class ExpertPanelUpdateAttributesTest extends TestCase
         $this->assertLoggedActivity($expertPanel->group, 'Attributes updated: short_base_name = test');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function updates_group_parent_id_if_cdwg_id_is_updated()
     {
         $expertPanel = ExpertPanel::factory()->gcep()->create(['long_base_name'=>'aabb']);

@@ -14,6 +14,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Modules\ExpertPanel\Jobs\InitiateApplication;
 use App\Modules\ExpertPanel\Actions\ExpertPanelCreate;
 use App\Modules\ExpertPanel\Events\ApplicationInitiated;
+use PHPUnit\Framework\Attributes\Test;
 
 class ExpertPanelCreateTest extends TestCase
 {
@@ -27,9 +28,7 @@ class ExpertPanelCreateTest extends TestCase
         $this->data = $this->makeApplicationData();
     }
     
-    /**
-     * @test
-     */
+    #[Test]
     public function creates_new_group_with_cdwg_as_parent_for_expert_panel()
     {
         $expertPanel = ExpertPanelCreate::run(...$this->data);
@@ -46,9 +45,7 @@ class ExpertPanelCreateTest extends TestCase
     }
     
 
-    /**
-     * @test
-     */
+    #[Test]
     public function stores_new_application_model_when_initiated()
     {
         $expertPanel = ExpertPanelCreate::run(...$this->data);
@@ -57,9 +54,7 @@ class ExpertPanelCreateTest extends TestCase
         $this->assertDatabaseHas('expert_panels', $this->data);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function fires_ApplicationInitiated_event_when_initiated()
     {
         Event::fake();
@@ -69,9 +64,7 @@ class ExpertPanelCreateTest extends TestCase
         Event::assertDispatched(ApplicationInitiated::class);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function activity_logged_when_application_initiated()
     {
         $user = User::factory()->create();

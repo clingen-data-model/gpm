@@ -20,6 +20,7 @@ use App\Modules\Group\Notifications\ApprovalReminder;
 use App\Modules\Group\Actions\ApplicationSendToChairs;
 use App\Modules\Group\Actions\SubmissionApprovalRemindersCreate;
 use App\Modules\Group\Actions\SubmissionApprovalRemeindersCreate;
+use PHPUnit\Framework\Attributes\Test;
 
 class SubmissionApprovalRemindersCreateTest extends TestCase
 {
@@ -52,9 +53,7 @@ class SubmissionApprovalRemindersCreateTest extends TestCase
     }
 
 
-    /**
-     * @test
-     */
+    #[Test]
     public function creates_ApprovalReminderNotification_only_for_truant_approvers()
     {
         $epAndSub = $this->setupExpertPanelAndSubmission();

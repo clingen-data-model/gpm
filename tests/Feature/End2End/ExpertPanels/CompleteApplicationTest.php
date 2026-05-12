@@ -10,6 +10,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Actions\StepApprove;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 
 class CompleteApplicationTest extends TestCase
 {
@@ -26,9 +27,7 @@ class CompleteApplicationTest extends TestCase
         $this->expertPanel = ExpertPanel::factory()->gcep()->create();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function gcep_application_completed_when_step1_approved()
     {
         $dateApproved = Carbon::parse('2021-09-16');
@@ -43,9 +42,7 @@ class CompleteApplicationTest extends TestCase
             ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function vcep_application_completed_when_step4_approved()
     {
         $this->expertPanel->group->update(['group_type_id' => 3]);

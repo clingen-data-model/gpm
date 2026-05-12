@@ -12,6 +12,7 @@ use App\Modules\Group\Models\Group;
 use App\Modules\Group\Models\GroupMember;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 
 class MemberUnretireTest extends TestCase
 {
@@ -28,9 +29,7 @@ class MemberUnretireTest extends TestCase
         Sanctum::actingAs($this->user);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function unpermissioned_user_cannot_unretire_a_member()
     {
         $this->user->revokePermissionTo('groups-manage');
@@ -39,9 +38,7 @@ class MemberUnretireTest extends TestCase
             ->assertStatus(403);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function system_permissioned_user_can_unretire_a_member()
     {
         $this->makeRequest()
@@ -54,9 +51,7 @@ class MemberUnretireTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function membersRetire_permissioned_member_can_unretire_member()
     {
         $this->user->revokePermissionTo('groups-manage');

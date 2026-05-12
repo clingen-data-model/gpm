@@ -8,6 +8,7 @@ use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 
 class SendPasswordResetLinkTest extends TestCase
 {
@@ -18,9 +19,7 @@ class SendPasswordResetLinkTest extends TestCase
         parent::setup();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function returns_validation_errors_if_email_not_set()
     {
         $response = $this->json('POST', '/api/send-reset-password-link', []);
@@ -33,9 +32,7 @@ class SendPasswordResetLinkTest extends TestCase
             ]);
     }
     
-    /**
-     * @test
-     */
+    #[Test]
     public function returns_validation_error_if_email_not_valid_email()
     {
         $this->json('POST', '/api/send-reset-password-link', ['email' => 'email'])
@@ -47,9 +44,7 @@ class SendPasswordResetLinkTest extends TestCase
             ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function returns_error_if_email_not_registered()
     {
         $this->json('POST', '/api/send-reset-password-link', ['email' => 'email@example.com'])
@@ -61,9 +56,7 @@ class SendPasswordResetLinkTest extends TestCase
             ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function sends_reset_notification_if_email_valid_and_registered()
     {
         Notification::fake();

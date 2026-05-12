@@ -19,12 +19,12 @@ use App\Modules\Group\Actions\MemberAssignRole;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Modules\Group\Actions\MemberGrantPermissions;
 use Tests\Feature\End2End\Person\TestEventPublished;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 
-/**
- * @group people
- * @group person
- * @group profile
- */
+#[Group('people')]
+#[Group('person')]
+#[Group('profile')]
 class UpdateProfileTest extends TestCase
 {
     use RefreshDatabase;
@@ -51,9 +51,7 @@ class UpdateProfileTest extends TestCase
         Sanctum::actingAs($this->user);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function a_person_can_update_their_own_profile_info()
     {
         $data = $this->getDefaultData();
@@ -83,9 +81,7 @@ class UpdateProfileTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function a_user_who_can_update_others_profile_can_update_a_profile()
     {
         $this->user->givePermissionTo($this->perm);
@@ -94,9 +90,7 @@ class UpdateProfileTest extends TestCase
             ->assertStatus(200);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function associated_user_name_and_email_updated_when_person_updated()
     {
         $this->person->update(['user_id' => $this->user->id]);
@@ -117,9 +111,7 @@ class UpdateProfileTest extends TestCase
     }
 
 
-    /**
-     * @test
-     */
+    #[Test]
     public function a_user_with_group_permission_cannot_update_profile()
     {
         $group = Group::factory()->create();
@@ -133,9 +125,7 @@ class UpdateProfileTest extends TestCase
             ->assertStatus(403);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function another_user_without_permission_cannot_update_profile()
     {
         Sanctum::actingAs($this->user);
@@ -143,9 +133,7 @@ class UpdateProfileTest extends TestCase
             ->assertStatus(403);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function a_coordinator_can_edit_some_profile_fields_of_members()
     {
         $group = Group::factory()->create();
@@ -188,9 +176,7 @@ class UpdateProfileTest extends TestCase
     }
 
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validates_required_if_user_cannot_update_another_persons_profile()
     {
         $this->person->update(['user_id' => $this->user->id]);
@@ -205,9 +191,7 @@ class UpdateProfileTest extends TestCase
             ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function does_not_require_fields_if_user_can_update_another_persons_profile()
     {
         $this->user->givePermissionTo($this->perm);
@@ -224,9 +208,7 @@ class UpdateProfileTest extends TestCase
         ->assertJsonMissingValidationErrors(['expertise_ids']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validates_relation_ids_exist()
     {
         $data = [
@@ -253,9 +235,7 @@ class UpdateProfileTest extends TestCase
             ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validates_email_is_unique_to_people()
     {
         $this->user->givePermissionTo('people-manage');
@@ -273,9 +253,7 @@ class UpdateProfileTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validates_email_is_unique_to_users()
     {
         $this->user->givePermissionTo('people-manage');
@@ -293,12 +271,9 @@ class UpdateProfileTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     *
-     * @group dx
-     * @group gpm-person-events
-     */
+    #[Test]
+    #[Group('dx')]
+    #[Group('gpm-person-events')]
     public function publishes_updated_event_to_gpm_person_events()
     {
         $this->user->givePermissionTo('people-manage');

@@ -7,10 +7,10 @@ use App\Models\Credential;
 use Illuminate\Testing\TestResponse;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 
-/**
- * @group credentials
- */
+#[Group('credentials')]
 class UpdateCredentialTest extends TestCase
 {
     use RefreshDatabase;
@@ -27,9 +27,7 @@ class UpdateCredentialTest extends TestCase
             ->assertStatus(401);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function unpermissioned_user_cannot_update_a_credential()
     {
         $this->login();
@@ -37,9 +35,7 @@ class UpdateCredentialTest extends TestCase
             ->assertStatus(403);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function permissioned_user_can_update_a_credential()
     {
         $this->login(permissions: ['people-manage']);
@@ -56,9 +52,7 @@ class UpdateCredentialTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validates_params()
     {
         $this->login(permissions: ['people-manage']);

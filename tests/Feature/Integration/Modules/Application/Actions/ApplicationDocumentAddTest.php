@@ -9,6 +9,7 @@ use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Modules\ExpertPanel\Actions\ApplicationDocumentAdd;
 use Carbon\Carbon;
+use PHPUnit\Framework\Attributes\Test;
 
 class ApplicationDocumentAddTest extends TestCase
 {
@@ -24,9 +25,7 @@ class ApplicationDocumentAddTest extends TestCase
     }
     
 
-    /**
-     * @test
-     */
+    #[Test]
     public function sets_version_based_existing_versions()
     {
         ApplicationDocumentAdd::run(
@@ -52,9 +51,7 @@ class ApplicationDocumentAddTest extends TestCase
         $this->assertEquals($this->expertPanel->fresh()->group->documents()->count(), 2);
     }
     
-    /**
-     * @test
-     */
+    #[Test]
     public function sets_step_1_received_date_if_v1_and_scope_document_type()
     {
         Carbon::setTestNow('2021-08-30');
@@ -73,9 +70,7 @@ class ApplicationDocumentAddTest extends TestCase
     }
 
 
-    /**
-     * @test
-     */
+    #[Test]
     public function sets_step_4_received_date_if_v1_and_scope_document_type()
     {
         Carbon::setTestNow('2021-08-30');
@@ -94,9 +89,7 @@ class ApplicationDocumentAddTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function does_not_set_step_1_received_date_if_version_not_1()
     {
         Carbon::setTestNow('2021-01-01');

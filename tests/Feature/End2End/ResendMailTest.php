@@ -12,6 +12,7 @@ use Tests\Stubs\TestMailNotification;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 
 class ResendMailTest extends TestCase
 {
@@ -30,9 +31,7 @@ class ResendMailTest extends TestCase
         Sanctum::actingAs($this->user);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function user_without_permissions_cannot_resend_email()
     {
         $this->user->revokePermissionTo('mail-log-view');
@@ -40,9 +39,7 @@ class ResendMailTest extends TestCase
             ->assertStatus(403);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function user_with_permissions_can_resend_email()
     {
         Mail::fake();

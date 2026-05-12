@@ -11,6 +11,8 @@ use App\Modules\Group\Actions\MemberAdd;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 
 class PersonDeleteTest extends TestCase
 {
@@ -30,9 +32,7 @@ class PersonDeleteTest extends TestCase
         Sanctum::actingAs($this->user);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function unprivileged_user_cannot_delete_person()
     {
         $this->user->revokePermissionTo('people-manage');
@@ -40,9 +40,7 @@ class PersonDeleteTest extends TestCase
         $this->makeRequest()->assertStatus(403);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function permissioned_user_can_delete_person_and_all_relations()
     {
         Carbon::setTestNow('2022-03-15');
@@ -55,9 +53,7 @@ class PersonDeleteTest extends TestCase
         $this->assertDatabaseMissing('users', ['id' => $this->user->id]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function records_PersonDeleted_activity()
     {
         Carbon::setTestNow('2022-03-15');
@@ -72,12 +68,9 @@ class PersonDeleteTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     *
-     * @group dx
-     * @group gpm-person-events
-     */
+    #[Test]
+    #[Group('dx')]
+    #[Group('gpm-person-events')]
     public function publishes_deleted_event_to_gpm_person_events()
     {
         $this->user->givePermissionTo('people-manage');

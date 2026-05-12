@@ -8,6 +8,7 @@ use App\Modules\User\Models\User;
 use App\Modules\Group\Models\Group;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 
 class UpdateGroupNameTest extends TestCase
 {
@@ -23,9 +24,7 @@ class UpdateGroupNameTest extends TestCase
         Sanctum::actingAs($this->user);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function unauthorized_user_cannot_update_group_name()
     {
         $this->user->revokePermissionTo('groups-manage');
@@ -33,9 +32,7 @@ class UpdateGroupNameTest extends TestCase
             ->assertStatus(403);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validates_parameters()
     {
         $this->makeRequest([])
@@ -52,9 +49,7 @@ class UpdateGroupNameTest extends TestCase
             ]);
     }
     
-    /**
-     * @test
-     */
+    #[Test]
     public function authorized_user_can_update_group_name()
     {
         $this->makeRequest()
@@ -69,9 +64,7 @@ class UpdateGroupNameTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function logs_name_updated()
     {
         $oldName = $this->group->name;

@@ -14,6 +14,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Notification;
 use App\Notifications\InviteReminderNotification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 
 class InviteReminderTest extends TestCase
 {
@@ -29,9 +30,7 @@ class InviteReminderTest extends TestCase
         $this->gm1 = $this->addMember->handle($this->group1, $this->invite->person);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function person_can_scope_to_hasActiveMembership()
     {
         $this->assertEquals(1, Person::hasActiveMembership()->count());
@@ -42,9 +41,7 @@ class InviteReminderTest extends TestCase
     }
 
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_sends_an_email_to_each_person_that_has_not_redeemed_their_invite()
     {
         Notification::fake();
@@ -52,9 +49,7 @@ class InviteReminderTest extends TestCase
         Notification::assertSentTo($this->invite->person, InviteReminderNotification::class);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_does_not_send_a_reminder_to_a_person_that_has_already_activated_their_account()
     {
         $user = $this->setupUserWithPerson();
@@ -69,9 +64,7 @@ class InviteReminderTest extends TestCase
         Notification::assertNotSentTo($user->person, InviteReminderNotification::class);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function the_email_body_has_the_correct_content()
     {
         $notification = new InviteReminderNotification($this->invite);
@@ -83,9 +76,7 @@ class InviteReminderTest extends TestCase
         $this->assertStringContainsString('/invites/'.$this->invite->code, $emailBody);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_does_not_email_inactive_group_members()
     {
         $retireMember = app()->make(MemberRetire::class);

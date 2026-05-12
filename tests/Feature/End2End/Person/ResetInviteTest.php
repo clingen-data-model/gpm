@@ -8,6 +8,7 @@ use Illuminate\Support\Carbon;
 use App\Modules\Person\Models\Invite;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 
 class ResetInviteTest extends TestCase
 {
@@ -22,9 +23,7 @@ class ResetInviteTest extends TestCase
         $this->invite = Invite::factory()->create(['redeemed_at' => Carbon::now()]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function unprivileged_user_cannot_reset_invite()
     {
         $user = $this->setupUser();
@@ -34,9 +33,7 @@ class ResetInviteTest extends TestCase
             ->assertStatus(403);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function privileged_user_can_reset_invite()
     {
         $user = $this->setupUser(null, ['people-manage']);

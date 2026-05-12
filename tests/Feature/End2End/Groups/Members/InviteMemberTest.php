@@ -14,11 +14,11 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Modules\Group\Actions\MemberGrantPermissions;
 use App\Modules\Person\Notifications\InviteNotification;
 use App\Modules\Group\Notifications\AddedToGroupNotification;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 
-/**
- * @group groups
- * @group members
- */
+#[Group('groups')]
+#[Group('members')]
 class InviteMemberTest extends TestCase
 {
     use RefreshDatabase;
@@ -37,9 +37,7 @@ class InviteMemberTest extends TestCase
         $this->url = 'api/groups/'.$this->group->uuid.'/invites';
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function guests_cannot_invite_members()
     {
         $this->json('POST', $this->url, [])
@@ -47,9 +45,7 @@ class InviteMemberTest extends TestCase
     }
 
 
-    /**
-     * @test
-     */
+    #[Test]
     public function unprivileged_member_cannot_invite_members()
     {
         Sanctum::actingAs($this->user);
@@ -58,9 +54,7 @@ class InviteMemberTest extends TestCase
     }
 
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validates_data()
     {
         MemberGrantPermissions::run(
@@ -91,9 +85,7 @@ class InviteMemberTest extends TestCase
     }
 
 
-    /**
-     * @test
-     */
+    #[Test]
     public function privileged_member_can_invite_new_member()
     {
         MemberGrantPermissions::run(
@@ -149,9 +141,7 @@ class InviteMemberTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function invite_can_also_give_roles_to_invited_member()
     {
         MemberGrantPermissions::run(
@@ -175,9 +165,7 @@ class InviteMemberTest extends TestCase
     }
 
 
-    /**
-     * @test
-     */
+    #[Test]
     public function logs_invite_created_activity()
     {
         MemberGrantPermissions::run(
@@ -207,9 +195,7 @@ class InviteMemberTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function invitee_is_sent_an_email_notification_about_the_invite()
     {
         MemberGrantPermissions::run(
@@ -234,9 +220,7 @@ class InviteMemberTest extends TestCase
         Notification::assertNotSentTo($newPerson, AddedToGroupNotification::class);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function saves_is_contact_attribute()
     {
         MemberGrantPermissions::run(

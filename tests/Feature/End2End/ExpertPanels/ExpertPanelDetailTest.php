@@ -17,6 +17,7 @@ use App\Modules\ExpertPanel\Actions\NextActionCreate;
 use App\Modules\ExpertPanel\Actions\ExpertPanelCreate;
 use App\Modules\ExpertPanel\Actions\ApplicationDocumentAdd;
 use Database\Seeders\NextActionAssigneesTableSeeder;
+use PHPUnit\Framework\Attributes\Test;
 
 class ExpertPanelDetailTest extends TestCase
 {
@@ -60,9 +61,7 @@ class ExpertPanelDetailTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function gets_application_with_uuid()
     {
         \Laravel\Sanctum\Sanctum::actingAs($this->user);
@@ -71,9 +70,7 @@ class ExpertPanelDetailTest extends TestCase
             ->assertJsonFragment(['uuid' => $this->ep->uuid]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function loads_latestLogEntry_by_default()
     {
         \Laravel\Sanctum\Sanctum::actingAs($this->user);
@@ -82,9 +79,7 @@ class ExpertPanelDetailTest extends TestCase
         $response->assertJsonFragment(['description' => 'TEst me']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function loads_latestPendingNextAction_by_default()
     {
         \Laravel\Sanctum\Sanctum::actingAs($this->user);

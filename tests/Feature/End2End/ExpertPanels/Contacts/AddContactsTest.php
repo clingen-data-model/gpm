@@ -13,13 +13,13 @@ use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Actions\ContactAdd;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 
-/**
- * @group applications
- * @group expert-panels
- * @group contacts
- * @group membership
- */
+#[Group('applications')]
+#[Group('expert-panels')]
+#[Group('contacts')]
+#[Group('membership')]
 class AddContactsTest extends TestCase
 {
     use RefreshDatabase;
@@ -35,9 +35,7 @@ class AddContactsTest extends TestCase
     }
     
 
-    /**
-     * @test
-     */
+    #[Test]
     public function adds_a_person_as_a_contact_to_an_application()
     {
         $person = Person::factory()->create();
@@ -54,9 +52,7 @@ class AddContactsTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validates_new_contact_data()
     {
         $data = [];
@@ -94,9 +90,7 @@ class AddContactsTest extends TestCase
         ]);
     }
     
-    /**
-     * @test
-     */
+    #[Test]
     public function can_retrieve_contacts_for_an_application()
     {
         $contacts = Person::factory(2)->create();

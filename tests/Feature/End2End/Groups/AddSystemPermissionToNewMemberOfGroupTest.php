@@ -14,6 +14,7 @@ use App\Modules\Person\Actions\PermissionAdd;
 use App\Modules\Person\Events\InviteRedeemed;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Modules\Group\Actions\MemberAddSystemPermission;
+use PHPUnit\Framework\Attributes\Test;
 
 class AddSystemPermissionToNewMemberOfGroupTest extends TestCase
 {
@@ -33,9 +34,7 @@ class AddSystemPermissionToNewMemberOfGroupTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function permission_given_to_activated_person_when_added_to_group()
     {
         $user = $this->setupUserWithPerson();
@@ -50,9 +49,7 @@ class AddSystemPermissionToNewMemberOfGroupTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function permission_not_added_to_activited_person_when_added_to_other_group()
     {
         $user = $this->setupUserWithPerson();
@@ -68,9 +65,7 @@ class AddSystemPermissionToNewMemberOfGroupTest extends TestCase
         ]);
     }
     
-    /**
-     * @test
-     */
+    #[Test]
     public function adds_follow_action_if_person_not_activated()
     {
         $person = Person::factory()->create();

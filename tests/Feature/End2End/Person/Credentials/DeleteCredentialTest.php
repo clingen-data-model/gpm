@@ -8,10 +8,10 @@ use Illuminate\Testing\TestResponse;
 use App\Modules\Person\Models\Person;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 
-/**
- * @group credentials
- */
+#[Group('credentials')]
 class DeleteCredentialTest extends TestCase
 {
     use RefreshDatabase;
@@ -23,18 +23,14 @@ class DeleteCredentialTest extends TestCase
         $this->person = Person::factory()->create();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function guest_cannot_delete_a_credential()
     {
         $this->makeRequest()
             ->assertStatus(401);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function unpermissioned_user_cannot_delete_a_credential()
     {
         $this->login();
@@ -42,9 +38,7 @@ class DeleteCredentialTest extends TestCase
             ->assertStatus(403);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function permissioned_user_can_delete_a_credential()
     {
         $credentialId = $this->credential->id;

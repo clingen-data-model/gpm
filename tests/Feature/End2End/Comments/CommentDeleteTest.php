@@ -7,6 +7,7 @@ use Laravel\Sanctum\Sanctum;
 use App\Modules\Group\Models\Submission;
 use Illuminate\Support\Facades\Notification;
 use App\Modules\Group\Notifications\CommentActivityNotification;
+use PHPUnit\Framework\Attributes\Test;
 
 class CommentDeleteTest extends CommentTest
 {
@@ -19,9 +20,7 @@ class CommentDeleteTest extends CommentTest
         $this->comment = $this->createComment();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function user_can_delete_own_comment()
     {
         $this->makeRequest()->assertStatus(200);
@@ -32,9 +31,7 @@ class CommentDeleteTest extends CommentTest
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function user_with_comments_manage_permission_can_delete_any_comment()
     {
         $otherUser = $this->setupUser(null, ['comments-manage']);
@@ -47,9 +44,7 @@ class CommentDeleteTest extends CommentTest
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function user_without_special_permission_cannot_delete_another_users_comment()
     {
         $otherUser = $this->setupUser(null, ['ep-applications-comment']);
@@ -63,9 +58,7 @@ class CommentDeleteTest extends CommentTest
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function assertNotificationSent()
     {
         $submission = Submission::factory()->create([
@@ -92,9 +85,7 @@ class CommentDeleteTest extends CommentTest
     }
 
 
-    /**
-     * @test
-     */
+    #[Test]
     public function assertNotificationNotSent()
     {
         $submission = Submission::factory()->create([

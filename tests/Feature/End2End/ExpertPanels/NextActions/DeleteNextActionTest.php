@@ -12,12 +12,12 @@ use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Database\Seeders\NextActionAssigneesTableSeeder;
 use App\Modules\ExpertPanel\Actions\NextActionCreate;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 
-/**
- * @group next-actions
- * @group next_actions
- * @group nextactions
- */
+#[Group('next-actions')]
+#[Group('next_actions')]
+#[Group('nextactions')]
 class DeleteNextActionTest extends TestCase
 {
     use RefreshDatabase;
@@ -45,9 +45,7 @@ class DeleteNextActionTest extends TestCase
         $this->nextAction = $this->expertPanel->refresh()->nextActions->first();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function deletes_next_action()
     {
         $this->json('DELETE', $this->baseUrl.'/'.$this->nextAction->id)

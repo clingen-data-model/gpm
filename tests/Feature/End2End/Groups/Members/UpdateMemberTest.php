@@ -8,6 +8,7 @@ use Laravel\Sanctum\Sanctum;
 use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 
 class UpdateMemberTest extends TestCase
 {
@@ -28,9 +29,7 @@ class UpdateMemberTest extends TestCase
     }
 
 
-    /**
-     * @test
-     */
+    #[Test]
     public function returns_404_if_group_not_found()
     {
         $url = '/api/groups/'.uniqid().'/members/'.uniqid();
@@ -46,9 +45,7 @@ class UpdateMemberTest extends TestCase
         $response->assertStatus(404);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function a_unprivileged_user_may_not_update_a_group_member()
     {
         $url = '/api/groups/'.$this->groupMember->group->uuid.'/members/'.$this->groupMember->id;
@@ -62,9 +59,7 @@ class UpdateMemberTest extends TestCase
         $response->assertStatus(403);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function a_privileged_use_may_update_a_group_member()
     {
         $this->admin->givePermissionTo('groups-manage');
@@ -89,9 +84,7 @@ class UpdateMemberTest extends TestCase
         ]);
     }
     
-    /**
-     * @test
-     */
+    #[Test]
     public function logs_update()
     {
         $this->admin->givePermissionTo('groups-manage');
