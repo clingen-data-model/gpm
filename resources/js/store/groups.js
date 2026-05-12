@@ -380,7 +380,7 @@ export const actions = {
     getSpecifications({ commit }, group) {
         if (!group.is_vcep_or_scvcep) {
             throw new Error(
-                "Can not retreive specfications. Only VCEPS have specifications."
+                "Can not retreive specfications. Only VCEPS or SC-VCEPs have specifications."
             );
         }
 

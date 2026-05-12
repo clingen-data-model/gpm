@@ -10,6 +10,7 @@ import {
     ApplicationDefinition, 
     GcepApplication, 
     VcepApplication,
+    ScvcepApplication,
     applicationDefinitionFactory
 } from './application_definitions'
 
@@ -26,4 +27,5 @@ export {
     applicationDefinitionFactory,
     GcepApplication,
     VcepApplication,
+    ScvcepApplication
 }
