@@ -148,6 +148,16 @@ const routes = [
         }
     },
     {
+        path: '/accept-invitation',
+        name: 'accept-invitation',
+        component: () => import('@/auth/AcceptInvitation.vue'),
+    },
+    {
+        path: '/login/clerk/:pathMatch(.*)*',
+        name: 'clerk-login',
+        component: () => import('@/auth/ClerkLogin.vue'),
+    },
+    {
         name: 'not-found',
         path: '/:pathMatch(.*)*',
         component: () => import('@/views/NotFound.vue'),
