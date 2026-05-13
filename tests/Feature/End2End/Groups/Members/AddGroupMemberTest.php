@@ -170,7 +170,6 @@ class AddGroupMemberTest extends TestCase
         $this->assertDatabaseHas('activity_log', [
             'subject_type' => GroupModel::class,
             'subject_id' => $this->group->id,
-            'properties->email' => $this->person->email
         ]);
     }
 

@@ -71,7 +71,7 @@ class RevokeMemberPermissionTest extends TestCase
             'subject_id' => $this->group->id,
             'activity_type' => 'member-permission-revoked',
             'description' => 'Permission '.$this->permissions->first()->name.' revoked from member '.$this->person->name.'.',
-            'properties->group_member_id' => $this->groupMember->id,
+            'properties->members[0]->uuid' => $this->person->uuid,
             'properties->permission->id' => $this->permissions->first()->id,
             'properties->permission->name' => $this->permissions->first()->name
         ]);

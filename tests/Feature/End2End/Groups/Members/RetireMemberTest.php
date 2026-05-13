@@ -115,10 +115,9 @@ class RetireMemberTest extends TestCase
             'subject_type' => get_class($this->group),
             'subject_id' => $this->group->id,
             'activity_type' => 'member-retired',
-            'properties->group_member_id' => $this->groupMember->id,
-            'properties->person->id' => $this->person->id,
-            'properties->person->name' => $this->person->name,
-            'properties->person->email' => $this->person->email,
+            'properties->members[0]->uuid' => $this->person->uuid,
+            'properties->members[0]->first_name' => $this->person->first_name,
+            'properties->members[0]->last_name' => $this->person->last_name,
         ]);
     }
 }

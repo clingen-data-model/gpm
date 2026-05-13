@@ -67,12 +67,10 @@ class RemoveRoleFromMemberTest extends TestCase
             'subject_id' => $this->group->id,
             'activity_type' => 'member-role-removed',
             'description' => 'Removed role '.$this->roles->first()->name.' from member '.$this->person->name.'.',
-            'properties->group_member_id' => $this->groupMember->id,
-            'properties->role->id' => $this->roles->first()->id,
-            'properties->role->name' => $this->roles->first()->name,
-            'properties->person->name' => $this->person->first()->name,
-            'properties->person->id' => $this->person->first()->id,
-            'properties->person->email' => $this->person->first()->email,
+            'properties->members[0]->uuid' => $this->person->uuid,
+            'properties->members[0]->first_name' => $this->person->first_name,
+            'properties->members[0]->last_name' => $this->person->last_name,
+            'properties->roles' => json_encode([$this->roles->first()->display_name]),
         ]);
     }
 }

@@ -58,9 +58,8 @@ class GrantMemberPermissionTest extends TestCase
              'subject_type' => GroupModel::class,
              'subject_id' => $this->group->id,
              'description' => $this->person->name.' granted permissions '.$this->permissions->pluck('name')->join(', ', ', and '),
-             'properties->group_member_id' => $this->groupMember->id,
+             'properties->members[0]->uuid' => $this->person->uuid,
              'properties->permissions' => json_encode($this->permissions->map(fn ($p) => $p->only('id', 'name'))),
-             'properties->person->id' => $this->person->id
         ]);
     }
 

@@ -36,13 +36,13 @@ class PublishApplicationEventsTest extends TestCase
     }
 
     #[Test]
-    public function it_publishes_definitionApproved_message_when_definition_approved()
+    public function it_publishes_gcep_approval_event_when_gcep_def_approved()
     {
         $this->approveEpDef();
 
         $this->assertDatabaseHas('stream_messages', [
             'topic' => config('dx.topics.outgoing.gpm-general-events'),
-            'message->event_type' => 'ep_definition_approved',
+            'message->event_type' => 'gcep_final_approval',
             'sent_at' => null,
         ]);
     }
@@ -107,7 +107,7 @@ class PublishApplicationEventsTest extends TestCase
         $this->assertDatabaseHas('stream_messages', [
             'topic' => config('dx.topics.outgoing.gpm-general-events'),
             'message->event_type' => 'ep_info_updated',
-            'message->data->group->affiliation_id' => '12345',
+            'message->data->affiliation_id' => '12345',
             // 'sent_at' => null,
         ]);
     }

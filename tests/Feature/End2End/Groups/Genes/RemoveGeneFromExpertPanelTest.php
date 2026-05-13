@@ -60,7 +60,7 @@ class RemoveGeneFromExpertPanelTest extends TestCase
         $this->json('DELETE', $this->url.'/'.$this->gene1->id)
             ->assertStatus(422);
     }
-    
+
 
     #[Test]
     public function privileged_user_can_remove_genes()
@@ -69,7 +69,7 @@ class RemoveGeneFromExpertPanelTest extends TestCase
         Sanctum::actingAs($this->user);
         $this->json('DELETE', $this->url.'/'.$this->gene1->id)
             ->assertStatus(200);
-        
+
         $this->assertDatabaseHas('genes', [
             'hgnc_id' => 123345,
             'expert_panel_id' => $this->expertPanel->id,
@@ -89,7 +89,7 @@ class RemoveGeneFromExpertPanelTest extends TestCase
             [
                 'activity_type' => 'gene-removed',
                 'subject_id' => $this->expertPanel->group_id,
-                'properties->hgnc_id' => $this->gene1->hgnc_id
+                'properties->genes[0]->hgnc_id' => $this->gene1->hgnc_id
             ]
         );
     }

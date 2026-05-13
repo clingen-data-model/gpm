@@ -99,9 +99,9 @@ class AssignRoleToMemberTest extends TestCase
         $response = $this->json('POST', $this->url, ['role_ids' => [$this->roles->first()->id, $systemRole->id]])
                         ->assertStatus(422);
 
-        $response->assertJsonFragment = [
+        $response->assertJsonFragment([
             'role_ids' => ['All roles must be group roles.']
-        ];
+        ]);
     }
 
     #[Test]
@@ -122,10 +122,10 @@ class AssignRoleToMemberTest extends TestCase
             'subject_type' => GroupModel::class,
             'subject_id' => $this->groupMember->group->id,
             'activity_type' => 'member-role-assigned',
-            'properties->member->id' => $this->groupMember->person->id,
-            'properties->member->name' => $this->groupMember->person->name,
-            'properties->member->email' => $this->groupMember->person->email,
-            'properties->roles' => json_encode($this->groupMember->roles->pluck('name')->toArray())
+            'properties->members[0]->uuid' => $this->groupMember->person->uuid,
+            'properties->members[0]->first_name' => $this->groupMember->person->first_name,
+            'properties->members[0]->last_name' => $this->groupMember->person->last_name,
+            'properties->roles' => json_encode($this->groupMember->roles->pluck('display_name')->toArray())
         ]);
     }
 }
