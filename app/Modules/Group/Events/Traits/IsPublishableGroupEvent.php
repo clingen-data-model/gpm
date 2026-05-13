@@ -117,6 +117,9 @@ trait IsPublishableGroupEvent
                 $epData['gcep_final_approval']  = $ep->step_1_approval_date;
             }
 
+            $awards = $group->fundingAwards()->get();
+            $epData['funding_awards'] = $awards->map->toExchangePayload()->all();
+
             $data['expert_panel'] = $epData;
         }
 

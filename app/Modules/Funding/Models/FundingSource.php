@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Traits\HasUuid;
 use Illuminate\Support\Str;
+use App\Modules\Funding\Support\FundingSourceSchema;
 
 class FundingSource extends Model
 {
@@ -67,4 +68,8 @@ class FundingSource extends Model
         return $this->belongsTo(FundingType::class);
     }
 
+    public function toExchangePayload(): array
+    {
+        return FundingSourceSchema::forMessage($this);
+    }
 }

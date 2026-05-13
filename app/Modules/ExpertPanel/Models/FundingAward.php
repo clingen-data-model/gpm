@@ -9,6 +9,7 @@ use App\Modules\Person\Models\Person;
 use App\Models\Traits\HasUuid;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use App\Modules\ExpertPanel\Service\FundingAwardSchema;
 
 class FundingAward extends Model
 {
@@ -50,5 +51,10 @@ class FundingAward extends Model
         return $this->belongsToMany(Person::class, 'funding_award_contact_pis')
             ->withPivot(['is_primary'])
             ->withTimestamps();
+    }
+
+    public function toExchangePayload(): array
+    {
+        return FundingAwardSchema::forMessage($this);
     }
 }

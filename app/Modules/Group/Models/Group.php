@@ -35,6 +35,8 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Builder;
 use App\Modules\User\Models\User;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use App\Modules\ExpertPanel\Models\FundingAward;
 
 /**
  * @property int $id
@@ -426,5 +428,18 @@ class Group extends Model implements HasMembers, RecordsEvents, HasDocuments, Ha
     public function publications()
     {
         return $this->hasMany(Publication::class);
+    }
+
+    public function fundingAwards(): HasManyThrough
+    {
+        // Group.id -> ExpertPanel.group_id -> FundingAward.expert_panel_id
+        return $this->hasManyThrough(
+            FundingAward::class,
+            ExpertPanel::class,
+            'group_id',         // FK on expert_panels
+            'expert_panel_id',  // FK on funding_awards
+            'id',               // local key on groups
+            'id'                // local key on expert_panels
+        );
     }
 }

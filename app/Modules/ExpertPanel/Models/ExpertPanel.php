@@ -27,6 +27,7 @@ use App\Modules\ExpertPanel\Models\CurationReviewProtocol;
 use App\Models\Traits\RecordsEvents as TraitsRecordsEvents;
 use App\Modules\Group\Models\Traits\HasMembers as TraitsHasMembers;
 use App\Modules\Group\Models\Traits\BelongsToGroup as TraitsBelongsToGroup;
+use App\Modules\ExpertPanel\Models\FundingAward;
 
 class ExpertPanel extends Model implements HasMembers, BelongsToGroup, RecordsEvents
 {
@@ -465,12 +466,14 @@ class ExpertPanel extends Model implements HasMembers, BelongsToGroup, RecordsEv
         return $this->{'step_'.$stepNumber.'_approval_date'};
     }
 
-
-
-
     // Factory support
     protected static function newFactory()
     {
         return new ExpertPanelFactory();
+    }
+
+    public function fundingAwards(): HasMany
+    {
+        return $this->hasMany(FundingAward::class, 'expert_panel_id');
     }
 }

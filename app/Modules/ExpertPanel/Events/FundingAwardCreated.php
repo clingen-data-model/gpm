@@ -7,12 +7,10 @@ use App\Modules\ExpertPanel\Models\FundingAward;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use App\Modules\ExpertPanel\Service\MapsFundingAwardsForDx;
 
 class FundingAwardCreated extends ExpertPanelEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
-    use MapsFundingAwardsForDx;
 
     public function __construct(public ExpertPanel $application, public FundingAward $fundingAward)
     {
@@ -27,7 +25,7 @@ class FundingAwardCreated extends ExpertPanelEvent
 
     public function getProperties(): array
     {
-        return $this->fundingAwardPayload($this->fundingAward);
+        return $this->fundingAward->toExchangePayload();
     }
 
 }
