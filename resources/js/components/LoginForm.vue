@@ -81,4 +81,12 @@ export default {
       </button>
     </button-row>
   </form-container>
+  <div class="mt-4">
+    <router-link
+      class="btn w-auto px-4 border border-gray-400 text-gray-700"
+      :to="{ name: 'clerk-login', query: { redirect: $route.query.redirect } }"
+    >
+      Continue with Clerk
+    </router-link>
+  </div>
 </template>
