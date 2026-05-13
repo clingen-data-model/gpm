@@ -29,7 +29,8 @@ use App\Http\Controllers\Api\DiseaseLookupController;
 use App\Http\Controllers\Api\DocumentationController;
 use App\Http\Controllers\ImpersonateSearchController;
 use App\Modules\User\Http\Controllers\CurrentUserController;
-
+use App\Actions\Auth\ClerkMe;
+use App\Actions\Auth\ClerkSessionLogin;
 
 /*
 |--------------------------------------------------------------------------
@@ -41,6 +42,15 @@ use App\Modules\User\Http\Controllers\CurrentUserController;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+
+
+use App\Actions\Auth\ClerkWebhookReceive;
+use App\Actions\Auth\ClerkRedeemInvitation;
+
+Route::post('/clerk/webhooks', ClerkWebhookReceive::class);
+Route::middleware('clerk.auth')->post('/auth/clerk/redeem-invitation', ClerkRedeemInvitation::class);
+Route::middleware('clerk.auth')->get('/auth/clerk/me', ClerkMe::class);
+Route::middleware('clerk.auth')->post('/auth/clerk/session-login', ClerkSessionLogin::class);
 
 Route::group(['middleware' => ['guest']], function () {
     Route::post('/send-reset-password-link', [AuthController::class, 'sendResetPasswordLink']);

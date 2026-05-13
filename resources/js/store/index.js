@@ -146,7 +146,23 @@ const store = createStore({
                     })
 
             }
-        }
+        },
+        async clerkSessionLogin({ commit, dispatch }, token) {
+            await axios.get('/sanctum/csrf-cookie')
+
+            await axios.post(
+                '/api/auth/clerk/session-login',
+                {},
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            )
+
+            commit('setAuthenticated', true)
+            await dispatch('forceGetCurrentUser')
+        },
     },
     modules: {
         alerts: Alerts,
