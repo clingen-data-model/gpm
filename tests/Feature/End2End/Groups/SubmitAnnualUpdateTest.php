@@ -51,6 +51,7 @@ class SubmitAnnualUpdateTest extends TestCase
                             ->create([
                                 'expert_panel_id' => $this->expertPanel->id,
                                 'submitter_id' => $this->coordinator->id,
+                                'data' => $this->makeGcepSubmitData(),
                             ]);
 
         $this->makeRequest($annualReview)
@@ -66,7 +67,7 @@ class SubmitAnnualUpdateTest extends TestCase
     public function validates_base_required_fields_for_gcep()
     {
         $annualReview = AnnualUpdate::create(['expert_panel_id'=>$this->expertPanel->id]);
-        
+
         $response = $this->makeRequest($annualReview)
             ->assertStatus(422);
 
@@ -74,19 +75,17 @@ class SubmitAnnualUpdateTest extends TestCase
             'submitter_id',
             'grant',
             'membership_attestation',
-            'ongoing_plans_updated',
             'goals',
             'cochair_commitment',
-            'applied_for_funding',
-            'website_attestation',
+            'external_funding',
+            'funding_plans',
             'gci_use',
-            'published_count',
-            'approved_unpublished_count',
             'in_progress_count',
             'gt_gene_list',
             'gt_precuration_info',
             'recuration_begun',
             'recuration_designees',
+            'ongoing_plans_updated',
         ];
 
         foreach ($baseRequiredFields as $field) {
@@ -106,7 +105,7 @@ class SubmitAnnualUpdateTest extends TestCase
                 'submitted_inactive_form' => 'yes'
             ]
         ]);
-        
+
         $response = $this->makeRequest($annualReview)
             ->assertStatus(200);
 
@@ -115,18 +114,19 @@ class SubmitAnnualUpdateTest extends TestCase
             'completed_at' => Carbon::now()
         ]);
     }
-    
+
 
     #[Test]
     public function validates_conditionally_required_fields_for_gceps()
     {
         $annualReview = AnnualUpdate::create([
             'expert_panel_id'=>$this->expertPanel->id,
+            'submitter_id' => $this->coordinator->id,
             'data' => [
                 'ongoing_plans_updated' => 'yes',
-                // 'cochair_commitment' => 'no',
-                'applied_for_funding' => 'yes',
-                'funding' => 'other',
+                'external_funding' => 'yes',
+                'external_funding_type' => 'other',
+                'funding_plans' => 'yes',
                 'ep_activity' => 'active',
                 'gci_use' => 'no',
                 'gt_gene_list' => 'no',
@@ -136,10 +136,11 @@ class SubmitAnnualUpdateTest extends TestCase
 
         $conditionalRequiredFields = [
             'gci_use_details',
+            'external_funding_other_details',
+            'funding_plans_details',
             'gt_gene_list_details',
             'gt_precuration_info_details',
             'ongoing_plans_update_details',
-            'funding_other_details',
         ];
 
         $response = $this->makeRequest($annualReview)
@@ -162,7 +163,7 @@ class SubmitAnnualUpdateTest extends TestCase
         ]);
         $this->expertPanel->group->update(['group_type_id' => config('groups.types.vcep.id')]);
         $annualReview = AnnualUpdate::create(['expert_panel_id'=>$this->expertPanel->id]);
-        
+
         $response = $this->makeRequest($annualReview)
             ->assertStatus(422);
 
@@ -172,15 +173,9 @@ class SubmitAnnualUpdateTest extends TestCase
             'membership_attestation',
             'goals',
             'cochair_commitment',
-            'applied_for_funding',
-            'website_attestation',
-            'vci_use',
-            // Commenting out b/c tmbattey commented out in validation.  Should probably just be removed -TJW
-            // 'variant_counts',
-            // 'rereview_discrepencies_progress',
-            // 'rereview_lp_and_vus_progress',
-            // 'rereview_lb_progress',
-            'member_designation_changed',
+            'external_funding',
+            'funding_plans',
+            'submit_clinvar',
             'changes_to_call_frequency'
         ];
 
@@ -198,7 +193,7 @@ class SubmitAnnualUpdateTest extends TestCase
         ]);
         $this->expertPanel->group->update(['group_type_id' => config('groups.types.vcep.id')]);
         $annualReview = AnnualUpdate::create(['expert_panel_id'=>$this->expertPanel->id]);
-        
+
         $response = $this->makeRequest($annualReview)
             ->assertStatus(422);
 
@@ -208,9 +203,8 @@ class SubmitAnnualUpdateTest extends TestCase
             'membership_attestation',
             'goals',
             'cochair_commitment',
-            'applied_for_funding',
-            'website_attestation',
-            'vci_use',
+            'external_funding',
+            'funding_plans',
         ];
 
         foreach ($baseRequiredFields as $field) {
@@ -228,7 +222,7 @@ class SubmitAnnualUpdateTest extends TestCase
         ]);
         $this->expertPanel->group->update(['group_type_id' => config('groups.types.vcep.id')]);
         $annualReview = AnnualUpdate::create(['expert_panel_id'=>$this->expertPanel->id]);
-        
+
         $response = $this->makeRequest($annualReview)
             ->assertStatus(422);
 
@@ -238,19 +232,16 @@ class SubmitAnnualUpdateTest extends TestCase
             'membership_attestation',
             'goals',
             'cochair_commitment',
-            'applied_for_funding',
-            'website_attestation',
-            'vci_use',
-            // 'variant_counts',
-            // 'specification_progress',
-            // 'specification_progress_url',
+            'external_funding',
+            'funding_plans',
+            'submit_clinvar',
         ];
 
         foreach ($baseRequiredFields as $field) {
             $response = $response->assertJsonFragment([$field => ['This is required.']]);
         }
     }
-    
+
     #[Test]
     public function validates_base_sustained_curation_fields_if_approved()
     {
@@ -263,7 +254,7 @@ class SubmitAnnualUpdateTest extends TestCase
         ]);
         $this->expertPanel->group->update(['group_type_id' => config('groups.types.vcep.id')]);
         $annualReview = AnnualUpdate::create(['expert_panel_id'=>$this->expertPanel->id]);
-        
+
         $response = $this->makeRequest($annualReview)
             ->assertStatus(422);
 
@@ -271,21 +262,13 @@ class SubmitAnnualUpdateTest extends TestCase
             'submitter_id',
             'grant',
             'membership_attestation',
-            // 'ongoing_plans_updated',
             'goals',
             'cochair_commitment',
-            'applied_for_funding',
-            'website_attestation',
-            'vci_use',
-            // 'variant_counts',
-            // 'specification_progress',
-            // 'specification_progress_url',
-            // 'variant_workflow_changes', // deprecated by Danielle Azzariti Feb. 2022
-            // 'rereview_discrepencies_progress',
-            // 'rereview_lp_and_vus_progress',
-            // 'rereview_lb_progress',
-            'member_designation_changed',
-            // 'specification_plans', // deprecated by Danielle Azzariti Feb. 2022
+            'external_funding',
+            'funding_plans',
+            'submit_clinvar',
+            'system_discrepancies',
+            'changes_to_call_frequency',
             'specifications_for_new_gene',
         ];
 
@@ -293,8 +276,8 @@ class SubmitAnnualUpdateTest extends TestCase
             $response = $response->assertJsonFragment([$field => ['This is required.']]);
         }
     }
-    
-    
+
+
     #[Test]
     public function validates_conditionally_required_fields_for_vceps()
     {
@@ -308,13 +291,16 @@ class SubmitAnnualUpdateTest extends TestCase
         $this->expertPanel->group->update(['group_type_id' => config('groups.types.vcep.id')]);
         $annualReview = AnnualUpdate::create([
             'expert_panel_id'=>$this->expertPanel->id,
+            'submitter_id' => $this->coordinator->id,
             'data' => [
-                'specification_progress' => 'yes-pending-approval',
                 'ongoing_plans_updated' => 'yes',
+                'external_funding' => 'yes',
+                'external_funding_type' => 'other',
+                'funding_plans' => 'yes',
+                'submit_clinvar' => 'yes',
+                'system_discrepancies' => 'none',
                 'changes_to_call_frequency' => 'yes',
-                'cochair_commitment' => 'no',
-                'applied_for_funding' => 'yes',
-                'funding' => 'other',
+                'cochair_commitment' => 'yes',
                 'vci_use' => 'no',
                 'specifications_for_new_gene' => 'yes',
             ]
@@ -322,14 +308,10 @@ class SubmitAnnualUpdateTest extends TestCase
 
         $conditionalRequiredFields = [
             'vci_use_details',
-            // 'variant_workflow_changes_details', // deprecated by Danielle Azzariti Feb. 2022
-            // 'ongoing_plans_update_details',
-            // 'cochair_commitment_details',
-            'funding_other_details',
+            'external_funding_other_details',
+            'funding_plans_details',
             'changes_to_call_frequency_details',
-            // 'specification_plans_details' // deprecated by Danielle Azzariti Feb. 2022
             'specifications_for_new_gene_details',
-            // 'specification_progress_details',
         ];
 
         $response = $this->makeRequest($annualReview)
@@ -345,5 +327,25 @@ class SubmitAnnualUpdateTest extends TestCase
     {
         $url = '/api/groups/'.$this->expertPanel->group->uuid.'/expert-panel/annual-updates/'.$annualReview->id;
         return $this->json('POST', $url);
+    }
+
+    private function makeGcepSubmitData(array $overrides = []): array
+    {
+        return array_merge([
+            'grant' => 'UNC',
+            'ep_activity' => 'active',
+            'membership_attestation' => 'yes',
+            'goals' => 'Goal summary',
+            'cochair_commitment' => 'yes',
+            'external_funding' => 'no',
+            'funding_plans' => 'no',
+            'gci_use' => 'yes',
+            'gt_gene_list' => 'yes',
+            'gt_precuration_info' => 'yes',
+            'in_progress_count' => 0,
+            'recuration_begun' => 'yes',
+            'recuration_designees' => 'Test coordinator',
+            'ongoing_plans_updated' => 'no',
+        ], $overrides);
     }
 }
