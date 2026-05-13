@@ -5,6 +5,7 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
+import { clerkPlugin } from '@clerk/vue'
 
 const app = createApp(App)
 
@@ -98,4 +99,7 @@ app.use(store)
         }
     })
     .use(router)
+    .use(clerkPlugin, {
+        publishableKey: import.meta.env.VITE_CLERK_PUBLISHABLE_KEY,
+    })
     .mount('#app')

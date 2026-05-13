@@ -4,7 +4,7 @@ namespace App\Modules\Group\Actions;
 
 use Ramsey\Uuid\Uuid;
 use App\Modules\Group\Models\Group;
-use App\Modules\Group\Models\Invite;
+use App\Modules\Person\Models\Invite;
 use Illuminate\Auth\Access\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Event;
@@ -17,6 +17,8 @@ use App\Modules\Person\Actions\PersonInvite;
 use Lorisleiva\Actions\Concerns\AsController;
 use App\Modules\Group\Http\Resources\MemberResource;
 use App\Modules\Group\Models\GroupMember;
+use App\Services\Clerk\ClerkInvitationService;
+use Carbon\Carbon;
 
 class MemberInvite
 {
@@ -27,7 +29,8 @@ class MemberInvite
         private PersonCreate $createPerson,
         private PersonInvite $invitePerson,
         private MemberAdd $addMember,
-        private MemberAssignRole $assignRole
+        private MemberAssignRole $assignRole,
+        private ClerkInvitationService $clerkInvitationService
     ) {
     }
 
@@ -46,9 +49,25 @@ class MemberInvite
             last_name: $data['last_name'],
             email: $data['email'],
             phone: valueAtIndex($data, 'phone'),
-        );
+        );        
 
-        $this->invitePerson->handle(person: $person, inviter: $group);
+        /* beginning of the clerk */
+        $invite = $this->invitePerson->handle(person: $person, inviter: $group);
+        $clerkInvitation = $this->clerkInvitationService->createForInvite($invite, $group);
+        $clerkExpiresAt = data_get($clerkInvitation, 'expires_at');
+
+        logger()->info('Clerk invitation response', $clerkInvitation);
+
+        $invite->update([
+            'clerk_invitation_id' => data_get($clerkInvitation, 'id'),
+            'expires_at' => $clerkExpiresAt ? Carbon::createFromTimestampMs($clerkExpiresAt) : now()->addDays(30),
+        ]);
+        logger()->info('Local invite updated', [
+            'invite_id' => $invite->id,
+            'clerk_invitation_id' => $invite->fresh()->clerk_invitation_id,
+            'expires_at' => optional($invite->fresh()->expires_at)?->toDateTimeString(),
+        ]);
+        /* end of the clerk */
 
         $isContact = valueAtIndex($data, 'is_contact', false);
         $newMember = $this->addMember

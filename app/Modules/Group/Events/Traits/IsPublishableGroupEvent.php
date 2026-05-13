@@ -49,6 +49,7 @@ trait IsPublishableGroupEvent
 
         $data = [
             'uuid' => $person->uuid,
+            'cleark_user_id' => $person->clerk_user_id,
             'first_name' => $person->first_name,
             'last_name' => $person->last_name,
             'roles' => $roles,
