@@ -4,13 +4,14 @@ namespace App\Modules\Group\Actions;
 use Carbon\Carbon;
 use App\Modules\Group\Models\Group;
 use Lorisleiva\Actions\ActionRequest;
-use Box\Spout\Common\Entity\Style\Color;
+use OpenSpout\Common\Entity\Row;
 use App\Modules\Group\Models\GroupMember;
-use Box\Spout\Common\Entity\Style\Border;
+use OpenSpout\Common\Entity\Style\Border;
+use OpenSpout\Common\Entity\Style\BorderPart;
+use OpenSpout\Common\Entity\Style\Color;
+use OpenSpout\Common\Entity\Style\Style;
 use Lorisleiva\Actions\Concerns\AsController;
-use Box\Spout\Writer\Common\Creator\Style\StyleBuilder;
-use Box\Spout\Writer\Common\Creator\Style\BorderBuilder;
-use Box\Spout\Writer\Common\Creator\WriterEntityFactory;
+use OpenSpout\Writer\XLSX\Writer;
 
 class SubgroupMembersMakeExcel {
     use AsController;
@@ -47,7 +48,7 @@ class SubgroupMembersMakeExcel {
         $byPersonThenGroup = $allMemberships->groupBy(['person_id', 'group_id']);
 
         // The 'Any active?' column is included to allow for easy filtering in Excel, but it redundant to whether the 'Active Memberships' column is empty or not.
-        $headerRow = WriterEntityFactory::createRowFromArray(
+        $headerRow = Row::fromValues(
             ['Name', 'Email', 'Institution', 'Active Memberships', 'Retired Memberships', 'Any active?'],
             $this->getHeaderStyle()
         );
@@ -77,14 +78,14 @@ class SubgroupMembersMakeExcel {
             $active = collect($active)->unique()->values();
             $retired = collect($retired)->unique()->values();
 
-            return WriterEntityFactory::createRowFromArray([
+            return Row::fromValues([
                 $person->name,
                 $person->email,
                 ($person->institution) ? $person->institution?->name : null,
                 $active->join(', '),
                 $retired->join(', '),
                 $active->isEmpty() ? 'No' : 'Yes',
-            ], (new StyleBuilder())->setShouldWrapText(false)->build());
+            ], (new Style())->setShouldWrapText(false));
         })->all();
 
         $writer->addRows($rows);
@@ -100,23 +101,23 @@ class SubgroupMembersMakeExcel {
 
         $headerRow = $this->getGroupHeaderRow();
 
-        $noWrapStyle = (new StyleBuilder())->setShouldWrapText(false)->build();
+        $noWrapStyle = (new Style())->setShouldWrapText(false);
 
         $memberRows = $group->members->map(function ($member) use ($noWrapStyle) {
             $row = $this->getGroupMemberRow($member);
             $row->setStyle($noWrapStyle);
             return $row;
         });
-        $writer
-            ->addRow(WriterEntityFactory::createRowFromArray([$group->name]))
-            ->addRow(WriterEntityFactory::createRowFromArray([]))
-            ->addRow($headerRow, $this->getHeaderStyle())
-            ->addRows($memberRows->toArray());
+
+        $writer->addRow(Row::fromValues([$group->name]));
+        $writer->addRow(Row::fromValues([]));
+        $writer->addRow($headerRow);
+        $writer->addRows($memberRows->toArray());
     }
 
     private function getGroupMemberRow(GroupMember $member)
     {
-        return WriterEntityFactory::createRowFromArray($this->truncateValues([
+        return Row::fromValues($this->truncateValues([
             $member->person->first_name,
             $member->person->last_name,
             $member->person->email,
@@ -156,7 +157,7 @@ class SubgroupMembersMakeExcel {
 
     private function getGroupHeaderRow()
     {
-        return WriterEntityFactory::createRowFromArray([
+        return Row::fromValues([
             'first_name',
             'last_name',
             'email',
@@ -187,20 +188,19 @@ class SubgroupMembersMakeExcel {
 
     private function getXLSXWriter($fileName)
     {
-        $writer = WriterEntityFactory::createXLSXWriter();
+        $writer = new Writer();
         $writer->openToFile($fileName);
         return $writer;
     }
 
     private function getHeaderStyle()
     {
-        $border = (new BorderBuilder())->setBorderBottom(Color::BLACK, Border::WIDTH_THIN)->build();
+        $border = new Border(new BorderPart(Border::BOTTOM, Color::BLACK, Border::WIDTH_THIN));
 
-        return (new StyleBuilder())
+        return (new Style())
             ->setFontBold()
             ->setFontSize(14)
-            ->setBorder($border)
-            ->build();
+            ->setBorder($border);
     }
 
 
