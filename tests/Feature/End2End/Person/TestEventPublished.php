@@ -14,7 +14,7 @@ trait TestEventPublished
             'message->data->person->first_name' => $person->first_name,
             'message->data->person->last_name' => $person->last_name,
             'message->data->person->email' => $person->email,
-            'message->data->person->credentials' => $person->credentials->toJson(),
+            'message->data->person->credentials' => $person->credentials->pluck('name')->toJson(),
             'message->data->person->biography' => $person->biography,
             'message->data->person->profile_photo' => $person->ProfilePhotoUrl,
         ]);
