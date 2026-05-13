@@ -2,7 +2,7 @@
 
 namespace App\Actions;
 
-use App\Models\User;
+use App\Modules\User\Models\User;
 use Illuminate\Support\Facades\Log;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsController;

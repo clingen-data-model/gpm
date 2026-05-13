@@ -26,12 +26,15 @@ class Invite extends Model
         'inviter_type',
         'person_id',
         'redeemed_at',
+        'clerk_invitation_id',
+        'expires_at'
     ];
 
     public $casts = [
         'inviter_id' => 'integer',
         'person_id' => 'integer',
-        'redeemed_at' => 'datetime'
+        'redeemed_at' => 'datetime',
+        'expires_at' => 'datetime',
     ];
 
     protected static function booted()
