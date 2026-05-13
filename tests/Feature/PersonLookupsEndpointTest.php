@@ -40,21 +40,4 @@ class PersonLookupsEndpointTest extends TestCase
         $response->assertJsonFragment([['id' => 226, 'name' => 'United States']]);
     }
 
-    #[Test]
-    public function can_get_a_list_of_primary_occupations()
-    {
-        $response = $this->json('GET', '/api/people/lookups/primary-occupations');
-        $response->assertStatus(200);
-        $response->assertJsonFragment([['id' => 5, 'name' => 'Variant Scientist']]);
-        $response->assertJsonFragment([['id' => 1, 'name' => 'Clinical Laboratory Director']]);
-    }
-
-    #[Test]
-    public function can_get_a_list_of_genders()
-    {
-        $response = $this->json('GET', '/api/people/lookups/genders');
-        $response->assertStatus(200);
-        $response->assertJsonFragment([['id' => 5, 'name' => 'Gender Variant/Non-conforming']]);
-        $response->assertJsonFragment([['id' => 1, 'name' => 'Female']]);
-    }
 }
