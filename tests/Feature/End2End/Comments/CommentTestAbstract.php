@@ -12,7 +12,7 @@ use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Database\Seeders\SubmissionTypeAndStatusSeeder;
 
-abstract class CommentTest extends TestCase
+abstract class CommentTestAbstract extends TestCase
 {
     use RefreshDatabase;
 

@@ -16,7 +16,7 @@ use App\Modules\Group\Actions\ApplicationSubmitStep;
 use Database\Seeders\NextActionAssigneesTableSeeder;
 use App\Modules\Group\Actions\JudgementCreate;
 
-abstract class JudgementTest extends TestCase
+abstract class JudgementTestAbstract extends TestCase
 {
     use RefreshDatabase;
 

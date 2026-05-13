@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Notification;
 use App\Notifications\JudgementActivityNotification;
 use PHPUnit\Framework\Attributes\Test;
 
-class CreateJudgementTest extends JudgementTest
+class CreateJudgementTest extends JudgementTestAbstract
 {
 
     #[Test]

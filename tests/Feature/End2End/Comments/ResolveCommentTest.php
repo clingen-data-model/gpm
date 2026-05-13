@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Notification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\Test;
 
-class ResolveCommentTest extends CommentTest
+class ResolveCommentTest extends CommentTestAbstract
 {
     use RefreshDatabase;
 

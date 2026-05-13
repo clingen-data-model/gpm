@@ -11,7 +11,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\Test;
 
-class UnresolveCommentTest extends CommentTest
+class UnresolveCommentTest extends CommentTestAbstract
 {
     use RefreshDatabase;
 
@@ -39,7 +39,7 @@ class UnresolveCommentTest extends CommentTest
             'resolved_at' => null
         ]);
     }
-    
+
     #[Test]
     public function unpermissioned_user_cannot_resolve_comment()
     {
@@ -47,7 +47,7 @@ class UnresolveCommentTest extends CommentTest
         $this->makeRequest()
             ->assertStatus(403);
     }
-    
+
 
     private function makeRequest($id = null): TestResponse
     {
@@ -55,6 +55,6 @@ class UnresolveCommentTest extends CommentTest
 
         return $this->json('POST', '/api/comments/'.$id.'/unresolved');
     }
-    
-    
+
+
 }

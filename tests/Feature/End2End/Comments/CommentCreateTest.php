@@ -17,7 +17,7 @@ use Database\Seeders\SubmissionTypeAndStatusSeeder;
 use App\Modules\Group\Notifications\CommentActivityNotification;
 use PHPUnit\Framework\Attributes\Test;
 
-class CommentCreateTest extends CommentTest
+class CommentCreateTest extends CommentTestAbstract
 {
     use RefreshDatabase;
 

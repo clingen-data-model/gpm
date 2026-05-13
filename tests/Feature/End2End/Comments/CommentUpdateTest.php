@@ -13,7 +13,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Modules\Group\Notifications\CommentActivityNotification;
 use PHPUnit\Framework\Attributes\Test;
 
-class CommentUpdateTest extends CommentTest
+class CommentUpdateTest extends CommentTestAbstract
 {
     use RefreshDatabase;
 

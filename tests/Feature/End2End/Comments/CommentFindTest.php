@@ -6,7 +6,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Tests\Feature\End2End\Comments\CommentTest;
 use PHPUnit\Framework\Attributes\Test;
 
-class CommentFindTest extends CommentTest
+class CommentFindTest extends CommentTestAbstract
 {
     public function setup():void
     {
@@ -21,6 +21,6 @@ class CommentFindTest extends CommentTest
             ->assertStatus(200)
             ->assertJson($this->comment->toArray());
     }
-    
-    
+
+
 }

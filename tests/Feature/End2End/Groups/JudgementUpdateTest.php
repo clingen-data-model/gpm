@@ -9,7 +9,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Modules\Group\Notifications\JudgementActivityNotification;
 use PHPUnit\Framework\Attributes\Test;
 
-class JudgementUpdateTest extends JudgementTest
+class JudgementUpdateTest extends JudgementTestAbstract
 {
     use RefreshDatabase;
 

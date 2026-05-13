@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Notification;
 use App\Modules\Group\Notifications\CommentActivityNotification;
 use PHPUnit\Framework\Attributes\Test;
 
-class CommentDeleteTest extends CommentTest
+class CommentDeleteTest extends CommentTestAbstract
 {
     private $comment;
 

@@ -6,6 +6,8 @@
     </testsuite>
     <testsuite name="Feature">
       <directory suffix="Test.php">./tests/Feature</directory>
+      <exclude>./tests/Feature/Integration</exclude>
+      <exclude>./tests/Feature/End2End</exclude>
     </testsuite>
     <testsuite name="End2End">
       <directory suffix="Test.php">./tests/Feature/End2End</directory>

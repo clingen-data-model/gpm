@@ -9,7 +9,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\Test;
 
-class CommentListTest extends CommentTest
+class CommentListTest extends CommentTestAbstract
 {
     public function setup():void
     {
@@ -46,7 +46,7 @@ class CommentListTest extends CommentTest
     public function can_retrieve_all_comments_for_a_subject()
     {
         $expectedComments = Comment::where([
-                                'subject_type' => get_class($this->expertPanel), 
+                                'subject_type' => get_class($this->expertPanel),
                                 'subject_id' => $this->expertPanel->id
                             ])->get();
 
@@ -59,13 +59,13 @@ class CommentListTest extends CommentTest
             ->assertStatus(200)
             ->assertJsonCount(2);
     }
-    
-    
-    
+
+
+
 
     private function makeRequest($queryParams = [])
     {
         return $this->json('get', '/api/comments', $queryParams);
     }
-    
+
 }

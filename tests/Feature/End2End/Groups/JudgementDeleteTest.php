@@ -10,7 +10,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Modules\Group\Notifications\JudgementActivityNotification;
 use PHPUnit\Framework\Attributes\Test;
 
-class JudgementDeleteTest extends JudgementTest
+class JudgementDeleteTest extends JudgementTestAbstract
 {
     public function setup():void
     {
