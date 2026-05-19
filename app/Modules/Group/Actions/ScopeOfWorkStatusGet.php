@@ -26,7 +26,7 @@ class ScopeOfWorkStatusGet
                 ScopeOfWorkVersion::STATUS_SUBMITTED,
                 ScopeOfWorkVersion::STATUS_REVISIONS_REQUESTED,
             ])
-            ->with(['changes', 'latestSnapshot', 'baseVersion'])
+            ->with(['changes', 'latestSnapshot', 'baseVersion', 'submission', 'submission.status', 'submission.type'])
             ->latest()
             ->first();
 
@@ -107,6 +107,14 @@ class ScopeOfWorkStatusGet
             'created_at' => optional($revision->created_at)->toISOString(),
             'submitted_at' => optional($revision->submitted_at)->toISOString(),
             'approved_at' => optional($revision->approved_at)->toISOString(),
+            'submission' => $revision->submission ? 
+                [
+                    'id' => $revision->submission->id,
+                    'status' => $revision->submission->status?->name,
+                    'type' => $revision->submission->type?->name,
+                    'created_at' => optional($revision->submission->created_at)->toISOString(),
+                    'closed_at' => optional($revision->submission->closed_at)->toISOString(),
+                ] : null,
         ];
     }
 
