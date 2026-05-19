@@ -37,6 +37,7 @@ use App\Modules\User\Models\User;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use App\Modules\ExpertPanel\Models\FundingAward;
+use App\Modules\Group\Models\ScopeOfWorkVersion;
 
 /**
  * @property int $id
@@ -460,5 +461,34 @@ class Group extends Model implements HasMembers, RecordsEvents, HasDocuments, Ha
     {
         if (is_null($this->affiliation_id)) { return null; }
         return 'https://clinicalgenome.org/affiliation/'.$this->affiliation_id;
+    }
+    
+    public function scopeOfWorkVersions()
+    {
+        return $this->hasMany(ScopeOfWorkVersion::class);
+    }
+
+    public function approvedScopeOfWorkVersions()
+    {
+        return $this->hasMany(ScopeOfWorkVersion::class)
+            ->where('status', ScopeOfWorkVersion::STATUS_APPROVED);
+    }
+
+    public function latestApprovedScopeOfWorkVersion()
+    {
+        return $this->hasOne(ScopeOfWorkVersion::class)
+            ->where('status', ScopeOfWorkVersion::STATUS_APPROVED)
+            ->latestOfMany();
+    }
+
+    public function activeScopeOfWorkRevision()
+    {
+        return $this->hasOne(ScopeOfWorkVersion::class)
+            ->whereIn('status', [
+                ScopeOfWorkVersion::STATUS_DRAFT,
+                ScopeOfWorkVersion::STATUS_SUBMITTED,
+                ScopeOfWorkVersion::STATUS_REVISIONS_REQUESTED,
+            ])
+            ->latestOfMany();
     }
 }
