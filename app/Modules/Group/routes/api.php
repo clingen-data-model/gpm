@@ -69,6 +69,7 @@ use App\Modules\Group\Actions\ScopeOfWorkStatusShow;
 use App\Modules\Group\Actions\ScopeOfWorkRevisionFinalize;
 use App\Modules\Group\Actions\ScopeOfWorkRevisionRefreshRun;
 use App\Modules\Group\Actions\ScopeOfWorkRevisionSubmit;
+use App\Modules\Group\Actions\ScopeOfWorkRevisionApprove;
 
 Route::group([
     'prefix' => 'api',
@@ -218,6 +219,7 @@ Route::group([
         Route::post('/scope-of-work/refresh', ScopeOfWorkRevisionRefreshRun::class);
         Route::post('/scope-of-work/revisions/{scopeOfWorkVersion:uuid}/finalize', ScopeOfWorkRevisionFinalize::class);
         Route::post('/scope-of-work/revisions/{scopeOfWorkVersion:uuid}/submit',ScopeOfWorkRevisionSubmit::class);
+        Route::post('/scope-of-work/revisions/{scopeOfWorkVersion:uuid}/approve',ScopeOfWorkRevisionApprove::class);
 
         Route::get('/next-actions', [GroupRelationsController::class, 'nextActions']);
         Route::put('/name', GroupNameUpdate::class);
