@@ -536,6 +536,7 @@ export default {
             showConfirmRemove.value = false;
 
             await getGenes();
+            context.emit('saved')
           } catch (error) {
             store.commit('pushError', error.response?.data || 'Failed to remove gene(s)');
           } finally {
@@ -827,7 +828,8 @@ export default {
                 await api.put(`/api/groups/${group.value.uuid}/expert-panel/genes/update-tier`, { ids: selectedGenes.value, tier: bulkTier.value });
                 store.commit('pushSuccess', `Tier updated for ${selectedGenes.value.length} genes`);
                 selectedGenes.value = [];
-                await getGenes();                
+                await getGenes();
+                context.emit('saved')
                 bulkTier.value = '';
             } catch (error) {
                 store.commit('pushError', 'Failed to update tiers in bulk');
@@ -938,6 +940,7 @@ export default {
                 await api.put(`/api/groups/${group.value.uuid}/expert-panel/genes/${gene.id}`, payload);
                 store.commit('pushSuccess', `Updated ${gene.gene_symbol} from GeneTracker`);
                 await getGenes();
+                context.emit('saved')
             } catch (e) {
                 store.commit('pushError', 'Failed to apply update from GeneTracker');
             }
