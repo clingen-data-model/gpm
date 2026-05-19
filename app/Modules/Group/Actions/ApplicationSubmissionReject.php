@@ -10,6 +10,7 @@ use Lorisleiva\Actions\Concerns\AsController;
 use App\Notifications\ValueObjects\MailAttachment;
 use App\Modules\ExpertPanel\Actions\NotifyContacts;
 use App\Modules\Group\Events\ApplicationRevisionsRequested;
+use App\Modules\Group\Actions\ScopeOfWorkRevisionRequestRevisionsFromSubmission;
 
 class ApplicationSubmissionReject
 {
@@ -17,16 +18,15 @@ class ApplicationSubmissionReject
 
     public function __construct(
         private NotifyContacts $notifyContactsAction,
+        private ScopeOfWorkRevisionRequestRevisionsFromSubmission $requestScopeOfWorkRevisions,
     )
     {
     }
     
-    
     public function handle(Group $group, Submission $submission, ?string $responseContent = null): Submission
     {
-        $submission
-            ->reject($responseContent);
-
+        $submission->reject($responseContent);
+        $this->requestScopeOfWorkRevisions->handle($submission);
         event(new ApplicationRevisionsRequested($submission, $responseContent));
 
         return $submission->fresh();
