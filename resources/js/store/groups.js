@@ -731,6 +731,13 @@ export const actions = {
         const response = await api.post(`${baseUrl}/${groupUuid}/scope-of-work/revisions/${revisionUuid}/finalize`);
         return response.data;
     },
+    async submitScopeOfWorkRevision(_, { groupUuid, revisionUuid, notes = null }) {
+        const response = await api.post(
+            `${baseUrl}/${groupUuid}/scope-of-work/revisions/${revisionUuid}/submit`,
+            { notes }
+        );
+        return response.data;
+    },
 
     async checkpoints(_, { group_ids = [], queue = true, dry_run = false }) {
       const { data } = await api.post('/api/groups/checkpoints', { group_ids, queue, dry_run })

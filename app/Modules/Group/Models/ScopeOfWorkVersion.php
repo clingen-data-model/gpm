@@ -14,6 +14,7 @@ class ScopeOfWorkVersion extends Model
     use HasFactory;
     use SoftDeletes;
 
+    // NNED TO REPLACE THIS EITHER ENUM OR CONFIG VALUES
     public const STATUS_DRAFT = 'draft';
     public const STATUS_SUBMITTED = 'submitted';
     public const STATUS_REVISIONS_REQUESTED = 'revisions_requested';
@@ -138,5 +139,10 @@ class ScopeOfWorkVersion extends Model
             self::STATUS_DRAFT,
             self::STATUS_REVISIONS_REQUESTED,
         ]);
+    }
+
+    public function submission()
+    {
+        return $this->belongsTo(Submission::class);
     }
 }

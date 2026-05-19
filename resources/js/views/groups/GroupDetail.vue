@@ -331,6 +331,9 @@ export default {
     async handleInfoSaved() {
       this.showInfoEdit = false;
       await this.getGroup();
+      if (this.group?.is_ep) {
+        await this.refreshScopeOfWorkStatus();
+      }
       this.$store.commit("pushSuccess", "Group info updated.");
     },
     async refreshScopeOfWorkStatus() {
@@ -351,6 +354,27 @@ export default {
       this.$store.commit(
         'pushSuccess',
         `Scope of Work changes finalized as version ${revision.version_label}.`
+      );
+    },
+    async submitScopeOfWorkRevision(revision) {
+      const notes = window.prompt('Add optional notes for the reviewers:', '');
+
+      if (notes === null) {
+        return;
+      }
+
+      this.scopeOfWorkStatus = await this.$store.dispatch(
+        'groups/submitScopeOfWorkRevision',
+        {
+          groupUuid: this.group.uuid,
+          revisionUuid: revision.uuid,
+          notes,
+        }
+      );
+
+      this.$store.commit(
+        'pushSuccess',
+        `Scope of Work revision ${revision.version_label} submitted for approval.`
       );
     },
     async handleModalSaved() {
@@ -397,6 +421,7 @@ export default {
       v-if="group?.is_ep"
       :status="scopeOfWorkStatus"
       @finalize="finalizeScopeOfWorkRevision"
+      @submit="submitScopeOfWorkRevision"
     />
 
 
@@ -459,6 +484,9 @@ export default {
                 :is="groupGeneList"
                 ref="groupGeneListRef"
                 v-model:editing="editingGenes"
+                @saved="refreshScopeOfWorkStatus"
+                @update="refreshScopeOfWorkStatus"
+                @geneschanged="refreshScopeOfWorkStatus"
               />
             </submission-wrapper>
             <br>
