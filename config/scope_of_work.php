@@ -83,7 +83,7 @@ return [
         'gene.add' => [
             'area' => 'gene_list',
             'change_type' => 'add',
-            'label' => 'Add gene/GDM',
+            'label' => 'Add gene',
             'groups' => [
                 'vcep' => [
                     'impact' => 'major',
@@ -110,7 +110,7 @@ return [
         'gene.remove' => [
             'area' => 'gene_list',
             'change_type' => 'remove',
-            'label' => 'Remove gene/GDM',
+            'label' => 'Remove gene',
             'groups' => [
                 'vcep' => [
                     'impact' => 'major',
@@ -133,18 +133,26 @@ return [
                 ],
             ],
         ],
-
         'gene.update_tier' => [
             'area' => 'gene_list',
             'change_type' => 'update_tier',
-            'label' => 'Update gene/GDM tier',
+            'label' => 'Update gene tier',
             'groups' => ['gcep', 'vcep', 'scvcep'],
             'impact' => 'major',
             'requires_approval' => true,
             'approval_step' => 1,
             'approvers' => 'oc_chairs',
         ],
-
+        'gene.update' => [
+            'area' => 'gene_list',
+            'change_type' => 'update',
+            'label' => 'Update gene',
+            'groups' => ['gcep', 'vcep', 'scvcep'],
+            'impact' => 'major',
+            'requires_approval' => true,
+            'approval_step' => 1,
+            'approvers' => 'oc_chairs',
+        ],
         'scope_description.update' => [
             'area' => 'scope_description',
             'change_type' => 'update',

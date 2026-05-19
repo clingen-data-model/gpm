@@ -16,6 +16,7 @@ class ScopeOfWorkSnapshotBuild
             'type',
             'status',
             'expertPanel',
+            'expertPanel.genes',
             'members',
             'members.person',
             'members.person.institution',
@@ -35,17 +36,12 @@ class ScopeOfWorkSnapshotBuild
             'scope_of_work' => [
                 'panel_name' => $group->name,
                 'scope_description' => $group->expertPanel?->scope_description,
-                'membership_description' => $group->expertPanel?->membership_description,
-
-                // We will fill these once we confirm the current relation/source.
-                'genes' => [],
-                'gdms' => [],
-
+                'membership_description' => $group->expertPanel?->membership_description,                
+                'scope_genes' => $this->scopeGenesPayload($group),
                 'members' => $this->membersPayload($group),
             ],
-
-            // Placeholder for broader EP snapshot data later.
-            // Documents/publications/funding can be added after we inspect current relations/checkpoint builder.
+            
+            // Placeholder for future supporting data that may be relevant to scope of work changes.
             'supporting_data' => [
                 'documents' => [],
                 'publications' => [],
@@ -178,6 +174,37 @@ class ScopeOfWorkSnapshotBuild
         return $expertises
             ->map(fn ($expertise) => $expertise->name ?? null)
             ->filter()
+            ->values()
+            ->all();
+    }
+
+    private function scopeGenesPayload(Group $group): array
+    {
+        $genes = $group->expertPanel?->genes ?? collect();
+
+        return $genes
+            ->map(fn ($gene) => [
+                'id' => $gene->id,
+                'hgnc_id' => $gene->hgnc_id,
+                'gene_symbol' => $gene->gene_symbol,
+                'mondo_id' => $gene->mondo_id,
+                'disease_name' => $gene->disease_name,
+                'disease_entity' => $gene->disease_entity ?? null,
+                'moi' => $gene->moi,
+                'tier' => $gene->tier,
+                'date_approved' => $gene->date_approved ?? null,
+                'gt_curation_uuid' => $gene->gt_curation_uuid ?? null,
+                'plan' => $gene->plan ?? null,
+                'created_at' => optional($gene->created_at)->toISOString(),
+                'updated_at' => optional($gene->updated_at)->toISOString(),
+                'deleted_at' => optional($gene->deleted_at)->toISOString(),
+            ])
+            ->sortBy([
+                ['gene_symbol', 'asc'],
+                ['mondo_id', 'asc'],
+                ['moi', 'asc'],
+                ['id', 'asc'],
+            ])
             ->values()
             ->all();
     }
