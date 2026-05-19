@@ -65,6 +65,9 @@ use App\Modules\Group\Actions\EmitGroupCheckpoints;
 use App\Modules\Group\Http\Controllers\Api\GroupPublicationsController;
 use App\Modules\Group\Actions\PublicationAdd;
 use App\Modules\Group\Actions\PublicationDelete;
+use App\Modules\Group\Actions\ScopeOfWorkStatusShow;
+use App\Modules\Group\Actions\ScopeOfWorkRevisionFinalize;
+use App\Modules\Group\Actions\ScopeOfWorkRevisionRefreshRun;
 
 Route::group([
     'prefix' => 'api',
@@ -209,11 +212,15 @@ Route::group([
             });
         });
 
+        // SCOPE OF WORK
+        Route::get('/scope-of-work/status', ScopeOfWorkStatusShow::class);
+        Route::post('/scope-of-work/refresh', ScopeOfWorkRevisionRefreshRun::class);
+        Route::post('/scope-of-work/revisions/{scopeOfWorkVersion:uuid}/finalize', ScopeOfWorkRevisionFinalize::class);
 
         Route::get('/next-actions', [GroupRelationsController::class, 'nextActions']);
         Route::put('/name', GroupNameUpdate::class);
         Route::put('/parent', ParentUpdate::class);
-        Route::get('/tasks', [GroupRelationsController::class, 'tasks']);
+        Route::get('/tasks', [GroupRelationsController::class, 'tasks']);        
         Route::get('/specifications', SpecificationsGet::class);
         Route::put('/status', GroupStatusUpdate::class);
         Route::put('/visibility', GroupVisibilityUpdate::class);

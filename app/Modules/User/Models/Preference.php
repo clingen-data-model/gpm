@@ -52,7 +52,7 @@ class Preference extends Model
      */
     public function users()
     {
-        return $this->belongsToMany(\App\Models\User::class);
+        return $this->belongsToMany(\App\Modules\User\Models\User::class);
     }
 
     /**
