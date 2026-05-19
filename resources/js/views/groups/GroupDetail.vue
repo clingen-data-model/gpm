@@ -33,6 +33,7 @@ import WGWebTextForm from '@/components/groups/WGWebTextForm.vue';
 import ClinvarForm from '@/components/expert_panels/ClinvarForm.vue';
 import GroupPublications from "./GroupPublications.vue";
 import FundingAwardsTab from '@/components/expert_panels/FundingAwardsTab.vue'
+import ScopeOfWorkStatusBanner from '@/components/groups/ScopeOfWorkStatusBanner.vue';
 
 import { api, isValidationError } from "../../http";
 
@@ -68,6 +69,7 @@ export default {
     ClinvarForm,
     GroupPublications,
     FundingAwardsTab,
+    ScopeOfWorkStatusBanner,
   },
   props: {
     uuid: {
@@ -124,6 +126,12 @@ export default {
         }
       }
       await Promise.all(promises);
+
+      if (group.value.is_ep) {
+        scopeOfWorkStatus.value = await store.dispatch("groups/getScopeOfWorkStatus",group.value.uuid);
+      } else {
+        scopeOfWorkStatus.value = null;
+      }
     };
     
     const needsToReviewSustainedCuration = computed(() => {
@@ -132,6 +140,8 @@ export default {
         group.value.pendingTasks.filter((pt) => Number.parseInt(pt.task_type_id) === 1).length > 0
       );
     });
+
+    const scopeOfWorkStatus = ref(null);
 
     watch(() => props.uuid, () => getGroup(), {immediate: true})
 
@@ -144,6 +154,7 @@ export default {
       needsToReviewSustainedCuration,
       getLogEntries,
       getGroup,
+      scopeOfWorkStatus
     };
   },
   data() {
@@ -248,7 +259,8 @@ export default {
           uuid: this.group.uuid,
           scopeDescription: this.group.expert_panel.scope_description,
         })
-        .then((response) => {
+        .then(async (response) => {
+          await this.refreshScopeOfWorkStatus();
           this.$store.commit("pushSuccess", "Description of scope updated.");
           return response;
         });
@@ -321,6 +333,33 @@ export default {
       await this.getGroup();
       this.$store.commit("pushSuccess", "Group info updated.");
     },
+    async refreshScopeOfWorkStatus() {
+      if (!this.group?.uuid || !this.group?.is_ep) { return; }
+      this.scopeOfWorkStatus = await this.$store.dispatch('groups/refreshScopeOfWorkStatus', this.group.uuid);
+    },
+    async finalizeScopeOfWorkRevision(revision) {
+      await this.$store.dispatch('groups/finalizeScopeOfWorkRevision', {
+        groupUuid: this.group.uuid,
+        revisionUuid: revision.uuid,
+      });
+
+      this.scopeOfWorkStatus = await this.$store.dispatch(
+        'groups/getScopeOfWorkStatus',
+        this.group.uuid
+      );
+
+      this.$store.commit(
+        'pushSuccess',
+        `Scope of Work changes finalized as version ${revision.version_label}.`
+      );
+    },
+    async handleModalSaved() {
+      this.hideModal();
+
+      if (this.group?.is_ep) {
+        await this.refreshScopeOfWorkStatus();
+      }
+    },
   },
 };
 </script>
@@ -354,13 +393,19 @@ export default {
       @show-edit="showEdit"
     />
 
+    <ScopeOfWorkStatusBanner
+      v-if="group?.is_ep"
+      :status="scopeOfWorkStatus"
+      @finalize="finalizeScopeOfWorkRevision"
+    />
+
 
     <div class="flex space-x-4">
       <div class="flex-grow mt-4">
         <ApplicationSummary v-if="group.isApplying" :group="group" />
         <tabs-container @tab-changed="handleTabChange">
           <tab-item label="Members">
-            <MemberList :group="group" />
+            <MemberList :group="group" @updated="refreshScopeOfWorkStatus" />
             <submission-wrapper
               v-if="group.is_vcep_or_scvcep"
               :show-controls="editingExpertise"
@@ -636,7 +681,7 @@ export default {
       >
         <router-view
           ref="modalView"
-          @saved="hideModal"
+          @saved="handleModalSaved"
           @canceled="hideModal"
         />
       </modal-dialog>
