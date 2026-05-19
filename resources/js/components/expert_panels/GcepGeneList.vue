@@ -285,6 +285,7 @@ export default {
             await api.post(`/api/groups/${group.value.uuid}/expert-panel/genes`, { genes: finalToAdd })
             store.commit('pushSuccess', `Added ${finalToAdd.length} gene${finalToAdd.length > 1 ? 's' : ''}.`)
             await getGenes()
+            context.emit('saved')
             showPasteModal.value = false
             bulkCheckResults.value = []
             pasteText.value = ''
@@ -316,6 +317,7 @@ export default {
 
         const onChildChange = async () => {
             await getGenes()
+            context.emit('saved')
             context.emit('geneschanged')
             context.emit('update')
         }

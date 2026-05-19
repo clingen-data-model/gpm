@@ -14,6 +14,7 @@ class ScopeOfWorkSnapshotCompare
         return collect()
             ->merge($this->comparePanelName($group, $beforeSnapshot, $afterSnapshot))
             ->merge($this->compareScopeDescription($group, $beforeSnapshot, $afterSnapshot))
+            ->merge($this->compareGenes($group, $beforeSnapshot, $afterSnapshot))
             ->merge($this->compareMembers($group, $beforeSnapshot, $afterSnapshot))
             ->values()
             ->all();
@@ -216,5 +217,134 @@ class ScopeOfWorkSnapshotCompare
     private function roleLabel(string $role): string
     {
         return ucwords(str_replace(['-', '_'], ' ', $role));
+    }
+
+    private function compareGenes(Group $group, array $beforeSnapshot, array $afterSnapshot): array
+    {
+        $beforeGenes = $this->scopeGenesByKey(data_get($beforeSnapshot, 'scope_of_work.scope_genes', []));
+        $afterGenes = $this->scopeGenesByKey(data_get($afterSnapshot, 'scope_of_work.scope_genes', []));
+
+        $changes = [];
+
+        foreach ($afterGenes as $key => $afterGene) {
+            if (!isset($beforeGenes[$key])) {
+                $changes[] = $this->changePayload($group, 'gene.add', [
+                    'entity_type' => 'gene',
+                    'entity_uuid' => $afterGene['uuid'] ?? null,
+                    'entity_label' => $this->scopeGeneLabel($afterGene),
+                    'before_value' => null,
+                    'after_value' => $afterGene,
+                ]);
+
+                continue;
+            }
+
+            $changes = array_merge(
+                $changes,
+                $this->compareExistingGene($group, $beforeGenes[$key], $afterGene)
+            );
+        }
+
+        foreach ($beforeGenes as $key => $beforeGene) {
+            if (!isset($afterGenes[$key])) {
+                $changes[] = $this->changePayload($group, 'gene.remove', [
+                    'entity_type' => 'gene',
+                    'entity_uuid' => $beforeGene['uuid'] ?? null,
+                    'entity_label' => $this->scopeGeneLabel($beforeGene),
+                    'before_value' => $beforeGene,
+                    'after_value' => null,
+                ]);
+            }
+        }
+
+        return $changes;
+    }
+
+    private function compareExistingGene(Group $group, array $beforeGene, array $afterGene): array
+    {
+        $changes = [];
+
+        if ($this->normalizeTier($beforeGene['tier'] ?? null) !== $this->normalizeTier($afterGene['tier'] ?? null)) {
+            $changes[] = $this->changePayload($group, 'gene.update_tier', [
+                'label' => 'Update gene/GDM tier',
+                'entity_type' => 'gene',
+                'entity_uuid' => $afterGene['uuid'] ?? null,
+                'entity_label' => $this->scopeGeneLabel($afterGene),
+                'field_name' => 'tier',
+                'before_value' => [
+                    'tier' => $beforeGene['tier'] ?? null,
+                ],
+                'after_value' => [
+                    'tier' => $afterGene['tier'] ?? null,
+                ],
+            ]);
+        }
+
+        $fields = [
+            'hgnc_id',
+            'gene_symbol',
+            'mondo_id',
+            'disease_name',
+            'disease_entity',
+            'moi',
+            'date_approved',
+            'gt_curation_uuid',
+            'plan',
+        ];
+
+        foreach ($fields as $field) {
+            if (($beforeGene[$field] ?? null) === ($afterGene[$field] ?? null)) {
+                continue;
+            }
+
+            $changes[] = $this->changePayload($group, 'gene.update', [
+                'label' => 'Update gene/GDM: ' . $this->fieldLabel($field),
+                'entity_type' => 'gene',
+                'entity_uuid' => $afterGene['uuid'] ?? null,
+                'entity_label' => $this->scopeGeneLabel($afterGene),
+                'field_name' => $field,
+                'before_value' => [
+                    $field => $beforeGene[$field] ?? null,
+                ],
+                'after_value' => [
+                    $field => $afterGene[$field] ?? null,
+                ],
+            ]);
+        }
+
+        return $changes;
+    }
+
+    private function scopeGenesByKey(array $genes): array
+    {
+        return collect($genes)->mapWithKeys(function ($gene) {
+                return [$gene['id'] => $gene];
+            })
+            ->all();
+    }
+
+    private function scopeGeneLabel(array $gene): string
+    {
+        $parts = array_filter([
+            $gene['gene_symbol'] ?? null,
+            $gene['mondo_id'] ?? null,
+            $gene['moi'] ?? null,
+        ]);
+
+        return implode(' - ', $parts);
+    }
+
+    private function normalizeTier(mixed $tier): ?string
+    {
+        if ($tier === '' || $tier === 'null') {
+            return null;
+        }
+
+        return is_null($tier) ? null : (string) $tier;
+    }
+
+    private function fieldLabel(string $field): string
+    {
+        return ucwords(str_replace('_', ' ', $field));
     }
 }
