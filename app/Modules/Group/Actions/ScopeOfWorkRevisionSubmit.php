@@ -32,9 +32,12 @@ class ScopeOfWorkRevisionSubmit
             abort(404);
         }
 
-        if ($revision->status !== ScopeOfWorkVersion::STATUS_DRAFT) {
+        if (!in_array($revision->status, [
+            ScopeOfWorkVersion::STATUS_DRAFT,
+            ScopeOfWorkVersion::STATUS_REVISIONS_REQUESTED,
+        ], true)) {
             throw ValidationException::withMessages([
-                'revision' => 'Only draft Scope of Work revisions can be submitted.',
+                'revision' => 'Only draft or revisions-requested Scope of Work revisions can be submitted.',
             ]);
         }
 
