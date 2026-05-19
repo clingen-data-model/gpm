@@ -19,6 +19,7 @@ export default {
         default: false
       }
     },
+    emits: ['updated'],
     setup() {
         const {sort, filter} = sortAndFilter({field: 'person.last_name', desc: false});
 
@@ -181,50 +182,51 @@ export default {
             this.showFilter = !this.showFilter;
         },
         matchesFilters(member) {
-            if (this.filters.keyword && !member.matchesKeyword(this.filters.keyword)) {
-                return false;
-            }
-            if (this.filters.roleId && !member.hasRole(this.filters.roleId)) {
-                return false;
-            }
-            if (this.filters.needsCoi && member.coiUpToDate()) {
-                return false;
-            }
+          if (this.filters.keyword && !member.matchesKeyword(this.filters.keyword)) {
+            return false;
+          }
+          if (this.filters.roleId && !member.hasRole(this.filters.roleId)) {
+            return false;
+          }
+          if (this.filters.needsCoi && member.coiUpToDate()) {
+            return false;
+          }
 
-            if (this.filters.needsTraining && member.trainingComplete()) {
-                return false;
-            }
+          if (this.filters.needsTraining && member.trainingComplete()) {
+            return false;
+          }
 
-            return true;
+          return true;
         },
         toggleItemDetails(item) {
-            item.showDetails = !item.showDetails;
+          item.showDetails = !item.showDetails;
         },
         editMember (member) {
-            this.$router.push(this.append(this.$route.path, `members/${member.id}`))
+          this.$router.push(this.append(this.$route.path, `members/${member.id}`))
         },
 
         // Retire member
         confirmRetireMember (member) {
-            this.showConfirmRetire = true;
-            this.selectedMember = member;
+          this.showConfirmRetire = true;
+          this.selectedMember = member;
         },
         async retireMember () {
-            try {
-                await this.$store.dispatch('groups/memberRetire', {
-                    uuid: this.group.uuid,
-                    memberId: this.selectedMember.id,
-                    startDate: this.selectedMember.start_date,
-                    endDate: new Date().toISOString()
-                });
-                this.cancelRetire();
-            } catch (error) {
-                console.error(error);
-            }
+          try {
+            await this.$store.dispatch('groups/memberRetire', {
+              uuid: this.group.uuid,
+              memberId: this.selectedMember.id,
+              startDate: this.selectedMember.start_date,
+              endDate: new Date().toISOString()
+            });
+            this.cancelRetire();
+            this.$emit('updated');
+          } catch (error) {
+              console.error(error);
+          }
         },
         cancelRetire () {
-            this.selectedMember = null;
-            this.showConfirmRetire = false;
+          this.selectedMember = null;
+          this.showConfirmRetire = false;
         },
 
         // Unretire Member
@@ -234,43 +236,45 @@ export default {
         //     // this.selectedMember = member;
         // },
         async unretireMember () {
-            try {
-                await this.$store.dispatch('groups/memberUnretire', {
-                    uuid: this.group.uuid,
-                    memberId: this.selectedMember.id,
-                });
-                this.cancelUnretire();
-            } catch (error) {
-                console.error(error);
-            }
+          try {
+            await this.$store.dispatch('groups/memberUnretire', {
+              uuid: this.group.uuid,
+              memberId: this.selectedMember.id,
+            });
+            this.cancelUnretire();
+            this.$emit('updated');
+          } catch (error) {
+            console.error(error);
+          }
         },
         cancelUnretire () {
-            this.selectedMember = null;
-            this.showConfirmUnretire = false;
+          this.selectedMember = null;
+          this.showConfirmUnretire = false;
         },
 
 
         // Remove Member
         confirmRemoveMember (member) {
-            this.showConfirmRemove = true;
-            this.selectedMember = member;
+          this.showConfirmRemove = true;
+          this.selectedMember = member;
         },
         async removeMember () {
-            try {
-                await this.$store.dispatch('groups/memberRemove', {
-                    uuid: this.group.uuid,
-                    memberId: this.selectedMember.id,
-                    startDate: this.selectedMember.start_date,
-                    endDate: new Date().toISOString()
-                });
-                this.cancelRemove();
-            } catch (error) {
-                console.error(error);
-            }
+          try {
+            await this.$store.dispatch('groups/memberRemove', {
+              uuid: this.group.uuid,
+              memberId: this.selectedMember.id,
+              startDate: this.selectedMember.start_date,
+              endDate: new Date().toISOString()
+            });
+            this.cancelRemove();
+            this.$emit('updated');
+          } catch (error) {
+            console.error(error);
+          }
         },
         cancelRemove () {
-            this.selectedMember = null;
-            this.showConfirmRemove = false;
+          this.selectedMember = null;
+          this.showConfirmRemove = false;
         },
 
 
