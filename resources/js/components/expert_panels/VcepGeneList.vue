@@ -6,7 +6,7 @@
       <div v-if="editing" class="flex items-center gap-2">
         <button class="btn blue" @click="startAdd" :disabled="isFormVisible">+ Add Gene</button>
       </div>
-      <EditIconButton v-else-if="(hasRole('super-admin') || hasRole('super-user')) && !editing" @click="$emit('update:editing', true)" />
+      <EditIconButton v-else-if="hasAnyPermission(['groups-manage', ['application-edit', group]]) && !editing" @click="$emit('update:editing', true)" />
 
       <div class="flex items-center gap-2 flex-wrap">
         <!-- Search -->

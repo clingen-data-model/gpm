@@ -384,6 +384,18 @@ export default {
         await this.refreshScopeOfWorkStatus();
       }
     },
+    async approveScopeOfWorkRevision(revision) {
+      this.scopeOfWorkStatus = await this.$store.dispatch('groups/approveScopeOfWorkRevision', { groupUuid: this.group.uuid, revisionUuid: revision.uuid });
+      this.$store.commit('pushSuccess', `Scope of Work revision ${revision.version_label} approved.`);
+    },
+
+    async requestScopeOfWorkRevisionChanges(revision) {
+      const notes = window.prompt('Enter revision request notes:', '');
+      if (notes === null) { return; }
+      await this.$store.dispatch('groups/requestScopeOfWorkRevisionChanges', { groupUuid: this.group.uuid, submissionId: revision.submission.id, notes } );
+      this.scopeOfWorkStatus = await this.$store.dispatch('groups/getScopeOfWorkStatus', this.group.uuid);
+      this.$store.commit('pushSuccess', `Revisions requested for Scope of Work revision ${revision.version_label}.`);
+    },
   },
 };
 </script>
@@ -420,8 +432,11 @@ export default {
     <ScopeOfWorkStatusBanner
       v-if="group?.is_ep"
       :status="scopeOfWorkStatus"
+      :can-manage="hasPermission('ep-applications-manage')"
       @finalize="finalizeScopeOfWorkRevision"
       @submit="submitScopeOfWorkRevision"
+      @approve="approveScopeOfWorkRevision"
+      @request-revisions="requestScopeOfWorkRevisionChanges"
     />
 
 

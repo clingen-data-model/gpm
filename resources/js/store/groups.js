@@ -738,6 +738,19 @@ export const actions = {
         );
         return response.data;
     },
+    async approveScopeOfWorkRevision(_, { groupUuid, revisionUuid }) {
+        const response = await api.post(`${baseUrl}/${groupUuid}/scope-of-work/revisions/${revisionUuid}/approve`);
+        return response.data;
+    },
+
+    async requestScopeOfWorkRevisionChanges(_, { groupUuid, submissionId, notes = null }) {
+        const response = await api.post(`${baseUrl}/${groupUuid}/application/submission/${submissionId}/rejection`, {
+                notify_contacts: false,
+                body: notes,
+            }
+        );
+        return response.data;
+    },
 
     async checkpoints(_, { group_ids = [], queue = true, dry_run = false }) {
       const { data } = await api.post('/api/groups/checkpoints', { group_ids, queue, dry_run })

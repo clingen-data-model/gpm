@@ -142,6 +142,12 @@ class GroupPolicy
             || $user->hasGroupPermissionTo('application-edit', $group);
     }
 
+    public function updateGeneTier(User $user, Group $group)
+    {
+        return $user->hasPermissionTo('ep-applications-manage')
+            || $user->hasGroupPermissionTo('application-edit', $group);
+    }
+
     /**
      * Determine whether the user can remove a gene to an EPs scope.
      *
@@ -151,7 +157,7 @@ class GroupPolicy
      */
     public function removeGene(User $user, Group $group)
     {
-        return $user->hasPermissionTo('ep-applications-manage')
+        return $user->hasPermissionTo('groups-manage')
             || $user->hasGroupPermissionTo('application-edit', $group);
     }
 
