@@ -46,11 +46,22 @@
             Finalize as version {{ status.active_revision.version_label }}
         </button>
 
-        <span
-            v-else-if="status.active_revision.summary.requires_submission"
-            class="text-sm font-semibold text-blue-900"
+        <button
+          v-else-if="
+              status.active_revision.status === 'draft' &&
+              status.active_revision.summary.requires_submission
+          "
+          type="button"
+          class="btn btn-xs"
+          @click="$emit('submit', status.active_revision)"
         >
-            Approval submission will be required for these changes.
+          Submit for approval
+        </button>
+        <span
+          v-else-if="status.active_revision.status === 'submitted'"
+          class="text-sm font-semibold text-blue-900"
+        >
+          Submitted for approval.
         </span>
     </div>
     </div>
@@ -66,5 +77,5 @@ defineProps({
   },
 });
 
-defineEmits(['finalize']);
+defineEmits(['finalize', 'submit']);
 </script>

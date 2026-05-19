@@ -68,6 +68,7 @@ use App\Modules\Group\Actions\PublicationDelete;
 use App\Modules\Group\Actions\ScopeOfWorkStatusShow;
 use App\Modules\Group\Actions\ScopeOfWorkRevisionFinalize;
 use App\Modules\Group\Actions\ScopeOfWorkRevisionRefreshRun;
+use App\Modules\Group\Actions\ScopeOfWorkRevisionSubmit;
 
 Route::group([
     'prefix' => 'api',
@@ -217,6 +218,7 @@ Route::group([
         Route::get('/scope-of-work/status', ScopeOfWorkStatusShow::class);
         Route::post('/scope-of-work/refresh', ScopeOfWorkRevisionRefreshRun::class);
         Route::post('/scope-of-work/revisions/{scopeOfWorkVersion:uuid}/finalize', ScopeOfWorkRevisionFinalize::class);
+        Route::post('/scope-of-work/revisions/{scopeOfWorkVersion:uuid}/submit',ScopeOfWorkRevisionSubmit::class);
 
         Route::get('/next-actions', [GroupRelationsController::class, 'nextActions']);
         Route::put('/name', GroupNameUpdate::class);
