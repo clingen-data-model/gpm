@@ -35,6 +35,7 @@ import GroupPublications from "./GroupPublications.vue";
 import FundingAwardsTab from '@/components/expert_panels/FundingAwardsTab.vue'
 import ScopeOfWorkStatusBanner from '@/components/groups/ScopeOfWorkStatusBanner.vue';
 import ScopeOfWorkHistory from '@/components/groups/ScopeOfWorkHistory.vue';
+import ScopeOfWorkComparison from '@/components/groups/ScopeOfWorkComparison.vue';
 
 import { api, isValidationError } from "../../http";
 
@@ -72,6 +73,7 @@ export default {
     FundingAwardsTab,
     ScopeOfWorkStatusBanner,
     ScopeOfWorkHistory,
+    ScopeOfWorkComparison,
   },
   props: {
     uuid: {
@@ -171,6 +173,7 @@ export default {
       ongoingPlansErrors: {},
       errors: {},
       scopeOfWorkHistory: null,
+      scopeOfWorkComparison: null,
     };
   },
   computed: {
@@ -412,6 +415,16 @@ export default {
         this.group.uuid
       );
       console.log('SoW history loaded:', this.scopeOfWorkHistory);
+    },
+    async compareScopeOfWorkVersions({ fromVersion, toVersion }) {
+      this.scopeOfWorkComparison = await this.$store.dispatch(
+        'groups/compareScopeOfWorkVersions',
+        {
+          groupUuid: this.group.uuid,
+          fromVersionUuid: fromVersion.uuid,
+          toVersionUuid: toVersion.uuid,
+        }
+      );
     },
   },
 };
@@ -669,7 +682,16 @@ export default {
               Refresh history
             </button>
 
-            <ScopeOfWorkHistory :history="scopeOfWorkHistory" />
+            <!-- Comparison view modal , I just want to hide it for now -->
+            <ScopeOfWorkComparison v-if="false"
+              :comparison="scopeOfWorkComparison"
+              @close="scopeOfWorkComparison = null"
+            />
+
+            <ScopeOfWorkHistory
+              :history="scopeOfWorkHistory"
+              @compare="compareScopeOfWorkVersions"
+            />
           </tab-item>
 
           <tab-item label="Admin" :visible="hasPermission('groups-manage')">

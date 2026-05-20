@@ -757,6 +757,13 @@ export const actions = {
         return api.get(`${baseUrl}/${uuid}/scope-of-work/history`).then(response => response.data);
     },
 
+    async compareScopeOfWorkVersions(_, { groupUuid, fromVersionUuid, toVersionUuid }) {
+        const response = await api.get(
+            `${baseUrl}/${groupUuid}/scope-of-work/versions/${fromVersionUuid}/compare/${toVersionUuid}`
+        );
+        return response.data;
+    },
+
     async checkpoints(_, { group_ids = [], queue = true, dry_run = false }) {
       const { data } = await api.post('/api/groups/checkpoints', { group_ids, queue, dry_run })
       return data; // { status, accepted, batch_id, ids, denied_ids, not_found_ids }
