@@ -34,6 +34,7 @@ import ClinvarForm from '@/components/expert_panels/ClinvarForm.vue';
 import GroupPublications from "./GroupPublications.vue";
 import FundingAwardsTab from '@/components/expert_panels/FundingAwardsTab.vue'
 import ScopeOfWorkStatusBanner from '@/components/groups/ScopeOfWorkStatusBanner.vue';
+import ScopeOfWorkHistory from '@/components/groups/ScopeOfWorkHistory.vue';
 
 import { api, isValidationError } from "../../http";
 
@@ -70,6 +71,7 @@ export default {
     GroupPublications,
     FundingAwardsTab,
     ScopeOfWorkStatusBanner,
+    ScopeOfWorkHistory,
   },
   props: {
     uuid: {
@@ -168,6 +170,7 @@ export default {
       showConfirmDelete: false,
       ongoingPlansErrors: {},
       errors: {},
+      scopeOfWorkHistory: null,
     };
   },
   computed: {
@@ -306,6 +309,9 @@ export default {
       if (tabName === "Publications" && this.$refs.groupPublicationsRef) {
         this.$refs.groupPublicationsRef.refresh();
       }
+      if (tabName === "Revisions") {
+        this.loadScopeOfWorkHistory();
+      }
     },
     initDelete() {
       this.showConfirmDelete = true;
@@ -395,6 +401,17 @@ export default {
       await this.$store.dispatch('groups/requestScopeOfWorkRevisionChanges', { groupUuid: this.group.uuid, submissionId: revision.submission.id, notes } );
       this.scopeOfWorkStatus = await this.$store.dispatch('groups/getScopeOfWorkStatus', this.group.uuid);
       this.$store.commit('pushSuccess', `Revisions requested for Scope of Work revision ${revision.version_label}.`);
+    },
+    async loadScopeOfWorkHistory() {
+      if (!this.group?.uuid || !this.group?.is_ep) {
+        return;
+      }
+
+      this.scopeOfWorkHistory = await this.$store.dispatch(
+        'groups/getScopeOfWorkHistory',
+        this.group.uuid
+      );
+      console.log('SoW history loaded:', this.scopeOfWorkHistory);
     },
   },
 };
@@ -645,6 +662,14 @@ export default {
             <button class="btn btn-xs mt-1" @click="getLogEntries">
               Refresh
             </button>
+          </tab-item>
+
+          <tab-item label="Revisions" :visible="group.is_ep">
+            <button class="btn btn-xs mb-3" @click="loadScopeOfWorkHistory">
+              Refresh history
+            </button>
+
+            <ScopeOfWorkHistory :history="scopeOfWorkHistory" />
           </tab-item>
 
           <tab-item label="Admin" :visible="hasPermission('groups-manage')">
