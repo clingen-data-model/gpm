@@ -70,6 +70,7 @@ use App\Modules\Group\Actions\ScopeOfWorkRevisionFinalize;
 use App\Modules\Group\Actions\ScopeOfWorkRevisionRefreshRun;
 use App\Modules\Group\Actions\ScopeOfWorkRevisionSubmit;
 use App\Modules\Group\Actions\ScopeOfWorkRevisionApprove;
+use App\Modules\Group\Http\Controllers\Api\ScopeOfWorkController;
 
 Route::group([
     'prefix' => 'api',
@@ -215,11 +216,16 @@ Route::group([
         });
 
         // SCOPE OF WORK
-        Route::get('/scope-of-work/status', ScopeOfWorkStatusShow::class);
-        Route::post('/scope-of-work/refresh', ScopeOfWorkRevisionRefreshRun::class);
-        Route::post('/scope-of-work/revisions/{scopeOfWorkVersion:uuid}/finalize', ScopeOfWorkRevisionFinalize::class);
-        Route::post('/scope-of-work/revisions/{scopeOfWorkVersion:uuid}/submit',ScopeOfWorkRevisionSubmit::class);
-        Route::post('/scope-of-work/revisions/{scopeOfWorkVersion:uuid}/approve',ScopeOfWorkRevisionApprove::class);
+        Route::group(['prefix' => '/scope-of-work'], function () {
+            Route::get('/status', ScopeOfWorkStatusShow::class);
+            Route::post('/refresh', ScopeOfWorkRevisionRefreshRun::class);
+            Route::post('/revisions/{scopeOfWorkVersion:uuid}/finalize', ScopeOfWorkRevisionFinalize::class);
+            Route::post('/revisions/{scopeOfWorkVersion:uuid}/submit',ScopeOfWorkRevisionSubmit::class);
+            Route::post('/revisions/{scopeOfWorkVersion:uuid}/approve',ScopeOfWorkRevisionApprove::class);
+            Route::get('/status', [ScopeOfWorkController::class, 'status']);
+            Route::get('/history', [ScopeOfWorkController::class, 'history']);
+            Route::get('/versions/{fromVersionUuid}/compare/{toVersionUuid}',[ScopeOfWorkController::class, 'compare']);
+        });        
 
         Route::get('/next-actions', [GroupRelationsController::class, 'nextActions']);
         Route::put('/name', GroupNameUpdate::class);
