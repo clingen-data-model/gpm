@@ -16,15 +16,19 @@ export default {
     },
     props: {
         editing: {
-            type: Boolean,
-            required: false,
-            default: true
+          type: Boolean,
+          required: false,
+          default: true
         },
         errors: {
-            type: Object,
-            required: false,
-            default: () => ({}),
+          type: Object,
+          required: false,
+          default: () => ({}),
         },
+        readonly: {
+          type: Boolean,
+          default: false
+        }
     },
     emits: [
         "update:editing",
@@ -58,7 +62,7 @@ export default {
     <header class="flex justify-between items-center">
       <h4>Description of Scope</h4>
       <EditIconButton
-        v-if="hasAnyPermission(['groups-manage', ['application-edit', group]]) && !editing"
+        v-if="hasAnyPermission(['groups-manage', ['application-edit', group]]) && !editing && !readonly"
         @click="$emit('update:editing', true)"
       />
     </header>

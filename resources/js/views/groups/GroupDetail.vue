@@ -181,7 +181,10 @@ export default {
       return this.hasPermission('annual-updates-manage')
         && this.group.expert_panel
         && !this.group.expert_panel.annualUpdate;
-    }
+    },
+    scopeOfWorkIsUnderReview() {
+      return this.scopeOfWorkStatus?.active_revision?.status === 'submitted';
+    },
   },
   watch: {
     $route() {
@@ -214,6 +217,11 @@ export default {
       }
     },
     showEdit() {
+      if (this.scopeOfWorkIsUnderReview && this.group?.is_ep) {
+        this.$store.commit("pushError", "Scope of Work changes are currently under review. Please wait until the revision is approved or revisions are requested.");
+        return;
+      }
+
       this.showInfoEdit = true;
     },
     cancelForm(modelAttr) {
@@ -247,6 +255,10 @@ export default {
         });
     },
     saveMembershipDescription() {
+      if (this.scopeOfWorkIsUnderReview) {
+        this.$store.commit("pushError", "Scope of Work changes are currently under review.");
+        return Promise.resolve();
+      }
       return this.$store
         .dispatch("groups/membershipDescriptionUpdate", {
           uuid: this.group.uuid,
@@ -260,6 +272,10 @@ export default {
         });
     },
     saveScopeDescription() {
+      if (this.scopeOfWorkIsUnderReview) {
+        this.$store.commit("pushError", "Scope of Work changes are currently under review.");
+        return Promise.resolve();
+      }
       return this.$store
         .dispatch("groups/scopeDescriptionUpdate", {
           uuid: this.group.uuid,
@@ -467,7 +483,11 @@ export default {
       @submit="submitScopeOfWorkRevision"
       @approve="approveScopeOfWorkRevision"
       @request-revisions="requestScopeOfWorkRevisionChanges"
-    />
+    >
+      <static-alert v-if="scopeOfWorkIsUnderReview" variant="info" class="mb-3">
+        Scope of Work changes are currently under review. Editing is disabled until the revision is approved or revisions are requested.
+      </static-alert>
+    </ScopeOfWorkStatusBanner>
 
 
     <div class="flex space-x-4">
@@ -475,7 +495,7 @@ export default {
         <ApplicationSummary v-if="group.isApplying" :group="group" />
         <tabs-container @tab-changed="handleTabChange">
           <tab-item label="Members">
-            <MemberList :group="group" @updated="refreshScopeOfWorkStatus" />
+            <MemberList :group="group" :readonly="scopeOfWorkIsUnderReview" @updated="refreshScopeOfWorkStatus" />
             <submission-wrapper
               v-if="group.is_vcep_or_scvcep"
               :show-controls="editingExpertise"
@@ -529,6 +549,7 @@ export default {
                 :is="groupGeneList"
                 ref="groupGeneListRef"
                 v-model:editing="editingGenes"
+                :readonly="scopeOfWorkIsUnderReview"
                 @saved="refreshScopeOfWorkStatus"
                 @update="refreshScopeOfWorkStatus"
                 @geneschanged="refreshScopeOfWorkStatus"
@@ -537,28 +558,26 @@ export default {
             <br>
             <submission-wrapper
               :visible="group.is_ep"
-              :show-controls="editingGcepRationale"
-              @submitted="
-                submitForm('saveGcepRationale', 'editingGcepRationale')
-              "
+              :show-controls="editingGcepRationale && !scopeOfWorkIsUnderReview"
+              @submitted="submitForm('saveGcepRationale', 'editingGcepRationale')"
               @canceled="cancelForm('editingGcepRationale')"
             >
               <GcepRationaleForm
                 v-model:editing="editingGcepRationale"
+                :readonly="scopeOfWorkIsUnderReview"
                 :errors="errors"
               />
             </submission-wrapper>
             <br>
             <submission-wrapper
               :visible="group.is_ep"
-              :show-controls="editingScopeDescription"
-              @submitted="
-                submitForm('saveScopeDescription', 'editingScopeDescription')
-              "
+              :show-controls="editingScopeDescription && !scopeOfWorkIsUnderReview"
+              @submitted="submitForm('saveScopeDescription', 'editingScopeDescription')"
               @canceled="cancelForm('editingScopeDescription')"
             >
               <ScopeDescriptionForm
                 v-model:editing="editingScopeDescription"
+                :readonly="scopeOfWorkIsUnderReview"
                 :errors="errors"
               />
             </submission-wrapper>

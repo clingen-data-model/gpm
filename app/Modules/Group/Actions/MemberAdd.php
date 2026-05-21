@@ -17,6 +17,7 @@ use App\Modules\Group\Notifications\AddedToGroupNotification;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 use App\Notifications\Alerts\DuplicateGroupMemberAddAttempt;
+use App\Modules\Group\Actions\ScopeOfWorkRevisionGuard;
 
 class MemberAdd
 {
@@ -25,13 +26,17 @@ class MemberAdd
 
     private $sendNotification = true;
 
-    public function __construct(private MemberAssignRole $assignRoleAction)
-    {
+    public function __construct(
+        private MemberAssignRole $assignRoleAction,
+        private ScopeOfWorkRevisionGuard $scopeOfWorkRevisionGuard,
+    ) {
     }
 
 
     public function handle(Group $group, Person $person, ?array $data = []): GroupMember
     {
+        $this->scopeOfWorkRevisionGuard->ensureNotUnderReview($group);
+        
         $memberData = array_merge([
             'group_id' => $group->id,
             'person_id' => $person->id

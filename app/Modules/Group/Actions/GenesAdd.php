@@ -11,18 +11,24 @@ use Lorisleiva\Actions\Concerns\AsController;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Validation\Rule;
+use App\Modules\Group\Actions\ScopeOfWorkRevisionGuard;
 
 class GenesAdd
 {
     use AsController;
     use AsObject;
 
-    public function __construct(private GenesAddToVcep $addGenesToVcep, private GenesSyncToGcep $addGenesToGcep)
+    public function __construct(
+        private GenesAddToVcep $addGenesToVcep, 
+        private GenesSyncToGcep $addGenesToGcep, 
+        private ScopeOfWorkRevisionGuard $scopeOfWorkRevisionGuard)
     {
     }
 
     public function handle(Group $group, $genes): Group
     {
+        $this->scopeOfWorkRevisionGuard->ensureNotUnderReview($group);
+        
         if (!$group->isExpertPanel) {
             throw ValidationException::withMessages(['group' => 'Gene can only be added to an Expert Panel.']);
         }

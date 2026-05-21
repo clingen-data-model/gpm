@@ -11,14 +11,21 @@ use Lorisleiva\Actions\Concerns\AsObject;
 use Lorisleiva\Actions\Concerns\AsController;
 use App\Modules\Group\Events\MemberRoleRemoved;
 use App\Modules\Group\Http\Resources\MemberResource;
+use App\Modules\Group\Actions\ScopeOfWorkRevisionGuard;
 
 class MemberRemoveRole
 {
     use AsController;
     use AsObject;
 
+    public function __construct(
+        private ScopeOfWorkRevisionGuard $scopeOfWorkRevisionGuard,
+    ) {
+    }
+
     public function handle(GroupMember $groupMember, Role $role): GroupMember
     {
+        $this->scopeOfWorkRevisionGuard->ensureNotUnderReview($group);
         $groupMember->removeRole($role);
 
         Event::dispatch(new MemberRoleRemoved($groupMember, $role));

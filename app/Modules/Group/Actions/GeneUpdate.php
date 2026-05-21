@@ -12,6 +12,7 @@ use Lorisleiva\Actions\Concerns\AsController;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Auth\Access\AuthorizationException;
 use App\Modules\Group\Http\Resources\GroupResource;
+use App\Modules\Group\Actions\ScopeOfWorkRevisionGuard;
 
 use function Psy\debug;
 
@@ -20,11 +21,14 @@ class GeneUpdate
     use AsObject;
     use AsController;
 
-    public function __construct() { }
+    public function __construct(
+        private ScopeOfWorkRevisionGuard $scopeOfWorkRevisionGuard,
+    ) { }
     
 
     public function handle(Group $group, Gene $gene, array $data): Group
     {
+        $this->scopeOfWorkRevisionGuard->ensureNotUnderReview($group);
         $gene->update($data);
 
         return $group;
