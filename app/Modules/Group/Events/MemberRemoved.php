@@ -6,6 +6,7 @@ use App\Modules\Group\Models\Group;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
+use App\Modules\Group\Models\ScopeOfWorkVersion;
 
 class MemberRemoved extends GroupMemberEvent
 {
@@ -26,6 +27,11 @@ class MemberRemoved extends GroupMemberEvent
         $props = parent::getProperties();
         $props['end_date'] = $this->groupMember->end_date->toAtomString();
         return $props;
+    }
+
+    public function shouldPublish(): bool
+    {
+        return parent::shouldPublish() && ! ScopeOfWorkVersion::forGroup($this->group)->approved()->exists();
     }
 
 }

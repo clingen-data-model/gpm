@@ -7,6 +7,7 @@ use Illuminate\Queue\SerializesModels;
 use App\Modules\Group\Events\GeneEvent;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
+use App\Modules\Group\Models\ScopeOfWorkVersion;
 
 class GenesAdded extends GeneEvent
 {
@@ -31,5 +32,10 @@ class GenesAdded extends GeneEvent
         if ($key == 'gene') {
             return $this->genes;
         }
+    }
+
+    public function shouldPublish(): bool
+    {
+        return parent::shouldPublish() && ! ScopeOfWorkVersion::forGroup($this->group)->approved()->exists();
     }
 }
