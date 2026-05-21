@@ -8,6 +8,7 @@ use Illuminate\Queue\SerializesModels;
 use App\Modules\Group\Models\GroupMember;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
+use App\Modules\Group\Models\ScopeOfWorkVersion;
 
 class MemberRoleRemoved extends GroupMemberEvent
 {
@@ -29,6 +30,11 @@ class MemberRoleRemoved extends GroupMemberEvent
         $props = parent::getProperties();
         $props['roles'][] = $this->role->display_name;
         return $props;
+    }
+
+    public function shouldPublish(): bool
+    {
+        return parent::shouldPublish() && ! ScopeOfWorkVersion::forGroup($this->group)->approved()->exists();
     }
 
 }
