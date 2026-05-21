@@ -9,6 +9,7 @@ use App\Modules\Group\Events\GroupMemberEvent;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use App\Modules\Group\Events\Traits\IsPublishableGroupEvent;
+use App\Modules\Group\Models\ScopeOfWorkVersion;
 
 class MemberAdded extends GroupMemberEvent
 {
@@ -29,6 +30,9 @@ class MemberAdded extends GroupMemberEvent
         return Carbon::now();
     }
 
-    // No additional properties beyond those in GroupMemberEvent
+    public function shouldPublish(): bool
+    {
+        return parent::shouldPublish() && ! ScopeOfWorkVersion::forGroup($this->group)->approved()->exists();
+    }
 
 }
