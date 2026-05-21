@@ -9,13 +9,20 @@ use Illuminate\Validation\ValidationException;
 use Illuminate\Auth\Access\AuthorizationException;
 use App\Modules\Group\Http\Resources\GroupResource;
 use App\Modules\Group\Events\ScopeDescriptionUpdated;
+use App\Modules\Group\Actions\ScopeOfWorkRevisionGuard;
 
 class ScopeDescriptionUpdate
 {
     use AsAction;
+    
+    public function __construct(
+        private ScopeOfWorkRevisionGuard $scopeOfWorkRevisionGuard,
+    ) {
+    }
 
     public function handle(Group $group, ?string $description): Group
     {
+        $this->scopeOfWorkRevisionGuard->ensureNotUnderReview($group);
         if (!$group->isExpertPanel) {
             throw ValidationException::withMessages(['scope_description' => ['A description of scope can only be set for expert panels.']]);
         }

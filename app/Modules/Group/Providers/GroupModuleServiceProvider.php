@@ -21,6 +21,7 @@ use App\Modules\Group\Actions\NextActionReviewSubmissionComplete;
 use App\Modules\Group\Actions\ApplicationSubmissionMailAdminGroup;
 use App\Modules\Group\Actions\ApplicationSubmissionAssignNextAction;
 use App\Modules\Group\Actions\ApplicationRevisionsRequestedAssignNextAction;
+use App\Modules\Group\Actions\ScopeOfWorkInitialVersionCreateFromApplicationCompleted;
 
 class GroupModuleServiceProvider extends ModuleServiceProvider
 {
@@ -35,7 +36,10 @@ class GroupModuleServiceProvider extends ModuleServiceProvider
             ApplicationRevisionsRequestedAssignNextAction::class,
             NextActionReviewSubmissionComplete::class
         ],
-        ApplicationCompleted::class => [GroupAttributesUpdate::class],
+        ApplicationCompleted::class => [
+            GroupAttributesUpdate::class,
+            ScopeOfWorkInitialVersionCreateFromApplicationCompleted::class
+        ],
         GenesAdded::class => [NotifyGenesAdded::class],
         GeneRemoved::class => [NotifyGenesRemoved::class],
     ];

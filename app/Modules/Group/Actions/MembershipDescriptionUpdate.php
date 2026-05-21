@@ -9,13 +9,20 @@ use Illuminate\Validation\ValidationException;
 use Illuminate\Auth\Access\AuthorizationException;
 use App\Modules\Group\Http\Resources\GroupResource;
 use App\Modules\Group\Events\MembershipDescriptionUpdated;
+use App\Modules\Group\Actions\ScopeOfWorkRevisionGuard;
 
 class MembershipDescriptionUpdate
 {
     use AsAction;
 
+    public function __construct(
+        private ScopeOfWorkRevisionGuard $scopeOfWorkRevisionGuard,
+    ) {
+    }
+
     public function handle(Group $group, ?string $description): Group
     {
+        $this->scopeOfWorkRevisionGuard->ensureNotUnderReview($group);
         if (!$group->isVcepOrScvcep) {
             throw ValidationException::withMessages(['membership_description' => ['A membership description can only be set for VCEPs.']]);
         }

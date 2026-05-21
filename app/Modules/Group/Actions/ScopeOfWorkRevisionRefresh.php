@@ -20,6 +20,16 @@ class ScopeOfWorkRevisionRefresh
             return null;
         }
 
+        $submittedRevision = ScopeOfWorkVersion::forGroup($group)
+            ->where('status', ScopeOfWorkVersion::STATUS_SUBMITTED)
+            ->with(['changes', 'latestSnapshot', 'baseVersion'])
+            ->latest()
+            ->first();
+
+        if ($submittedRevision) {
+            return $submittedRevision;
+        }
+
         $approvedVersion = ScopeOfWorkVersion::forGroup($group)
             ->approved()
             ->with('latestSnapshot')
