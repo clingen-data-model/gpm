@@ -11,14 +11,21 @@ use Lorisleiva\Actions\Concerns\AsObject;
 use Lorisleiva\Actions\Concerns\AsController;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Collection;
+use App\Modules\Group\Actions\ScopeOfWorkRevisionGuard;
 
 class GeneRemove
 {
     use AsController;
     use AsObject;
 
+    public function __construct(
+        private ScopeOfWorkRevisionGuard $scopeOfWorkRevisionGuard,
+    ) {
+    }
+
     public function handle(Group $group, Collection $genes): Group
     {
+        $this->scopeOfWorkRevisionGuard->ensureNotUnderReview($group);
         DB::transaction(function () use ($group, $genes) {
             foreach ($genes as $gene) {
                 $gene->delete();

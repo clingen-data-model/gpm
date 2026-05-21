@@ -266,7 +266,7 @@ class ScopeOfWorkSnapshotCompare
 
         if ($this->normalizeTier($beforeGene['tier'] ?? null) !== $this->normalizeTier($afterGene['tier'] ?? null)) {
             $changes[] = $this->changePayload($group, 'gene.update_tier', [
-                'label' => 'Update gene/GDM tier',
+                'label' => 'Update gene tier',
                 'entity_type' => 'gene',
                 'entity_uuid' => $afterGene['uuid'] ?? null,
                 'entity_label' => $this->scopeGeneLabel($afterGene),
@@ -298,7 +298,7 @@ class ScopeOfWorkSnapshotCompare
             }
 
             $changes[] = $this->changePayload($group, 'gene.update', [
-                'label' => 'Update gene/GDM: ' . $this->fieldLabel($field),
+                'label' => 'Update gene: ' . $this->fieldLabel($field),
                 'entity_type' => 'gene',
                 'entity_uuid' => $afterGene['uuid'] ?? null,
                 'entity_label' => $this->scopeGeneLabel($afterGene),

@@ -13,14 +13,21 @@ use App\Modules\Group\Events\MemberRetired;
 use App\Modules\Group\Events\MemberUnretired;
 use Lorisleiva\Actions\Concerns\AsController;
 use App\Modules\Group\Http\Resources\MemberResource;
+use App\Modules\Group\Actions\ScopeOfWorkRevisionGuard;
 
 class MemberUnretire
 {
     use AsObject;
     use AsController;
 
+    public function __construct(
+        private ScopeOfWorkRevisionGuard $scopeOfWorkRevisionGuard,
+    ) {
+    }
+
     public function handle(GroupMember $groupMember): GroupMember
     {
+        $this->scopeOfWorkRevisionGuard->ensureNotUnderReview($group);
         $groupMember->update(['end_date' => null]);        
         Event::dispatch(new MemberUnretired($groupMember));
         return $groupMember;
