@@ -11,16 +11,20 @@ export default {
         RichTextEditor,
     },
     props: {
-        editing: {
-            type: Boolean,
-            required: false,
-            default: true
-        },
-        errors: {
-            type: Object,
-            required: false,
-            default: () => ({}),
-        },
+      editing: {
+        type: Boolean,
+        required: false,
+        default: true
+      },
+      errors: {
+        type: Object,
+        required: false,
+        default: () => ({}),
+      },
+      readonly: {
+        type: Boolean,
+        default: false
+      },
     },
     emits: [
         "update:editing",
@@ -74,7 +78,7 @@ export default {
     <header class="flex justify-between items-center">
       <h4>Rationale</h4>
       <EditIconButton
-        v-if="hasAnyPermission(['groups-manage', ['application-edit', group]]) && !editing"
+        v-if="hasAnyPermission(['groups-manage', ['application-edit', group]]) && !editing && !readonly"
         @click="$emit('update:editing', true)"
       />
     </header>
@@ -84,7 +88,7 @@ export default {
         — Please include rationale for how you prioritized your list and how you will handle any overlap in curation efforts, especially for genes that are in another GCEPs scope.
       </div>
       <transition name="fade" mode="out-in">
-        <div v-if="editing" class="mt-2">
+        <div v-if="editing && !readonly" class="mt-2">
           <RichTextEditor v-model="group.expert_panel.prioritization_rationale" @update:model-value="$emit('update')" />
         </div>
         <div v-else class="border-2 mt-8 p-2">
