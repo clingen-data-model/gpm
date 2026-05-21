@@ -10,14 +10,21 @@ use Lorisleiva\Actions\Concerns\AsObject;
 use App\Modules\Group\Events\MemberRemoved;
 use Lorisleiva\Actions\Concerns\AsController;
 use App\Modules\Group\Http\Resources\MemberResource;
+use App\Modules\Group\Actions\ScopeOfWorkRevisionGuard;
 
 class MemberRemove
 {
     use AsObject;
     use AsController;
 
+    public function __construct(
+        private ScopeOfWorkRevisionGuard $scopeOfWorkRevisionGuard,
+    ) {
+    }
+
     public function handle(GroupMember $groupMember, Carbon $endDate): GroupMember
     {
+        $this->scopeOfWorkRevisionGuard->ensureNotUnderReview($group);
         $groupMember->update(['end_date' => $endDate]);
         $groupMember->delete();
         

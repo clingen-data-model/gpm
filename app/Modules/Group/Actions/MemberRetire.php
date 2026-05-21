@@ -11,14 +11,21 @@ use Lorisleiva\Actions\Concerns\AsObject;
 use App\Modules\Group\Events\MemberRetired;
 use Lorisleiva\Actions\Concerns\AsController;
 use App\Modules\Group\Http\Resources\MemberResource;
+use App\Modules\Group\Actions\ScopeOfWorkRevisionGuard;
 
 class MemberRetire
 {
     use AsObject;
     use AsController;
 
+    public function __construct(
+        private ScopeOfWorkRevisionGuard $scopeOfWorkRevisionGuard,
+    ) {
+    }
+
     public function handle(GroupMember $groupMember, Carbon $endDate, ?string $reason = null, $actor = null): GroupMember
     {
+        $this->scopeOfWorkRevisionGuard->ensureNotUnderReview($group);
         $retireMember = ['end_date' => $endDate];
         if ($reason !== null) { 
             $existing = trim((string) $groupMember->notes);
