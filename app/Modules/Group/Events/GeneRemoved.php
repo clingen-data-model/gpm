@@ -7,6 +7,7 @@ use App\Modules\Group\Events\GeneEvent;
 use App\Modules\ExpertPanel\Models\Gene;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
+use App\Modules\Group\Models\ScopeOfWorkVersion;
 
 class GeneRemoved extends GeneEvent
 {
@@ -24,6 +25,11 @@ class GeneRemoved extends GeneEvent
     public function getProperties(): ?array
     {
         return ['genes' => [$this->mapGeneForMessage($this->gene)]];
+    }
+
+    public function shouldPublish(): bool
+    {
+        return parent::shouldPublish() && ! ScopeOfWorkVersion::forGroup($this->group)->approved()->exists();
     }
 
 }

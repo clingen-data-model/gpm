@@ -6,6 +6,7 @@ use App\Modules\Group\Models\Group;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
+use App\Modules\Group\Models\ScopeOfWorkVersion;
 
 class MemberUnretired extends GroupMemberEvent
 {
@@ -19,6 +20,11 @@ class MemberUnretired extends GroupMemberEvent
     public function getSubject(): Group
     {
         return $this->groupMember->group;
+    }
+
+    public function shouldPublish(): bool
+    {
+        return parent::shouldPublish() && ! ScopeOfWorkVersion::forGroup($this->group)->approved()->exists();
     }
 
     // No additional properties beyond those in GroupMemberEvent
