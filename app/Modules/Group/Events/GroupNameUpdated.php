@@ -6,6 +6,7 @@ use App\Modules\Group\Models\Group;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
+use App\Modules\Group\Models\ScopeOfWorkVersion;
 
 class GroupNameUpdated extends GroupEvent
 {
@@ -26,6 +27,11 @@ class GroupNameUpdated extends GroupEvent
             'new_name' => $this->newName,
             'old_name' => $this->oldName
         ];
+    }
+
+    public function shouldPublish(): bool
+    {
+        return parent::shouldPublish() && ! ScopeOfWorkVersion::forGroup($this->group)->approved()->exists();
     }
 
 }
