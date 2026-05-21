@@ -7,16 +7,21 @@ use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsController;
 use App\Modules\Group\Events\GroupNameUpdated;
 use App\Modules\Group\Http\Resources\GroupResource;
+use App\Modules\Group\Actions\ScopeOfWorkRevisionGuard;
 
 class GroupNameUpdate
 {
     use AsController;
 
+    public function __construct(
+        private ScopeOfWorkRevisionGuard $scopeOfWorkRevisionGuard,
+    ) {
+    }
+
     public function handle(Group $group, String $name): Group
     {
-        if ($name == $group->name) {
-            return $group;
-        }
+        $this->scopeOfWorkRevisionGuard->ensureNotUnderReview($group);
+        if ($name == $group->name) { return $group; }
 
         $oldName = $group->name;
         $group->update(['name' => $name]);

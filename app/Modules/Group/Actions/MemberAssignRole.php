@@ -11,16 +11,23 @@ use Illuminate\Validation\ValidationException;
 use App\Modules\Group\Events\MemberRoleAssigned;
 use App\Modules\Group\Http\Resources\MemberResource;
 use App\Services\CoreMemberAttestation;
+use App\Modules\Group\Actions\ScopeOfWorkRevisionGuard;
 
 class MemberAssignRole
 {
     use AsController;
     use AsObject;
 
-    public function __construct(private CoreMemberAttestation $attestation) {}
+    public function __construct(
+        private CoreMemberAttestation $attestation,
+        private ScopeOfWorkRevisionGuard $scopeOfWorkRevisionGuard,
+    ) {
+    }
 
     public function handle(GroupMember $groupMember, $roles)
     {
+        $this->scopeOfWorkRevisionGuard->ensureNotUnderReview($group);
+        
         $roles = collect($roles)
             ->map(function ($role) {
                 if (is_int($role)) {

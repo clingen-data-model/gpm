@@ -10,13 +10,20 @@ use Lorisleiva\Actions\Concerns\AsAction;
 use App\Modules\Group\Events\MemberUpdated;
 use Illuminate\Auth\Access\AuthorizationException;
 use App\Modules\Group\Http\Resources\MemberResource;
+use App\Modules\Group\Actions\ScopeOfWorkRevisionGuard;
 
 class MemberUpdate
 {
     use AsAction;
 
+    public function __construct(
+        private ScopeOfWorkRevisionGuard $scopeOfWorkRevisionGuard,
+    ) {
+    }
+
     public function handle(GroupMember $groupMember, array $data): GroupMember
     {
+        $this->scopeOfWorkRevisionGuard->ensureNotUnderReview($group);
         $groupMember->update($data);
 
         Event::dispatch(new MemberUpdated($groupMember, $data));

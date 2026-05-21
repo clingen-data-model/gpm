@@ -9,13 +9,20 @@ use Lorisleiva\Actions\Concerns\AsController;
 use Lorisleiva\Actions\Concerns\AsObject;
 use Lorisleiva\Actions\ActionRequest;
 use Illuminate\Validation\ValidationException;
+use App\Modules\Group\Actions\ScopeOfWorkRevisionGuard;
 
 class GenesUpdateTier
 {
     use AsObject, AsController;
 
+    public function __construct(
+        private ScopeOfWorkRevisionGuard $scopeOfWorkRevisionGuard,
+    ) {
+    }
+
     public function handle(array $ids, ?int $tier)
     {
+        $this->scopeOfWorkRevisionGuard->ensureNotUnderReview($group);
         if (empty($ids)) {
             throw ValidationException::withMessages([
                 'ids' => 'No gene IDs provided.'
