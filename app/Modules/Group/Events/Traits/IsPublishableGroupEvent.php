@@ -125,6 +125,19 @@ trait IsPublishableGroupEvent
             $awards = $group->fundingAwards()->get();
             $epData['funding_awards'] = $awards->map->toExchangePayload()->all();
 
+            if ($group->isScvcep) {
+                $finalSpecsTypeId = config('documents.types.final-specs.id');
+                $documents = $group->documents()->where('document_type_id', $finalSpecsTypeId)->latest('created_at')->get();                
+                $epData['scvcep_final_specification_documents'] = $documents->map(fn ($document) => [
+                    'uuid' => $document->uuid,
+                    'filename' => $document->filename,
+                    'download_url' => route('groups.final-specifications.download', [
+                        'group' => $group->uuid,
+                        'document' => $document->uuid,
+                    ]),
+                ])->values()->all();
+            }
+
             $data['expert_panel'] = $epData;
         }
 
