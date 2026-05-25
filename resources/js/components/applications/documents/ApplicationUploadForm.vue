@@ -35,6 +35,7 @@ export default {
                 file: null,
                 date_received: new Date().toISOString(),
                 step: this.step,
+                document_type_id: this.docTypeIsArray ? null : this.documentTypeId,
             },
             errors: {},
             activeDocument: {},
@@ -81,7 +82,7 @@ export default {
                         data.append(key, val);
                     })
                 data.set('file', this.$refs.fileInput.files[0]);
-                data.set('document_type_id', this.documentTypeId);
+                data.set('document_type_id', this.newDocument.document_type_id);
                 await this.$store.dispatch('groups/addApplicationDocument', {group: this.group, data});
 
                 this.clearForm();
