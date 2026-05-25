@@ -24,13 +24,10 @@ class AnnualUpdateSave
     public function asController(ActionRequest $request, $groupUuid, $annualReviewId)
     {
         $group = Group::findByUuidOrFail($groupUuid);
-        $annualReview = $group->expertPanel
-                            ->annualUpdates()
-                            ->find($annualReviewId);
+        $annualReview = $group->expertPanel->annualUpdates()->findOrFail($annualReviewId);
         $submitterId = $request->get('submitter_id');
-        $data = collect($request->get('data'))
-                    ->only($this->getDataFields())
-                    ->toArray();
+        $data = collect($request->get('data', []))->only($this->getDataFields())->toArray();
+        $data = $this->normalizeData($data);
         return $this->handle($annualReview, $submitterId, $data);
     }
 
@@ -38,6 +35,62 @@ class AnnualUpdateSave
     {
         $group = Group::findByUuidOrFail($request->group);
         return Auth::user()->can('manageAnnualUpdate', $group);
+    }
+
+    private function normalizeData(array $data): array
+    {
+        if (($data['specifications_for_new_gene'] ?? null) !== 'yes') {
+            $data['specifications_for_new_gene_details'] = null;
+        }
+
+        if (($data['external_funding'] ?? null) !== 'yes') {
+            $data['external_funding_type'] = null;
+            $data['external_funding_other_details'] = null;
+        }
+
+        if (($data['external_funding_type'] ?? null) !== 'Other') {
+            $data['external_funding_other_details'] = null;
+        }
+
+        if (($data['funding_plans'] ?? null) !== 'yes') {
+            $data['funding_plans_details'] = null;
+        }
+
+        if (($data['gci_use'] ?? null) !== 'no') {
+            $data['gci_use_details'] = null;
+        }
+
+        if (($data['gt_gene_list'] ?? null) !== 'no') {
+            $data['gt_gene_list_details'] = null;
+        }
+
+        if (($data['gt_precuration_info'] ?? null) !== 'no') {
+            $data['gt_precuration_info_details'] = null;
+        }
+
+        if (($data['ongoing_plans_updated'] ?? null) !== 'yes') {
+            $data['ongoing_plans_update_details'] = null;
+        }
+
+        if (($data['cochair_commitment'] ?? null) !== 'yes') {
+            $data['cochair_commitment_details'] = null;
+        }
+
+        if (($data['applied_for_funding'] ?? null) == 'yes') {
+            $data['funding_thoughts'] = null;
+            if (($data['funding'] ?? null) == 'Other') {
+                $data['funding_other_details'] = null;
+            }
+        } else {            
+            $data['funding'] = null;
+            $data['funding_other_details'] = null;
+        }
+
+        if (($data['changes_to_call_frequency'] ?? null) !== 'yes') {
+            $data['changes_to_call_frequency_details'] = null;
+        }
+
+        return $data;
     }
 
     private function getDataFields(): array
