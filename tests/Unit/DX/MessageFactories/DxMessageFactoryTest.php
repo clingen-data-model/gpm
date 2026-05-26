@@ -230,7 +230,7 @@ class DxMessageFactoryTest extends TestCase
             'description' => $this->expertPanel->group->description,
             'status' => $this->expertPanel->group->groupStatus->name,
             'type' => $this->expertPanel->group->fullType->name,
-            'caption' => $this->expertPanel->group->caption,
+            'excerpt' => $this->expertPanel->group->excerpt,
             'coi' => url('/coi-group/'.$this->expertPanel->group->uuid),
             'visibility' => optional($this->expertPanel->group->groupVisibility)->name,
             'expert_panel' => [
@@ -247,7 +247,6 @@ class DxMessageFactoryTest extends TestCase
                 'inactive_date' => null,
             ],
             'status_date' => $this->expertPanel->group->groupStatus->updated_at->toISO8601String(),
-            'icon_url' => $this->expertPanel->group->iconUrl,
         ], $message['data']['group']);
     }
 }

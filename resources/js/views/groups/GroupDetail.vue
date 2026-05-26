@@ -28,7 +28,7 @@ import StepTabs from "@/components/applications/StepTabs.vue";
 import ProgressChart from "@/components/applications/ProgressChart.vue";
 import SustainedCurationReviewAlert from "@/components/alerts/SustainedCurationReviewAlert.vue";
 import SubgroupList from '@/components/groups/SubgroupList.vue'
-import WGCaptionIconForm from '@/components/groups/WGCaptionIconForm.vue';
+import WGWebTextForm from '@/components/groups/WGWebTextForm.vue';
 import ClinvarForm from '@/components/expert_panels/ClinvarForm.vue';
 import GroupPublications from "./GroupPublications.vue";
 import FundingAwardsTab from '@/components/expert_panels/FundingAwardsTab.vue'
@@ -62,7 +62,7 @@ export default {
     ProgressChart,
     SustainedCurationReviewAlert,
     SubgroupList,
-    WGCaptionIconForm,
+    WGWebTextForm,
     ClinvarForm,
     GroupPublications,
     FundingAwardsTab,
@@ -366,7 +366,7 @@ export default {
             </template>
 
             <template v-if="(userInGroup(group) || hasPermission('groups-manage')) && group.is_working_group" >
-              <WGCaptionIconForm :group="group" />
+              <WGWebTextForm :group="group" />
               <br />
             </template>
 

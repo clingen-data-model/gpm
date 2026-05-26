@@ -13,7 +13,7 @@ use App\Modules\Group\Events\MemberRoleAssigned;
 use App\Modules\Group\Events\GenesAdded;
 use App\Modules\Group\Events\GroupCheckpointEvent;
 use App\Modules\Group\Events\GroupDescriptionUpdated;
-use App\Modules\Group\Events\CaptionIconUpdated;
+use App\Modules\Group\Events\WebTextUpdated;
 
 class GenerateDxExamples extends Command
 {
@@ -68,7 +68,7 @@ class GenerateDxExamples extends Command
         $this->jinfo(new GroupCheckpointEvent($wg));
         $this->jinfo(new MemberAdded($wg->members->first()));
         $this->jinfo(new GroupDescriptionUpdated($wg, $wg->description, ''));
-        $this->jinfo(new CaptionIconUpdated($wg, $wg->caption, $wg->icon_path));
+        $this->jinfo(new WebTextUpdated($wg, $wg->excerpt));
 
         $cdwg = Group::cdwg()->first();
         $this->jinfo(new GroupCheckpointEvent($cdwg));

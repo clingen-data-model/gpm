@@ -23,7 +23,7 @@ Fields (current):
 - `uuid`
 - `name`
 - `funding_type_id` → `funding_types`
-- `caption` (text-only)
+- `excerpt` (text-only)
 - `website_url`
 - `logo_path` (optional; filename stored, file stored on disk)
 
@@ -75,7 +75,7 @@ Recommended structure (id + uuid pattern used across GPM):
 - `uuid` UUID (unique; used as public identifier where needed)
 - `name` (string)
 - `funding_type_id` (FK)
-- `caption` (string/text; text-only)
+- `excerpt` (string/text; text-only)
 - `website_url` (string)
 - `logo_path` (string; stores filename only)
 - `created_at`, `updated_at`, `deleted_at`
@@ -127,7 +127,7 @@ Implementation should cap to 3 and drop fully-empty contacts. Keep logic central
             "uuid": "bdc5...1b5a",
             "name": "American Society of Hematology",
             "funding_type": "Foundation",
-            "caption": "ASH is a...cancer clinical domain.",
+            "excerpt": "ASH is a...cancer clinical domain.",
             "website_url": "https:\/\/www.hematology.org\/",
             "logo_path": "http:\/\/localhost\/funding-sources\/logo\/IHlF88mcRciLhyht8nomDvQ0OsSqJ3Uef6QIbLfb.jpg"
         },
@@ -172,8 +172,7 @@ Implementation should cap to 3 and drop fully-empty contacts. Keep logic central
             "uuid": "9162...8f65",
             "name": "Glaucoma",
             "description": "The Glaucoma ...variants have been reported.",
-            "caption": null,
-            "icon_url": null,
+            "excerpt": null,
             "status": "active",
             "visibility": "public",
             "status_date": "2022-02-14T18:47:01+00:00",
@@ -218,7 +217,7 @@ Implementation should cap to 3 and drop fully-empty contacts. Keep logic central
             "uuid": "bdc5...1b5a",
             "name": "American Society of Hematology",
             "funding_type": "Foundation",
-            "caption": "ASH is a ... clinical domain.",
+            "excerpt": "ASH is a ... clinical domain.",
             "website_url": "https:\/\/www.hematology.org\/",
             "logo_path": "http:\/\/localhost\/funding-sources\/logo\/IHlF88mcRciLhyht8nomDvQ0OsSqJ3Uef6QIbLfb.jpg"
         },
@@ -263,8 +262,7 @@ Implementation should cap to 3 and drop fully-empty contacts. Keep logic central
             "uuid": "9162...8f65",
             "name": "Glaucoma",
             "description": "The Glaucoma .... been reported.",
-            "caption": null,
-            "icon_url": null,
+            "excerpt": null,
             "status": "active",
             "visibility": "public",
             "status_date": "2022-02-14T18:47:01+00:00",
@@ -309,8 +307,7 @@ Implementation should cap to 3 and drop fully-empty contacts. Keep logic central
             "uuid": "9162...8f65",
             "name": "Glaucoma",
             "description": "The Glaucoma ...reported.",
-            "caption": null,
-            "icon_url": null,
+            "excerpt": null,
             "status": "active",
             "visibility": "public",
             "status_date": "2022-02-14T18:47:01+00:00",
@@ -353,7 +350,7 @@ Recommended: keep mapping in one reusable mapper (`FundingAwardPayload` / trait 
 
 Target schema (data portion):
 - `uuid`
-- `funding_source` `{ uuid, name, funding_type, caption, website_url, logo_path }`
+- `funding_source` `{ uuid, name, funding_type, excerpt, website_url, logo_path }`
 - `award_number`
 - `start_date`, `end_date`
 - `award_url`
@@ -377,7 +374,7 @@ Planned:
         "uuid": "8e2f...fa56",
         "name": "Enzyvant",
         "funding_type": "Foundation",
-        "caption": "Enzyvant is ... desperate need.",
+        "excerpt": "Enzyvant is ... desperate need.",
         "website_url": "https:\/\/enzyvant.com",
         "logo_path": "http:\/\/gpm.clinicalgenome.org\/funding-sources\/logo\/JT5PS3u5SsqcT2oKCyXEDrCtRKmRz2YGIFpUq4kb.png"
     }
@@ -393,7 +390,7 @@ Planned:
         "uuid": "8e2f...fa56",
         "name": "Enzyvant",
         "funding_type": "Government",
-        "caption": "Enzyvant is... desperate need.",
+        "excerpt": "Enzyvant is... desperate need.",
         "website_url": "https:\/\/enzyvant.org",
         "logo_path": "http:\/\/gpm.clinicalgenome.org\/funding-sources\/logo\/JT5PS3u5SsqcT2oKCyXEDrCtRKmRz2YGIFpUq4kb.png"
     }

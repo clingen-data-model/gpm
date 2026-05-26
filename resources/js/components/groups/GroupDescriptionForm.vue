@@ -73,7 +73,7 @@ export default {
             @update:model-value="$emit('update')"
           />
         </div>
-        <div v-else class="border-2 mt-8 p-4 rounded">
+        <div v-else class="border-2 mt-2 p-4 rounded">
           <div v-if="group.description" class="markdown-preview" v-html="htmlDescription" />
           <p v-else class="well cursor-pointer">
             A website summary description has not yet been provided.

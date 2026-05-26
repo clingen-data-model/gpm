@@ -8,27 +8,27 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 use App\Modules\Group\Models\Group;
 
-class CaptionIconUpdated extends GroupEvent
+class WebTextUpdated extends GroupEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public function __construct(public Group $group) {}
+    public function __construct(public Group $group, public ?string $oldExcerpt, public ?string $newExcerpt) {}
 
-    public function getSchemaVersion(): string
+    public function getEventType(): string
     {
-        return '2.0.0';
+        return "website_excerpt_updated";
     }
 
     public function getLogEntry(): string
     {
-        return "Caption/Icon updated for {$this->group->name}";
+        return 'Excerpt updated from "' . ($this->oldExcerpt ?? 'NULL') . '" to "' . ($this->newExcerpt ?? 'NULL') . '"';
     }
 
     public function getProperties(): ?array
     {
         return [
-            'caption'   => $this->group->caption,
-            'icon_url'  => $this->group->icon_url_raw,
+            'old_excerpt' => $this->oldExcerpt,
+            'new_excerpt' => $this->newExcerpt
         ];
     }
 }

@@ -77,8 +77,7 @@ class Group extends Model implements HasMembers, RecordsEvents, HasDocuments, Ha
         'group_visibility_id',
         'parent_id',
         'coi_code',
-        'caption',
-        'icon_path',
+        'excerpt',
     ];
 
     /**
@@ -313,33 +312,6 @@ class Group extends Model implements HasMembers, RecordsEvents, HasDocuments, Ha
     protected static function newFactory()
     {
         return new GroupFactory();
-    }
-
-    protected function computePublicIconUrl(bool $withVersion = true): ?string
-    {
-        if (!$this->icon_path || !$this->uuid) return null;
-
-        $dir  = config('app.workinggroups_icon');
-        $rel  = "{$dir}/{$this->icon_path}";
-        $disk = Storage::disk('public');
-        if (!$disk->exists($rel)) return null;
-
-        $url = route('wg.icon', ['icon_path' => $this->icon_path]);
-
-        if (!$withVersion) return $url;
-
-        $ver = $disk->lastModified($rel);
-        return "{$url}?v={$ver}";
-    }
-
-    protected function iconUrl(): Attribute
-    {
-        return Attribute::make(get: fn () => $this->computePublicIconUrl(true));
-    }
-
-    protected function iconUrlRaw(): Attribute
-    {
-        return Attribute::make(get: fn () => $this->computePublicIconUrl(false));
     }
 
     public function isWorkingGroup(): Attribute

@@ -53,7 +53,7 @@ use App\Modules\Group\Actions\CurationReviewProtocolUpdate;
 use App\Modules\Group\Http\Controllers\Api\GroupController;
 use App\Modules\Group\Actions\ExpertPanelAffiliationIdUpdate;
 use App\Modules\Group\Actions\SustainedCurationReviewComplete;
-use App\Modules\Group\Actions\CaptionIconUpdate;
+use App\Modules\Group\Actions\WebTextUpdate;
 use App\Modules\Group\Http\Controllers\Api\GeneListController;
 use App\Modules\Group\Http\Controllers\Api\ActivityLogsController;
 use App\Modules\Group\Http\Controllers\Api\GroupRelationsController;
@@ -214,7 +214,7 @@ Route::group([
         Route::get('/specifications', SpecificationsGet::class);
         Route::put('/status', GroupStatusUpdate::class);
         Route::put('/visibility', GroupVisibilityUpdate::class);
-        Route::put('/caption-icon', CaptionIconUpdate::class);
+        Route::put('/excerpt', WebTextUpdate::class);
 
         // PUBLICATIONS
         Route::group(['prefix' => '/publications'], function () {
