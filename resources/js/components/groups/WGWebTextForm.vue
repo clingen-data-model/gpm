@@ -71,8 +71,9 @@ function cancelEdit(e) {
     </header>
     <div class="mt-2">
       <p class="text-sm">
-        This excerpt is used for public display on the website. 
-        It appears in the blue content heading section on the Working Group page.
+        This excerpt is used for public display on the website and appears in the blue content heading section on the Working Group page. 
+        It should be a brief summary of the group’s aims, mission, or task, ideally 6 lines of text or fewer. 
+        Longer descriptions can be included in the Website Summary Description of Group below.
       </p>
       <transition name="fade" mode="out-in">
         <div v-if="editing">
