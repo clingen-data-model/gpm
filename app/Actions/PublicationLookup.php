@@ -20,7 +20,7 @@ class PublicationLookup
     {
         $lookup = $this->detectIdentifier($raw);
         if (! $lookup) {
-            throw ValidationException::withMessages(['query' => 'Please enter a DOI, PMID, or PMCID.']);
+            throw ValidationException::withMessages(['query' => 'Please enter a PMCID, PMID, or DOI.']);
         }
         $publicationApi = rtrim((string) config('services.publication.base_url'), '/');
         $response = Http::acceptJson()->timeout(15)->get($publicationApi, [
@@ -125,7 +125,7 @@ class PublicationLookup
     private function normalizeResponse(array $work, array $lookup): array
     {
         $meta = $this->buildPublicationMeta($work);
-        $source = $lookup['type'];
+        $source = $this->preferredIdentifierSource($meta, $lookup['type']);
         $identifier = data_get($meta, "{$source}.id") ?? $lookup['normalized'];
         return [
             'source' => $source,
@@ -135,5 +135,23 @@ class PublicationLookup
             'published_at' => $meta['published_at'],
             'meta' => $meta,
         ];
+    }
+
+    private function preferredIdentifierSource(array $meta, string $lookupSource): string
+    {
+        $sources = array_unique([
+            'pmcid',        // always prefer PMCID when available
+            $lookupSource,  // otherwise keep what the user searched with
+            'pmid',
+            'doi',
+        ]);
+
+        foreach ($sources as $source) {
+            if (data_get($meta, "{$source}.id")) {
+                return $source;
+            }
+        }
+
+        return $lookupSource;
     }
 }
