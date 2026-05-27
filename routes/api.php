@@ -29,7 +29,7 @@ use App\Http\Controllers\Api\DiseaseLookupController;
 use App\Http\Controllers\Api\DocumentationController;
 use App\Http\Controllers\ImpersonateSearchController;
 use App\Modules\User\Http\Controllers\CurrentUserController;
-use App\Actions\PublicationLookupOpenAlex;
+use App\Actions\PublicationLookup;
 
 /*
 |--------------------------------------------------------------------------
@@ -98,7 +98,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     Route::get('/activity-logs', LogEntrySearch::class);
 
-    Route::post('/publications/lookup', PublicationLookupOpenAlex::class);
+    Route::post('/publications/lookup', PublicationLookup::class);
 });
 
 Route::get('/cdwgs', [CdwgController::class, 'index']);

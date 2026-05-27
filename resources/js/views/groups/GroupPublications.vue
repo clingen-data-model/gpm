@@ -210,7 +210,7 @@ function clearAddModal() {
         <modal-dialog v-model="addModal.open" title="Add a publication">
           <div class="space-y-3">
             <p class="text-sm text-gray-600">
-              Paste a <strong>DOI, PMID, or PMCID</strong> to preview the record before saving.
+              Paste a <strong>PMCID, PMID, or DOI</strong> to preview the record before saving. <strong>PMCID is preferred when available</strong>.
             </p>
 
             <div class="flex gap-2">
