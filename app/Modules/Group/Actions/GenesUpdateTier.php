@@ -37,13 +37,9 @@ class GenesUpdateTier
     }
 
 
-    public function authorize(ActionRequest $request, Group $group): bool
+    public function authorize(ActionRequest $request): bool
     {
-        if (Auth::user()->cannot('updateGene', $group)) {
-            return false;
-        }
-
-        return true;
+        return Auth::user()->can('updateGene', $request->group);
     }
 
     public function rules(): array
