@@ -219,7 +219,7 @@ axios.interceptors.response.use(
         switch (error.response.status) {
             case 401:
                 store.commit('setAuthenticated', false)
-                return error;
+                return Promise.reject(error);
             case 403:
                 if (typeof error.response.data === 'string' && error.response.data.includes('Reference this support identifier')) {
                     reportClientsideEvent(error)
@@ -229,18 +229,18 @@ axios.interceptors.response.use(
                 } else {
                     store.commit('pushError', 'You do not have permission to complete that action.  If you think this is an error please contact support at gpm_support@clinicalgenome.org')
                 }
-                return error;
+                return Promise.reject(error);
             case 404:
                 if (error.config.headers['X-Ignore-Missing'] !== '1') {
                     store.commit('pushError', 'We couldn\'t find something you\'re looking for.');
                 }
-                return error;
+                return Promise.reject(error);
 //             case 422:
 //                 store.commit('pushError', 'There was a problem with your submission');
 //                 break
             case 500:
                 store.commit('pushError', 'We\'ve encountered a problem trying to complete your request.  Support has been notified and we will be in touch.');
-                return error;
+                return Promise.reject(error);
         }
         return Promise.reject(error);
     }
