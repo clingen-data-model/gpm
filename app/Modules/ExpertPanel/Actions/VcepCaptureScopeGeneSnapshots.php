@@ -6,6 +6,7 @@ use App\Modules\ExpertPanel\Models\ScopeGeneSnapshot;
 use App\Modules\Group\Models\Group;
 use App\Services\Api\GtApiService;
 use Illuminate\Support\Facades\DB;
+use App\Modules\ExpertPanel\Service\VcepGeneConflictService;
 
 class VcepCaptureScopeGeneSnapshots
 {
