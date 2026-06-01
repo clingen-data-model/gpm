@@ -24,7 +24,13 @@ trait IsPublishableGroupEvent
         if ($gene->mondo_id) {
             $messageGene['mondo_id'] = $gene->mondo_id;
             $messageGene['disease_name'] = $gene->disease_name;
-            $messageGene['disease_entity'] = $gene->disease_entity;
+            $messageGene['disease_entity'] = $gene->disease_entity;            
+        } 
+
+        if ($gene->moi) {
+            $messageGene['hp_id'] = data_get($gene->plan, 'hp_id');
+            $messageGene['moi_abbreviation'] = $gene->moi;
+            $messageGene['moi_name'] = data_get($gene->plan, 'moi_name');
         }
 
         return $messageGene;
@@ -102,7 +108,7 @@ trait IsPublishableGroupEvent
                 'current_step' => $ep->current_step,
             ];
             if ($withGenes) {
-                $epData['all_genes'] = $ep->genes->map(function ($gene) { return $this->mapGeneForMessage($gene); })->toArray();
+                $epData['all_genes'] = $ep->genes->map(function ($gene) use ($group) { return $this->mapGeneForMessage($gene, $group->is_vcep_or_scvcep); })->toArray();
             }
 
             if ($group->isVcep || $group->isScvcep) {
