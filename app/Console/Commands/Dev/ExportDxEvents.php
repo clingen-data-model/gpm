@@ -57,7 +57,7 @@ class ExportDxEvents extends Command
 
     // Known custom/overridden event_type strings
     private const CUSTOM_EVENT_TYPES = [
-        'App\\Modules\\ExpertPanel\\Events\\StepApproved' => 'ep_definition_approved|vcep_draft_specifications_approved|vcep_pilot_approved|ep_final_approval',
+        'App\\Modules\\ExpertPanel\\Events\\StepApproved' => 'Step1:gcep_final_approval|vcep/scvcep_definition_approval. Step2:vcep/scvcep_draft_specification_approval. Step3:vcep/scvcep_pilot_approval. Step4:vcep/scvcep_final_approval',
         'App\\Modules\\Group\\Events\\ExpertPanelAffiliationIdUpdated' => 'ep_info_updated',
         'App\\Modules\\Group\\Events\\ExpertPanelNameUpdated' => 'ep_info_updated',
         // Class name plural → default would be genes_added, but DB historically has gene_added
