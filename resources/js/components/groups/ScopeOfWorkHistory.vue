@@ -9,7 +9,7 @@
           <div>
             <h3 class="mb-1">
               Version {{ version.version_label }} 
-              <span class="text-sm font-normal text-gray-500">— {{ version.status.replace('_', ' ') }} </span>
+              <span class="text-sm font-normal text-gray-500"> — {{ version.status.replace('_', ' ') }} </span>
             </h3>
 
             <!-- <button
@@ -31,8 +31,8 @@
 
             <div class="mt-1 text-sm text-gray-600">
               <template v-if="version.approved_at">Approved {{ formatDate(version.approved_at) }}</template>
-              <template v-else-if="version.submitted_at">Submitted {{ version.submitted_at }}</template>
-              <template v-else>Created {{ version.created_at }}</template>
+              <template v-else-if="version.submitted_at">Submitted {{ formatDate(version.submitted_at) }}</template>
+              <template v-else>Created {{ formatDate(version.created_at) }}</template>
             </div>
           </div>
 
@@ -47,8 +47,8 @@
           <li v-for="change in version.changes" :key="change.id">
             {{ change.label }}
             <template v-if="change.entity_label">— {{ change.entity_label }}</template>
-            <span v-if="change.requires_approval === 'yes'" class="font-semibold text-red-700">— required approval</span>
-            <span v-else-if="change.requires_approval === 'conditional'" class="font-semibold text-yellow-700">— conditional approval</span>
+            <span v-if="change.requires_approval === 'yes'" class="font-semibold text-red-700"> — required approval</span>
+            <span v-else-if="change.requires_approval === 'conditional'" class="font-semibold text-yellow-700"> — conditional approval</span>
           </li>
         </ul>
       </div>

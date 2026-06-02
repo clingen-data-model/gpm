@@ -122,6 +122,10 @@ trait IsPublishableGroupEvent
                 $epData['gcep_final_approval']  = $ep->step_1_approval_date;
             }
 
+            if ($group->isScvcep) {
+                $epData['scvcep_final_specification_document'] = route('groups.final-specifications.download', ['group' => $group->uuid]);
+            }
+
             $awards = $group->fundingAwards()->get();
             $epData['funding_awards'] = $awards->map->toExchangePayload()->all();
 

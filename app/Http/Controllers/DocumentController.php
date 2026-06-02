@@ -7,6 +7,7 @@ use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use App\Modules\Group\Models\Group;
 
 class DocumentController extends Controller
 {
@@ -24,5 +25,21 @@ class DocumentController extends Controller
         }
 
         return Storage::disk('local')->download($path, $doc->filename);
+    }
+
+    public function downloadGroupFinalSpecifications(Group $group)
+    {
+        $document = $group->documents()->whereHas('documentType', function ($query) {
+                $query->where('name', 'final-specs');
+            })
+            ->latest('created_at')
+            ->firstOrFail();
+
+        abort_unless($document->storage_path && Storage::exists($document->storage_path), 404);
+
+        return Storage::download(
+            $document->storage_path,
+            $document->filename
+        );
     }
 }
