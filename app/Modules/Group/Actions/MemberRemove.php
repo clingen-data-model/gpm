@@ -24,7 +24,7 @@ class MemberRemove
 
     public function handle(GroupMember $groupMember, Carbon $endDate): GroupMember
     {
-        $this->scopeOfWorkRevisionGuard->ensureNotUnderReview($group);
+        $this->scopeOfWorkRevisionGuard->ensureNotUnderReview($groupMember->group);
         $groupMember->update(['end_date' => $endDate]);
         $groupMember->delete();
         

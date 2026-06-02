@@ -25,7 +25,7 @@ class MemberRemoveRole
 
     public function handle(GroupMember $groupMember, Role $role): GroupMember
     {
-        $this->scopeOfWorkRevisionGuard->ensureNotUnderReview($group);
+        $this->scopeOfWorkRevisionGuard->ensureNotUnderReview($groupMember->group);
         $groupMember->removeRole($role);
 
         Event::dispatch(new MemberRoleRemoved($groupMember, $role));
