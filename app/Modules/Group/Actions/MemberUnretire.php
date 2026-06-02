@@ -27,7 +27,7 @@ class MemberUnretire
 
     public function handle(GroupMember $groupMember): GroupMember
     {
-        $this->scopeOfWorkRevisionGuard->ensureNotUnderReview($group);
+        $this->scopeOfWorkRevisionGuard->ensureNotUnderReview($groupMember->group);
         $groupMember->update(['end_date' => null]);        
         Event::dispatch(new MemberUnretired($groupMember));
         return $groupMember;

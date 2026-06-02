@@ -23,7 +23,7 @@ class MemberUpdate
 
     public function handle(GroupMember $groupMember, array $data): GroupMember
     {
-        $this->scopeOfWorkRevisionGuard->ensureNotUnderReview($group);
+        $this->scopeOfWorkRevisionGuard->ensureNotUnderReview($groupMember->group);
         $groupMember->update($data);
 
         Event::dispatch(new MemberUpdated($groupMember, $data));
