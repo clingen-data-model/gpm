@@ -25,7 +25,7 @@ class MemberRetire
 
     public function handle(GroupMember $groupMember, Carbon $endDate, ?string $reason = null, $actor = null): GroupMember
     {
-        $this->scopeOfWorkRevisionGuard->ensureNotUnderReview($group);
+        $this->scopeOfWorkRevisionGuard->ensureNotUnderReview($groupMember->group);
         $retireMember = ['end_date' => $endDate];
         if ($reason !== null) { 
             $existing = trim((string) $groupMember->notes);

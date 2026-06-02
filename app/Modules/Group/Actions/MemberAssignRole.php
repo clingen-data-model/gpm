@@ -26,7 +26,7 @@ class MemberAssignRole
 
     public function handle(GroupMember $groupMember, $roles)
     {
-        $this->scopeOfWorkRevisionGuard->ensureNotUnderReview($group);
+        $this->scopeOfWorkRevisionGuard->ensureNotUnderReview($groupMember->group);
         
         $roles = collect($roles)
             ->map(function ($role) {
