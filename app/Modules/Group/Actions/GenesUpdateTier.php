@@ -21,8 +21,7 @@ class GenesUpdateTier
     }
 
     public function handle(array $ids, ?int $tier)
-    {
-        $this->scopeOfWorkRevisionGuard->ensureNotUnderReview($group);
+    {        
         if (empty($ids)) {
             throw ValidationException::withMessages([
                 'ids' => 'No gene IDs provided.'
@@ -35,6 +34,7 @@ class GenesUpdateTier
 
     public function asController(ActionRequest $request, Group $group)
     {
+        $this->scopeOfWorkRevisionGuard->ensureNotUnderReview($group);
         $this->handle(
             $request->input('ids', []),
             $request->input('tier')
