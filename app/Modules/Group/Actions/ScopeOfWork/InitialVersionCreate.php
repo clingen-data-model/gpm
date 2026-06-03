@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modules\Group\Actions;
+namespace App\Modules\Group\Actions\ScopeOfWork;
 
 use App\Modules\User\Models\User;
 use App\Modules\Group\Models\Group;
@@ -8,7 +8,7 @@ use App\Modules\Group\Models\ScopeOfWorkVersion;
 use Illuminate\Support\Facades\DB;
 use Lorisleiva\Actions\Concerns\AsObject;
 
-class ScopeOfWorkInitialVersionCreate
+class InitialVersionCreate
 {
     use AsObject;
 
@@ -42,7 +42,7 @@ class ScopeOfWorkInitialVersionCreate
                 'approved_at' => $this->approvedAt($group),
             ]);
 
-            ScopeOfWorkSnapshotCreate::run($version, $group);
+            SnapshotCreate::run($version, $group);
 
             return $version->load('latestSnapshot');
         });

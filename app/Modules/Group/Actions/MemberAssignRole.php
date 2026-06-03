@@ -11,7 +11,7 @@ use Illuminate\Validation\ValidationException;
 use App\Modules\Group\Events\MemberRoleAssigned;
 use App\Modules\Group\Http\Resources\MemberResource;
 use App\Services\CoreMemberAttestation;
-use App\Modules\Group\Actions\ScopeOfWorkRevisionGuard;
+use App\Modules\Group\Actions\ScopeOfWork\RevisionGuard;
 
 class MemberAssignRole
 {
@@ -20,7 +20,7 @@ class MemberAssignRole
 
     public function __construct(
         private CoreMemberAttestation $attestation,
-        private ScopeOfWorkRevisionGuard $scopeOfWorkRevisionGuard,
+        private RevisionGuard $scopeOfWorkRevisionGuard,
     ) {
     }
 

@@ -11,7 +11,7 @@ use Lorisleiva\Actions\Concerns\AsObject;
 use Lorisleiva\Actions\Concerns\AsController;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Collection;
-use App\Modules\Group\Actions\ScopeOfWorkRevisionGuard;
+use App\Modules\Group\Actions\ScopeOfWork\RevisionGuard;
 
 class GeneRemove
 {
@@ -19,7 +19,7 @@ class GeneRemove
     use AsObject;
 
     public function __construct(
-        private ScopeOfWorkRevisionGuard $scopeOfWorkRevisionGuard,
+        private RevisionGuard $scopeOfWorkRevisionGuard,
     ) {
     }
 

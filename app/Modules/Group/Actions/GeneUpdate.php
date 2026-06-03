@@ -12,7 +12,7 @@ use Lorisleiva\Actions\Concerns\AsController;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Auth\Access\AuthorizationException;
 use App\Modules\Group\Http\Resources\GroupResource;
-use App\Modules\Group\Actions\ScopeOfWorkRevisionGuard;
+use App\Modules\Group\Actions\ScopeOfWork\RevisionGuard;
 
 use function Psy\debug;
 
@@ -22,7 +22,7 @@ class GeneUpdate
     use AsController;
 
     public function __construct(
-        private ScopeOfWorkRevisionGuard $scopeOfWorkRevisionGuard,
+        private RevisionGuard $scopeOfWorkRevisionGuard,
     ) { }
     
 

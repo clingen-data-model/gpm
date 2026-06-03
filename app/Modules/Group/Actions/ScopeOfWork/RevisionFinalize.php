@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modules\Group\Actions;
+namespace App\Modules\Group\Actions\ScopeOfWork;
 
 use App\Modules\User\Models\User;
 use App\Modules\Group\Models\Group;
@@ -12,7 +12,7 @@ use Illuminate\Validation\ValidationException;
 use Lorisleiva\Actions\Concerns\AsController;
 use Lorisleiva\Actions\Concerns\AsObject;
 
-class ScopeOfWorkRevisionFinalize
+class RevisionFinalize
 {
     use AsObject;
     use AsController;

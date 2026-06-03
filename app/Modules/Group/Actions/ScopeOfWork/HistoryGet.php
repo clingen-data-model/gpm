@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Modules\Group\Actions;
+namespace App\Modules\Group\Actions\ScopeOfWork;
 
 use App\Modules\Group\Models\Group;
 use App\Modules\Group\Models\ScopeOfWorkChange;
 use App\Modules\Group\Models\ScopeOfWorkVersion;
 use Lorisleiva\Actions\Concerns\AsObject;
 
-class ScopeOfWorkHistoryGet
+class HistoryGet
 {
     use AsObject;
 
@@ -25,6 +25,7 @@ class ScopeOfWorkHistoryGet
                 'submitter',
                 'approver',
             ])
+            ->where('status', '!=', ScopeOfWorkVersion::STATUS_DISCARDED)
             ->orderByDesc('major_version')
             ->orderByDesc('minor_version')
             ->orderByDesc('created_at')

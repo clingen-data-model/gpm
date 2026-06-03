@@ -7,14 +7,14 @@ use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsController;
 use App\Modules\Group\Events\GroupNameUpdated;
 use App\Modules\Group\Http\Resources\GroupResource;
-use App\Modules\Group\Actions\ScopeOfWorkRevisionGuard;
+use App\Modules\Group\Actions\ScopeOfWork\RevisionGuard;
 
 class GroupNameUpdate
 {
     use AsController;
 
     public function __construct(
-        private ScopeOfWorkRevisionGuard $scopeOfWorkRevisionGuard,
+        private RevisionGuard $scopeOfWorkRevisionGuard,
     ) {
     }
 

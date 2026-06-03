@@ -11,7 +11,7 @@ use Lorisleiva\Actions\Concerns\AsController;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Validation\Rule;
-use App\Modules\Group\Actions\ScopeOfWorkRevisionGuard;
+use App\Modules\Group\Actions\ScopeOfWork\RevisionGuard;
 
 class GenesAdd
 {
@@ -21,7 +21,7 @@ class GenesAdd
     public function __construct(
         private GenesAddToVcep $addGenesToVcep, 
         private GenesSyncToGcep $addGenesToGcep, 
-        private ScopeOfWorkRevisionGuard $scopeOfWorkRevisionGuard)
+        private RevisionGuard $scopeOfWorkRevisionGuard)
     {
     }
 
