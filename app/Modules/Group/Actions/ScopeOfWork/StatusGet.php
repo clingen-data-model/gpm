@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Modules\Group\Actions;
+namespace App\Modules\Group\Actions\ScopeOfWork;
 
 use App\Modules\Group\Models\Group;
 use App\Modules\Group\Models\ScopeOfWorkChange;
 use App\Modules\Group\Models\ScopeOfWorkVersion;
 use Lorisleiva\Actions\Concerns\AsObject;
 
-class ScopeOfWorkStatusGet
+class StatusGet
 {
     use AsObject;
 

@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Modules\Group\Actions;
+namespace App\Modules\Group\Actions\ScopeOfWork;
 
 use App\Modules\Group\Models\Group;
 use App\Modules\Group\Services\ScopeOfWorkRuleResolver;
 use Lorisleiva\Actions\Concerns\AsObject;
 
-class ScopeOfWorkChangeClassify
+class ChangeClassify
 {
     use AsObject;
 

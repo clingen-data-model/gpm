@@ -13,7 +13,7 @@ use App\Modules\Group\Events\MemberRetired;
 use App\Modules\Group\Events\MemberUnretired;
 use Lorisleiva\Actions\Concerns\AsController;
 use App\Modules\Group\Http\Resources\MemberResource;
-use App\Modules\Group\Actions\ScopeOfWorkRevisionGuard;
+use App\Modules\Group\Actions\ScopeOfWork\RevisionGuard;
 
 class MemberUnretire
 {
@@ -21,7 +21,7 @@ class MemberUnretire
     use AsController;
 
     public function __construct(
-        private ScopeOfWorkRevisionGuard $scopeOfWorkRevisionGuard,
+        private RevisionGuard $scopeOfWorkRevisionGuard,
     ) {
     }
 

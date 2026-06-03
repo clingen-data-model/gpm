@@ -10,14 +10,14 @@ use Lorisleiva\Actions\Concerns\AsAction;
 use App\Modules\Group\Events\MemberUpdated;
 use Illuminate\Auth\Access\AuthorizationException;
 use App\Modules\Group\Http\Resources\MemberResource;
-use App\Modules\Group\Actions\ScopeOfWorkRevisionGuard;
+use App\Modules\Group\Actions\ScopeOfWork\RevisionGuard;
 
 class MemberUpdate
 {
     use AsAction;
 
     public function __construct(
-        private ScopeOfWorkRevisionGuard $scopeOfWorkRevisionGuard,
+        private RevisionGuard $scopeOfWorkRevisionGuard,
     ) {
     }
 
