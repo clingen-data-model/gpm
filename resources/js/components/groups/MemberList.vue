@@ -348,33 +348,33 @@ export default {
           return cocStatus === 'current' || cocStatus === 'expiring_soon';
         },
         async adminCompleteCoi (member) {
-          try {
-            await api.post(`/api/coi/${this.group.coi_code}`, {
-              group_member_id: member.id,
-              work_fee_lab: 0,
-              contributions_to_gd_in_group: 2,
-              coi: 0,
-              coi_attestation: 1,
-              data_policy_attestation: 1,
-              admin_override: 1,
-            });
-            await this.$store.dispatch('groups/getMembers', this.group);
-          } catch (e) {
-            console.error(e);
-            const apiMsg =
-              e?.response?.data?.message ||
-              (typeof e?.response?.data === 'string' ? e.response.data : null);
+        try {
+          await api.post(`/api/coi/${this.group.coi_code}`, {
+            group_member_id: member.id,
+            work_fee_lab: 0,
+            contributions_to_gd_in_group: 2,
+            coi: 0,
+            coi_attestation: 1,
+            data_policy_attestation: 1,
+            admin_override: 1,
+          });
+          await this.$store.dispatch('groups/getMembers', { group: this.group, force: true });
+        } catch (e) {
+          console.error(e);
+          const apiMsg =
+            e?.response?.data?.message ||
+            (typeof e?.response?.data === 'string' ? e.response.data : null);
 
-            const memberName = member?.person?.name || `${member?.person?.first_name ?? ''} ${member?.person?.last_name ?? ''}`.trim() || 'this member';
+          const memberName = member?.person?.name || `${member?.person?.first_name ?? ''} ${member?.person?.last_name ?? ''}`.trim() || 'this member';
 
-            this.$store.commit(
-              'pushError',
-              apiMsg
-                ? `Could not complete COI for ${memberName}: ${apiMsg}`
-                : `Could not complete COI for ${memberName}. Please try again.`
-            );
-          }
-        },
+          this.$store.commit(
+            'pushError',
+            apiMsg
+              ? `Could not complete COI for ${memberName}: ${apiMsg}`
+              : `Could not complete COI for ${memberName}. Please try again.`
+          );
+        }
+      },
     }
 }
 </script>
