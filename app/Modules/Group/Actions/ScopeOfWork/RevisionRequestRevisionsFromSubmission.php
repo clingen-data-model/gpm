@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Modules\Group\Actions;
+namespace App\Modules\Group\Actions\ScopeOfWork;
 
 use App\Modules\Group\Models\ScopeOfWorkVersion;
 use App\Modules\Group\Models\Submission;
 use Lorisleiva\Actions\Concerns\AsObject;
 
-class ScopeOfWorkRevisionRequestRevisionsFromSubmission
+class RevisionRequestRevisionsFromSubmission
 {
     use AsObject;
 

@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Modules\Group\Actions;
+namespace App\Modules\Group\Actions\ScopeOfWork;
 
 use App\Modules\Group\Models\Group;
 use Illuminate\Support\Collection;
 use Lorisleiva\Actions\Concerns\AsObject;
 
-class ScopeOfWorkSnapshotBuild
+class SnapshotBuild
 {
     use AsObject;
 
@@ -128,11 +128,15 @@ class ScopeOfWorkSnapshotBuild
                         ->values()
                         ->all(),
 
+                    'notes' => $member->notes,
+                    'training_level_1' => (bool) $member->training_level_1,
+                    'training_level_2' => (bool) $member->training_level_2,
+
                     'expertise' => $member->expertise,
                     'is_contact' => (bool) $member->is_contact,
                     'start_date' => optional($member->start_date)->toISOString(),
                     'end_date' => optional($member->end_date)->toISOString(),
-                    'deleted_at' => optional($member->deleted_at)->toISOString(),
+                    'deleted_at' => optional($member->deleted_at)->toISOString(),                    
                 ];
             })
             ->sortBy([

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modules\Group\Actions;
+namespace App\Modules\Group\Actions\ScopeOfWork;
 
 use App\Modules\ExpertPanel\Actions\NextActionComplete;
 use App\Modules\Group\Events\ApplicationStepSubmitted;
@@ -17,7 +17,7 @@ use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsController;
 use Lorisleiva\Actions\Concerns\AsObject;
 
-class ScopeOfWorkRevisionSubmit
+class RevisionSubmit
 {
     use AsObject;
     use AsController;
@@ -128,7 +128,7 @@ class ScopeOfWorkRevisionSubmit
             notes: $request->notes
         );
 
-        return ScopeOfWorkStatusGet::run($group);
+        return StatusGet::run($group);
     }
 
     public function authorize(ActionRequest $request): bool
