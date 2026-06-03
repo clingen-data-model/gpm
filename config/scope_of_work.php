@@ -219,26 +219,26 @@ return [
             'approvers' => 'oc_chairs',
         ],
 
-        'member.add_liaison' => [
+        'member.retire' => [
             'area' => 'membership',
-            'change_type' => 'add_liaison',
-            'label' => 'Add liaison',
+            'change_type' => 'retire',
+            'label' => 'Retire member',
             'groups' => ['gcep', 'vcep', 'scvcep'],
             'impact' => 'minor',
-            'requires_approval' => false,
+            'requires_approval' => 'no',
             'approval_step' => null,
-            'approvers' => 'none',
+            'approvers' => null,
         ],
 
-        'member.remove_liaison' => [
+        'member.unretire' => [
             'area' => 'membership',
-            'change_type' => 'remove_liaison',
-            'label' => 'Remove liaison',
+            'change_type' => 'unretire',
+            'label' => 'Unretire member',
             'groups' => ['gcep', 'vcep', 'scvcep'],
             'impact' => 'minor',
-            'requires_approval' => false,
+            'requires_approval' => 'no',
             'approval_step' => null,
-            'approvers' => 'none',
+            'approvers' => null,
         ],
     ],
 ];
