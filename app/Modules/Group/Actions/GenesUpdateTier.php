@@ -9,14 +9,14 @@ use Lorisleiva\Actions\Concerns\AsController;
 use Lorisleiva\Actions\Concerns\AsObject;
 use Lorisleiva\Actions\ActionRequest;
 use Illuminate\Validation\ValidationException;
-use App\Modules\Group\Actions\ScopeOfWorkRevisionGuard;
+use App\Modules\Group\Actions\ScopeOfWork\RevisionGuard;
 
 class GenesUpdateTier
 {
     use AsObject, AsController;
 
     public function __construct(
-        private ScopeOfWorkRevisionGuard $scopeOfWorkRevisionGuard,
+        private RevisionGuard $scopeOfWorkRevisionGuard,
     ) {
     }
 

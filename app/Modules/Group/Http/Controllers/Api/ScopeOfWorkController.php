@@ -3,22 +3,22 @@
 namespace App\Modules\Group\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Modules\Group\Actions\ScopeOfWorkHistoryGet;
-use App\Modules\Group\Actions\ScopeOfWorkStatusGet;
+use App\Modules\Group\Actions\ScopeOfWork\HistoryGet;
+use App\Modules\Group\Actions\ScopeOfWork\StatusGet;
 use App\Modules\Group\Models\Group;
-use App\Modules\Group\Actions\ScopeOfWorkVersionCompareGet;
+use App\Modules\Group\Actions\ScopeOfWork\VersionCompareGet;
 use App\Modules\Group\Models\ScopeOfWorkVersion;
 
 class ScopeOfWorkController extends Controller
 {
     public function status(Group $group)
     {
-        return ScopeOfWorkStatusGet::run($group);
+        return StatusGet::run($group);
     }
 
     public function history(Group $group)
     {
-        return ScopeOfWorkHistoryGet::run($group);
+        return HistoryGet::run($group);
     }
     
     public function compare(
@@ -29,6 +29,6 @@ class ScopeOfWorkController extends Controller
         $fromVersion = ScopeOfWorkVersion::where('uuid', $fromVersionUuid)->firstOrFail();
         $toVersion = ScopeOfWorkVersion::where('uuid', $toVersionUuid)->firstOrFail();
 
-        return ScopeOfWorkVersionCompareGet::run($group, $fromVersion, $toVersion);
+        return VersionCompareGet::run($group, $fromVersion, $toVersion);
     }
 }

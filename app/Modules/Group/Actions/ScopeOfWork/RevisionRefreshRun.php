@@ -1,20 +1,20 @@
 <?php
 
-namespace App\Modules\Group\Actions;
+namespace App\Modules\Group\Actions\ScopeOfWork;
 
 use App\Modules\Group\Models\Group;
 use Illuminate\Support\Facades\Auth;
 use Lorisleiva\Actions\Concerns\AsController;
 
-class ScopeOfWorkRevisionRefreshRun
+class RevisionRefreshRun
 {
     use AsController;
 
     public function handle(Group $group): array
     {
-        ScopeOfWorkRevisionRefresh::run($group, Auth::user());
+        RevisionRefresh::run($group, Auth::user());
 
-        return ScopeOfWorkStatusGet::run($group);
+        return StatusGet::run($group);
     }
 
     public function asController(Group $group)

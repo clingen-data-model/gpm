@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modules\Group\Actions;
+namespace App\Modules\Group\Actions\ScopeOfWork;
 
 use App\Modules\User\Models\User;
 use App\Modules\Group\Models\Group;
@@ -8,7 +8,7 @@ use App\Modules\Group\Models\ScopeOfWorkVersion;
 use Illuminate\Support\Facades\DB;
 use Lorisleiva\Actions\Concerns\AsObject;
 
-class ScopeOfWorkRevisionRefresh
+class RevisionRefresh
 {
     use AsObject;
 
@@ -38,13 +38,13 @@ class ScopeOfWorkRevisionRefresh
             ->first();
 
         if (!$approvedVersion || !$approvedVersion->latestSnapshot) {
-            $approvedVersion = ScopeOfWorkInitialVersionCreate::run($group, $user);
+            $approvedVersion = InitialVersionCreate::run($group, $user);
         }
 
         $beforeSnapshot = $approvedVersion->latestSnapshot->snapshot;
-        $currentSnapshot = $currentSnapshot ?: ScopeOfWorkSnapshotBuild::run($group);
+        $currentSnapshot = $currentSnapshot ?: SnapshotBuild::run($group);
 
-        $changes = ScopeOfWorkSnapshotCompare::run($group, $beforeSnapshot, $currentSnapshot);
+        $changes = SnapshotCompare::run($group, $beforeSnapshot, $currentSnapshot);
 
         return DB::transaction(function () use ($group, $user, $approvedVersion, $currentSnapshot, $changes) {
             $draftVersion = $this->findDraftVersion($group);
@@ -89,7 +89,7 @@ class ScopeOfWorkRevisionRefresh
                 $draftVersion->changes()->create($this->prepareChangeForStorage($change));
             }
 
-            ScopeOfWorkSnapshotCreate::run($draftVersion, $group, $currentSnapshot);
+            SnapshotCreate::run($draftVersion, $group, $currentSnapshot);
 
             return $draftVersion->load(['changes', 'latestSnapshot']);
         });

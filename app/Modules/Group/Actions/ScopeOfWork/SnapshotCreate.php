@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Modules\Group\Actions;
+namespace App\Modules\Group\Actions\ScopeOfWork;
 
 use App\Modules\Group\Models\Group;
 use App\Modules\Group\Models\ScopeOfWorkSnapshot;
 use App\Modules\Group\Models\ScopeOfWorkVersion;
 use Lorisleiva\Actions\Concerns\AsObject;
 
-class ScopeOfWorkSnapshotCreate
+class SnapshotCreate
 {
     use AsObject;
 
@@ -17,7 +17,7 @@ class ScopeOfWorkSnapshotCreate
         ?array $snapshot = null
     ): ScopeOfWorkSnapshot {
         $group = $group ?: $version->group;
-        $snapshot = $snapshot ?: ScopeOfWorkSnapshotBuild::run($group);
+        $snapshot = $snapshot ?: SnapshotBuild::run($group);
 
         return ScopeOfWorkSnapshot::create([
             'scope_of_work_version_id' => $version->id,
