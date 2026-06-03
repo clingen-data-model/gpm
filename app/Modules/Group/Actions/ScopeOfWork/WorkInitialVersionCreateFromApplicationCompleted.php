@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Modules\Group\Actions;
+namespace App\Modules\Group\Actions\ScopeOfWork;
 
 use App\Modules\ExpertPanel\Events\ApplicationCompleted;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Lorisleiva\Actions\Concerns\AsListener;
 
-class ScopeOfWorkInitialVersionCreateFromApplicationCompleted
+class InitialVersionCreateFromApplicationCompleted
 {
     use AsListener;
 
@@ -18,7 +18,7 @@ class ScopeOfWorkInitialVersionCreateFromApplicationCompleted
             return;
         }
 
-        ScopeOfWorkInitialVersionCreate::run($expertPanel->group);
+        InitialVersionCreate::run($expertPanel->group);
     }
 
     public function asListener(ApplicationCompleted $event): void

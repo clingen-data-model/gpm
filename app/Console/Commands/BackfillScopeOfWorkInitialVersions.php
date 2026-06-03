@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Modules\Group\Actions\ScopeOfWorkInitialVersionCreate;
+use App\Modules\Group\Actions\ScopeOfWork\InitialVersionCreate;
 use App\Modules\Group\Models\Group;
 use App\Modules\Group\Models\ScopeOfWorkVersion;
 use Illuminate\Console\Command;
@@ -63,7 +63,7 @@ class BackfillScopeOfWorkInitialVersions extends Command
                 continue;
             }
 
-            $version = ScopeOfWorkInitialVersionCreate::run($group);
+            $version = InitialVersionCreate::run($group);
 
             $created++;
             $this->info("Created SoW version {$version->version_label} for {$group->id} {$group->name}.");
