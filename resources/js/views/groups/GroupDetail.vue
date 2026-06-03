@@ -442,6 +442,13 @@ export default {
         }
       );
     },
+    async discardScopeOfWorkRevision(revision) {
+      if (!window.confirm('Discard this Scope of Work draft and revert all changes back to the approved version?')) { return; }
+      this.scopeOfWorkStatus = await this.$store.dispatch('groups/discardScopeOfWorkRevision', { groupUuid: this.group.uuid, revisionUuid: revision.uuid });
+      await this.getGroup();
+      this.scopeOfWorkHistory = null;
+      this.$store.commit('pushSuccess', `Scope of Work draft ${revision.version_label} discarded.`);
+    },
   },
 };
 </script>
@@ -483,6 +490,7 @@ export default {
       @submit="submitScopeOfWorkRevision"
       @approve="approveScopeOfWorkRevision"
       @request-revisions="requestScopeOfWorkRevisionChanges"
+      @discard="discardScopeOfWorkRevision"
     >
       <static-alert v-if="scopeOfWorkIsUnderReview" variant="info" class="mb-3">
         Scope of Work changes are currently under review. Editing is disabled until the revision is approved or revisions are requested.

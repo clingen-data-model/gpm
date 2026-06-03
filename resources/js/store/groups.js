@@ -764,6 +764,11 @@ export const actions = {
         return response.data;
     },
 
+    async discardScopeOfWorkRevision(_, { groupUuid, revisionUuid }) {
+        const response = await api.post(`${baseUrl}/${groupUuid}/scope-of-work/revisions/${revisionUuid}/discard`);
+        return response.data;
+    },
+
     async checkpoints(_, { group_ids = [], queue = true, dry_run = false }) {
       const { data } = await api.post('/api/groups/checkpoints', { group_ids, queue, dry_run })
       return data; // { status, accepted, batch_id, ids, denied_ids, not_found_ids }

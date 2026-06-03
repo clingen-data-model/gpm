@@ -10,7 +10,7 @@ use Lorisleiva\Actions\Concerns\AsController;
 use Illuminate\Validation\ValidationException;
 use App\Modules\Group\Events\MemberRoleAssigned;
 use App\Modules\Group\Http\Resources\MemberResource;
-use App\Modules\Group\Actions\ScopeOfWorkRevisionGuard;
+use App\Modules\Group\Actions\ScopeOfWork\RevisionGuard;
 
 class MemberAssignRole
 {
@@ -18,7 +18,7 @@ class MemberAssignRole
     use AsObject;
 
     public function __construct(
-        private ScopeOfWorkRevisionGuard $scopeOfWorkRevisionGuard,
+        private RevisionGuard $scopeOfWorkRevisionGuard,
     ) {
     }
 

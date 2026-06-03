@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modules\Group\Actions;
+namespace App\Modules\Group\Actions\ScopeOfWork;
 
 use App\Models\User;
 use App\Modules\Group\Models\Group;
@@ -11,7 +11,7 @@ use Illuminate\Validation\ValidationException;
 use Lorisleiva\Actions\Concerns\AsController;
 use Lorisleiva\Actions\Concerns\AsObject;
 
-class ScopeOfWorkRevisionApprove
+class RevisionApprove
 {
     use AsObject;
     use AsController;
@@ -57,7 +57,7 @@ class ScopeOfWorkRevisionApprove
     {
         $this->handle($group, $scopeOfWorkVersion);
 
-        return ScopeOfWorkStatusGet::run($group);
+        return StatusGet::run($group);
     }
 
     public function authorize(): bool
