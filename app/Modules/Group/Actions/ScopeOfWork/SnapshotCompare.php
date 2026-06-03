@@ -150,7 +150,7 @@ class SnapshotCompare
 
     private function changePayload(Group $group, string $ruleKey, array $data): array
     {
-        $classification = ScopeOfWorkChangeClassify::run($group, $ruleKey);
+        $classification = ChangeClassify::run($group, $ruleKey);
 
         return array_merge([
             'rule_key' => $ruleKey,
