@@ -65,11 +65,11 @@ use App\Modules\Group\Actions\EmitGroupCheckpoints;
 use App\Modules\Group\Http\Controllers\Api\GroupPublicationsController;
 use App\Modules\Group\Actions\PublicationAdd;
 use App\Modules\Group\Actions\PublicationDelete;
-use App\Modules\Group\Actions\ScopeOfWorkStatusShow;
-use App\Modules\Group\Actions\ScopeOfWorkRevisionFinalize;
-use App\Modules\Group\Actions\ScopeOfWorkRevisionRefreshRun;
-use App\Modules\Group\Actions\ScopeOfWorkRevisionSubmit;
-use App\Modules\Group\Actions\ScopeOfWorkRevisionApprove;
+use App\Modules\Group\Actions\ScopeOfWork\RevisionFinalize;
+use App\Modules\Group\Actions\ScopeOfWork\RevisionRefreshRun;
+use App\Modules\Group\Actions\ScopeOfWork\RevisionSubmit;
+use App\Modules\Group\Actions\ScopeOfWork\RevisionApprove;
+use App\Modules\Group\Actions\ScopeOfWork\RevisionDiscard;
 use App\Modules\Group\Http\Controllers\Api\ScopeOfWorkController;
 
 Route::group([
@@ -217,11 +217,11 @@ Route::group([
 
         // SCOPE OF WORK
         Route::group(['prefix' => '/scope-of-work'], function () {
-            Route::get('/status', ScopeOfWorkStatusShow::class);
-            Route::post('/refresh', ScopeOfWorkRevisionRefreshRun::class);
-            Route::post('/revisions/{scopeOfWorkVersion:uuid}/finalize', ScopeOfWorkRevisionFinalize::class);
-            Route::post('/revisions/{scopeOfWorkVersion:uuid}/submit',ScopeOfWorkRevisionSubmit::class);
-            Route::post('/revisions/{scopeOfWorkVersion:uuid}/approve',ScopeOfWorkRevisionApprove::class);
+            Route::post('/refresh', RevisionRefreshRun::class);
+            Route::post('/revisions/{scopeOfWorkVersion:uuid}/finalize', RevisionFinalize::class);
+            Route::post('/revisions/{scopeOfWorkVersion:uuid}/submit', RevisionSubmit::class);
+            Route::post('/revisions/{scopeOfWorkVersion:uuid}/approve', RevisionApprove::class);
+            Route::post('/revisions/{scopeOfWorkVersion:uuid}/discard', RevisionDiscard::class);
             Route::get('/status', [ScopeOfWorkController::class, 'status']);
             Route::get('/history', [ScopeOfWorkController::class, 'history']);
             Route::get('/versions/{fromVersionUuid}/compare/{toVersionUuid}',[ScopeOfWorkController::class, 'compare']);

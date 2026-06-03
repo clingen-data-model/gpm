@@ -17,7 +17,7 @@ use App\Modules\Group\Notifications\AddedToGroupNotification;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 use App\Notifications\Alerts\DuplicateGroupMemberAddAttempt;
-use App\Modules\Group\Actions\ScopeOfWorkRevisionGuard;
+use App\Modules\Group\Actions\ScopeOfWork\RevisionGuard;
 
 class MemberAdd
 {
@@ -28,7 +28,7 @@ class MemberAdd
 
     public function __construct(
         private MemberAssignRole $assignRoleAction,
-        private ScopeOfWorkRevisionGuard $scopeOfWorkRevisionGuard,
+        private RevisionGuard $scopeOfWorkRevisionGuard,
     ) {
     }
 

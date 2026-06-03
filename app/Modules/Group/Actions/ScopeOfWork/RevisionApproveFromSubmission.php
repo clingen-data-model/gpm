@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modules\Group\Actions;
+namespace App\Modules\Group\Actions\ScopeOfWork;
 
 use App\Modules\Group\Models\ScopeOfWorkVersion;
 use App\Modules\Group\Models\Submission;
@@ -8,7 +8,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Lorisleiva\Actions\Concerns\AsObject;
 
-class ScopeOfWorkRevisionApproveFromSubmission
+class RevisionApproveFromSubmission
 {
     use AsObject;
 
