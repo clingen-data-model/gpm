@@ -84,6 +84,7 @@ class SnapshotCompare
 
             $changes = array_merge(
                 $changes,
+                $this->compareMemberStatus($group, $beforeMembers[$key], $afterMember),
                 $this->compareMemberRoles($group, $beforeMembers[$key], $afterMember)
             );
         }
@@ -191,21 +192,8 @@ class SnapshotCompare
     private function roleRuleKey(string $role, string $action): string
     {
         if ($role === config('scope_of_work.roles.chair', 'chair')) {
-            return $action === 'add'
-                ? 'member.add_chair'
-                : 'member.remove_chair';
+            return $action === 'add' ? 'member.add_chair' : 'member.remove_chair';
         }
-
-        if (in_array($role, [
-            config('scope_of_work.roles.grant_liaison', 'grant-liaison'),
-            'liaison',
-            'grant_liaison',
-        ], true)) {
-            return $action === 'add'
-                ? 'member.add_liaison'
-                : 'member.remove_liaison';
-        }
-
         return 'member.update_role';
     }
 
@@ -313,6 +301,44 @@ class SnapshotCompare
         }
 
         return $changes;
+    }
+
+    private function compareMemberStatus(Group $group, array $beforeMember, array $afterMember): array
+    {
+        $beforeEndDate = $beforeMember['end_date'] ?? null;
+        $afterEndDate = $afterMember['end_date'] ?? null;
+
+        if ($beforeEndDate === $afterEndDate) {
+            return [];
+        }
+
+        if (is_null($beforeEndDate) && !is_null($afterEndDate)) {
+            return [
+                $this->changePayload($group, 'member.retire', [
+                    'entity_type' => 'member',
+                    'entity_uuid' => $afterMember['person_uuid'] ?? null,
+                    'entity_label' => $this->memberLabel($afterMember),
+                    'field_name' => 'end_date',
+                    'before_value' => ['end_date' => $beforeEndDate],
+                    'after_value' => ['end_date' => $afterEndDate],
+                ]),
+            ];
+        }
+
+        if (!is_null($beforeEndDate) && is_null($afterEndDate)) {
+            return [
+                $this->changePayload($group, 'member.unretire', [
+                    'entity_type' => 'member',
+                    'entity_uuid' => $afterMember['person_uuid'] ?? null,
+                    'entity_label' => $this->memberLabel($afterMember),
+                    'field_name' => 'end_date',
+                    'before_value' => ['end_date' => $beforeEndDate],
+                    'after_value' => ['end_date' => $afterEndDate],
+                ]),
+            ];
+        }
+
+        return [];
     }
 
     private function scopeGenesByKey(array $genes): array
