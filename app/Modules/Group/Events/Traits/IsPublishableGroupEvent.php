@@ -108,7 +108,7 @@ trait IsPublishableGroupEvent
                 'current_step' => $ep->current_step,
             ];
             if ($withGenes) {
-                $epData['all_genes'] = $ep->genes->map(function ($gene) use ($group) { return $this->mapGeneForMessage($gene, $group->is_vcep_or_scvcep); })->toArray();
+                $epData['all_genes'] = $ep->genes->map(function ($gene) use ($group) { return $this->mapGeneForMessage($gene); })->toArray();
             }
 
             if ($group->isVcep || $group->isScvcep) {

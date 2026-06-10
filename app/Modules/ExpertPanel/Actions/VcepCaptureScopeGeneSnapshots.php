@@ -22,42 +22,56 @@ class VcepCaptureScopeGeneSnapshots
 
         $now = now();
         $rows = [];
+        
+        foreach ($scopeGenes as $scopeGene) {
+            $uuid = (string) $scopeGene->gt_curation_uuid;
+            if (!$uuid) { continue; }
 
-        DB::transaction(function () use ($scopeGenes, $rows) {
-            foreach ($scopeGenes as $scopeGene) {
-                $uuid = (string) $scopeGene->gt_curation_uuid;
-                if (!$uuid) { continue; }
+            $resp = $this->gtApiService->getCurationByID($uuid);
+            $data = $resp['data'] ?? [];
 
-                $resp = $this->gtApiService->getCurationByID($uuid);
-                $data = $resp['data'] ?? [];
+            $item = null;
 
-                $item = null;
-
-                if (!empty($data)) {
-                    foreach ($data as $d) {
-                        if (($d['curation_id'] ?? null) === $uuid) {
-                            $item = $d;
-                            break;
-                        }
+            if (!empty($data)) {
+                foreach ($data as $d) {
+                    if (($d['curation_id'] ?? null) === $uuid) {
+                        $item = $d;
+                        break;
                     }
-                    $item ??= $data[0];
                 }
-                $item = is_array($item) ? $item : [];
-                $conflictData = $this->vcepGeneConflictService->check($group, $scopeGene);
-                $payload = array_merge($item, $conflictData);
-                $curationUUID = $item['curation_id'] ?? $uuid;
-                
+                $item ??= $data[0];
+            }
+            $item = is_array($item) ? $item : [];
+            $conflictData = $this->vcepGeneConflictService->check($group, $scopeGene);
+            $payload = array_merge($item, $conflictData);
+            $curationUUID = $item['curation_id'] ?? $uuid;
+            
+            $rows[] = [
+                'scope_gene_id' => $scopeGene->id,
+                'curation_uuid' => $curationUUID,
+                'check_key' => $item['checkKey'] ?? null,
+                'payload' => json_encode($payload, JSON_UNESCAPED_SLASHES),
+                'captured_at' => $now,
+                'is_outdated' => false,
+                'last_compared_at' => null,
+            ];
+        }
+        if (empty($rows)) { return; }
+        DB::transaction(function () use ($rows) {
+            foreach ($rows as $row) {
                 ScopeGeneSnapshot::updateOrCreate(
                     [
-                        'scope_gene_id' => $scopeGene->id,
-                        'curation_uuid' => $curationUUID,
-                    ], [
-                        'check_key'         => $item['checkKey'] ?? null,
-                        'payload'           => json_encode($payload, JSON_UNESCAPED_SLASHES),
-                        'captured_at'       => $now,
-                        'is_outdated'       => false,
-                        'last_compared_at'  => null,
-                ]);
+                        'scope_gene_id' => $row['scope_gene_id'],
+                        'curation_uuid' => $row['curation_uuid'],
+                    ],
+                    [
+                        'check_key'         => $row['check_key'],
+                        'payload'           => $row['payload'],
+                        'captured_at'       => $row['captured_at'],
+                        'is_outdated'       => $row['is_outdated'],
+                        'last_compared_at'  => $row['last_compared_at'],
+                    ]
+                );
             }
         });
     }
