@@ -26,9 +26,14 @@
 				</template>
 			</div>
 
-			<div v-if="status.active_revision.submission" class="mt-1 text-blue-800">
-				Submission status:
-				<span class="font-semibold">{{ status.active_revision.submission.status }}</span>
+			<div
+				v-if="status.active_revision.status === 'revisions_requested' && status.active_revision.submission?.response_content"
+				class="mt-2 rounded border border-yellow-300 bg-yellow-50 p-3 text-yellow-900"
+				>
+				<div class="font-semibold">Revision request notes:</div>
+				<div class="mt-1 whitespace-pre-line">
+					{{ status.active_revision.submission.response_content }}
+				</div>
 			</div>
 
 			<div class="mt-2 text-blue-800">
@@ -50,9 +55,9 @@
 				<button v-if="status.active_revision.status === 'draft' && status.active_revision.summary.can_finalize_without_approval" type="button" class="btn btn-xs" @click="$emit('finalize', status.active_revision)">
 					Finalize as version {{ status.active_revision.version_label }}
 				</button>
-				<button v-if="['draft', 'revisions_requested'].includes(status.active_revision.status) && status.active_revision.summary.requires_submission" type="button" class="btn btn-xs" @click="$emit('submit', status.active_revision)">
+				<button v-if="['draft', 'revisions_requested'].includes(status.active_revision.status) && status.active_revision.summary.requires_submission" type="button" class="btn btn-xs" @click="showSubmitRevisionModal = true">
 					{{ status.active_revision.status === 'revisions_requested' ? 'Resubmit for approval' : 'Submit for approval' }}
-				</button>
+        </button>
 				<template v-if="canManage && status.active_revision.status === 'submitted'">
 					<button type="button" class="btn btn-xs" @click="$emit('approve', status.active_revision)">Approve revision</button>
 					<button type="button" class="btn btn-xs" @click="$emit('request-revisions', status.active_revision)">Request revisions</button>					
@@ -61,10 +66,22 @@
 			</div>
 		</div>
 	</div>
+  <SubmissionConfirmationModal
+    v-if="activeRevision"
+    v-model="showSubmitRevisionModal"
+    title="Submit Scope of Work revision"
+    :submission-name="`Scope of Work revision ${activeRevision.version_label}`"
+    notes-label="Required notes for reviewers:"
+    submit-text="Submit for Approval"
+    @submitted="submitRevision"
+  />
 </template>
 
 <script setup>
-defineProps({
+import { computed, ref } from 'vue';
+import SubmissionConfirmationModal from '@/components/applications/SubmissionConfirmationModal.vue';
+
+const props = defineProps({
   status: {
     type: Object,
     required: false,
@@ -77,5 +94,12 @@ defineProps({
   },
 });
 
-defineEmits(['finalize', 'submit', 'approve', 'request-revisions', 'discard']);
+const emit = defineEmits(['finalize', 'submit', 'approve', 'request-revisions', 'discard']);
+const showSubmitRevisionModal = ref(false);
+const activeRevision = computed(() => props.status?.active_revision || null);
+const submitRevision = (notes) => {
+  if (!activeRevision.value) { return; }
+  emit('submit', { revision: activeRevision.value, notes });
+  showSubmitRevisionModal.value = false;
+};
 </script>

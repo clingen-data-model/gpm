@@ -86,24 +86,24 @@ export default {
         this.$store.commit('groups/clearCurrentItem')
     },
     methods: {
-        hideModal () {
-            this.$router.replace({name: 'GroupApplication', params: {uuid: this.uuid}});
-        },
-        handleModalClosed (evt) {
-            this.clearModalForm(evt);
-            this.$router.push({name: 'GroupApplication', params: {uuid: this.uuid}});
-        },
-        clearModalForm () {
-            if (typeof this.$refs.modalView.clearForm === 'function') {
-                this.$refs.modalView.clearForm();
-            }
-        },
-        updateLastSavedAt () {
-            this.saving = false;
-            this.lastSavedAt = new Date();
-        },
+      hideModal () {
+        this.$router.replace({name: 'GroupApplication', params: {uuid: this.uuid}});
+      },
+      handleModalClosed (evt) {
+        this.clearModalForm(evt);
+        this.$router.push({name: 'GroupApplication', params: {uuid: this.uuid}});
+      },
+      clearModalForm () {
+        if (typeof this.$refs.modalView.clearForm === 'function') {
+          this.$refs.modalView.clearForm();
+        }
+      },
+      updateLastSavedAt () {
+        this.saving = false;
+        this.lastSavedAt = new Date();
+      },
     }
-}
+  }
 </script>
 <template>
   <div>
@@ -167,16 +167,13 @@ export default {
             class="relative mt-4 px-4 z-50"
             variant="success"
           >
-            <p class="text-lg">
-              Your application was submitted on {{ formatDate(group.expert_panel.pendingSubmission.created_at) }}.
-            </p>
+            <p class="text-lg">Your application was submitted on {{ formatDate(group.expert_panel.pendingSubmission.created_at) }}.</p>
+            <p v-if="pendingSubmissionSnapshotVersion">Submitted application snapshot: version {{ pendingSubmissionSnapshotVersion }}.</p>
             <p>You cannot update your application while waiting approval.</p>
             <p>The approval committee will respond soon.</p>
             <p>
               Please contact
-              <a href="mailto:cdwg_oversightcommittee@clinicalgenome.org">
-                the ClinGen CDWG Oversight Committee
-              </a>
+              <a href="mailto:cdwg_oversightcommittee@clinicalgenome.org">the ClinGen CDWG Oversight Committee</a>
               if you have any questions.
             </p>
           </static-alert>

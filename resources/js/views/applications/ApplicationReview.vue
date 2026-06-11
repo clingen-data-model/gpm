@@ -6,6 +6,7 @@
     import DefinitionReview from '@/components/expert_panels/DefinitionReview.vue';
     import ChairApproverControls from '@/components/applications/Review/ChairApproverControls.vue';
     import SustainedCurationReview from '@/components/expert_panels/SustainedCurationReview.vue';
+    import SubmissionContextSummary from '@/components/applications/Review/SubmissionContextSummary.vue';
 
     const emits = defineEmits(['deleted', 'saved']);
     const store = useStore();
@@ -47,6 +48,7 @@ const screenTitle = computed(() => {
       @deleted="emits('deleted')"
       @saved="emits('deleted')"
     />
+    <SubmissionContextSummary />
     <component :is="stepReviewComponent" />
   </ScreenTemplate>
 </template>

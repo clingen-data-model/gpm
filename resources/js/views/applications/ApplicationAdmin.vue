@@ -5,6 +5,7 @@ import NextActions from '@/components/next_actions/NextActions.vue'
 import ProgressChart from '@/components/applications/ProgressChart.vue'
 import StepTabs from '@/components/applications/StepTabs.vue'
 import BasicInfoData from '@/components/applications/BasicInfoData.vue'
+import SubmissionContextSummary from '@/components/applications/Review/SubmissionContextSummary.vue'
 
 export default {
     name: 'ApplicationDetail',
@@ -13,7 +14,8 @@ export default {
         NextActions,
         ProgressChart,
         StepTabs,
-        BasicInfoData
+        BasicInfoData,
+        SubmissionContextSummary
     },
     props: {
         loading: {
@@ -107,6 +109,8 @@ export default {
           class="w-1/2 space-y-2 md:px-4 md:py-2 bg-white border-b border-gray-200 "
         />
       </div>
+
+      <SubmissionContextSummary />
 
       <ProgressChart
         :application="application"
