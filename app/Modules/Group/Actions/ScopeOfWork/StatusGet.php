@@ -112,6 +112,8 @@ class StatusGet
                     'id' => $revision->submission->id,
                     'status' => $revision->submission->status?->name,
                     'type' => $revision->submission->type?->name,
+                    'notes' => $revision->submission->notes,
+                    'response_content' => $revision->submission->response_content,
                     'created_at' => optional($revision->submission->created_at)->toISOString(),
                     'closed_at' => optional($revision->submission->closed_at)->toISOString(),
                 ] : null,
