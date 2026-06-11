@@ -46,6 +46,12 @@ class ApplicationSubmitStep
         $group = $this->setReceivedDate($group);
         
         event(new ApplicationStepSubmitted($group, $submission));
+        $submission = $submission->fresh()->load([
+            'status',
+            'type',
+            'applicationSnapshot',
+        ]);
+        $submission->wasRecentlyCreated = true;
 
         $group->expertPanel->nextActions()->ofType(config('next_actions.types.make-revisions.id'))
             ->each(function ($nextAction) use ($group){

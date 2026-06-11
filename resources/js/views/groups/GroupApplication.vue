@@ -6,97 +6,90 @@ import Group from '@/domain/group';
 import { getApplicationForGroup } from "@/composables/use_application.js";
 
 export default {
-    name: 'GroupApplication',
-    components: {
-        ApplicationGcep,
-        ApplicationVcep,
-        ApplicationMenu,
-    },
-    beforeRouteLeave() {
-        if (this.$refs.application.applicationIsDirty()) {
-            // eslint-disable-next-line no-alert
-            const confirm = window.confirm('You have unsaved changes. If you continue your changes may be lost.');
-
-            if (!confirm) {
-                return false;
-            }
-        }
-    },
-    props: {
-        uuid: {
-            type: String,
-            required: true
-        }
-    },
-    data() {
-        return {
-            showDocumentation: false,
-            showModal: false,
-            showApplicationToc: true,
-            lastSavedAt: new Date(),
-            saving: false
-        }
-    },
-    computed: {
-        applicationComponent() {
-            if (this.group?.is_vcep_or_scvcep) {
-                return ApplicationVcep;
-            }
-
-            if (this.group?.is_gcep) {
-                return ApplicationGcep;
-            }
-
-            return null;
-        },
-        group () {
-            const group = this.$store.getters['groups/currentItem'] || new Group();
-            return group || new Group();
-        },
-        application() {
-            return getApplicationForGroup(this.group);
-        },
-    },
-    watch: {
-        $route () {
-            this.showModal = this.$route.meta.showModal
-                                ? Boolean(this.$route.meta.showModal)
-                                : false;
-        },
-
-        uuid: {
-            immediate: true,
-            async handler (to) {
-                await this.$store.dispatch('groups/find', to)
-                    .then(() => {
-                        this.$store.commit('groups/setCurrentItemIndexByUuid', this.uuid)
-                    });
-                await this.$store.dispatch('groups/getSubmissions', this.group);
-
-            }
-        },
-    },
-    beforeUnmount() {
-        this.$store.commit('groups/clearCurrentItem')
-    },
-    methods: {
-        hideModal () {
-            this.$router.replace({name: 'GroupApplication', params: {uuid: this.uuid}});
-        },
-        handleModalClosed (evt) {
-            this.clearModalForm(evt);
-            this.$router.push({name: 'GroupApplication', params: {uuid: this.uuid}});
-        },
-        clearModalForm () {
-            if (typeof this.$refs.modalView.clearForm === 'function') {
-                this.$refs.modalView.clearForm();
-            }
-        },
-        updateLastSavedAt () {
-            this.saving = false;
-            this.lastSavedAt = new Date();
-        },
+  name: 'GroupApplication',
+  components: {
+    ApplicationGcep,
+    ApplicationVcep,
+    ApplicationMenu,
+  },
+  beforeRouteLeave() {
+    if (this.$refs.application.applicationIsDirty()) {
+      // eslint-disable-next-line no-alert
+      const confirm = window.confirm('You have unsaved changes. If you continue your changes may be lost.');
+      if (!confirm) { return false; }
     }
+  },
+  props: {
+    uuid: {
+      type: String,
+      required: true
+    }
+  },
+  data() {
+    return {
+      showDocumentation: false,
+      showModal: false,
+      showApplicationToc: true,
+      lastSavedAt: new Date(),
+      saving: false
+    }
+  },
+  computed: {
+    applicationComponent() {
+      if (this.group?.is_vcep_or_scvcep) { return ApplicationVcep; }
+      if (this.group?.is_gcep) { return ApplicationGcep; }
+      return null;
+    },
+    group () {
+      const group = this.$store.getters['groups/currentItem'] || new Group();
+      return group || new Group();
+    },
+    application() {
+      return getApplicationForGroup(this.group);
+    },
+    pendingSubmissionSnapshotVersion() {
+      const submission = this.group?.expert_panel?.pendingSubmission;
+      return submission?.data?.application_snapshot_version || submission?.application_snapshot?.version || null;
+    },
+  },
+  watch: {
+    $route () {
+      this.showModal = this.$route.meta.showModal ? Boolean(this.$route.meta.showModal) : false;
+    },
+
+    uuid: {
+      immediate: true,
+      async handler (to) {
+          await this.$store.dispatch('groups/find', to)
+              .then(() => {
+                  this.$store.commit('groups/setCurrentItemIndexByUuid', this.uuid)
+              });
+          await this.$store.dispatch('groups/getSubmissions', this.group);
+
+      }
+    },
+  },
+  beforeUnmount() {
+    this.$store.commit('groups/clearCurrentItem')
+  },
+  methods: {
+    hideModal () {
+      this.$router.replace({name: 'GroupApplication', params: {uuid: this.uuid}});
+    },
+    handleModalClosed (evt) {
+      this.clearModalForm(evt);
+      this.$router.push({name: 'GroupApplication', params: {uuid: this.uuid}});
+    },
+    clearModalForm () {
+      if (typeof this.$refs.modalView.clearForm === 'function') {
+        this.$refs.modalView.clearForm();
+      }
+    },
+    updateLastSavedAt () {
+      this.saving = false;
+      this.lastSavedAt = new Date();
+    },
+  }
 }
 </script>
 <template>
@@ -161,16 +154,13 @@ export default {
             class="relative mt-4 px-4 z-50"
             variant="success"
           >
-            <p class="text-lg">
-              Your application was submitted on {{ formatDate(group.expert_panel.pendingSubmission.created_at) }}.
-            </p>
+            <p class="text-lg">Your application was submitted on {{ formatDate(group.expert_panel.pendingSubmission.created_at) }}.</p>
+            <p v-if="pendingSubmissionSnapshotVersion">Submitted application snapshot: version {{ pendingSubmissionSnapshotVersion }}.</p>
             <p>You cannot update your application while waiting approval.</p>
             <p>The approval committee will respond soon.</p>
             <p>
               Please contact
-              <a href="mailto:cdwg_oversightcommittee@clinicalgenome.org">
-                the ClinGen CDWG Oversight Committee
-              </a>
+              <a href="mailto:cdwg_oversightcommittee@clinicalgenome.org">the ClinGen CDWG Oversight Committee</a>
               if you have any questions.
             </p>
           </static-alert>

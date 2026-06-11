@@ -381,26 +381,13 @@ export default {
         `Scope of Work changes finalized as version ${revision.version_label}.`
       );
     },
-    async submitScopeOfWorkRevision(revision) {
-      const notes = window.prompt('Add optional notes for the reviewers:', '');
+    async submitScopeOfWorkRevision(payload) {
+      const revision = payload.revision || payload;
+      const notes = payload.notes || null;
 
-      if (notes === null) {
-        return;
-      }
-
-      this.scopeOfWorkStatus = await this.$store.dispatch(
-        'groups/submitScopeOfWorkRevision',
-        {
-          groupUuid: this.group.uuid,
-          revisionUuid: revision.uuid,
-          notes,
-        }
-      );
-
-      this.$store.commit(
-        'pushSuccess',
-        `Scope of Work revision ${revision.version_label} submitted for approval.`
-      );
+      this.scopeOfWorkStatus = await this.$store.dispatch('groups/submitScopeOfWorkRevision', { groupUuid: this.group.uuid, revisionUuid: revision.uuid, notes });
+      this.$store.commit('pushSuccess', `Scope of Work revision ${revision.version_label} submitted for approval.`);
+      await this.getGroup();
     },
     async handleModalSaved() {
       this.hideModal();
