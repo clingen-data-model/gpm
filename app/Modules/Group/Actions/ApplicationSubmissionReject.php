@@ -39,7 +39,7 @@ class ApplicationSubmissionReject
             $submission = $this->handle(
                 group: $group, 
                 submission: $submission,
-                responseContent: $request->notify_contacts ? $request->body : null
+                responseContent: $request->body
             );
 
             $attachments = collect($request->attachments)

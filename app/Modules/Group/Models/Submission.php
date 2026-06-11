@@ -15,6 +15,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
+use App\Models\ApplicationSnapshot;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Submission extends Model
 {
@@ -185,5 +187,10 @@ class Submission extends Model
     protected static function newFactory()
     {
         return new SubmissionFactory();
+    }
+
+    public function applicationSnapshot(): HasOne
+    {
+        return $this->hasOne(ApplicationSnapshot::class);
     }
 }
