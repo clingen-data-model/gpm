@@ -3,6 +3,7 @@ import RequirementsItem from '@/components/expert_panels/RequirementsItem.vue'
 import {isValidationError} from '@/http'
 import configs from '@/configs'
 import DevComponent from '@/components/dev/DevComponent.vue'
+import SubmissionConfirmationModal from '@/components/applications/SubmissionConfirmationModal.vue'
 
 const {submissions} = configs;
 
@@ -11,6 +12,7 @@ export default {
     components: {
         RequirementsItem,
         DevComponent,
+        SubmissionConfirmationModal
     },
     props: {
         disabled: {
@@ -37,7 +39,8 @@ export default {
             showSubmissionConfirmation: false,
             notes: null,
             errors: {},
-            bypassReqs: false
+            bypassReqs: false,
+            submitting: false,
         }
     },
     computed: {
@@ -80,9 +83,11 @@ export default {
             this.showSubmissionConfirmation = true;
             this.notes = null;
         },
-        async confirmSubmission () {
+        async confirmSubmission (notes) {
+            if (this.submitting) { return; }
+            this.submitting = true;
             try {
-                await this.$store.dispatch('groups/submitApplicationStep', {group: this.group, notes: this.notes});
+                await this.$store.dispatch('groups/submitApplicationStep', {group: this.group, notes});
                 this.$store.commit('pushSuccess', 'Your application has been submitted for approval.')
                 this.showSubmissionConfirmation = false;
                 this.$emit('submitted');
@@ -95,9 +100,12 @@ export default {
                 }
 
                 throw error;
+            } finally {
+                this.submitting = false;
             }
         },
         cancelSubmission () {
+            if (this.submitting) { return; }
             this.showSubmissionConfirmation = false;
             this.notes = null;
             this.$emit('canceled');
@@ -130,35 +138,15 @@ export default {
         </div>
       </popover>
     </div>
-    <teleport to="body">
-      <transition name="fade">
-        <modal-dialog v-model="showSubmissionConfirmation" title="Submit your application">
-          <p class="text-lg">
-            You are about to submit your {{ submissionName }} application.
-          </p>
-          <static-alert class="text-md" variant="info">
-            Before submitting, please note:
-            <ol class="list-decimal pl-6">
-              <li>
-                Typical response times are between one and two weeks.
-              </li>
-              <li>
-                Questions, revisions, and other comments will be conveyed via email.
-              </li>
-              <li>
-                Once submitted you will not be able to update your application until the submission has been processed.
-              </li>
-            </ol>
-          </static-alert>
-          <div class="mt-4 text-lg">
-            Optional notes for reviewers:
-          </div>
-          <input-row label="" :errors="errors.notes" vertical>
-            <textarea v-model="notes" rows="5" class="w-full" />
-          </input-row>
-          <button-row @submitted="confirmSubmission" @canceled="cancelSubmission" />
-        </modal-dialog>
-      </transition>
-    </teleport>
+    <SubmissionConfirmationModal
+      v-model="showSubmissionConfirmation"
+      title="Submit your application"
+      :submission-name="`${submissionName} application`"
+      notes-label="Required notes for reviewers:"
+      submit-text="Submit"
+      :submitting="submitting"
+      @submitted="confirmSubmission"
+      @canceled="cancelSubmission"
+    />
   </div>
 </template>
