@@ -139,7 +139,7 @@ class RevisionSubmit
     public function rules(): array
     {
         return [
-            'notes' => ['nullable', 'string'],
+            'notes' => ['required', 'string'],
         ];
     }
 

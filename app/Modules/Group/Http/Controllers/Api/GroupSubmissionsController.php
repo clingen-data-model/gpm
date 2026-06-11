@@ -15,6 +15,7 @@ class GroupSubmissionsController extends Controller
     {
         return $group->submissions()
             ->with([
+                'applicationSnapshot',
                 'submitter' => function ($q) {
                     return $q->select([
                         'id',
@@ -36,6 +37,7 @@ class GroupSubmissionsController extends Controller
     {
         return $group->latestSubmission()
             ->with([
+                'applicationSnapshot',
                 'submitter' => function ($q) {
                     return $q->select([
                         'id',
