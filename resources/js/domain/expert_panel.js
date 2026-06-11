@@ -241,7 +241,7 @@ class ExpertPanel extends Entity
 
     submissionsForStep (step) {
         const stepName = (typeof step == 'number') ? stepNumberToName[step] : step;
-        return this.submissions.filter(s => s.type.name = stepName)
+        return this.submissions.filter(s => s.type.name === stepName)
     }
 
     hasPendingSubmissionForStep(stepName) {

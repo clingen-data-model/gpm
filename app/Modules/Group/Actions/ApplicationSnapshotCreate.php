@@ -8,6 +8,7 @@ use App\Models\ApplicationSnapshot;
 use App\Modules\Group\Models\Group;
 use Lorisleiva\Actions\Concerns\AsListener;
 use App\Modules\Group\Events\ApplicationStepSubmitted;
+use App\Modules\Group\Models\Submission;
 
 class ApplicationSnapshotCreate
 {
@@ -17,7 +18,7 @@ class ApplicationSnapshotCreate
     {
     }
 
-    public function handle(Group $group, int $submissionId = null)
+    public function handle(Group $group, int $submissionId = null): ApplicationSnapshot
     {
         $latestVersion = $this->getLatestVersion($group);
 
@@ -43,12 +44,28 @@ class ApplicationSnapshotCreate
 
         $snapshot =  $this->snapshotter->createSnapshot($group);
 
-        ApplicationSnapshot::create([
+        $applicationSnapshot = ApplicationSnapshot::create([
             'group_id' => $group->id,
             'submission_id' => $submissionId,
-            'version' => $latestVersion+1,
-            'snapshot' => $snapshot
+            'version' => $latestVersion + 1,
+            'snapshot' => $snapshot,
         ]);
+
+        if ($submissionId) {
+            $submission = Submission::find($submissionId);
+
+            if ($submission) {
+                $submission->update([
+                    'data' => array_merge($submission->data ?? [], [
+                        'context' => $submissionData['context'] ?? 'application_submission',
+                        'application_snapshot_id' => $applicationSnapshot->id,
+                        'application_snapshot_version' => $applicationSnapshot->version,
+                    ]),
+                ]);
+            }
+        }
+
+        return $applicationSnapshot;
     }
 
     public function asListener(ApplicationStepSubmitted $event)
