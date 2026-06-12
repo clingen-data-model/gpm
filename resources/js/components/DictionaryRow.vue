@@ -62,7 +62,7 @@ export default {
         <label :class="fullLabelClass">{{ label }}{{ colon }}</label>
       </slot>
     </div>
-    <div>
+    <div class="flex-1 min-w-0">
       <slot />
     </div>
     <div class="hidden w-36">

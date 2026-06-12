@@ -49,7 +49,22 @@
       name="member-designation"
     >
       <dictionary-row label="Core Approval Members" label-width-class="w-48 font-bold">
-        {{ group.coreApprovalMembers.map(m => m.person.name).join(', ') }}
+        <div class="space-y-1 w-full">
+          <div
+            v-for="member in group.coreApprovalMembers"
+            :key="member.id"
+            class="flex flex-col gap-2 border-b border-gray-200 pb-1 last:border-b-0 last:pb-0 md:flex-row md:items-center md:justify-between"
+          >
+            <div>{{ member.person.name }}</div>
+            <div class="flex flex-wrap items-center gap-2">
+              <template v-if="member.person?.core_member_attestation_completed">
+                <span class="inline-flex items-center rounded-full bg-green-100 px-3 py-1 text-sm font-medium text-green-800">Attestation Completed</span>
+                <span class="text-sm text-gray-500">{{ formatDate(member.person?.core_member_attestation_completion_date) }}</span>
+              </template>
+              <span v-else class="inline-flex items-center rounded-full bg-amber-100 px-3 py-1 text-sm font-medium text-amber-800">Attestation Required</span>
+            </div>
+          </div>
+        </div>
       </dictionary-row>
       <dictionary-row label="Biocurator Trainers" label-width-class="w-48 font-bold">
         {{ group.biocuratorTrainers.map(m => m.person.name).join(', ') }}

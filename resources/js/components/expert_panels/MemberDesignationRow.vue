@@ -160,7 +160,7 @@ export default {
       <div class="flex items-center gap-2">
         <input v-model="coreApprovalMember" type="checkbox" :disabled="!canEdit" @input="debounceSave" class="align-middle" />
         <span v-if="coreMemberAttestationStatus" class="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs" :class="{ 'bg-green-100 text-green-800': coreMemberAttestationStatus === 'completed', 'bg-amber-100 text-amber-800': coreMemberAttestationStatus === 'pending'}" :title="coreMemberAttestationStatus === 'completed' ? 'Attestation Completed' : 'Attestation Required'">
-            {{ coreMemberAttestationStatus === 'completed' ? 'Attestation Completed' : 'Attestation Required' }}
+            {{ coreMemberAttestationStatus === 'completed' ? 'Completed at ' + formatDate(workingCopy.person.core_member_attestation_completion_date): 'Attestation Required' }}
         </span>
       </div>
     </td>
