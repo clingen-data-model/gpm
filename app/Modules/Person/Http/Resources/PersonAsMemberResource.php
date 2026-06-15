@@ -32,6 +32,7 @@ class PersonAsMemberResource extends JsonResource
             'country_id' => $this->country_id,
             'core_member_attestation_completed' => $this->core_member_attestation_completed,
             'core_member_attestation_completion_date' => $this->core_member_attestation_completion_date,
+            'core_member_attestation_responses' => $this->core_member_attestation_responses,
         ];
         $data['institution'] = $this->whenLoaded('institution', fn() => new InstitutionResource($this->institution));
         $data['credentials'] = $this->whenLoaded('credentials');

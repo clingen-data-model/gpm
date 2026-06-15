@@ -29,7 +29,7 @@ class AttestationUpdate
             $attestation->fill([
                 'experience_types'      => $data['experience_types'],
                 'other_text'            => $data['other_text'] ?? null,
-                'attestation_version'   => Attestation::CURRENT_VERSION,
+                'attestation_version'   => config('cam.attestation.version', '1.0'),
                 'attested_by'           => optional(auth()->user())->id,
                 'attested_at'           => now(),
             ])->save();
@@ -50,7 +50,7 @@ class AttestationUpdate
     {
         return [
             'experience_types'      => ['required','array','min:1'],
-            'experience_types.*'    => ['required', Rule::in([Attestation::TYPE_DIRECT, Attestation::TYPE_REVIEW, Attestation::TYPE_FIFTY, Attestation::TYPE_OTHER])],
+            'experience_types.*'    => ['required', Rule::in(array_keys(config('cam.attestation.experience_types', [])))],
             'other_text'            => 'nullable|required_if:experience_type,other|string|max:1000|min:20',
         ];
     }

@@ -34,12 +34,6 @@ class Attestation extends Model
         'experience_types' => 'array',
     ];
 
-    public const TYPE_DIRECT = 'direct_experience';
-    public const TYPE_REVIEW = 'detailed_review';
-    public const TYPE_FIFTY  = 'fifty_variants_supervised';
-    public const TYPE_OTHER  = 'other';
-    public const CURRENT_VERSION = '1.0';
-
     public function person(): BelongsTo
     {
         return $this->belongsTo(Person::class);
@@ -55,9 +49,9 @@ class Attestation extends Model
         return $q->whereNull('revoked_at');
     }
 
-    public function scopeCurrentVersion($q, string $version = self::CURRENT_VERSION)
+    public function scopeCurrentVersion($q, string $version = null)
     {
-        return $q->where('attestation_version', $version);
+        return $q->where('attestation_version', $version ?? config('cam.attestation.version', '1.0'));
     }
 
     public function isActive(): bool
@@ -65,8 +59,8 @@ class Attestation extends Model
         return is_null($this->revoked_at) && is_null($this->deleted_at);
     }
 
-    public function isCurrentVersion(string $version = self::CURRENT_VERSION): bool
+    public function isCurrentVersion(string $version = null): bool
     {
-        return $this->attestation_version === $version;
+        return $this->attestation_version === ($version ?? config('cam.attestation.version', '1.0'));
     }
 }

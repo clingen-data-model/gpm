@@ -146,6 +146,7 @@ class Person extends Model implements HasLogEntries
         'has_core_member_attestation',
         'core_member_attestation_completed',
         'core_member_attestation_completion_date',
+        'core_member_attestation_responses'
     ];
 
     public function __construct(array $attributes = [])
@@ -522,6 +523,28 @@ class Person extends Model implements HasLogEntries
                 $roleName = config('groups.roles.core-approval-member.name', 'core-approval-member');
                 $isCoreNow = $this->activeMemberships()->whereHas('roles', fn($q) => $q->where('id', $roleId)->orWhere('name', $roleName))->exists();
                 return $isCoreNow && $this->attestation_pending;
+            }
+        );
+    }
+
+    protected function coreMemberAttestationResponses(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                $attestation = $this->currentAttestation();
+
+                if (!$attestation || !$attestation->attested_at) { return []; }
+                $labels = config('cam.attestation.experience_types', []);
+                return collect($attestation->experience_types ?? [])->map(function ($type) use ($labels, $attestation) {
+                        if ($type === 'other') {
+                            $otherLabel = $labels['other'] ?? 'Other';
+                            return $attestation->other_text ? $otherLabel . ': ' . $attestation->other_text : $otherLabel;
+                        }
+                        return $labels[$type] ?? $type;
+                    })
+                    ->filter()
+                    ->values()
+                    ->all();
             }
         );
     }
