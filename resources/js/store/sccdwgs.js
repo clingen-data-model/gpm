@@ -15,9 +15,15 @@ export default {
 	},
 	actions: {
 		async fetchAll({ commit, state }) {
-			if (state.items.length) return		
-			const resp = await axios.get('/api/cdwgs?scope=sc')
-			commit('setAll', Array.isArray(resp.data) ? resp.data : (resp.data?.data || []))
+			if (state.items.length) return
+            try {
+                const resp = await axios.get('/api/cdwgs?scope=sc')
+                commit('setAll', Array.isArray(resp.data) ? resp.data : (resp.data?.data || []))
+            } catch (err) {
+                console.error('Error fetching SC-CDWGs', err)
+                commit('setAll', [])
+                throw err
+            }
 		}
 	}
 }
