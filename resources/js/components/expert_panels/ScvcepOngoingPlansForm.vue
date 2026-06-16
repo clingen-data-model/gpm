@@ -1,4 +1,5 @@
 <script>
+import hasAnyPermission from '@/auth_utils';
 
 export default {
     name: 'ScvcepOngoingPlansForm',
@@ -32,7 +33,7 @@ export default {
             }
         },
         canEdit () {
-            return this.hasAnyPermission([
+            return hasAnyPermission([
                 'ep-applications-manage',
                 ['application-edit', this.group]
             ])
