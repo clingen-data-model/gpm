@@ -92,7 +92,7 @@ export default {
             Select...
           </option>
           <option
-            v-for="gene in groupGenes" 
+            v-for="gene in groupGenes"
             :key="gene.id"
             :value="gene.id"
           >
@@ -100,11 +100,11 @@ export default {
           </option>
         </select>
       </input-row>
-      <input-row 
-        v-model="summaryClone.variant" 
-        class="mt-0 mb-0" 
-        :vertical="true" 
-        label="Variant" 
+      <input-row
+        v-model="summaryClone.variant"
+        class="mt-0 mb-0"
+        :vertical="true"
+        label="Variant"
         :errors="errors.variant"
       />
       <input-row
@@ -121,22 +121,12 @@ export default {
     <input-row class="mt-0 mb-0" label="Summary" :vertical="true" :errors="errors.summary">
       <textarea v-model="summaryClone.summary" rows="5" class="w-full" />
     </input-row>
-    <input-row v-if="group.is_vcep"
-      v-model="summaryClone.vci_url" 
-      class="mt-0" 
-      label="VCI URL" 
-      :vertical="true" 
-      input-class="w-full" 
-      :errors="errors.vci_url"
-    />
-    <input-row v-if="group.is_scvcep"
-      v-model="summaryClone.vci_url" 
-      class="mt-0" 
-      label="CIViC webpage hyperlink" 
-      :vertical="true" 
-      :required="true"
-      :max-length="10"
-      input-class="w-full" 
+    <input-row v-if="group.is_vcep || group.is_scvcep"
+      v-model="summaryClone.vci_url"
+      class="mt-0"
+      :label="group.is_vcep ? 'VCI URL' : 'CIViC webpage hyperlink'"
+      :vertical="true"
+      input-class="w-full"
       :errors="errors.vci_url"
     />
     <button-row submit-text="save" @submit="save" @cancel="cancel" />
