@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('evidence_summaries', function (Blueprint $table) {
-            $table->varchar('assertion_id', 255)->nullable()->after('gene_id');
+            $table->string('assertion_id', 255)->nullable()->after('gene_id');
         });
     }
 
