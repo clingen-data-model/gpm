@@ -1,5 +1,5 @@
 <script>
-import hasAnyPermission from '@/auth_utils';
+import { hasAnyPermission } from '@/auth_utils';
 
 export default {
     name: 'ScvcepOngoingPlansForm',

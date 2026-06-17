@@ -29,7 +29,9 @@ class DocumentController extends Controller
 
     public function downloadGroupFinalSpecification(Group $group, Document $document)
     {
-        abort_unless($document->storage_path && Storage::exists($document->storage_path), 404);
-        return Storage::download($document->storage_path, $document->filename);
+        $document = $group->documents()->whereKey($document->id)->where('document_type_id',config('documents.types.final-specs.id'))->firstOrFail();
+        $path = $document->storage_path;
+        abort_unless($path && Storage::disk('local')->exists($path), 404);
+        return Storage::disk('local')->download($path, $document->filename);
     }
 }

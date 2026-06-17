@@ -131,7 +131,7 @@ trait IsPublishableGroupEvent
                 $epData['scvcep_final_specification_documents'] = $documents->map(fn ($document) => [
                     'uuid' => $document->uuid,
                     'filename' => $document->filename,
-                    'download_url' => route('groups.final-specifications.download', [
+                    'download_url' => route('groups.final-specification.download', [
                         'group' => $group->uuid,
                         'document' => $document->uuid,
                     ]),
