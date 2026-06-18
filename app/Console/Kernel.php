@@ -41,7 +41,8 @@ class Kernel extends ConsoleKernel
 
         $schedule->job(new SendCoiReminders)->weeklyOn(1, '6:00');
         $schedule->job(new SendInviteReminders)->weeklyOn(1, '6:00');
-        $schedule->job(new SendAttestationReminders)->weeklyOn(1, '6:05');
+        $schedule->job(new SendAttestationReminders)->weeklyOn(1, '6:00');
+        $schedule->job(new SendCocReminders)->weeklyOn(1, '6:00');
 
         if (config('dx.consume')) {
             $schedule->command(DxConsume::class, array_values(config('dx.topics.incoming')))
