@@ -12,7 +12,7 @@ function backOrHome() {
 
 <template>
     <card title="Core Approval Member Attestation">
-        <p class="mb-4">You've been designated as a Core Approval member for a VCEP. Please complete this one-time attestation to continue.</p>
+        <p class="mb-4">You've been designated as a Core Approval member. Please complete this one-time attestation to continue.</p>
 
         <CoreMemberAttestationForm v-if="personUUID" :person-uuid="personUUID" :after-submit="backOrHome" />
     </card>

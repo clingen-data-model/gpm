@@ -421,7 +421,6 @@ export const ScvcepApplication = applicationDefinitionFactory({
                 curationReviewProcess: {
                     name: 'Curation and Review Process',
                     requirements: [
-                        requirements.meetingFrequency,
                         requirements.curationProcess
                     ],
                 },
