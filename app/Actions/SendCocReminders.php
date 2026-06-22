@@ -16,7 +16,7 @@ class SendCocReminders
     public function handle()
     {
         Person::query()
-            ->isActivatedUser()
+            ->hasActiveMembership()
             ->where(function ($q) {
                 $q->missingCoC()
                 ->orWhere(function ($q2) {
