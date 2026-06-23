@@ -125,9 +125,6 @@ export default {
           <dictionary-row class="pb-2" label-class="w-40" label="Status">
             {{ person?.coc?.status || 'ERROR'}}
           </dictionary-row>
-          <dictionary-row class="pb-2" label-class="w-40" label="Version">
-            {{ person?.coc?.version || 'N/A' }}
-          </dictionary-row>
           <dictionary-row class="pb-2" label-class="w-40" label="Completed At">
             {{ person?.coc?.completed_at ? formatDate(person.coc.completed_at) : 'Not completed' }}
           </dictionary-row>
@@ -138,8 +135,8 @@ export default {
 
         <section v-if="hasPermission('people-manage') && person?.has_core_member_attestation" class="mt-4 border-t pt-4">
           <h3>Core Approval Member Completed</h3>
-          <dictionary-row class="pb-2" label-class="w-40" label="Status">
-            {{ person?.core_member_attestation_completed || 'ERROR'}}
+          <dictionary-row class="pb-2" label-class="w-40" label="Completed">
+            {{ person?.core_member_attestation_completed ? 'Yes' : 'No' }}
           </dictionary-row>
           <dictionary-row class="pb-2" label-class="w-40" label="Completed At">
             {{ person?.core_member_attestation_completion_date ? formatDate(person.core_member_attestation_completion_date) : 'Not completed' }}
