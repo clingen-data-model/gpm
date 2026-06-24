@@ -1,14 +1,13 @@
 <script>
-import {ref, onMounted} from 'vue'
-import {redeemInvite, redeemInviteForExistingUser} from '@/domain/onboarding_service'
-import isValidationError from '@/http/is_validation_error'
+import {ref, computed} from 'vue'
+import {redeemInvite} from '@/domain/onboarding_service'
 import { useStore } from 'vuex'
-import LoginForm from '@/components/LoginForm.vue'
+import ClerkSignUp from '@/components/ClerkSignUp.vue'
 
 export default {
     name: 'AccountCreationForm',
     components: {
-        LoginForm
+        ClerkSignUp
     },
     props: {
         invite: {
@@ -21,87 +20,50 @@ export default {
     ],
     setup (props, context) {
         const store = useStore();
-        const errors = ref({});
-        const email = ref(null);
-        const password = ref(null);
-        const password_confirmation = ref(null);
+        const submitting = ref(false);
 
-        const createAccount = async () => {
+        // After Clerk sign-up the user is authenticated; link that identity to
+        // the invited person (creating the local account if needed).
+        const onSignedUp = async () => {
+            if (submitting.value) {
+                return;
+            }
+            submitting.value = true;
             try {
-                await redeemInvite(props.invite, email.value, password.value, password_confirmation.value);
-                await store.dispatch('login', {email: email.value, password: password.value})
-                context.emit('saved')
-            } catch (error) {
-                if (isValidationError(error)) {
-                    errors.value = error.response.data.errors;
-                }
+                await redeemInvite(props.invite);
+                await store.dispatch('forceGetCurrentUser');
+                context.emit('saved');
+            } finally {
+                submitting.value = false;
             }
         }
 
-        const redeemForExistingUser = async () => {
-            try {
-                await redeemInviteForExistingUser(props.invite);
-                context.emit('saved')
-            } catch (error) {
-                if (isValidationError(error)) {
-                    errors.value = error.response.data
-                }
-            }
-        }
-
-        const syncEmail = () => {
-            email.value = props.invite.person.email
-        }
-
-        onMounted(() => syncEmail());
+        const alreadyHasAccount = computed(() => !!props.invite.person.user_id);
 
         return {
-            errors,
-            email,
-            password,
-            password_confirmation,
-            createAccount,
-            redeemForExistingUser,
+            email: props.invite.person.email,
+            alreadyHasAccount,
+            onSignedUp,
         }
     }
 }
 </script>
 <template>
   <div>
-    <pre />
-    <div v-if="invite.person.user_id">
+    <div v-if="alreadyHasAccount">
       <static-alert>
-        It looks like you've already activated you account.  Please login to continue.
+        It looks like you've already activated your account. Please
+        <router-link class="link" :to="{name: 'login', query: {redirect: '/'}}">
+          sign in
+        </router-link>
+        to continue.
       </static-alert>
-      <LoginForm @authenticated="redeemForExistingUser" />
     </div>
     <div v-else>
-      <p class="text-lg">
+      <p class="text-lg mb-2">
         Create your account
       </p>
-      <input-row
-        v-model="email" 
-        label="Email" 
-        :errors="errors.email" 
-        label-width-class="w-24"
-      />
-      <input-row
-        v-model="password" 
-        label="Password" type="password" 
-        :errors="errors.password" 
-        label-width-class="w-24"
-      />
-      <input-row
-        v-model="password_confirmation" 
-        label="Confirm Password" type="password" 
-        :errors="errors.password" 
-        label-width-class="w-24"
-      />
-      <div class="flex flex-row-reverse">
-        <button class="btn blue" @click="createAccount">
-          Next
-        </button>
-      </div>
+      <ClerkSignUp :email="email" @signed-up="onSignedUp" />
     </div>
   </div>
 </template>

@@ -18,8 +18,10 @@ export const fetchInvite = async (code) => {
         })
 }
 
-export const redeemInvite = async (invite, email, password, password_confirmation) => {
-    return api.put(`/api/people/invites/${invite.code}`, {email, password, password_confirmation})
+export const redeemInvite = async (invite) => {
+    // Identity is established by Clerk; the backend reads the Clerk session
+    // token (attached by the axios interceptor) to link/create the local user.
+    return api.put(`/api/people/invites/${invite.code}`)
 }
 
 export const redeemInviteForExistingUser = async (invite) => {

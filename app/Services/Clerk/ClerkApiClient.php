@@ -55,4 +55,30 @@ class ClerkApiClient
     {
         return $this->http()->post('/users', $payload);
     }
+
+    /**
+     * Fetch a Clerk user object by id, or null if not found.
+     */
+    public function getUser(string $clerkId): ?array
+    {
+        $response = $this->http()->get('/users/'.$clerkId);
+
+        return $response->successful() ? $response->json() : null;
+    }
+
+    /**
+     * Extract the primary email address from a Clerk user object.
+     */
+    public static function primaryEmail(array $user): ?string
+    {
+        $primaryId = $user['primary_email_address_id'] ?? null;
+
+        foreach ($user['email_addresses'] ?? [] as $address) {
+            if (($address['id'] ?? null) === $primaryId) {
+                return $address['email_address'] ?? null;
+            }
+        }
+
+        return null;
+    }
 }

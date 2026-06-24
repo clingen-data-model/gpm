@@ -4,9 +4,9 @@ namespace App\Auth;
 
 use Illuminate\Http\Request;
 use App\Modules\User\Models\User;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Contracts\Auth\Authenticatable;
+use App\Services\Clerk\ClerkApiClient;
 use App\Services\Clerk\ClerkTokenVerifier;
 use App\Services\Clerk\ImpersonationTokenService;
 
@@ -31,6 +31,7 @@ class ClerkGuard
     public function __construct(
         private readonly ClerkTokenVerifier $verifier,
         private readonly ImpersonationTokenService $impersonation,
+        private readonly ClerkApiClient $clerk,
     ) {
     }
 
@@ -118,33 +119,16 @@ class ClerkGuard
      */
     private function lookupEmailFromClerk(string $clerkId): ?string
     {
-        $secret = config('clerk.secret_key');
+        try {
+            $user = $this->clerk->getUser($clerkId);
+        } catch (\Throwable $e) {
+            // getUser() does not throw on a 4xx/5xx, so this is a transport
+            // failure: deny the request rather than surfacing a 500.
+            Log::warning('Clerk email lookup failed', ['clerk_id' => $clerkId, 'error' => $e->getMessage()]);
 
-        if (! $secret) {
             return null;
         }
 
-        try {
-            $response = Http::withToken($secret)
-                ->acceptJson()
-                ->get(rtrim((string) config('clerk.api_url'), '/').'/users/'.$clerkId);
-
-            if (! $response->successful()) {
-                return null;
-            }
-
-            $user = $response->json();
-            $primaryId = $user['primary_email_address_id'] ?? null;
-
-            foreach ($user['email_addresses'] ?? [] as $address) {
-                if (($address['id'] ?? null) === $primaryId) {
-                    return $address['email_address'] ?? null;
-                }
-            }
-        } catch (\Throwable $e) {
-            Log::warning('Clerk email lookup failed', ['clerk_id' => $clerkId, 'error' => $e->getMessage()]);
-        }
-
-        return null;
+        return $user ? ClerkApiClient::primaryEmail($user) : null;
     }
 }

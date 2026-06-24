@@ -104,18 +104,6 @@ const store = createStore({
 
             return currentUserPromise
         },
-        // TRANSITIONAL: legacy Fortify password login, still used by the
-        // not-yet-migrated onboarding (AccountCreationForm) and password-reset
-        // flows. Primary sign-in now goes through Clerk's prebuilt component.
-        // Remove once onboarding is reflowed onto Clerk sign-up.
-        async login({commit}, {email, password}) {
-            await axios.get('/sanctum/csrf-cookie')
-            await axios.post('/api/login', {email, password})
-                .then(() => {
-                    commit('setAuthenticated', true);
-                    store.dispatch('getCurrentUser', true);
-                });
-        },
         async logout({commit}) {
             try {
                 await clerkReady

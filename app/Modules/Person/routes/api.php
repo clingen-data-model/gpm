@@ -89,8 +89,11 @@ Route::group(['prefix' => 'api/people', 'middleware' => ['api'] ], function () {
     });
 
     Route::get('/invites/{code}', InviteValidateCode::class);
+    // Public: a brand-new Clerk user has no local account yet, so the action
+    // verifies the Clerk session token directly to link the identity.
     Route::put('/invites/{code}', InviteRedeem::class);
-    Route::put('/existing-user/invites/{code}', InviteRedeemForExistingUser::class);
+    // Existing (already-linked) user redeems while Clerk-authenticated.
+    Route::put('/existing-user/invites/{code}', InviteRedeemForExistingUser::class)->middleware('auth:clerk');
     Route::put('/invites/{code}/reset', InviteReset::class);
 
     // Lookups
