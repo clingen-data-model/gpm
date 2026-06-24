@@ -8,7 +8,7 @@ ClinGen Group & Personnel Management (GPM) — a Laravel 11 + Vue 3 SPA for mana
 
 ## Common Commands
 
-All PHP/artisan commands run inside the Docker container:
+All PHP/artisan commands run inside the Docker container. On systems where docker isn't installed, try podman.
 
 ```bash
 # Start services
