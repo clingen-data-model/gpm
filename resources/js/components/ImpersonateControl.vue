@@ -1,6 +1,6 @@
 <script>
 import {mapGetters} from 'vuex';
-import {impersonate, search} from '../domain/impersonate_service';
+import {impersonate, leaveImpersonation, search} from '../domain/impersonate_service';
 import SearchSelect from '@/components/forms/SearchSelect.vue';
 
 export default {
@@ -49,6 +49,10 @@ export default {
         cancelImpersonate () {
             this.selectedUser = null;
             this.showSelector = !this.showSelector;
+        },
+        stopImpersonating () {
+            this.clearingImpersonate = true;
+            leaveImpersonation();
         }
     }
 }
@@ -63,14 +67,13 @@ export default {
       >
         Impersonate a user
       </button>
-      <a
+      <button
         v-else
-        href="/impersonate/leave"
         class="btn btn-secondary btn-xs"
-        @click="clearingImpersonate = true"
+        @click="stopImpersonating"
       >
         Stop impersonating
-      </a>
+      </button>
       <teleport to="body">
         <modal-dialog
           v-model="showSelector" 

@@ -62,7 +62,7 @@ Route::group(['middleware' => ['auth:clerk']], function () {
     Route::post('/impersonate/leave', [ImpersonateController::class, 'leave']);
 });
 
-Route::group(['middleware' => ['auth:sanctum']], function () {
+Route::group(['middleware' => ['auth:clerk']], function () {
     Route::get('/system-info', [SystemInfoController::class, 'index']);
     Route::get('/user', function (Request $request) {
         return $request->user();

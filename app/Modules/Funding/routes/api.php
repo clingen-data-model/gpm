@@ -9,7 +9,7 @@ use App\Modules\Funding\Http\Controllers\Api\FundingTypeController;
 
 Route::group([
     'prefix' => 'api/funding-sources',
-    'middleware' => ['api', 'auth:sanctum'],
+    'middleware' => ['api', 'auth:clerk'],
 ], function () {
     Route::get('/', [FundingSourceController::class, 'index']);
     Route::get('/{fundingSource}', [FundingSourceController::class, 'show']);
@@ -21,7 +21,7 @@ Route::group([
 
 Route::group([
     'prefix' => 'api/funding-types',
-    'middleware' => ['api', 'auth:sanctum'],
+    'middleware' => ['api', 'auth:clerk'],
 ], function () {
     Route::get('/', [FundingTypeController::class, 'index']);
 });

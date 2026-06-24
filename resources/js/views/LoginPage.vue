@@ -1,14 +1,20 @@
 <script>
-import LoginForm from '@/components/LoginForm.vue';
+import ClerkSignIn from '@/components/ClerkSignIn.vue';
 import { mapGetters } from 'vuex';
 
 export default {
     name: "LoginPage",
     components: {
-        LoginForm
+        ClerkSignIn
     },
     computed: {
-        ...mapGetters(['isAuthed'])
+        ...mapGetters(['isAuthed']),
+        redirectUrl() {
+            if (typeof this.$route.query.redirect === 'string') {
+                return this.$route.query.redirect;
+            }
+            return '/';
+        }
     },
     watch: {
         isAuthed () {
@@ -39,9 +45,7 @@ export default {
 </script>
 
 <template>
-  <div>
-    <card title="Login" class="md:w-1/2 mx-auto">
-      <LoginForm @authenticated="redirect" />
-    </card>
+  <div class="flex justify-center mt-8">
+    <ClerkSignIn :redirect-url="redirectUrl" />
   </div>
 </template>

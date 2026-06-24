@@ -68,7 +68,7 @@ use App\Modules\Group\Actions\PublicationDelete;
 
 Route::group([
     'prefix' => 'api',
-    'middleware' => ['api', 'auth:sanctum']
+    'middleware' => ['api', 'auth:clerk']
 ], function () {
     Route::group(['prefix' => 'cois'], function () {
         Route::get('/{Coi:id}', [SimpleCoiController::class, 'show']);
@@ -82,7 +82,7 @@ Route::group([
 
 Route::group([
     'prefix' => 'api/groups',
-    'middleware' => ['api', 'auth:sanctum']
+    'middleware' => ['api', 'auth:clerk']
 ], function () {
     Route::get('/', [GroupController::class, 'index']);
     Route::post('/', GroupCreate::class);

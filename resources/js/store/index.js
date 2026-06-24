@@ -10,9 +10,9 @@ import PeopleStore from '@/store/people.js'
 import CredentialStore from '@/store/credentials.js'
 import ExpertiseStore from '@/store/expertises.js'
 import axios from '@/http/api'
-import isAuthError from '@/http/is_auth_error'
 import module_factory from '@/store/module_factory';
 import User from '@/domain/user'
+import clerk, { clerkReady, clearImpersonationToken } from '@/clerk'
 
 const docTypeStore = module_factory({
     baseUrl: '/api/document-types',
@@ -104,6 +104,10 @@ const store = createStore({
 
             return currentUserPromise
         },
+        // TRANSITIONAL: legacy Fortify password login, still used by the
+        // not-yet-migrated onboarding (AccountCreationForm) and password-reset
+        // flows. Primary sign-in now goes through Clerk's prebuilt component.
+        // Remove once onboarding is reflowed onto Clerk sign-up.
         async login({commit}, {email, password}) {
             await axios.get('/sanctum/csrf-cookie')
             await axios.post('/api/login', {email, password})
@@ -114,29 +118,16 @@ const store = createStore({
         },
         async logout({commit}) {
             try {
-                await axios.post('/api/logout')
-                    .then(() => {
-                        commit('clearCurrentUser')
-                    });
-            } catch (error) {
-                if (isAuthError(error)) {
-                    // eslint-disable-next-line no-alert
-                    alert('You cannot log out because you are not logged in');
-                }
+                await clerkReady
+                clearImpersonationToken()
+                await clerk.signOut()
+            } finally {
+                commit('clearCurrentUser')
             }
         },
-        async checkAuth({commit, state}) {
-            if (!state.authenticated) {
-                await axios.get('/api/authenticated')
-                    .then(() => {
-                        commit('setAuthenticated', true)
-                    })
-                    .catch(error => {
-                        if (error.response.status && error.response.status === 401) {
-                            commit('setAuthenticated', false)
-                        }
-                    })
-            }
+        async checkAuth({commit}) {
+            await clerkReady
+            commit('setAuthenticated', !!clerk.user)
         },
         getSystemInfo ({state}) {
             if (state.authenticated) {

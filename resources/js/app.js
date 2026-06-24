@@ -5,6 +5,20 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
+import clerk, { clerkReady } from '@/clerk'
+
+// Keep Vuex auth state in sync with Clerk: signing in (via the prebuilt
+// component), signing out, and cross-tab session changes all flow through here.
+clerkReady.then(() => {
+    clerk.addListener(({ user }) => {
+        if (user) {
+            store.commit('setAuthenticated', true)
+            store.dispatch('getCurrentUser')
+        } else {
+            store.commit('clearCurrentUser')
+        }
+    })
+})
 
 const app = createApp(App)
 

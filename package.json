@@ -14,6 +14,7 @@
     "export-configs": "cd ../../ && php artisan config:export && cd -"
   },
   "dependencies": {
+    "@clerk/clerk-js": "^6.21.0",
     "@vueuse/core": "^12.7.0",
     "axios": "^1.7.9",
     "dompurify": "^3.2.4",
