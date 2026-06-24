@@ -38,15 +38,30 @@ return [
     | Authorized Parties
     |--------------------------------------------------------------------------
     |
-    | When a Clerk session token carries an "azp" (authorized party) claim it
-    | must match one of these origins. This guards against the token being
-    | replayed from an unexpected origin. Leave empty to skip the check.
+    | A Clerk session token's "azp" (authorized party) claim must match one of
+    | these origins. This guards against a token issued to another application
+    | on the same Clerk instance being replayed here. When this list is set, a
+    | token with no azp claim is rejected; leave it empty to skip the check
+    | entirely.
     |
     */
 
     'authorized_parties' => array_filter(
         explode(',', (string) env('CLERK_AUTHORIZED_PARTIES', env('APP_URL', '')))
     ),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Clock Skew Leeway (seconds)
+    |--------------------------------------------------------------------------
+    |
+    | Tolerance applied to the exp/nbf/iat claims, absorbing clock drift
+    | between this host and Clerk. Without it, a few seconds of drift surfaces
+    | as spurious 401s.
+    |
+    */
+
+    'clock_skew_leeway' => (int) env('CLERK_CLOCK_SKEW_LEEWAY', 60),
 
     /*
     |--------------------------------------------------------------------------

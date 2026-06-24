@@ -3,8 +3,13 @@
 namespace App\Providers;
 
 use App\Models\Document;
+use App\Auth\ClerkGuard;
 use App\Policies\DocumentPolicy;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use App\Services\Clerk\ClerkTokenVerifier;
 use Illuminate\Auth\Notifications\ResetPassword;
+use App\Services\Clerk\ImpersonationTokenService;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
 
@@ -21,6 +26,17 @@ class AuthServiceProvider extends ServiceProvider
     ];
 
     /**
+     * Register Clerk authentication services.
+     */
+    public function register()
+    {
+        parent::register();
+
+        $this->app->singleton(ClerkTokenVerifier::class, fn () => ClerkTokenVerifier::fromConfig());
+        $this->app->singleton(ImpersonationTokenService::class, fn () => ImpersonationTokenService::fromConfig());
+    }
+
+    /**
      * Register any authentication / authorization services.
      *
      * @return void
@@ -31,6 +47,12 @@ class AuthServiceProvider extends ServiceProvider
     {
         ResetPassword::createUrlUsing(function ($user, string $token) {
             return url('/reset-password?token='.$token);
+        });
+
+        // Stateless API identity backed by Clerk session tokens (and app-issued
+        // impersonation tokens). Used by the `clerk` guard in config/auth.php.
+        Auth::viaRequest('clerk', function (Request $request) {
+            return app(ClerkGuard::class)($request);
         });
     }
 }
