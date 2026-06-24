@@ -145,6 +145,13 @@ class User extends Authenticatable implements CanResetPassword, HasLogEntries
 
     public function getImpersonatedByAttribute()
     {
+        // Stateless (Clerk) impersonation: the guard stashes the impersonator
+        // id on the request. Falls back to the legacy session-based path while
+        // both auth systems run in parallel.
+        if ($id = request()->attributes->get('impersonator_id')) {
+            return static::find($id);
+        }
+
         if ($this->isImpersonated()) {
             return app(ImpersonateManager::class)->getImpersonator();
         }
@@ -154,6 +161,10 @@ class User extends Authenticatable implements CanResetPassword, HasLogEntries
 
     public function getIsImpersonatingAttribute()
     {
+        if (request()->attributes->has('impersonator_id')) {
+            return true;
+        }
+
         return app(ImpersonateManager::class)->isImpersonating();
     }
 

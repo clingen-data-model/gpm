@@ -29,6 +29,7 @@ use App\Http\Controllers\Api\DiseaseLookupController;
 use App\Http\Controllers\Api\MoiLookupController;
 use App\Http\Controllers\Api\DocumentationController;
 use App\Http\Controllers\ImpersonateSearchController;
+use App\Http\Controllers\Api\ImpersonateController;
 use App\Modules\User\Http\Controllers\CurrentUserController;
 use App\Actions\PublicationLookup;
 
@@ -53,6 +54,13 @@ Route::get('/document-types', function () {
 });
 
 Route::get('/authenticated', [AuthController::class, 'isAuthenticated']);
+
+// Stateless impersonation (Clerk auth). Dormant until the frontend cuts over
+// to Clerk; the legacy lab404 web routes remain active until then.
+Route::group(['middleware' => ['auth:clerk']], function () {
+    Route::post('/impersonate/take/{id}', [ImpersonateController::class, 'take']);
+    Route::post('/impersonate/leave', [ImpersonateController::class, 'leave']);
+});
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/system-info', [SystemInfoController::class, 'index']);
