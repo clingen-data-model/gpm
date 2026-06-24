@@ -7,6 +7,7 @@ use App\Auth\ClerkGuard;
 use App\Policies\DocumentPolicy;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Services\Clerk\ClerkApiClient;
 use App\Services\Clerk\ClerkTokenVerifier;
 use Illuminate\Auth\Notifications\ResetPassword;
 use App\Services\Clerk\ImpersonationTokenService;
@@ -34,6 +35,7 @@ class AuthServiceProvider extends ServiceProvider
 
         $this->app->singleton(ClerkTokenVerifier::class, fn () => ClerkTokenVerifier::fromConfig());
         $this->app->singleton(ImpersonationTokenService::class, fn () => ImpersonationTokenService::fromConfig());
+        $this->app->singleton(ClerkApiClient::class, fn () => ClerkApiClient::fromConfig());
     }
 
     /**
