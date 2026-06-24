@@ -41,12 +41,6 @@ return [
             'provider' => 'users',
         ],
 
-        'api' => [
-            'driver' => 'token',
-            'provider' => 'users',
-            'hash' => false,
-        ],
-
         // Stateless guard backed by Clerk session tokens (and app-issued
         // impersonation tokens). Resolution lives in App\Auth\ClerkGuard,
         // registered via Auth::viaRequest('clerk', ...) in AuthServiceProvider.

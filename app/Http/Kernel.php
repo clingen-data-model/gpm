@@ -41,7 +41,8 @@ class Kernel extends HttpKernel
 
         'api' => [
             // 'throttle:api',
-            \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
+            // The SPA authenticates statelessly with Clerk Bearer tokens, so the
+            // Sanctum stateful-cookie middleware is no longer needed.
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
     ];

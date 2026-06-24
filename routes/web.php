@@ -62,5 +62,3 @@ Route::group(['prefix' => '/api/report'], function () {
 
 
 });
-
-Route::impersonate();

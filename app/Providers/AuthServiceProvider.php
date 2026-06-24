@@ -9,7 +9,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Services\Clerk\ClerkApiClient;
 use App\Services\Clerk\ClerkTokenVerifier;
-use Illuminate\Auth\Notifications\ResetPassword;
 use App\Services\Clerk\ImpersonationTokenService;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
@@ -47,10 +46,6 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        ResetPassword::createUrlUsing(function ($user, string $token) {
-            return url('/reset-password?token='.$token);
-        });
-
         // Stateless API identity backed by Clerk session tokens (and app-issued
         // impersonation tokens). Used by the `clerk` guard in config/auth.php.
         Auth::viaRequest('clerk', function (Request $request) {

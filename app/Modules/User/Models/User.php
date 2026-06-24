@@ -13,10 +13,8 @@ use Spatie\Permission\Traits\HasRoles;
 use App\Models\Contracts\HasLogEntries;
 use App\Modules\User\Models\Preference;
 use Illuminate\Notifications\Notifiable;
-use Lab404\Impersonate\Models\Impersonate;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Contracts\Auth\CanResetPassword;
-use Lab404\Impersonate\Services\ImpersonateManager;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use App\Models\Traits\HasLogEntries as HasLogEntriesTrait;
@@ -25,7 +23,6 @@ use Illuminate\Auth\Passwords\CanResetPassword as CanResetPasswordTrait;
 class User extends Authenticatable implements CanResetPassword, HasLogEntries
 {
     use HasFactory, Notifiable, CanResetPasswordTrait, HasApiTokens, HasEmail, HasRoles;
-    use Impersonate;
     use HasLogEntriesTrait;
 
     /**
@@ -146,14 +143,9 @@ class User extends Authenticatable implements CanResetPassword, HasLogEntries
     public function getImpersonatedByAttribute()
     {
         // Stateless (Clerk) impersonation: the guard stashes the impersonator
-        // id on the request. Falls back to the legacy session-based path while
-        // both auth systems run in parallel.
+        // id on the request when an impersonation token is in use.
         if ($id = request()->attributes->get('impersonator_id')) {
             return static::find($id);
-        }
-
-        if ($this->isImpersonated()) {
-            return app(ImpersonateManager::class)->getImpersonator();
         }
 
         return null;
@@ -161,11 +153,7 @@ class User extends Authenticatable implements CanResetPassword, HasLogEntries
 
     public function getIsImpersonatingAttribute()
     {
-        if (request()->attributes->has('impersonator_id')) {
-            return true;
-        }
-
-        return app(ImpersonateManager::class)->isImpersonating();
+        return request()->attributes->has('impersonator_id');
     }
 
 

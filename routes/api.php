@@ -17,7 +17,6 @@ use App\Actions\ClientsideEventReport;
 use App\Actions\LogEntrySearch;
 use App\Actions\NotificationMarkRead;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CdwgController;
 use App\Http\Controllers\Api\RolesController;
 use App\Http\Controllers\Api\MailLogController;
@@ -44,19 +43,11 @@ use App\Actions\PublicationLookup;
 |
 */
 
-Route::group(['middleware' => ['guest']], function () {
-    Route::post('/send-reset-password-link', [AuthController::class, 'sendResetPasswordLink']);
-    Route::post('/reset-password', [AuthController::class, 'resetPassword']);
-});
-
 Route::get('/document-types', function () {
     return DocumentType::all();
 });
 
-Route::get('/authenticated', [AuthController::class, 'isAuthenticated']);
-
-// Stateless impersonation (Clerk auth). Dormant until the frontend cuts over
-// to Clerk; the legacy lab404 web routes remain active until then.
+// Stateless impersonation (Clerk auth).
 Route::group(['middleware' => ['auth:clerk']], function () {
     Route::post('/impersonate/take/{id}', [ImpersonateController::class, 'take']);
     Route::post('/impersonate/leave', [ImpersonateController::class, 'leave']);
