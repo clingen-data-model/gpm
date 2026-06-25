@@ -55,8 +55,9 @@ class ApplicationSnapshotCreate
             $submission = Submission::find($submissionId);
 
             if ($submission) {
+                $submissionData = $submission->data ?? [];                
                 $submission->update([
-                    'data' => array_merge($submission->data ?? [], [
+                    'data' => array_merge($submissionData, [
                         'context' => $submissionData['context'] ?? 'application_submission',
                         'application_snapshot_id' => $applicationSnapshot->id,
                         'application_snapshot_version' => $applicationSnapshot->version,

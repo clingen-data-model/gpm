@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use App\Models\ApplicationSnapshot;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use App\Modules\Group\Models\ScopeOfWorkVersion;
 
 class Submission extends Model
 {
@@ -34,6 +35,7 @@ class Submission extends Model
         'notes',
         'response_content',
         'submitter_id',
+        'scope_of_work_version_id',
     ];
 
     protected $casts = [
@@ -192,5 +194,10 @@ class Submission extends Model
     public function applicationSnapshot(): HasOne
     {
         return $this->hasOne(ApplicationSnapshot::class);
+    }
+
+    public function scopeOfWorkVersion(): BelongsTo
+    {
+        return $this->belongsTo(ScopeOfWorkVersion::class);
     }
 }
