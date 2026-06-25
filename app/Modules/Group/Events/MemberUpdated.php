@@ -8,8 +8,7 @@ use App\Modules\Group\Models\GroupMember;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Support\Carbon;
-
-// FIXME: consider whether this should be publishable (or even a GroupMemberEvent)
+use App\Modules\Group\Models\ScopeOfWorkVersion;
 
 class MemberUpdated extends GroupEvent
 {
@@ -41,6 +40,11 @@ class MemberUpdated extends GroupEvent
             'group_member' => $this->groupMember->person->only('id', 'uuid', 'name', 'email'),
             'new_data' => $this->data,
         ];
+    }
+
+    public function shouldPublish(): bool
+    {
+        return parent::shouldPublish() && ! ScopeOfWorkVersion::forGroup($this->groupMember->group)->approved()->exists();
     }
 
 }

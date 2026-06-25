@@ -1,43 +1,48 @@
 <script setup>
-    import { ref, computed, inject } from 'vue'
-    import { useStore } from 'vuex'
-    import CommentSummary from '../CommentSummary.vue';
-    import JudgementForm from './JudgementForm.vue';
-    import JudgementDetail from './JudgementDetail.vue';
-    import {judgementColor} from '@/composables/judgement_utils.js'
+import { ref, computed, inject } from 'vue'
+import { useStore } from 'vuex'
+import CommentSummary from '../CommentSummary.vue';
+import JudgementForm from './JudgementForm.vue';
+import JudgementDetail from './JudgementDetail.vue';
+import {judgementColor} from '@/composables/judgement_utils.js'
 
-    const emits = defineEmits(['deleted', 'saved'])
-    const commentManager = inject('commentManager');
-    const latestSubmission = inject('latestSubmission')
+const emits = defineEmits(['deleted', 'saved'])
+const commentManager = inject('commentManager');
+const latestSubmission = inject('latestSubmission')
 
-    const store = useStore();
-    // const group = computed(() => store.getters['groups/currentItemOrNew'])
+const store = useStore();
+// const group = computed(() => store.getters['groups/currentItemOrNew'])
 
-    const showJudgementDialog = ref(false)
-    const initJudgement = () => {
-        showJudgementDialog.value = true
-    }
-    const hasMadeJudgment = computed(() => {
-        return latestSubmission.value.judgements
-            && latestSubmission.value.judgements.length > 0
-            && latestSubmission.value.judgements.filter(j => j.person_id === store.getters.currentUser.person.id).length > 0;
-    })
+const showJudgementDialog = ref(false)
+const initJudgement = () => {
+  if (!canMakeJudgement.value) {
+    return
+  }
+  showJudgementDialog.value = true
+}
+const hasMadeJudgment = computed(() => {
+  return latestSubmission.value.judgements
+    && latestSubmission.value.judgements.length > 0
+    && latestSubmission.value.judgements.filter(j => j.person_id === store.getters.currentUser.person.id).length > 0;
+})
 
-    const otherJudgements = computed(() => {
-        if (!latestSubmission.value || !latestSubmission.value.judgements) {
-            return [];
-        }
-        return latestSubmission.value.judgements.filter(j => j.person_id !== store.getters.currentUser.person.id)
-    })
+const otherJudgements = computed(() => {
+  if (!latestSubmission.value || !latestSubmission.value.judgements) {
+    return [];
+  }
+  return latestSubmission.value.judgements.filter(j => j.person_id !== store.getters.currentUser.person.id)
+})
 
-    const hasCommentsForEp = computed(() => commentManager.value.commentsForEp.length > 0)
-    const hasInternalComments = computed(() => commentManager.value.openInternal.length > 0)
+const hasCommentsForEp = computed(() => commentManager.value.commentsForEp.length > 0)
+const hasInternalComments = computed(() => commentManager.value.openInternal.length > 0)
 
-    const handleSave = (newJudgement) => {
-        showJudgementDialog.value = false;
-        emits('saved', newJudgement);
-
-    }
+const handleSave = (newJudgement) => {
+  showJudgementDialog.value = false;
+  emits('saved', newJudgement);
+}
+const canMakeJudgement = computed(() => {
+  return Number.parseInt(latestSubmission.value?.submission_status_id) === 3
+})
 </script>
 <template>
   <div class="flex flex-col space-y-2 screen-block">
@@ -96,9 +101,14 @@
           v-if="!hasMadeJudgment"
           class="block btn btn-lg blue"
           @click="initJudgement"
+          :disabled="!canMakeJudgement"
+          :title="canMakeJudgement ? 'Submit your review judgement' : 'The submission has not yet been sent to the Chairs'"
         >
           Approve or request revisions
         </button>
+        <p v-if="!hasMadeJudgment && !canMakeJudgement" class="mt-2 text-sm text-gray-600">
+          A judgement can be submitted after the Core Group sends this submission to the Chairs.
+        </p>
         <JudgementDetail v-else @deleted="emits('deleted')" @saved="emits('saved')" />
       </div>
       <div class="flex space-x-2 items-center p-2 bg-gray-100 rounded-lg lg:w-2/5">
@@ -112,7 +122,7 @@
         v-model="showJudgementDialog"
         title="Approve or request revisions"
       >
-        <JudgementForm @saved="handleSave" @canceled="showJudgementDialog = false" />
+        <JudgementForm :submission="latestSubmission" @saved="handleSave" @canceled="showJudgementDialog = false" />
       </modal-dialog>
     </teleport>
   </div>
