@@ -67,8 +67,8 @@
         />
       </modal-dialog>
 
-      <modal-dialog v-model="showDeleteDialog" title="Delete your decision for this applicaiton">
-        You are about to delete your decision for this applicaiton.
+      <modal-dialog v-model="showDeleteDialog" title="Delete your decision for this application">
+        You are about to delete your decision for this application.
         This cannot be undone.
         Are you sure you want to continue?
 

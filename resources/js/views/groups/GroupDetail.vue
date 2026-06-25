@@ -385,9 +385,13 @@ export default {
       const revision = payload.revision || payload;
       const notes = payload.notes || null;
 
-      this.scopeOfWorkStatus = await this.$store.dispatch('groups/submitScopeOfWorkRevision', { groupUuid: this.group.uuid, revisionUuid: revision.uuid, notes });
-      this.$store.commit('pushSuccess', `Scope of Work revision ${revision.version_label} submitted for approval.`);
-      await this.getGroup();
+      try {
+        this.scopeOfWorkStatus = await this.$store.dispatch('groups/submitScopeOfWorkRevision', { groupUuid: this.group.uuid, revisionUuid: revision.uuid, notes });
+        this.$store.commit('pushSuccess', `Scope of Work revision ${revision.version_label} submitted for approval.`);
+        await this.getGroup();
+      } finally {
+        payload.done?.();
+      }
     },
     async handleModalSaved() {
       this.hideModal();

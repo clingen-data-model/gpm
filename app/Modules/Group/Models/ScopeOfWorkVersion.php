@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 use App\Modules\Group\Models\Submission;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class ScopeOfWorkVersion extends Model
 {
@@ -145,5 +146,10 @@ class ScopeOfWorkVersion extends Model
     public function submission()
     {
         return $this->belongsTo(Submission::class);
+    }
+
+    public function submissions(): HasMany
+    {
+        return $this->hasMany(Submission::class);
     }
 }

@@ -23,7 +23,10 @@ class NextActionReviewSubmissionComplete
 
     public function handle(ExpertPanel $expertPanel)
     {
-        $nextActions = $expertPanel->nextActions()->ofType(config('next_actions.types.review-submission.id'))->get();
+        $nextActions = $expertPanel->nextActions()
+            ->ofType(config('next_actions.types.review-submission.id'))
+            ->whereNull('date_completed')
+            ->get();
         $nextActions->each(function ($nextAction) use ($expertPanel) {
             $this->completeNextAction->handle(
                 expertPanel: $expertPanel, 
