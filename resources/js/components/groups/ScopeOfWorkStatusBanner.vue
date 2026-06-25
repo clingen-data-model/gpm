@@ -96,10 +96,14 @@ const props = defineProps({
 
 const emit = defineEmits(['finalize', 'submit', 'approve', 'request-revisions', 'discard']);
 const showSubmitRevisionModal = ref(false);
+const submittingRevision = ref(false);
 const activeRevision = computed(() => props.status?.active_revision || null);
 const submitRevision = (notes) => {
-  if (!activeRevision.value) { return; }
-  emit('submit', { revision: activeRevision.value, notes });
-  showSubmitRevisionModal.value = false;
+  if (!activeRevision.value || submittingRevision.value) { return; }
+  submittingRevision.value = true;
+  emit('submit', { revision: activeRevision.value, notes, done: () => {
+    submittingRevision.value = false;
+    showSubmitRevisionModal.value = false;
+	}});
 };
 </script>

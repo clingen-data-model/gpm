@@ -1,36 +1,46 @@
 <script setup>
-    import {ref, useAttrs} from 'vue'
+import { nextTick, ref, useAttrs } from 'vue'
 
-    import RejectStepForm from '@/components/applications/RejectStepForm.vue'
+import RejectStepForm from '@/components/applications/RejectStepForm.vue'
 
-    // eslint-disable-next-line unused-imports/no-unused-vars
-    const props = defineProps({
-        group: {
-            type: Object,
-            required: true
-        }
-    })
-    const emits = defineEmits(['revisionsRequested'])
-    const attrs = useAttrs();
-    const rejectsubmissionform = ref(null);
-    const showRejectForm = ref(false);
-    const startRejectSubmission = () => {
-        showRejectForm.value = true;
-        rejectsubmissionform.value.getEmailTemplate()
-    };
-    const hideRejectForm = () => {
-        showRejectForm.value = false;
-    };
-    const handleRejected = () => {
-        hideRejectForm();
-        emits('revisionsRequested');
-    };
+defineProps({
+  group: {
+    type: Object,
+    required: true,
+  },
+  submission: {
+    type: Object,
+    required: true,
+  },
+})
+const emit = defineEmits(['revisionsRequested'])
+const attrs = useAttrs()
 
+const rejectSubmissionForm = ref(null)
+const showRejectForm = ref(false)
+
+const startRejectSubmission = async () => {
+  showRejectForm.value = true
+  await nextTick()
+  rejectSubmissionForm.value?.getEmailTemplate()
+}
+
+const hideRejectForm = () => {
+  showRejectForm.value = false
+}
+
+const handleRejected = () => {
+  hideRejectForm()
+  emit('revisionsRequested')
+}
+
+const handleClosed = () => {
+  rejectSubmissionForm.value?.clearForm()
+}
 </script>
 <template>
   <div>
     <button
-      v-if="group.expert_panel.hasPendingSubmissionForCurrentStep"
       class="btn btn-lg w-full"
       v-bind="attrs"
       @click="startRejectSubmission"
@@ -42,10 +52,12 @@
         v-model="showRejectForm"
         title="Request Revisions to Application"
         size="xl"
-        @closed="$refs.rejectsubmissionform.clearForm()"
+        @closed="handleClosed"
       >
         <RejectStepForm
-          ref="rejectsubmissionform"
+          ref="rejectSubmissionForm"
+          :group="group"
+          :submission="submission"
           @saved="handleRejected"
           @canceled="hideRejectForm"
         />
