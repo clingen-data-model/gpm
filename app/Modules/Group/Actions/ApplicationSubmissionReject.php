@@ -28,7 +28,7 @@ class ApplicationSubmissionReject
         $submission->reject($responseContent);
         $this->requestScopeOfWorkRevisions->handle($submission);
         event(new ApplicationRevisionsRequested($submission, $responseContent));
-
+        // event(new ScopeOfWorkReviewCompleted(submission: $submission->fresh(), revision: $revision, outcome: 'revisions_requested'));
         return $submission->fresh();
     }
 

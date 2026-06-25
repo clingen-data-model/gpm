@@ -1,39 +1,43 @@
 <script setup>
-    import {ref, inject, useAttrs} from 'vue'
-    import CommentSummary from './CommentSummary.vue';
-    import {api} from '@/http';
+  import {ref, inject, useAttrs} from 'vue'
+  import CommentSummary from './CommentSummary.vue';
+  import {api} from '@/http';
 
-    const props = defineProps({
-        group: {
-            type: Object,
-            required: true
-        }
-    })
-    const emits = defineEmits(['sentToChairs'])
-    const attrs = useAttrs();
-    const commentManager = inject('commentManager');
-    const additionalComments = ref();
-    
-    const showModal = ref(false)
-    const initSendToChairs = () => {
-
-        commentManager.value.getComments();
-        showModal.value = true
-    }
-    const sendToChairs = async () => {
-        await api.post(
-            `/api/groups/${props.group.uuid}/command`, 
-            {
-                command: 'app.modules.group.actions.applicationSendToChairs',
-                additionalComments: additionalComments.value || null
-            }
-        )
-        emits('sentToChairs');
-        showModal.value = false;
-    }
-    const cancel = () => {
-        showModal.value = false;
-    }
+  const props = defineProps({
+    group: {
+      type: Object,
+      required: true
+    },
+    submission: {
+      type: Object,
+      required: true,
+    },
+  })
+  const emits = defineEmits(['sentToChairs'])
+  const attrs = useAttrs();
+  const commentManager = inject('commentManager');
+  const additionalComments = ref();
+  
+  const showModal = ref(false)
+  const initSendToChairs = () => {
+    commentManager.value.getComments();
+    showModal.value = true
+  }
+  const sendToChairs = async () => {
+    await api.post(
+      `/api/groups/${props.group.uuid}/command`, 
+      {
+        command: 'app.modules.group.actions.applicationSendToChairs',
+        submissionId: props.submission.id,
+        additionalComments: additionalComments.value || null
+      }
+    )
+    emits('sentToChairs');
+    showModal.value = false;
+  }
+  const cancel = () => {
+    showModal.value = false;
+  }
 </script>
 
 <template>
@@ -63,7 +67,7 @@
           label-class="font-bold"
         >
           <template #after-input>
-            <note>This is not intended for additional comments about the applicaiton. This is intended for notes about process, timeing, etc.  To add comments related to the content of the application click 'Cancel' and add notes alongside the application.</note>
+            <note>This is not intended for additional comments about the application. This is intended for notes about process, timing, etc.  To add comments related to the content of the application click 'Cancel' and add notes alongside the application.</note>
           </template>
         </input-row>
 

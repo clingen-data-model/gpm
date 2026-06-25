@@ -1,124 +1,143 @@
-<script>
-import {mapGetters} from 'vuex';
-import {api} from '@/http';
-import isValidationError from '@/http/is_validation_error';
-import UserDefinedMailForm from '@/components/forms/UserDefinedMailForm.vue';
+<script setup>
+import { computed, ref } from 'vue'
+import { api } from '@/http'
+import isValidationError from '@/http/is_validation_error'
+import UserDefinedMailForm from '@/components/forms/UserDefinedMailForm.vue'
 
-export default {
-    components: {
-        UserDefinedMailForm
-    },
-    emits: [
-        'canceled',
-        'saved'
-    ],
-    data() {
-        return {
-            notifyContacts: true,
-            email: {
-                subject: '',
-                body: '',
-                cc: [],
-                to: [],
-                files: []
-            },
-            errors: {}
-        }
-    },
-    computed: {
-        ...mapGetters({
-            group: 'groups/currentItemOrNew'
-        }),
-        application () {
-            return this.group.expert_panel;
-        },
-        submissionText () {
-            return `Request Revisions${this.notifyContacts ? ' and notify' : ''}`
-        }
-    },
-    watch: {
-        notifyContacts: {
-            immediate: true,
-            handler (to) {
-                if (to) {
-                    this.getEmailTemplate();
-                }
-            }
-        }
-    },
-    mounted() {
-    },
-    methods: {
-        clearForm() {
-            this.dateApproved = null;
-            this.notifyContacts = true;
-        },
-        cancel () {
-            this.clearForm();
-            this.$emit('canceled');
-        },
-        async save () {
+const props = defineProps({
+  group: {
+    type: Object,
+    required: true,
+  },
+  submission: {
+    type: Object,
+    required: true,
+  },
+})
 
-            try {
-                const data = {
-                    notify_contacts: this.notifyContacts,
-                    subject: this.email.subject,
-                    body: this.email.body,
-                    attachments: this.email.files
-                };
+const emit = defineEmits([
+  'canceled',
+  'saved',
+])
 
-                const url = `/api/groups/${this.group.uuid}/application/submission/${this.group.expert_panel.pendingSubmission.id}/rejection`;
-                await api.post(url, data)
-                    .then(rsp => rsp.data);
+const notifyContacts = ref(true)
+const errors = ref({})
+const saving = ref(false)
+const emptyEmail = () => ({
+  subject: '',
+  body: '',
+  cc: [],
+  to: [],
+  files: [],
+})
+const email = ref(emptyEmail())
+const submissionText = computed(() => {
+  if (saving.value) { return 'Requesting Revisions...'; }
+  return `Request Revisions${notifyContacts.value ? ' and notify' : ''}`
+})
 
+const clearForm = () => {
+  notifyContacts.value = true
+  email.value = emptyEmail()
+  errors.value = {}
+  saving.value = false
+}
 
-                this.clearForm();
-                this.$emit('saved');
+const cancel = () => {
+  if (saving.value) {
+    return
+  }
 
-            } catch (e) {
-                if (isValidationError(e)) {
-                    this.errors = e.response.data.errors
-                    return;
-                }
-                throw e;
-            }
-        },
-        getEmailTemplate () {
-            api.get(`/api/email-drafts/groups/${this.group.uuid}`,
-                {params: {templateClass: 'App\\Mail\\UserDefinedMailTemplates\\ApplicationRevisionRequestTemplate'}})
-                .then(response => {
-                    this.email = response.data;
-                    this.email.files = [];
-                })
+  clearForm()
+  emit('canceled')
+}
 
-        }
+const getEmailTemplate = async () => {
+  if (!notifyContacts.value) { return }
+  const response = await api.get(`/api/email-drafts/groups/${props.group.uuid}`, {
+      params: { templateClass: 'App\\Mail\\UserDefinedMailTemplates\\ApplicationRevisionRequestTemplate', },
+    }
+  )
+   
+  email.value = {
+    ...response.data,
+    files: [],
+  }
+}
+
+const handleNotifyContactsChange = () => {
+  if (notifyContacts.value) {
+    getEmailTemplate()
+  }
+}
+
+const save = async () => {
+  if (saving.value) {
+    return
+  }
+
+  saving.value = true
+  errors.value = {}
+
+  try {
+    const data = {
+      notify_contacts: notifyContacts.value,
+      subject: email.value.subject,
+      body: email.value.body,
+      attachments: email.value.files,
     }
 
+    const url = `/api/groups/${props.group.uuid}/application/submission/${props.submission.id}/rejection`
+
+    await api.post(url, data)
+
+    clearForm()
+    emit('saved')
+  } catch (error) {
+    if (isValidationError(error)) {
+      errors.value = error.response.data.errors
+      return
+    }
+
+    throw error
+  } finally {
+    saving.value = false
+  }
 }
+defineExpose({
+  clearForm,
+  getEmailTemplate,
+})
 </script>
 <template>
   <form-container>
     <dictionary-row label="">
       <div>
         <label class="text-sm">
-          <input v-model="notifyContacts" type="checkbox" :value="true">
+          <input
+            v-model="notifyContacts"
+            type="checkbox"
+            :value="true"
+            :disabled="saving"
+            @change="handleNotifyContactsChange"
+          >
           <div>Send notification email to contacts</div>
         </label>
       </div>
     </dictionary-row>
-    <static-alert
-      v-if="!application.hasPendingSubmissionForCurrentStep"
-      variant="warning"
-    >
-      The expert panel has not yet submitted the application for approval.
-      <br>
-      You can approve this application but be aware that it is not part of the "normal" application workflow.
-    </static-alert>
 
     <transition name="slide-fade-down">
-      <UserDefinedMailForm v-show="notifyContacts" v-model="email" />
+      <UserDefinedMailForm
+        v-show="notifyContacts"
+        v-model="email"
+      />
     </transition>
 
-    <button-row :submit-text="submissionText" @canceled="cancel" @submitted="save" />
+    <button-row
+      :submit-text="submissionText"
+      :disabled="saving"
+      @canceled="cancel"
+      @submitted="save"
+    />
   </form-container>
 </template>

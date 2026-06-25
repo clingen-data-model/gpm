@@ -66,6 +66,7 @@ class RevisionSubmit
             $submissionType = $this->resolveSubmissionType($revision);
 
             $submission = new Submission([
+                'scope_of_work_version_id' => $revision->id,
                 'submission_type_id' => $submissionType->id,
                 'submission_status_id' => config('submissions.statuses.pending.id'),
                 'notes' => $notes,
