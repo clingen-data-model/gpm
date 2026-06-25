@@ -3,11 +3,12 @@
 namespace App\Modules\Group\Actions;
 
 use App\Modules\Group\Models\Submission;
+use App\Modules\Group\Actions\ScopeOfWork\RevisionApproveFromSubmission;
 
 class SubmissionApprove
 {
     public function __construct(
-        private ScopeOfWorkRevisionApproveFromSubmission $approveScopeOfWorkRevision
+        private RevisionApproveFromSubmission $approveScopeOfWorkRevision
     ) {
     }
 

@@ -1,81 +1,60 @@
 <script setup>
-    import {computed} from 'vue'
-    import {formatDate} from '@/date_utils.js'
-    import {judgementColor} from '@/composables/judgement_utils.js'
-    import { featureIsEnabled } from '@/utils.js';
+import {computed} from 'vue'
+import {formatDate} from '@/date_utils.js'
+import {judgementColor} from '@/composables/judgement_utils.js'
+import { featureIsEnabled } from '@/utils.js';
 import MarkdownBlock from '../MarkdownBlock.vue';
 
-    const props = defineProps({
-        group: {
-            type: Object,
-            required: true
-        },
-        step: {
-            type: Number,
-            required: true
-        }
-    })
+const props = defineProps({
+  submission: {
+    type: Object,
+    required: true,
+  },
+})
+const latestSubmission = computed(() => props.submission)
 
-    const submissions = computed(() => {
-        return props.group.expert_panel.submissionsForStep(props.step);
-    })
+const latestJudgements = computed(() => {
+  return latestSubmission.value?.judgements ?? []
+})
 
-    const stepHasBeenSubmitted = computed(() => {
-        return submissions.value && submissions.value.length > 0;
-    });
+const isScopeOfWorkRevision = computed(() => {
+  return latestSubmission.value?.data?.context === 'scope_of_work_revision'
+})
 
-    // const firstSubmission = computed(() => {
-    //     if (!submissions.value) return null
-
-    //     return submissions.value[0];
-    // })
-
-    const latestSubmission = computed(() => {
-        return props.group.expert_panel.latestPendingSubmissionForStep(props.step);
-    });
-
-    const latestJudgements = computed(() => {
-        if (!submissions.value)  return [];
-
-        if (
-            Number.parseInt(submissions.value.length) === 1
-            || Number.parseInt(latestSubmission.value.submission_status_id) === 3
-            || Number.parseInt(latestSubmission.value.submission_status_id) === 2
-        ) {
-            return latestSubmission.value.judgements;
-        }
-
-        return submissions.value[submissions.value.length-2].judgements;
-    });
+const targetVersion = computed(() => {
+  return latestSubmission.value?.data?.target_version ?? null
+})
 
 
 </script>
 
 <template>
-  <div v-if="step == group.expert_panel.current_step">
+  <div v-if="latestSubmission">
     <static-alert
-      v-if="stepHasBeenSubmitted"
       class="mb-4 border-blue-700"
       variant="bland"
     >
+      <div v-if="isScopeOfWorkRevision">
+        <strong>Scope of Work Revision <span v-if="targetVersion">{{ targetVersion }}</span></strong>
+      </div>
       <div v-if="!latestSubmission.sent_to_chairs_at">
-        <strong>Submitted</strong> by {{ latestSubmission.submitter ? latestSubmission.submitter.name : '' }} on
+        <strong>Submitted</strong> by {{ latestSubmission.submitter?.name ?? '' }} on
         <strong>{{ formatDate(latestSubmission.created_at) }}</strong>
         <MarkdownBlock v-if="latestSubmission.notes" class="ml-4" :markdown="latestSubmission.notes" />
       </div>
-      <div v-if="latestSubmission.submission_status_id == 3">
+      <div v-if="Number(latestSubmission.submission_status_id) == 3">
         <strong>Sent to chairs</strong> on <strong>{{ formatDate(latestSubmission.sent_to_chairs_at) }}</strong>.
       </div>
-      <div v-if="latestSubmission.submission_status_id == 2">
+      <div v-if="Number(latestSubmission.submission_status_id) == 2">
         <strong>{{ formatDate(latestSubmission.updated_at) }}</strong> - Revisions Requested.
       </div>
-      <div v-if="featureIsEnabled('chair_review') && (latestSubmission.submission_status_id == 3)">
+      <div v-if="featureIsEnabled('chair_review') && (Number(latestSubmission.submission_status_id) == 3)">
         <hr class="my-1">
         <strong>Latest Chair Decisions:</strong>
         <ul v-if="latestJudgements && latestJudgements.length > 0" class="list-disc pl-6">
           <li v-for="judgement in latestJudgements" :key="judgement.id">
             <strong>{{ judgement.person.name }}:</strong>
-                        &nbsp;
+            &nbsp;
             <badge :color="judgementColor(judgement)">
               {{ judgement.decision }}
             </badge>

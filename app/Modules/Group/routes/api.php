@@ -70,6 +70,7 @@ use App\Modules\Group\Actions\ScopeOfWork\RevisionRefreshRun;
 use App\Modules\Group\Actions\ScopeOfWork\RevisionSubmit;
 use App\Modules\Group\Actions\ScopeOfWork\RevisionApprove;
 use App\Modules\Group\Actions\ScopeOfWork\RevisionDiscard;
+use App\Modules\Group\Actions\ScopeOfWork\RevisionSubmissionApprove;
 use App\Modules\Group\Http\Controllers\Api\ScopeOfWorkController;
 
 Route::group([
@@ -121,6 +122,7 @@ Route::group([
                 Route::get('/', [GroupSubmissionsController::class, 'index']);
                 Route::post('/', ApplicationSubmitStep::class);
                 Route::post('/{submission}/rejection', ApplicationSubmissionReject::class);
+                Route::post('/{submission}/scope-of-work/approve', RevisionSubmissionApprove::class);
             });
 
             Route::get('/latest-submission', [GroupSubmissionsController::class, 'latestSubmission']);
