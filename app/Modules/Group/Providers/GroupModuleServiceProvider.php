@@ -22,6 +22,8 @@ use App\Modules\Group\Actions\ApplicationSubmissionMailAdminGroup;
 use App\Modules\Group\Actions\ApplicationSubmissionAssignNextAction;
 use App\Modules\Group\Actions\ApplicationRevisionsRequestedAssignNextAction;
 use App\Modules\Group\Actions\ScopeOfWork\InitialVersionCreateFromApplicationCompleted;
+use App\Modules\Group\Events\ScopeOfWorkReviewCompleted;
+use App\Modules\Group\Actions\NextActionScopeOfWorkReviewComplete;
 
 class GroupModuleServiceProvider extends ModuleServiceProvider
 {
@@ -42,6 +44,11 @@ class GroupModuleServiceProvider extends ModuleServiceProvider
         ],
         GenesAdded::class => [NotifyGenesAdded::class],
         GeneRemoved::class => [NotifyGenesRemoved::class],
+        
+        ScopeOfWorkReviewCompleted::class => [
+            NextActionScopeOfWorkReviewComplete::class,
+            NextActionReviewSubmissionComplete::class,
+        ],
     ];
 
     protected $policies = [

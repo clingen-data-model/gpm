@@ -9,6 +9,6 @@ class ExpertPanelType extends Model
 {
     use HasFactory;
     
-    protected $fillable = ['name'];
+    protected $fillable = ['name', 'display_name', 'full_name'];
     protected $hidden = ['created_at', 'updated_at'];
 }

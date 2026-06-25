@@ -10,24 +10,24 @@ import SubmissionContextSummary from '@/components/applications/Review/Submissio
 export default {
     name: 'ApplicationDetail',
     components: {
-        ApplicationLog,
-        NextActions,
-        ProgressChart,
-        StepTabs,
-        BasicInfoData,
-        SubmissionContextSummary
+      ApplicationLog,
+      NextActions,
+      ProgressChart,
+      StepTabs,
+      BasicInfoData,
+      SubmissionContextSummary
     },
     props: {
-        loading: {
-            type: Boolean,
-            default: false
-        }
+      loading: {
+        type: Boolean,
+        default: false
+      }
     },
     emits: ['updated'],
     data() {
-        return {
-            showModal: false,
-        }
+      return {
+        showModal: false,
+      }
     },
     watch: {
         $route() {
@@ -110,7 +110,7 @@ export default {
         />
       </div>
 
-      <SubmissionContextSummary />
+      <SubmissionContextSummary @saved="$emit('updated')" />
 
       <ProgressChart
         :application="application"
