@@ -4,7 +4,6 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use App\Modules\Group\Models\Group;
-use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Modules\Group\Events\GroupDescriptionUpdated;
 use Illuminate\Support\Facades\Http;
 
@@ -31,7 +30,8 @@ class ImportLegacyWebsiteDescriptions extends Command
     {
         $vcep_json = Http::get('https://clinicalgenome.org/data-pull/vceps/')->json();
         foreach ($vcep_json as $vcep) {
-            $ep = ExpertPanel::findByAffiliationId($vcep['affiliation_id']);
+            $group = Group::findByAffiliationId($vcep['affiliation_id']);
+            $ep = $group?->expertPanel;
             if (!$ep) {
                 info('Expert Panel not found for ' . $vcep['affiliation_id']);
                 continue;
@@ -48,7 +48,8 @@ class ImportLegacyWebsiteDescriptions extends Command
 
         $gcep_json = Http::get('https://clinicalgenome.org/data-pull/gceps/')->json();
         foreach ($gcep_json as $gcep) {
-            $ep = ExpertPanel::findByAffiliationId($gcep['affiliation_id']);
+            $group = Group::findByAffiliationId($gcep['affiliation_id']);
+            $ep = $group?->expertPanel;
             if (!$ep) {
                 info('Expert Panel not found for ' . $gcep['affiliation_id']);
                 continue;

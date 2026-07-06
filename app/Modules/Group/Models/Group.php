@@ -70,6 +70,7 @@ class Group extends Model implements HasMembers, RecordsEvents, HasDocuments, Ha
      */
     protected $fillable = [
         'uuid',
+        'affiliation_id',
         'name',
         'description',
         'group_type_id',
@@ -321,10 +322,33 @@ class Group extends Model implements HasMembers, RecordsEvents, HasDocuments, Ha
         return new GroupFactory();
     }
 
+    public function isWorkingGroupType(): Attribute
+    {
+        return Attribute::get(fn () => in_array((int) $this->group_type_id, [
+            (int) config('groups.types.wg.id'),
+            (int) config('groups.types.cdwg.id'),
+            (int) config('groups.types.sccdwg.id'),
+        ], true));
+    }
+
     public function isWorkingGroup(): Attribute
     {
         return Attribute::get(
             fn () => (int) $this->group_type_id === (int) config('groups.types.wg.id')
+        );
+    }
+
+    public function isCdwg(): Attribute
+    {
+        return Attribute::get(
+            fn () => (int) $this->group_type_id === (int) config('groups.types.cdwg.id')
+        );
+    }
+
+    public function isSccdwg(): Attribute
+    {
+        return Attribute::get(
+            fn () => (int) $this->group_type_id === (int) config('groups.types.sccdwg.id')
         );
     }
 
@@ -420,5 +444,21 @@ class Group extends Model implements HasMembers, RecordsEvents, HasDocuments, Ha
             'id',               // local key on groups
             'id'                // local key on expert_panels
         );
+    }
+
+    public static function findByAffiliationId($affiliationId)
+    {
+        return static::where('affiliation_id', $affiliationId)->first();
+    }
+
+    public static function findByAffiliationIdOrFail($affiliationId)
+    {
+        return static::where('affiliation_id', $affiliationId)->sole();
+    }
+
+    public function getClingenUrlAttribute(): ?string
+    {
+        if (is_null($this->affiliation_id)) { return null; }
+        return 'https://clinicalgenome.org/affiliation/'.$this->affiliation_id;
     }
 }

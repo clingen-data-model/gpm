@@ -4,7 +4,7 @@ namespace App\DataExchange\Actions;
 
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
-use App\Modules\ExpertPanel\Models\ExpertPanel;
+use App\Modules\Group\Models\Group;
 use App\Modules\ExpertPanel\Actions\StepApprove;
 use App\DataExchange\Models\IncomingStreamMessage;
 use App\DataExchange\Exceptions\DataSynchronizationException;
@@ -21,9 +21,10 @@ class ClassifiedRulesApprovedProcessor
     public function handle(IncomingStreamMessage $message): void
     {
         $cspecDoc = $message->payload->cspecDoc;
-        $expertPanel = ExpertPanel::findByAffiliationId($cspecDoc->affiliationId);
+        $group = Group::findByAffiliationId($cspecDoc->affiliationId);
+        $expertPanel = $group?->expertPanel;
         if (!$expertPanel) {
-            Log::error('Received pilot-rules-approved event about EP with unkown affiliation id '.$cspecDoc->affiliationId);
+            Log::error('Received classified-rules-approved event about EP with unknown affiliation id '.$cspecDoc->affiliationId);
             return;
         }
 

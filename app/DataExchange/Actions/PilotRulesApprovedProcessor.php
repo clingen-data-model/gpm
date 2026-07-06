@@ -24,15 +24,16 @@ class PilotRulesApprovedProcessor
     public function handle(IncomingStreamMessage $message)
     {
         $cspecDoc = $message->payload->cspecDoc;
-        $expertPanel = ExpertPanel::findByAffiliationId($cspecDoc->affiliationId);
+        $group = Group::findByAffiliationId($cspecDoc->affiliationId);
+        $expertPanel = $group?->expertPanel;
 
         if (!$expertPanel) {
-            Log::error('Received pilot-rules-approved event about EP with unkown affiliation id '.$cspecDoc->affiliationId);
+            Log::error('Received pilot-rules-approved event about EP with unknown affiliation id '.$cspecDoc->affiliationId);
             return;
         }
 
         if (!$expertPanel->hasApprovedDraft) {
-            throw new DataSynchronizationException('Received classified-rules-approved message, but expert panel '.$expertPanel->displayName.' is not draft approved.');
+            throw new DataSynchronizationException('Received pilot-rules-approved message, but expert panel '.$expertPanel->displayName.' is not draft approved.');
         }
 
         // Sync the specification and rulset models to latest from CSPEC registry

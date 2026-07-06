@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
 use App\DataExchange\Models\IncomingStreamMessage;
-use App\Modules\ExpertPanel\Models\ExpertPanel;
+use App\Modules\ExpertPanel\Models\Group;
 use App\Modules\ExpertPanel\Events\StepDateApprovedUpdated;
 
 class FixupCSpecApprovalDates extends Command
@@ -51,7 +51,8 @@ class FixupCSpecApprovalDates extends Command
             ->keyBy('affiliationId');
 
         foreach ($mostRecentApprovals as $affiliationId => $item) {
-            $expertPanel = ExpertPanel::findByAffiliationId($affiliationId);
+            $group = Group::findByAffiliationId($affiliationId);
+            $expertPanel = $group?->expertPanel;
             if ($expertPanel == null) {
                 Log::warning('Received message for unknown expert panel: ' . $affiliationId);
                 continue;

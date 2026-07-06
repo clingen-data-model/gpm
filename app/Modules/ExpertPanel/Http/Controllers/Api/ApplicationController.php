@@ -34,7 +34,7 @@ class ApplicationController extends Controller
                 'expert_panels.uuid',
                 'expert_panels.id',
                 'expert_panels.long_base_name',
-                'expert_panels.affiliation_id',
+                // 'expert_panels.affiliation_id', DEPRECATED CGSP-1023
                 'expert_panels.expert_panel_type_id',
                 'expert_panels.group_id',
                 'expert_panels.current_step',
@@ -49,7 +49,7 @@ class ApplicationController extends Controller
             ],
             defaultWith: [
                 'group' => function ($q) {
-                    $q->select('uuid', 'id', 'parent_id', 'name', 'group_type_id');
+                    $q->select('uuid', 'affiliation_id', 'id', 'parent_id', 'name', 'group_type_id');
                 },
                 'group.members' => function ($q) {
                     $q->select('id', 'group_id', 'person_id')

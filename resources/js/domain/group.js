@@ -12,7 +12,8 @@ class Group extends Entity {
 
     static defaults = {
         id: null,
-        uuid: null,
+        uuid: null,        
+        affiliation_id: null,
         name: null,
         parent_id: null,
         group_type_id: null,

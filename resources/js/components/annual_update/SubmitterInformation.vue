@@ -50,7 +50,7 @@ export default {
       {{ workingCopy.expert_panel.display_name }}
     </dictionary-row>
     <dictionary-row label="Affilation ID">
-      {{ workingCopy.expert_panel.affiliation_id }}
+      {{ workingCopy.affiliation_id }}
     </dictionary-row>
 
     <input-row

@@ -44,7 +44,6 @@ class ExpertPanel extends Model implements HasMembers, BelongsToGroup, RecordsEv
         'expert_panel_type_id',
         'long_base_name',
         'short_base_name',
-        'affiliation_id',
         'clinvar_org_id',
         'date_initiated',
         'step_1_received_date',
@@ -79,9 +78,6 @@ class ExpertPanel extends Model implements HasMembers, BelongsToGroup, RecordsEv
         'biocurator_training',
         'gci_training_date',
         'biocurator_mailing_list',
-
-        'cdwg_id',
-        // 'working_name',
     ];
 
     protected $casts = [
@@ -196,6 +192,7 @@ class ExpertPanel extends Model implements HasMembers, BelongsToGroup, RecordsEv
         return $this->hasMany(EvidenceSummary::class);
     }
 
+    // TO DO: MODIFY THIS SINCE WE NEED TO REMOVE CWDG_ID FROM EXPERT PANEL. USE GROUP->PARENT_ID
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
@@ -305,16 +302,6 @@ class ExpertPanel extends Model implements HasMembers, BelongsToGroup, RecordsEv
 
 
     // ACCESS METHODS
-    public static function findByAffiliationId($affiliationId)
-    {
-        return static::where('affiliation_id', $affiliationId)->first();
-    }
-
-    public static function findByAffiliationIdOrFail($affiliationId)
-    {
-        return static::where('affiliation_id', $affiliationId)->sole();
-    }
-
     public static function latestLogEntryForUuid($uuid)
     {
         return static::findByUuid($uuid)->group->latestLogEntry;
@@ -429,16 +416,6 @@ class ExpertPanel extends Model implements HasMembers, BelongsToGroup, RecordsEv
             return $string;
         }
         return $string.' '.$this->type->display_name;
-    }
-
-
-    public function getClingenUrlAttribute()
-    {
-        if (is_null($this->affiliation_id)) {
-            return null;
-        }
-
-        return 'https://clinicalgenome.org/affiliation/'.$this->affiliation_id;
     }
 
     public function getDefinitionIsApprovedAttribute(): bool
