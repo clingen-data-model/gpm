@@ -35,7 +35,7 @@ class ReportPublicationsMake extends ReportMakeAbstract
             $groupType     = $group?->type?->display_name;
             $groupName     = $group?->name ?? $group?->displayName;
             $groupUuid     = $group?->uuid;
-            $affiliationID = $group?->expertPanel?->affiliation_id;
+            $affiliationID = $group?->affiliation_id;
 
             $row = [
                 // From Publication::toExchangePayload

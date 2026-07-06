@@ -52,7 +52,7 @@ class ExpertPanelCreate
         $group->expertPanel->group_id = $group->id;
         $group->expertPanel->expert_panel_type_id = $expert_panel_type_id;
         $group->expertPanel->date_initiated = $date_initiated;
-        $group->expertPanel->cdwg_id = $cdwg_id;
+        // $group->expertPanel->cdwg_id = $cdwg_id; DEPRECATED CGSP-1023
         $group->expertPanel->current_step = 1;
 
 

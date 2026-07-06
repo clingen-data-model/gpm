@@ -8,7 +8,8 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use App\Modules\Group\Events\Traits\IsPublishableGroupEvent;
 
-class ExpertPanelAffiliationIdUpdated extends GroupEvent implements PublishableApplicationEvent
+// TO DO CGSP-1023 NEED TO RENAME THIS TO GROUP
+class GroupAffiliationIdUpdated extends GroupEvent implements PublishableApplicationEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels, IsPublishableGroupEvent;
 
@@ -21,7 +22,7 @@ class ExpertPanelAffiliationIdUpdated extends GroupEvent implements PublishableA
 
     public function getLogEntry(): string
     {
-        return 'EP affiliation_id set to ' . $this->affiliationId . '.';
+        return 'Group Affiliation ID set to ' . $this->affiliationId . '.';
     }
 
     public function getProperties(): ?array
@@ -33,6 +34,6 @@ class ExpertPanelAffiliationIdUpdated extends GroupEvent implements PublishableA
 
     public function getEventType(): string
     {
-        return 'ep_info_updated';
+        return 'group_info_updated';
     }
 }

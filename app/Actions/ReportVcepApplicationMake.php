@@ -45,7 +45,7 @@ class ReportVcepApplicationMake extends ReportMakeAbstract
         return ExpertPanel::typeVcep()
             ->select([
                 'id','group_id',
-                'short_base_name','long_base_name','affiliation_id','current_step',
+                'short_base_name','long_base_name', 'current_step',
                 'step_1_received_date','step_1_approval_date',
                 'step_2_approval_date','step_3_approval_date',
                 'step_4_received_date','step_4_approval_date',
@@ -53,6 +53,7 @@ class ReportVcepApplicationMake extends ReportMakeAbstract
             ->with([
                 'coordinators.person:id,first_name,last_name',
                 'chairs.person:id,first_name,last_name',
+                'group:id,affiliation_id',
             ]);
     }
 
@@ -69,7 +70,7 @@ class ReportVcepApplicationMake extends ReportMakeAbstract
         return [
             'Short name'        => $vcep->short_base_name,
             'Long name'         => $vcep->long_base_name,
-            'Affiliation ID'    => $vcep->affiliation_id,
+            'Affiliation ID'    => $vcep->group?->affiliation_id,
             'Coordinators'      => $coordinators,
             'Chairs'            => $chairs,
             'Current step'      => $vcep->current_step,

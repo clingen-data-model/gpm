@@ -26,7 +26,8 @@ export default {
         //     return this.group.members.filter(m => m.hasRole('coordinator'));
         // },
         showShortName () {
-            return this.group.expert_panel.short_base_name !== this.group.expert_panel.long_base_name;
+          if(!this.group.expert_panel) { return false; }
+          return this.group.expert_panel.short_base_name !== this.group.expert_panel.long_base_name;
         }
     },
 }
@@ -47,8 +48,8 @@ export default {
           <span v-if="group.isEp() && showShortName">Short Name: <strong>{{ group.expert_panel.full_short_base_name || '--' }}</strong>
             |
           </span>
-          <span v-if="group.isEp()">
-            Affiliation ID: <strong>{{ group.expert_panel.affiliation_id || '--' }}</strong>
+          <span>
+            Affiliation ID: <strong>{{ group.affiliation_id || '--' }}</strong>
           </span>
           <span v-if="group.parent_id">
             | Part of the <router-link :to="{name: 'GroupDetail', params: {uuid: group.parent.uuid}}">{{ group.parent.name }}</router-link>

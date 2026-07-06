@@ -52,7 +52,7 @@ use App\Modules\Group\Actions\MembershipDescriptionUpdate;
 use App\Modules\Group\Http\Resources\GroupExternalResource;
 use App\Modules\Group\Actions\CurationReviewProtocolUpdate;
 use App\Modules\Group\Http\Controllers\Api\GroupController;
-use App\Modules\Group\Actions\ExpertPanelAffiliationIdUpdate;
+use App\Modules\Group\Actions\GroupAffiliationIdUpdate;
 use App\Modules\Group\Actions\SustainedCurationReviewComplete;
 use App\Modules\Group\Actions\WebTextUpdate;
 use App\Modules\Group\Http\Controllers\Api\GeneListController;
@@ -140,13 +140,14 @@ Route::group([
             Route::put('/{document:uuid}', DocumentUpdate::class);
         });
 
+        Route::put('/affiliation-id', GroupAffiliationIdUpdate::class);
+
         // EXPERT PANEL INFO
         Route::group(['prefix' => '/expert-panel'], function () {
             Route::put('/curation-review-protocols', CurationReviewProtocolUpdate::class);
             Route::put('/membership-description', MembershipDescriptionUpdate::class);
             Route::put('/name', ExpertPanelNameUpdate::class);
-            Route::put('/scope-description', ScopeDescriptionUpdate::class);
-            Route::put('/affiliation-id', ExpertPanelAffiliationIdUpdate::class);
+            Route::put('/scope-description', ScopeDescriptionUpdate::class);            
             Route::put('/sustained-curation-reviews', SustainedCurationReviewComplete::class);
 
             // ATTESTATIONS

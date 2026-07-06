@@ -4,7 +4,7 @@ namespace App\DataExchange\Actions;
 
 use Illuminate\Support\Facades\Log;
 use Lorisleiva\Actions\Concerns\AsJob;
-use App\Modules\ExpertPanel\Models\ExpertPanel;
+use App\Modules\Group\Models\Group;
 use App\DataExchange\Models\IncomingStreamMessage;
 use App\Modules\ExpertPanel\Actions\SpecificationAndRulesetsSync;
 
@@ -21,7 +21,8 @@ class CspecDataSyncProcessor
     {
         $cspecDoc = $message->payload->cspecDoc;
 
-        $expertPanel = ExpertPanel::findByAffiliationId($cspecDoc->affiliationId);
+        $group = Group::findByAffiliationId($cspecDoc->affiliationId);
+        $expertPanel = $group?->expertPanel;
         if (!$expertPanel) {
             Log::error('Received proposal-submitted event about EP with unknown affiliation id '.$cspecDoc->affiliationId);
             return;
