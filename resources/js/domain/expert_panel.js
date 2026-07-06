@@ -30,7 +30,6 @@ class ExpertPanel extends Entity
         expert_panel_type_id: null,
         long_base_name: null,
         short_base_name: null,
-        affiliation_id: null,
         current_step: 1,
         date_initiated: null,
         step_1_received_date: null,
