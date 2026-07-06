@@ -43,7 +43,7 @@ class ExportDxEvents extends Command
         'App\\Modules\\Group\\Events\\MemberPermissionsGranted' => 'Adds data.members[]',
         'App\\Modules\\Group\\Events\\MemberPermissionRevoked' => 'Adds data.members[]',
         'App\\Modules\\ExpertPanel\\Events\\StepApproved' => 'Step 1 includes data.members[] and data.scope{statement,genes[]}; Steps 2–4 base group only',
-        'App\\Modules\\Group\\Events\\ExpertPanelAffiliationIdUpdated' => 'Base group only (affiliation_id reflected in group snapshot)',
+        'App\\Modules\\Group\\Events\\GroupAffiliationIdUpdated' => 'Base group only (affiliation_id reflected in group snapshot)',
         'App\\Modules\\Group\\Events\\ExpertPanelNameUpdated' => 'Base group only (name changes reflected in group snapshot)',
         'App\\Modules\\Group\\Events\\ScopeDescriptionUpdated' => 'Base group only (scope_description)',
         'App\\Modules\\Group\\Events\\GroupDescriptionUpdated' => 'Base group only (description)',
@@ -58,7 +58,7 @@ class ExportDxEvents extends Command
     // Known custom/overridden event_type strings
     private const CUSTOM_EVENT_TYPES = [
         'App\\Modules\\ExpertPanel\\Events\\StepApproved' => 'Step1:gcep_final_approval|vcep/scvcep_definition_approval. Step2:vcep/scvcep_draft_specification_approval. Step3:vcep/scvcep_pilot_approval. Step4:vcep/scvcep_final_approval',
-        'App\\Modules\\Group\\Events\\ExpertPanelAffiliationIdUpdated' => 'ep_info_updated',
+        'App\\Modules\\Group\\Events\\GroupAffiliationIdUpdated' => 'group_info_updated',
         'App\\Modules\\Group\\Events\\ExpertPanelNameUpdated' => 'ep_info_updated',
         // Class name plural → default would be genes_added, but DB historically has gene_added
         'App\\Modules\\Group\\Events\\GenesAdded' => 'genes_added (DB observed: gene_added)',

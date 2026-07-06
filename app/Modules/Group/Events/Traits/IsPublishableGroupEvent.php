@@ -69,6 +69,7 @@ trait IsPublishableGroupEvent
         $group = $this->group;
         $data = [
             'uuid' => $group->uuid,
+            'affiliation_id' => $group->affiliation_id,
             'name' => $group->name,
             'description' => $group->description,
             'excerpt' => $group->excerpt,
@@ -99,8 +100,7 @@ trait IsPublishableGroupEvent
         if ($group->isEp) {
             $ep = $group->expertPanel;
             $epData = [
-                'uuid' => $ep->uuid,
-                'affiliation_id' => $ep->affiliation_id,
+                'uuid' => $ep->uuid,                
                 'name' => $ep->long_base_name,
                 'short_name' => $ep->short_base_name,
                 'scope_description' => $ep->scope_description,

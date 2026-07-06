@@ -62,7 +62,11 @@ export default {
       return this.hasPermission('groups-manage') && !this.group.id
     },
     affiliationIdPlaceholder () {
-      return 50000
+      const typeId = Number(this.group.group_type_id);
+      if (typeId === Number(this.groupTypes.gcep.id)) { return '4XXXX';}
+      if (typeId === Number(this.groupTypes.vcep.id) || typeId === Number(this.groupTypes.scvcep.id)) { return '5XXXX'; }
+      if (typeId === Number(this.groupTypes.wg.id) || typeId === Number(this.groupTypes.cdwg.id) || typeId === Number(this.groupTypes.sccdwg.id)) { return '6XXXX'; }
+      return 'XXXXX';
     },
     cdwgs () {
       return this.$store.getters['cdwgs/all']
@@ -72,7 +76,7 @@ export default {
         || this.group.expert_panel.isDirty('short_base_name');
     },
     affiliationIdDirty () {
-      return this.group.expert_panel.isDirty('affiliation_id');
+      return this.group.isDirty('affiliation_id');
     },
     parentOptions () {
       const options = [{value: 0, label: 'None'}];
@@ -88,6 +92,11 @@ export default {
   },
 
   watch: {
+    'group.uuid': {
+      handler () {
+        this.resetErrors();
+      }
+    },
     'group.group_type_id': {
       immediate: true,
       async handler (newVal, oldVal) {
@@ -132,6 +141,7 @@ export default {
     },
     createGroup () {
       let {
+        affiliation_id,
         name,
         parent_id,
         group_type_id,
@@ -140,30 +150,19 @@ export default {
         website_url
       } = this.group.attributes;
 
-      const {short_base_name, affiliation_id } = this.group.expert_panel;
+      const {short_base_name } = this.group.expert_panel;
 
       if (name === null && this.group.expert_panel) {
         name = this.group.expert_panel.long_base_name;
       }
 
-      console.log('Creating group with data', {
-        name,
-        parent_id,
-        group_type_id,
-        group_status_id,
-        short_base_name,
-        affiliation_id,
-        website_url
-      })
-      
-      return this.$store.dispatch(
-        'groups/create',
-        {
+      return this.$store.dispatch('groups/create', {
           name,
           parent_id,
           group_type_id,
           group_status_id,
           short_base_name,
+          affiliation_id,
           group_visibility_id: this.group.group_visibility_id,
           website_url
         }
@@ -177,17 +176,15 @@ export default {
       }
 
       return Promise.all(promises);
-    },
+    },    
     saveGroupData () {
       const promises = [];
       if (this.group.isDirty('parent_id')) {
         promises.push(this.saveParent());
       }
-
       if (this.group.isDirty('name')) {
         promises.push(this.saveName())
       }
-
       if (this.group.isDirty('group_status_id')) {
         promises.push(this.saveStatus())
       }
@@ -196,6 +193,9 @@ export default {
       }
       if (this.group.isDirty('website_url')) {
         promises.push(this.saveWebsiteUrl());
+      }
+      if (this.affiliationIdDirty) {
+        promises.push(this.saveAffiliationId());
       }
 
       return Promise.all(promises);
@@ -210,15 +210,6 @@ export default {
           data: { long_base_name, short_base_name }
         }));
       }
-
-      if (this.affiliationIdDirty) {
-        promises.push(this.submitFormData({
-          method: 'put',
-          url: `/api/groups/${this.group.uuid}/expert-panel/affiliation-id`,
-          data: { affiliation_id: this.group.expert_panel.affiliation_id }
-        }));
-      }
-
       return await Promise.all(promises);
     },
 
@@ -263,12 +254,18 @@ export default {
         data: { website_url: this.group.website_url || null }
       });
     },
+    saveAffiliationId () {
+      return api.put(`/api/groups/${this.group.uuid}/affiliation-id`, {
+        affiliation_id: this.group.affiliation_id
+      });
+    },
     resetData () {
       if (this.group.uuid) {
         this.$store.dispatch('groups/find', this.group.uuid);
       }
     },
     cancel() {
+      this.resetErrors();
       if (this.group.uuid) {
         this.resetData();
       }
@@ -277,9 +274,10 @@ export default {
 
     getParentsKey (typeId) {
       const t = Number(typeId)
-      if (t === 5) return 'cdwgs:sc'
-      if (t === 1) return 'cdwgs:wg'
-      if ([3, 4].includes(t)) return 'cdwgs:all'
+      const types = this.groupTypes
+      if (t === Number(types.scvcep.id)) { return 'cdwgs:sc'; }
+      if (t === Number(types.wg.id)) { return 'cdwgs:wg'; }
+      if ([Number(types.gcep.id), Number(types.vcep.id)].includes(t)) { return 'cdwgs:all'; }
       return null
     },
 
@@ -301,13 +299,8 @@ export default {
       if (key === 'cdwgs:sc') params.scope = 'sc'
       if (key === 'cdwgs:wg') params.scope = 'wg'
 
-      const rows = await api.get('/api/cdwgs', { params })
-        .then(res => res.data?.data ?? res.data ?? [])
-
-      this.parents = (rows || [])
-        .filter(g => g && g.id !== this.group.id)
-        .map(g => new Group(g))
-
+      const rows = await api.get('/api/cdwgs', { params }).then(res => res.data?.data ?? res.data ?? [])
+      this.parents = (rows || []).filter(g => g && g.id !== this.group.id).map(g => new Group(g))
       this.parentsKey = key
     },
     emitUpdate () {
@@ -332,7 +325,7 @@ export default {
     </dictionary-row>
 
     <transition name="slide-fade-down" mode="out-in">
-      <div v-if="[3, 4, 5].includes(Number(group.group_type_id)) && group.expert_panel">
+      <div v-if="[Number(groupTypes.gcep.id), Number(groupTypes.vcep.id), Number(groupTypes.scvcep.id)].includes(Number(group.group_type_id)) && group.expert_panel">
         <input-row
           v-model="group.expert_panel.long_base_name"
           label="Long Base Name"
@@ -350,33 +343,14 @@ export default {
           @update:model-value="emitUpdate"
         />
         <input-row
-            v-if="Number.parseInt(group.group_type_id) === 5"
+            v-if="Number.parseInt(group.group_type_id) === Number(groupTypes.scvcep.id)"
             v-model="group.website_url"
             label="Website URL"
             placeholder="https://civicdb.org/organizations/{INT:number}}/"
             :errors="errors.website_url"
             input-class="w-full"
             @update:model-value="emitUpdate"
-        />
-        <div v-if="hasAnyPermission(['groups-manage'])">
-          <input-row
-            v-model="group.expert_panel.affiliation_id"
-            label="Affiliation ID"
-            :placeholder="affiliationIdPlaceholder"
-            :errors="errors.affiliation_id"
-            input-class="w-full"
-            @update:model-value="emitUpdate"
-          >
-            <template #label>
-              Affiliation ID
-              <note>admin-only</note>
-            </template>
-          </input-row>
-        </div>
-        <dictionary-row v-else label="Affiliation ID">
-          <span v-if="group.expert_panel.affiliation_id">{{ group.expert_panel.affiliation_id }}</span>
-          <span v-else class="text-gray-400">{{ 'Not yet assigend' }}</span>
-        </dictionary-row>
+        />        
       </div>
       <div v-else>
         <input-row
@@ -389,6 +363,25 @@ export default {
         />
       </div>
     </transition>
+    <div v-if="hasAnyPermission(['groups-manage'])">
+      <input-row
+        v-model="group.affiliation_id"
+        label="Affiliation ID"
+        :placeholder="affiliationIdPlaceholder"
+        :errors="errors.affiliation_id"
+        input-class="w-full"
+        @update:model-value="emitUpdate"
+      >
+        <template #label>
+          Affiliation ID
+          <note>admin-only</note>
+        </template>
+      </input-row>
+    </div>
+    <dictionary-row v-else label="Affiliation ID">
+      <span v-if="group.affiliation_id">{{ group.affiliation_id }}</span>
+      <span v-else class="text-gray-400">{{ 'Not yet assigned' }}</span>
+    </dictionary-row>
     <div v-if="hasPermission('groups-manage')">
       <input-row
         v-model="group.group_status_id"
@@ -401,7 +394,7 @@ export default {
       </input-row>
 
       <input-row
-        v-if="+group.group_type_id === 1"
+        v-if="+group.group_type_id === Number(groupTypes.wg.id)"
         v-model="group.group_visibility_id"
         type="select"
         :options="visibilityOptions"
@@ -412,7 +405,7 @@ export default {
       </input-row>      
       
       <input-row
-        v-if="! [2, 6].includes(Number(group.group_type_id))"
+        v-if="! [Number(groupTypes.cdwg.id), Number(groupTypes.sccdwg.id)].includes(Number(group.group_type_id))"
         v-model="group.parent_id"
         type="select"
         :options="parentOptions"

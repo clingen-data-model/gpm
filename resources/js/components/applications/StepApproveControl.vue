@@ -27,7 +27,7 @@
 
 	const isAffiliationMissing = computed(() => {
 		if (props.step !== 1) return false;
-		const id = props.group?.expert_panel?.affiliation_id;
+		const id = props.group?.affiliation_id;
 		return !id || !id.toString().trim();
 	});
 
