@@ -17,10 +17,8 @@ class ExpertPanelUpdateAttributes
      *
      * @return void
      */
-    public function handle(
-        string $uuid,
-        array $attributes
-    ) {
+    public function handle(string $uuid, array $attributes) 
+    {
         $attributes = collect($attributes);
         $expertPanel = ExpertPanel::findByUuidOrFail($uuid);
         $expertPanel->fill($attributes->toArray());
@@ -36,10 +34,13 @@ class ExpertPanelUpdateAttributes
             Event::dispatch(new ExpertPanelAttributesUpdated($expertPanel, $updatedAttributes));
         }
 
-        if ($attributes->get('cdwg_id')) {
+        if ($attributes->get('cdwg_id') || $attributes->get('affiliation_id')) {
             $groupAttributes = [];
             if (isset($attributes['cdwg_id'])) {
                 $groupAttributes['parent_id'] = $attributes['cdwg_id'];
+            }
+            if (isset($attributes['affiliation_id'])) {
+                $groupAttributes['affiliation_id'] = $attributes['affiliation_id'];
             }
             $expertPanel->group->update($groupAttributes);
             $expertPanel->group->save();

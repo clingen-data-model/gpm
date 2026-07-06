@@ -12,12 +12,14 @@ use App\Modules\Group\Events\GroupCreated;
 use Lorisleiva\Actions\Concerns\AsController;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Modules\Group\Http\Resources\GroupResource;
+use App\Modules\Group\Actions\WorkingGroupAffiliationIdGenerate;
+use Illuminate\Validation\Rule;
 
 class GroupCreate
 {
     use AsController;
 
-    public function __construct(private CoiCodeMake $makeCoiCode)
+    public function __construct(private CoiCodeMake $makeCoiCode, private WorkingGroupAffiliationIdGenerate $wgAffiliationIdGenerator)
     {
     }
 
@@ -33,6 +35,7 @@ class GroupCreate
         $uuid = isset($data['uuid']) ? $data['uuid'] : Uuid::uuid4();
         $group = Group::create([
             'uuid' => $uuid,
+            'affiliation_id' => $data['affiliation_id'] ?? null,
             'name' => $data['name'],
             'group_type_id' => $data['group_type_id'],
             'group_status_id' => $data['group_status_id'],
@@ -42,15 +45,19 @@ class GroupCreate
             'website_url' => $data['website_url'] ?? null,
         ]);
 
+        if ($group->isWorkingGroupType && !$group->affiliation_id) {
+            $this->wgAffiliationIdGenerator->handle($group);
+        }
+
         if ($group->isEp) {
             $expertPanel = new ExpertPanel([
                 'long_base_name' => $data['name'],
                 'short_base_name' => isset($data['short_base_name']) ? $data['short_base_name'] : null,
                 'group_id' => $group->id,
-                'cdwg_id' => $this->resolveParentId($data),
+                // 'cdwg_id' => $this->resolveParentId($data), DEPRECATED CGSP-1023
                 'expert_panel_type_id' => ($data['group_type_id'] - 2),
                 'date_initiated' => Carbon::now(),
-                'affiliation_id' => $data['affiliation_id'] ?? null,
+                // 'affiliation_id' => $data['affiliation_id'] ?? null, DEPRECATED CGSP-1023
                 'current_step' => 1,
             ]);
             $expertPanel->uuid = $uuid;
@@ -90,7 +97,23 @@ class GroupCreate
                         }
                     }
                 }
-            ]
+            ],
+            'affiliation_id' => ['nullable', 'digits:5', Rule::unique('groups', 'affiliation_id'),
+                function ($attribute, $value, $fail) {
+                    if ($value === null) { return; }
+
+                    $groupTypeId = (int) request()->input('group_type_id');
+                    $expectedPrefix = match ($groupTypeId) {
+                        (int) config('groups.types.gcep.id') => '4',
+                        (int) config('groups.types.vcep.id'), (int) config('groups.types.scvcep.id') => '5',
+                        (int) config('groups.types.wg.id'), (int) config('groups.types.cdwg.id'), (int) config('groups.types.sccdwg.id') => '6',
+                        default => null,
+                    };
+                    if ($expectedPrefix && !str_starts_with($value, $expectedPrefix)) {
+                        $fail('The Affiliation ID does not match the selected group type.');
+                    }
+                }
+            ],
         ];
     }
 
