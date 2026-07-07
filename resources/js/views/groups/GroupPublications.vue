@@ -154,7 +154,7 @@ function clearAddModal() {
     <section class="space-y-3">
         <header class="flex items-center justify-between">
             <h3 class="text-xl font-semibold">Publications</h3>
-            <button v-if="hasRole('super-user') || hasRole('super-admin')" class="btn btn-primary btn-sm" @click="addModal.open = true">Add publication</button>
+            <button v-if="hasRole('super-user') || hasRole('super-admin') || hasRole('coordinator', group)" class="btn btn-primary btn-sm" @click="addModal.open = true">Add publication</button>
         </header>
         <p v-if="error" class="text-red-600">{{ error }}</p>
         <div v-if="!loading && items.length === 0" class="text-gray-600">No publications added yet.</div>
@@ -200,7 +200,7 @@ function clearAddModal() {
                         <td class="px-3 py-2">
                             <div class="flex flex-wrap items-center gap-x-2 gap-y-2">
                                 <button class="btn btn-xs inline-flex items-center shrink-0" @click="showDetails(p)" title="View details"> Details </button>
-                                <button v-if="hasRole('super-user') || hasRole('super-admin')" class="btn btn-xs inline-flex items-center shrink-0" @click="removePublication(p)" title="Remove publication" > Remove </button>
+                                <button v-if="hasRole('super-user') || hasRole('super-admin') || hasRole('coordinator', group)" class="btn btn-xs inline-flex items-center shrink-0" @click="removePublication(p)" title="Remove publication" > Remove </button>
                             </div>
                         </td>
                     </tr>
