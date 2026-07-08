@@ -9,14 +9,32 @@ use Illuminate\Validation\ValidationException;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsController;
 use App\Modules\Group\Events\GroupAffiliationIdUpdated;
+use App\Modules\Group\Actions\WorkingGroupAffiliationIdGenerate;
 
 class GroupAffiliationIdUpdate
 {
     use AsController;
 
+    public function __construct(
+        private WorkingGroupAffiliationIdGenerate $wgAffiliationIdGenerator
+    ) {
+    }
+
     public function handle(Group $group, ?string $affiliationId): Group
     {
         if ($affiliationId !== $group->affiliation_id) {
+
+            if($group->isWorkingGroupType) {
+                $user = Auth::user();
+                if(! $user || ! $user->hasRole('super-user')) {
+                    throw ValidationException::withMessages(['affiliation_id' => 'Only super-admins can edit Affiliation IDs for Working Groups, CDWGs, and SC-CDWGs.']);
+                }
+                // JUST IN CASE to anticipate somehow a user who is other than super-user and they are trying to set the affiliation_id to null, we will generate a new one for them.
+                if ($affiliationId === null) {
+                    $affiliationId = $this->wgAffiliationIdGenerator->handle($group);
+                }
+            } 
+            
             $group->update(['affiliation_id' => $affiliationId]);
             event(new GroupAffiliationIdUpdated($group, $affiliationId));
         }
