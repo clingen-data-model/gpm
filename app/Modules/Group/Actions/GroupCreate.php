@@ -32,10 +32,16 @@ class GroupCreate
             throw new \RuntimeException('Default group visibility is not configured. Set groups.visibilities.public.id.');
         }
 
+        $groupForTypeCheck = new Group(['group_type_id' => $data['group_type_id']]);
+        $affiliationId = $data['affiliation_id'] ?? null;
+        if ($groupForTypeCheck->isWorkingGroupType && ! hasRole('super-user')) {
+            $affiliationId = null;
+        }
+
         $uuid = isset($data['uuid']) ? $data['uuid'] : Uuid::uuid4();
         $group = Group::create([
             'uuid' => $uuid,
-            'affiliation_id' => $data['affiliation_id'] ?? null,
+            'affiliation_id' => $affiliationId,
             'name' => $data['name'],
             'group_type_id' => $data['group_type_id'],
             'group_status_id' => $data['group_status_id'],
