@@ -3,7 +3,7 @@ import configs from '@/configs'
 import Group from '@/domain/group'
 import formFactory from '@/forms/form_factory'
 import { api, isValidationError } from '@/http'
-import {sortBy} from 'lodash-es'
+import { hasRole } from '@/auth_utils'
 
 export default {
   name: 'GroupForm',
@@ -363,7 +363,9 @@ export default {
         />
       </div>
     </transition>
-    <div v-if="hasAnyPermission(['groups-manage'])">
+
+    <!-- Affiliation ID  -->
+    <div v-if="(hasRole('super-user') || ([Number(groupTypes.gcep.id), Number(groupTypes.vcep.id), Number(groupTypes.scvcep.id)].includes(Number(group.group_type_id))))">
       <input-row
         v-model="group.affiliation_id"
         label="Affiliation ID"
@@ -380,8 +382,15 @@ export default {
     </div>
     <dictionary-row v-else label="Affiliation ID">
       <span v-if="group.affiliation_id">{{ group.affiliation_id }}</span>
-      <span v-else class="text-gray-400">{{ 'Not yet assigned' }}</span>
+      <span v-else-if="isWorkingGroupType" class="text-gray-400">
+        Will be generated when the group is created
+      </span>
+      <span v-else class="text-gray-400">
+        Not yet assigned
+      </span>
     </dictionary-row>
+    <!-- End of Affiliation ID  -->
+
     <div v-if="hasPermission('groups-manage')">
       <input-row
         v-model="group.group_status_id"
