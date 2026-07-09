@@ -365,7 +365,7 @@ export default {
     </transition>
 
     <!-- Affiliation ID  -->
-    <div v-if="(hasRole('super-user') || ([Number(groupTypes.gcep.id), Number(groupTypes.vcep.id), Number(groupTypes.scvcep.id)].includes(Number(group.group_type_id))))">
+    <div v-if="[Number(groupTypes.gcep.id), Number(groupTypes.vcep.id), Number(groupTypes.scvcep.id)].includes(Number(group.group_type_id))">
       <input-row
         v-model="group.affiliation_id"
         label="Affiliation ID"
@@ -382,7 +382,7 @@ export default {
     </div>
     <dictionary-row v-else label="Affiliation ID">
       <span v-if="group.affiliation_id">{{ group.affiliation_id }}</span>
-      <span v-else-if="isWorkingGroupType" class="text-gray-400">
+      <span v-else-if="[Number(groupTypes.wg.id), Number(groupTypes.cdwg.id), Number(groupTypes.sccdwg.id)].includes(Number(group.group_type_id))" class="text-gray-400">
         Will be generated when the group is created
       </span>
       <span v-else class="text-gray-400">
