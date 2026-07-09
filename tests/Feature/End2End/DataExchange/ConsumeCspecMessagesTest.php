@@ -34,8 +34,10 @@ class ConsumeCspecMessagesTest extends TestCase
                         ->create([
                             'current_step' => 2,
                             'step_1_approval_date' => Carbon::now(),
-                            'affiliation_id' => '59999',
                         ]);
+        $this->vcep->group->update([
+            'affiliation_id' => '59999',
+        ]);
         config(['dx.consume' => true]);
 
         $this->consumer = new DxConsume();

@@ -90,6 +90,19 @@ class GroupFactory extends Factory
         });
     }
 
+    public function sccdwg()
+    {
+        return $this->state(function ($attributes) {
+            return [
+                'uuid' => $this->faker->uuid,
+                'name' => uniqid().' SCCDWG',
+                'description' => $this->faker->sentence(),
+                'group_type_id' => config('groups.types.sccdwg.id'),
+                'group_status_id' => config('groups.statuses.active.id')
+            ];
+        });
+    }
+
     public function wg()
     {
         return $this->state(function ($attributes) {
