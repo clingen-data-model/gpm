@@ -51,12 +51,16 @@ class UpdateExpertPanelAttributesTest extends TestCase
         $data = [
             'long_base_name' => 'Test Expert Panel Base Name',
             'short_base_name' => 'Test EP',
-            'affiliation_id' => '40001',
             'cdwg_id' => $this->cdwg->id,
             'group' => [
                 'name' => 'New Test Working Name',
             ]
         ];
+
+        $this->assertDatabaseHas('groups', [
+            'id' => $expertPanel->group_id,
+            'affiliation_id' => null,
+        ]);
 
         $nonEpData = [
             'uuid' => Uuid::uuid4()->toString(),
@@ -175,10 +179,16 @@ class UpdateExpertPanelAttributesTest extends TestCase
     public function ep_info_updated_event_published_if_EP_definition_approved()
     {
         Carbon::setTestNow('2022-09-26');
-        $ep = ExpertPanel::factory()->create(['step_1_approval_date' => Carbon::now()]);
+
+        $ep = ExpertPanel::factory()->create([
+            'step_1_approval_date' => Carbon::now(),
+        ]);
+
         $this->makeRequest($ep)
             ->assertStatus(200);
-        $ep = ExpertPanel::findByUuid($ep->uuid);
+
+        $ep->refresh();
+        $ep->group->refresh();
 
         $this->assertDatabaseHas('stream_messages', [
             'topic' => config('dx.topics.outgoing.gpm-general-events'),
@@ -188,14 +198,13 @@ class UpdateExpertPanelAttributesTest extends TestCase
             'message->data->group->uuid' => $ep->group->uuid,
             'message->data->group->name' => $ep->group->name,
             'message->data->group->type' => $ep->group->type->name,
-            'message->data->affiliation_id' => $ep->affiliation_id,
             'message->data->group->scope_description' => $ep->scope_description,
             'message->data->short_base_name' => $ep->short_base_name,
         ]);
     }
 
     #[Test]
-    public function ep_info_updated_event_NOT_published_if_EP_definition_NOT_approved()
+    public function group_info_updated_event_NOT_published_if_EP_definition_NOT_approved()
     {
         Carbon::setTestNow('2022-09-26');
         $ep = ExpertPanel::factory()->create();
@@ -206,8 +215,8 @@ class UpdateExpertPanelAttributesTest extends TestCase
         $this->assertDatabaseMissing(
             'stream_messages',
             [
-                'topic' => config('dx.topics.outgoing.gpm_general_events'),
-                'message->event_type' => 'ep_info_updated'
+                'topic' => config('dx.topics.outgoing.gpm-general-events'),
+                'message->event_type' => 'group_info_updated'
             ]
         );
     }

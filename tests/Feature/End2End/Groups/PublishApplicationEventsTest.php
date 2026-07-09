@@ -8,7 +8,7 @@ use Illuminate\Support\Carbon;
 use App\Modules\Person\Models\Person;
 use App\Modules\Group\Actions\GenesAdd;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
-use App\Modules\Group\Actions\ExpertPanelAffiliationIdUpdate;
+use App\Modules\Group\Actions\GroupAffiliationIdUpdate;
 use App\Modules\Group\Actions\ExpertPanelNameUpdate;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Traits\SeedsHgncGenesAndDiseases;
@@ -98,17 +98,14 @@ class PublishApplicationEventsTest extends TestCase
     }
 
     #[Test]
-    public function it_publishes_ep_info_updated_when_affiliation_id_added(): void
+    public function it_publishes_group_affiliation_id_updated_when_affiliation_id_added(): void
     {
         $this->approveEpDef();
-        (new ExpertPanelAffiliationIdUpdate())->handle($this->group, '12345');
-
-
+        app(GroupAffiliationIdUpdate::class)->handle($this->group, '42345');
         $this->assertDatabaseHas('stream_messages', [
             'topic' => config('dx.topics.outgoing.gpm-general-events'),
-            'message->event_type' => 'ep_info_updated',
-            'message->data->affiliation_id' => '12345',
-            // 'sent_at' => null,
+            'message->event_type' => 'group_affiliation_id_updated',
+            'message->data->affiliation_id' => '42345',
         ]);
     }
 
@@ -124,7 +121,6 @@ class PublishApplicationEventsTest extends TestCase
             'topic' => config('dx.topics.outgoing.gpm-general-events'),
             'message->event_type' => 'ep_info_updated',
             'message->data->group->name' => $this->group->name,
-            // 'sent_at' => null,
         ]);
     }
 
@@ -140,14 +136,15 @@ class PublishApplicationEventsTest extends TestCase
 
     private function addGene()
     {
-        $genes = $this->seedGenes([['hgnc_id' => 678, 'gene_symbol' => 'BCD'], ['hgnc_id' => 12345, 'gene_symbol' => 'ABC1']]);
-        $action = app()->make(GenesAdd::class);
-        $action->handle(
-            $this->expertPanel->group,
-            $genes->map(fn ($gene) => ['hgnc_id' => $gene->hgnc_id, 'gene_symbol' => $gene->gene_symbol])->all()
-        );
-    }
+        $genes = [
+            ['hgnc_id' => 678, 'gene_symbol' => 'BCD'],
+            ['hgnc_id' => 12345, 'gene_symbol' => 'ABC1'],
+        ];
 
+        $this->seedGenes($genes);
+
+        app(GenesAdd::class)->handle($this->expertPanel->group, $genes);
+    }
 
     private function approveEpDef()
     {

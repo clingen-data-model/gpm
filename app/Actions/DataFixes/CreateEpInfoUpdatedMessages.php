@@ -54,18 +54,16 @@ class CreateEpInfoUpdatedMessages
     private function makeStreamMessage(Activity $activity): StreamMessage
     {
         $name = $this->resolveName($activity);
-        $affiliationId = $this->resolveAffiliationId($activity);
-
+        // Create a stream message for the activity, EXCLUDE AFFILIATION ID, since that is not part of the EXPERT PANEL message
         $streamMessage = new StreamMessage([
             'topic' => config('dx.topics.outgoing.gpm-general-events'),
             'message' => $this->messageFactory->make(
                 eventType: 'ep_info_updated',
                 message: [
-                    'expert_panel' => [
+                    'group' => [
                         'id' => $activity->subject->uuid,
                         'name' => $name,
                         'type' => $activity->subject->fullType->name,
-                        'affiliation_id' => $affiliationId
                     ],
                 ],
                 date: $activity->created_at,
@@ -98,22 +96,6 @@ class CreateEpInfoUpdatedMessages
         }
 
         return $activity->subject->displayName;
-    }
-
-    /**
-     * Get the affiliation id from the activity properties if it exists
-     * Otherwise, get it from the expert panel
-     *
-     * @param Activity $activity
-     * @return string
-     */
-    private function resolveAffiliationId(Activity $activity): string
-    {
-        if (array_key_exists('affiliation_id', $activity->properties->toArray())) {
-            return $activity->properties['affiliation_id'];
-        }
-
-        return $activity->subject->expertPanel->affiliation_id;
     }
 
     /**

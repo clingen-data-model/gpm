@@ -34,6 +34,6 @@ class GroupAffiliationIdUpdated extends GroupEvent implements PublishableApplica
 
     public function getEventType(): string
     {
-        return 'group_info_updated';
+        return 'group_affiliation_id_updated';
     }
 }

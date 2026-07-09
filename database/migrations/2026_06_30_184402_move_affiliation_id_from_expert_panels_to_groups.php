@@ -15,7 +15,14 @@ return new class extends Migration
             $table->string('affiliation_id', 8)->unique()->nullable()->after('uuid');
         });
          $this->copyAffiliationIdsToGroups();
-        Schema::table('expert_panels', function (Blueprint $table) { $table->dropColumn('affiliation_id'); });
+        
+         Schema::table('expert_panels', function (Blueprint $table) {
+            $table->dropUnique('expert_panels_affiliation_id_unique');
+        });
+
+        Schema::table('expert_panels', function (Blueprint $table) {
+            $table->dropColumn('affiliation_id');
+        });
     }
     
     public function down(): void
