@@ -19,21 +19,10 @@ return new class extends Migration
     
     public function down(): void
     {
-        $nonExpertPanelIds = DB::table('groups')
-            ->leftJoin('expert_panels as ep', 'ep.group_id', '=', 'groups.id')
-            ->whereNotNull('groups.affiliation_id')
-            ->whereNull('ep.id')
-            ->count();
-
-        if ($nonExpertPanelIds > 0) {
-            throw new RuntimeException('Cannot roll back because non-EP groups have Affiliation IDs.');
-        }
-
         Schema::table('expert_panels', function (Blueprint $table) {
-            $table->string('affiliation_id', 8)->unique()->nullable();
-        });
-
-        DB::statement('UPDATE expert_panels ep INNER JOIN `groups` ON `groups`.id = ep.group_id SET ep.affiliation_id = `groups`.affiliation_id WHERE `groups`.affiliation_id IS NOT NULL');
+            $table->string('affiliation_id', 8)->nullable()->unique();
+        });        
+        DB::statement("UPDATE `expert_panels` AS ep INNER JOIN `groups` AS g ON g.id = ep.group_id SET ep.affiliation_id = g.affiliation_id WHERE g.affiliation_id IS NOT NULL");
         Schema::table('groups', function (Blueprint $table) {
             $table->dropUnique(['affiliation_id']);
             $table->dropColumn('affiliation_id');

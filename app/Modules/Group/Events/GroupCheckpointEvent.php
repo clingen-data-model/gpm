@@ -24,7 +24,7 @@ class GroupCheckpointEvent extends GroupEvent implements PublishableEvent
 
     public function getSchemaVersion(): string
     {
-        return '2.0.1';
+        return '2.0.2';
     }
 
     public function getTopic(): string
