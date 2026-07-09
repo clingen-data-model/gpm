@@ -10,6 +10,7 @@ use App\Modules\ExpertPanel\Actions\StepApprove;
 use App\DataExchange\Models\IncomingStreamMessage;
 use App\DataExchange\Exceptions\DataSynchronizationException;
 use App\Modules\ExpertPanel\Actions\SpecificationAndRulesetsSync;
+use App\Modules\Group\Models\Group;
 
 class PilotRulesApprovedProcessor
 {
