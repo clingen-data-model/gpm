@@ -34,7 +34,7 @@ class GroupCreate
 
         $groupForTypeCheck = new Group(['group_type_id' => $data['group_type_id']]);
         $affiliationId = $data['affiliation_id'] ?? null;
-        if ($groupForTypeCheck->isWorkingGroupType && ! hasRole('super-user')) {
+        if ($groupForTypeCheck->isWorkingGroupType && ! Auth::user()?->hasRole('super-user')) {
             $affiliationId = null;
         }
 

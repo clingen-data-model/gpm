@@ -37,10 +37,11 @@ class DxMessageFactoryTest extends TestCase
         parent::setup();
         $this->setupForGroupTest();
         $this->setupPermission('application-edit');
-        $this->expertPanel = ExpertPanel::factory()->create(['long_base_name' => 'TEST GROUP', 'affiliation_id' => 50666]);
+        $this->expertPanel = ExpertPanel::factory()->create(['long_base_name' => 'TEST GROUP']);
+        $this->expertPanel->group->update(['affiliation_id' => '50666']);
         Gene::factory(2)->create(['expert_panel_id' => $this->expertPanel->id]);
         GroupMember::factory(2)->create(['group_id' => $this->expertPanel->group->id]);
-
+        $this->expertPanel->refresh();
         $this->expertPanel->load('genes', 'group', 'group.members', 'group.members.person');
 
         $this->factory = new DxMessageFactory();
@@ -226,6 +227,7 @@ class DxMessageFactoryTest extends TestCase
     {
         $this->assertEquals([
             'uuid' => $this->expertPanel->group->uuid,
+            'affiliation_id' => (string) $this->expertPanel->group->affiliation_id,
             'name' => $this->expertPanel->group->name,
             'description' => $this->expertPanel->group->description,
             'status' => $this->expertPanel->group->groupStatus->name,
@@ -233,9 +235,9 @@ class DxMessageFactoryTest extends TestCase
             'excerpt' => $this->expertPanel->group->excerpt,
             'coi' => url('/coi-group/'.$this->expertPanel->group->uuid),
             'visibility' => optional($this->expertPanel->group->groupVisibility)->name,
+            'publications' => [],
             'expert_panel' => [
-                'uuid' => $this->expertPanel->uuid,
-                'affiliation_id' => (string) $this->expertPanel->affiliation_id,
+                'uuid' => $this->expertPanel->uuid,                
                 'name' => $this->expertPanel->long_base_name,
                 'short_name' => $this->expertPanel->short_base_name,
                 'scope_description' => $this->expertPanel->scope_description,
