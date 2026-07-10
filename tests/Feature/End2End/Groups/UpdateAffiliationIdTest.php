@@ -9,6 +9,8 @@ use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\Test;
 use App\Modules\Group\Models\Group;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\PermissionRegistrar;
 
 class UpdateAffiliationIdTest extends TestCase
 {
@@ -18,6 +20,9 @@ class UpdateAffiliationIdTest extends TestCase
     {
         parent::setup();
         $this->setupForGroupTest();
+
+        app(PermissionRegistrar::class)->forgetCachedPermissions();
+        Role::findOrCreate('super-user', 'web');
 
         $this->expertPanel = ExpertPanel::factory()->gcep()->create();
         $this->user = $this->setupUser(permissions: ['groups-manage']);
@@ -94,7 +99,7 @@ class UpdateAffiliationIdTest extends TestCase
 
         $this->assertLoggedActivity(
             subject: $this->expertPanel->group,
-            description: 'Affiliation ID set to 49999.',
+            description: 'Group Affiliation ID set to 49999.',
             properties: ['affiliation_id' => '49999'],
             logName: 'groups'
         );
@@ -129,23 +134,21 @@ class UpdateAffiliationIdTest extends TestCase
     #[Test]
     public function super_user_can_update_working_group_affiliation_id(): void
     {
+        $this->user->assignRole('super-user');
+
         $group = Group::factory()->wg()->create([
             'affiliation_id' => '60001',
         ]);
 
-        $superUser = $this->setupUser();
-        $superUser->assignRole('super-admin');
-        Sanctum::actingAs($superUser);
-
-        $this->json('put', '/api/groups/'.$group->uuid.'/affiliation-id', [
-            'affiliation_id' => '60002',
-        ])->assertStatus(200);
+        $this->makeRequestForGroup($group, '60002')
+            ->assertStatus(200);
 
         $this->assertDatabaseHas('groups', [
             'id' => $group->id,
             'affiliation_id' => '60002',
         ]);
     }
+
     private function makeRequestForGroup(Group $group, $affiliationId)
     {
         return $this->json(
