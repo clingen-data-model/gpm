@@ -48,11 +48,11 @@ class ExpertPanelTest extends TestCase
     {
         $expertPanel = ExpertPanel::factory()->make();
 
-        $this->assertNull($expertPanel->clingen_url);
+        $this->assertNull($expertPanel->group->clingen_url);
 
-        $expertPanel->affiliation_id = '4000123';
+        $expertPanel->group->affiliation_id = '4000123';
 
-        $this->assertEquals('https://clinicalgenome.org/affiliation/4000123', $expertPanel->clingen_url);
+        $this->assertEquals('https://clinicalgenome.org/affiliation/4000123', $expertPanel->group->clingen_url);
     }
 
     #[Test]
