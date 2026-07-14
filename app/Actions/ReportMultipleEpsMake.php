@@ -41,11 +41,7 @@ class ReportMultipleEpsMake extends ReportMakeAbstract
         return Person::query()
             ->has('activeExpertPanels', '>=', 2)
             ->select(['id','first_name','last_name','email'])
-            ->with([
-                'activeExpertPanels' => function ($q) {
-                    $q->select(['groups.id','group_type_id','name']);
-                },
-            ]);
+            ->withCount('activeExpertPanels');
     }
 
     private function formatRow(Person $p): array
@@ -54,7 +50,7 @@ class ReportMultipleEpsMake extends ReportMakeAbstract
             'first_name' => $p->first_name,
             'last_name'  => $p->last_name,
             'email'      => $p->email,
-            'ep count'   => $p->activeExpertPanels->count(),
+            'ep count'   => $p->activeExpertPanels_count,
         ];
     }
 }

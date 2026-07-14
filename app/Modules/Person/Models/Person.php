@@ -163,7 +163,7 @@ class Person extends Model implements HasLogEntries
 
     public function activeGroups(): BelongsToMany
     {
-        return $this->groups()->whereNull('group_members.end_date');
+        return $this->groups()->whereNull('group_members.end_date')->whereNull('group_members.deleted_at');
     }
 
     /**

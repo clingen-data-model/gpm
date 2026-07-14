@@ -30,7 +30,7 @@ class ReportPeopleMake extends ReportMakeAbstract
         $connection->disableQueryLog();
         try {
             Person::query()
-                ->whereNull('deleted_at')
+                ->hasActiveMembership()
                 ->select([
                     'id','first_name','last_name','email','institution_id','state','country_id',
                     'timezone','phone','biography','orcid_id','hypothesis_id','user_id',
