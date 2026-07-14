@@ -16,9 +16,12 @@ abstract class ReportMakeAbstract
 
     public function csvHeaders(): ?array { return null; }
 
-    public abstract function streamRows(callable $push): void;
+    abstract public function streamRows(callable $push): void;
 
-    private function outputCsv($out) {
+    private function outputCsv($out): void
+    {
+        // Help Excel detect UTF-8 characters
+        fwrite($out, "\xEF\xBB\xBF");
         $headers = $this->csvHeaders();
         $wroteHeader = false;
         if ($headers) {
@@ -27,18 +30,24 @@ abstract class ReportMakeAbstract
         }
 
         $this->streamRows(function (array $row) use ($out, &$wroteHeader) {
-            foreach ($row as $k => $v) {
-                if (is_string($v)) {
-                    $row[$k] = preg_replace('/\R/u', '; ', $v);
-                } elseif (is_array($v)) {
-                    $row[$k] = json_encode($v, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-                } elseif (is_bool($v)) {
-                    $row[$k] = $v ? '1' : '0';
-                } elseif ($v === null) {
-                    $row[$k] = '';
+            foreach ($row as $key => $value) {
+                if (is_string($value)) {
+                    $row[$key] = preg_replace('/\R/u', '; ', $value);
+                } elseif (is_array($value)) {
+                    $row[$key] = json_encode(
+                        $value,
+                        JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES
+                    );
+                } elseif (is_bool($value)) {
+                    $row[$key] = $value ? '1' : '0';
+                } elseif ($value === null) {
+                    $row[$key] = '';
                 }
             }
-            if (!$wroteHeader) { fputcsv($out, array_keys($row)); $wroteHeader = true; }
+            if (!$wroteHeader) {
+                fputcsv($out, array_keys($row));
+                $wroteHeader = true;
+            }
             fputcsv($out, $row);
         });
     }
@@ -50,20 +59,26 @@ abstract class ReportMakeAbstract
                 echo '[';
                 $first = true;
                 $this->streamRows(function (array $row) use (&$first) {
-                    if (!$first) echo ',';
-                    echo json_encode($row);
+                    if (!$first) {
+                        echo ',';
+                    }
+
+                    echo json_encode(
+                        $row,
+                        JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES
+                    );
                     flush();
                     $first = false;
                 });
                 echo ']';
-            }, 200, ['Content-Type' => 'application/json']);
+            }, 200, ['Content-Type' => 'application/json; charset=UTF-8']);
         }
 
         return new StreamedResponse(function () {
             $out = fopen('php://output', 'w');
             $this->outputCsv($out);
             fclose($out);
-        }, 200, ['Content-Type' => 'text/csv']);
+        }, 200, ['Content-Type' => 'text/csv; charset=UTF-8']);
     }
 
     public function asCommand(Command $command)

@@ -73,7 +73,7 @@ class ReportPeopleMake extends ReportMakeAbstract
                             'credentials'    => $person->credentialsAsString ?? '',
                             'expertises'     => preg_replace('/\r?\n/', '; ', $person->expertisesAsString ?? ''),
                             'active_groups'  => $activeGroups,
-                            'biography'      => $person->biography,
+                            'biography' => $this->formatBiography($person->biography),
                             'orcid_id'       => $person->orcid_id,
                             'hypothesis_id'  => $person->hypothesis_id,
                             'has_registered' => $person->user_id ? 'yes' : 'no',
@@ -90,5 +90,23 @@ class ReportPeopleMake extends ReportMakeAbstract
                 $connection->enableQueryLog();
             }
         }
+    }
+
+    private function formatBiography(?string $biography): string
+    {
+        if (!$biography) {
+            return '';
+        }
+
+        $biography = strip_tags($biography);
+        $biography = html_entity_decode($biography, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        $biography = preg_replace('/\s+/u', ' ', $biography);
+        $biography = trim($biography);
+
+        if (mb_strlen($biography, 'UTF-8') > 32000) {
+            return mb_substr($biography, 0, 31985, 'UTF-8').' [truncated]';
+        }
+
+        return $biography;
     }
 }
