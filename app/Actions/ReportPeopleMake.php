@@ -17,7 +17,7 @@ class ReportPeopleMake extends ReportMakeAbstract
     public function csvHeaders(): ?array
     {
         return [
-            'id','name','email','institution','state','country','timezone','phone',
+            'id','name','email','institution','city','state','country','timezone','phone',
             'credentials','expertises','active_groups','biography','orcid_id',
             'hypothesis_id','has_registered','date created','last_updated'
         ];
@@ -32,7 +32,7 @@ class ReportPeopleMake extends ReportMakeAbstract
             Person::query()
                 ->hasActiveMembership()
                 ->select([
-                    'id','first_name','last_name','email','institution_id','state','country_id',
+                    'id','first_name','last_name','email','institution_id', 'city', 'state','country_id',
                     'timezone','phone','biography','orcid_id','hypothesis_id','user_id',
                     'created_at','updated_at'
                 ])
@@ -65,6 +65,7 @@ class ReportPeopleMake extends ReportMakeAbstract
                             'name'           => trim($person->first_name.' '.$person->last_name),
                             'email'          => $person->email,
                             'institution'    => optional($person->institution)->name,
+                            'city'           => $person->city ?: null,
                             'state'          => $person->state ?: null,
                             'country'        => optional($person->country)->name,
                             'timezone'       => $person->timezone,
