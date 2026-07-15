@@ -18,7 +18,7 @@ class ReportPeopleMake extends ReportMakeAbstract
     {
         return [
             'id','first_name','last_name','email','institution','city','state','country','timezone','phone',
-            'credentials','expertises','active_groups','biography','orcid_id',
+            'credentials','expertises','active_groups', 'active_status', 'biography','orcid_id',
             'hypothesis_id','has_registered','date created','last_updated'
         ];
     }
@@ -30,11 +30,15 @@ class ReportPeopleMake extends ReportMakeAbstract
         $connection->disableQueryLog();
         try {
             Person::query()
-                ->hasActiveMembership()
                 ->select([
                     'id','first_name','last_name','email','institution_id', 'city', 'state','country_id',
                     'timezone','phone','biography','orcid_id','hypothesis_id','user_id',
                     'created_at','updated_at'
+                ])
+                ->withCount([
+                    'memberships as active_memberships_count' => function ($query) {
+                        $query->isActive();
+                    },
                 ])
                 ->with([
                     'memberships' => function ($q) {
@@ -60,6 +64,7 @@ class ReportPeopleMake extends ReportMakeAbstract
                             return $roles ? "{$label} ({$roles})" : $label;
                         })->filter()->implode('; ');
 
+                        $isActive = !is_null($person->user_id) && $person->active_memberships_count > 0;
                         $push([
                             'id'             => $person->id,
                             'first_name'     => trim($person->first_name),
@@ -74,6 +79,7 @@ class ReportPeopleMake extends ReportMakeAbstract
                             'credentials'    => $person->credentialsAsString ?? '',
                             'expertises'     => preg_replace('/\r?\n/', '; ', $person->expertisesAsString ?? ''),
                             'active_groups'  => $activeGroups,
+                            'active_status'  => $isActive ? 'Active' : 'Inactive',
                             'biography' => $this->formatBiography($person->biography),
                             'orcid_id'       => $person->orcid_id,
                             'hypothesis_id'  => $person->hypothesis_id,
