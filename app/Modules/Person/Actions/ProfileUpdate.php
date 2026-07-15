@@ -15,6 +15,7 @@ use Lorisleiva\Actions\Concerns\AsController;
 use App\Modules\Person\Actions\PersonExpertisesSync;
 use App\Modules\Person\Actions\PersonCredentialsSync;
 use App\Modules\Person\Http\Requests\ProfileUpdateRequest;
+use App\Modules\Person\Http\Resources\PersonDetailResource;
 
 class ProfileUpdate
 {
@@ -61,18 +62,17 @@ class ProfileUpdate
         }
         $person = $this->handle($person, $profileData);
 
-        $person->load(
+        $person->load([
             'institution',
             'credentials',
             'expertises',
             'memberships',
             'memberships.group',
-            'country'
-        );
+            'country',
+            'latestCocAttestation',
+        ]);
 
-        $person->makeVisible(Person::$contact_details_private_fields);
-
-        return $person;
+        return new PersonDetailResource($person);
     }
 
     public function authorize(ActionRequest $request): bool

@@ -29,6 +29,7 @@ class PersonDetailResource extends JsonResource
         $data['institution'] = $this->whenLoaded('institution', fn() => new InstitutionResource($this->institution));
         $data['credentials'] = $this->whenLoaded('credentials');
         $data['expertises'] = $this->whenLoaded('expertises');
+        $data['country'] = $this->whenLoaded('country');        
         $data['coc'] = $this->when(
             $this->resource->relationLoaded('latestCocAttestation'),
             fn () => app(CocService::class)->statusFor($this->resource)
