@@ -17,7 +17,7 @@ class ReportPeopleMake extends ReportMakeAbstract
     public function csvHeaders(): ?array
     {
         return [
-            'id','name','email','institution','city','state','country','timezone','phone',
+            'id','first_name','last_name','email','institution','city','state','country','timezone','phone',
             'credentials','expertises','active_groups','biography','orcid_id',
             'hypothesis_id','has_registered','date created','last_updated'
         ];
@@ -62,7 +62,8 @@ class ReportPeopleMake extends ReportMakeAbstract
 
                         $push([
                             'id'             => $person->id,
-                            'name'           => trim($person->first_name.' '.$person->last_name),
+                            'first_name'     => trim($person->first_name),
+                            'last_name'      => trim($person->last_name),
                             'email'          => $person->email,
                             'institution'    => optional($person->institution)->name,
                             'city'           => $person->city ?: null,
