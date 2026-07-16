@@ -55,7 +55,7 @@ Route::group(['prefix' => 'api/people', 'middleware' => ['api'] ], function () {
     Route::post('/coc/attest', CocAttest::class);
 
     Route::group([
-        'middleware' => ['auth:sanctum']
+        'middleware' => ['auth:sanctum', 'impersonation.token']
     ], function () {
         Route::get('/', [PeopleController::class, 'index']);
         Route::get('/invites/', [InviteController::class, 'index']);
@@ -90,7 +90,8 @@ Route::group(['prefix' => 'api/people', 'middleware' => ['api'] ], function () {
 
     Route::get('/invites/{code}', InviteValidateCode::class);
     Route::put('/invites/{code}', InviteRedeem::class);
-    Route::put('/existing-user/invites/{code}', InviteRedeemForExistingUser::class);
+    Route::put('/existing-user/invites/{code}', InviteRedeemForExistingUser::class)
+        ->middleware('auth:sanctum');
     Route::put('/invites/{code}/reset', InviteReset::class);
 
     // Lookups
@@ -108,7 +109,7 @@ Route::group(['prefix' => 'api/people', 'middleware' => ['api'] ], function () {
 
 Route::group([
     'prefix' => 'api/institutions',
-    'middleware' => ['api', 'auth:sanctum']
+    'middleware' => ['api', 'auth:sanctum', 'impersonation.token']
 ], function () {
     Route::get('/', [InstitutionController::class, 'index']);
     Route::post('/', InstitutionCreate::class);
@@ -120,7 +121,7 @@ Route::group([
 
 Route::group([
     'prefix' => 'api/credentials',
-    'middleware' => ['api', 'auth:sanctum']
+    'middleware' => ['api', 'auth:sanctum', 'impersonation.token']
 ], function () {
     Route::post('/', CredentialCreate::class);
     Route::get('/', CredentialSearch::class);
@@ -131,7 +132,7 @@ Route::group([
 
 Route::group([
     'prefix' => 'api/expertises',
-    'middleware' => ['api', 'auth:sanctum']
+    'middleware' => ['api', 'auth:sanctum', 'impersonation.token']
 ], function () {
     Route::post('/', ExpertiseCreate::class);
     Route::get('/', ExpertiseSearch::class);
@@ -142,7 +143,7 @@ Route::group([
 
 Route::group([
     'prefix' => 'api/countries',
-    // 'middleware' => ['api', 'auth:sanctum']
+    // 'middleware' => ['api', 'auth:sanctum', 'impersonation.token']
 ], function () {
     Route::get('/', [CountryController::class, 'index']);
 });

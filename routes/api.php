@@ -31,8 +31,8 @@ use App\Http\Controllers\Api\DocumentationController;
 use App\Http\Controllers\ImpersonateSearchController;
 use App\Modules\User\Http\Controllers\CurrentUserController;
 use App\Actions\PublicationLookup;
-use App\Actions\Auth\ClerkMe;
 use App\Actions\Auth\ClerkSessionLogin;
+use App\Http\Controllers\Api\ImpersonateController;
 
 /*
 |--------------------------------------------------------------------------
@@ -45,13 +45,6 @@ use App\Actions\Auth\ClerkSessionLogin;
 |
 */
 
-
-use App\Actions\Auth\ClerkWebhookReceive;
-use App\Actions\Auth\ClerkRedeemInvitation;
-
-Route::post('/clerk/webhooks', ClerkWebhookReceive::class);
-Route::middleware('clerk.auth')->post('/auth/clerk/redeem-invitation', ClerkRedeemInvitation::class);
-Route::middleware('clerk.auth')->get('/auth/clerk/me', ClerkMe::class);
 Route::middleware('clerk.auth')->post('/auth/clerk/session-login', ClerkSessionLogin::class);
 
 Route::group(['middleware' => ['guest']], function () {
@@ -65,7 +58,7 @@ Route::get('/document-types', function () {
 
 Route::get('/authenticated', [AuthController::class, 'isAuthenticated']);
 
-Route::group(['middleware' => ['auth:sanctum']], function () {
+Route::group(['middleware' => ['auth:sanctum', 'impersonation.token']], function () {
     Route::get('/system-info', [SystemInfoController::class, 'index']);
     Route::get('/user', function (Request $request) {
         return $request->user();
@@ -85,6 +78,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/announcements', NotifyPeople::class);
 
     Route::get('/impersonate/search', [ImpersonateSearchController::class, 'index']);
+    Route::post('/impersonate/take/{id}', [ImpersonateController::class, 'take']);
+    Route::post('/impersonate/leave', [ImpersonateController::class, 'leave']);
 
     Route::put('/notifications/{notificationId}', NotificationMarkRead::class);
 

@@ -65,6 +65,6 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
 
         'clerk.auth' => \App\Http\Middleware\ClerkAuthenticate::class,
-        'clerk.gpm' => \App\Http\Middleware\ResolveClerkGpmUser::class,
+        'impersonation.token' => \App\Http\Middleware\ApplyImpersonationToken::class,
     ];
 }

@@ -40,7 +40,7 @@ Route::group([
 ], function () {
     Route::get('/', [ApplicationController::class, 'index']);
 
-    Route::group(['middleware' => ['auth:sanctum']], function () {
+    Route::group(['middleware' => ['auth:sanctum', 'impersonation.token']], function () {
         Route::post('/', ExpertPanelCreate::class);
         Route::get('/{app_uuid}', [ApplicationController::class, 'show']);
         Route::put('/{app_uuid}', ExpertPanelUpdateAttributes::class);
