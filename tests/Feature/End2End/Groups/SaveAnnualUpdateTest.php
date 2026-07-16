@@ -47,14 +47,7 @@ class SaveAnnualUpdateTest extends TestCase
         $this->makeRequest()
             ->assertStatus(200);
 
-        $expectedData = $this->makeRequestData()['data'];
-
-        $this->assertDatabaseHas('annual_updates', [
-            'id' => $this->annualReview->id,
-            'expert_panel_id' => $this->expertPanel->id,
-            'submitter_id' => $this->coordinator->id,
-            'data' => json_encode($expectedData),
-        ]);
+        $this->assertAnnualUpdateHasData($this->makeRequestData()['data']);
     }
 
     #[Test]
@@ -67,13 +60,8 @@ class SaveAnnualUpdateTest extends TestCase
         $this->makeRequest($submitData)
             ->assertStatus(200);
 
-        $this->assertDatabaseHas('annual_updates', [
-            'id' => $this->annualReview->id,
-            'expert_panel_id' => $this->expertPanel->id,
-            'submitter_id' => $this->coordinator->id,
-            'data' => json_encode($expectedData['data']),
-        ]);
-                
+        $this->assertAnnualUpdateHasData($expectedData['data']);
+
         $this->assertDatabaseMissing('annual_updates', [
             'id' => $this->annualReview->id,
             'expert_panel_id' => $this->expertPanel->id,
@@ -82,6 +70,20 @@ class SaveAnnualUpdateTest extends TestCase
         ]);
     }
     
+    // The saved blob is padded out with every known field, so assert the
+    // submitted values individually rather than matching the whole JSON.
+    private function assertAnnualUpdateHasData(array $data)
+    {
+        foreach ($data as $key => $value) {
+            $this->assertDatabaseHas('annual_updates', [
+                'id' => $this->annualReview->id,
+                'expert_panel_id' => $this->expertPanel->id,
+                'submitter_id' => $this->coordinator->id,
+                'data->'.$key => $value,
+            ]);
+        }
+    }
+
     private function makeRequest($data = null)
     {
         $data = $data ?? $this->makeRequestData();
