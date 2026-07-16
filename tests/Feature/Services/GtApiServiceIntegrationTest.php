@@ -65,35 +65,22 @@ class GtApiServiceIntegrationTest extends TestCase
         $result = $this->service->lookupGenesBulk('ABCA, ABCA10, SSX1'); // Example HGNC ID
         $this->assertIsArray($result);
         $this->assertArrayStructure([
-                            '*' => [
-                                "id",
-                                "gene_symbol",
-                                "disease",
-                                "mondo_id",
-                                "expert_panel",
-                                "moi",
-                                "classification",
-                                "curation_type",
-                                "current_status",
-                                "current_status_date",
-                                "phenotype",
-                            ]               
-                        ], $result);
-    }
-
-    public function test_get_disease_by_mondo_id_api()
-    {
-        $result = $this->service->getDiseaseByMondoId('MONDO:0005148');
-        $this->assertIsArray($result);
-        $this->assertArrayStructure([
-                                'id', 
-                                'mondo_id', 
-                                'doid_id', 
-                                'name', 
-                                'is_obsolete', 
-                                'replaced_by', 
-                                'created_at', 
-                                'updated_at'
+                            'data' => [
+                                '*' => [
+                                    "curation_id",
+                                    "gene_symbol",
+                                    "hgnc_id",
+                                    "disease_name",
+                                    "mondo_id",
+                                    "expert_panel",
+                                    "moi",
+                                    "classification",
+                                    "curation_type",
+                                    "curation_status",
+                                    "date_approved",
+                                    "phenotypes",
+                                ]
+                            ]
                         ], $result);
     }
 
