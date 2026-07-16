@@ -30,7 +30,12 @@ class PersonDetailTest extends TestCase
         $person = Person::factory()->create();
         $this->json('GET', '/api/people/'.$person->uuid)
             ->assertStatus(200)
-            ->assertJsonFragment($person->toArray());
+            ->assertJsonPath('data.id', $person->id)
+            ->assertJsonPath('data.uuid', $person->uuid)
+            ->assertJsonPath('data.first_name', $person->first_name)
+            ->assertJsonPath('data.last_name', $person->last_name)
+            ->assertJsonPath('data.name', $person->name)
+            ->assertJsonPath('data.email', $person->email);
     }
 
     #[Test]
