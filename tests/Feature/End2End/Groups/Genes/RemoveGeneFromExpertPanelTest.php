@@ -42,10 +42,10 @@ class RemoveGeneFromExpertPanelTest extends TestCase
         $this->user->revokePermissionTo('ep-applications-manage');
 
         Sanctum::actingAs($this->user);
-        $this->json('DELETE', $this->url.'/'.$this->gene1->id)
+        $this->json('DELETE', $this->url, ['ids' => [$this->gene1->id]])
             ->assertStatus(403);
 
-        $this->assertDatabaseHas('genes', [
+        $this->assertDatabaseHas('scope_genes', [
             'hgnc_id' => 123345,
             'expert_panel_id' => $this->expertPanel->id,
             'deleted_at' => null
@@ -57,7 +57,7 @@ class RemoveGeneFromExpertPanelTest extends TestCase
     {
         $this->expertPanel->group->update(['group_type_id' => config('groups.types.wg.id')]);
         Sanctum::actingAs($this->user);
-        $this->json('DELETE', $this->url.'/'.$this->gene1->id)
+        $this->json('DELETE', $this->url, ['ids' => [$this->gene1->id]])
             ->assertStatus(422);
     }
 
@@ -67,10 +67,10 @@ class RemoveGeneFromExpertPanelTest extends TestCase
     {
         Carbon::setTestNow('2021-11-01');
         Sanctum::actingAs($this->user);
-        $this->json('DELETE', $this->url.'/'.$this->gene1->id)
+        $this->json('DELETE', $this->url, ['ids' => [$this->gene1->id]])
             ->assertStatus(200);
 
-        $this->assertDatabaseHas('genes', [
+        $this->assertDatabaseHas('scope_genes', [
             'hgnc_id' => 123345,
             'expert_panel_id' => $this->expertPanel->id,
             'deleted_at' => '2021-11-01 00:00:00'
@@ -81,7 +81,7 @@ class RemoveGeneFromExpertPanelTest extends TestCase
     public function activity_logged()
     {
         Sanctum::actingAs($this->user);
-        $this->json('DELETE', $this->url.'/'.$this->gene1->id)
+        $this->json('DELETE', $this->url, ['ids' => [$this->gene1->id]])
             ->assertStatus(200);
 
         $this->assertDatabaseHas(
