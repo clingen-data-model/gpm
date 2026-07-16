@@ -38,13 +38,19 @@ class UserCreate
      * @param string $name User's name
      * @param string $email Email for the user account
      * @param string|null $password Password (or null).
+     * @param string|null $clerkId Clerk user id to link this account to (or null).
      *
      * @return void
      */
-    public function handle(string $name, string $email, ?string $password = null): User
+    public function handle(string $name, string $email, ?string $password = null, ?string $clerkId = null): User
     {
         $pass = $password ?? uniqid();
         $user = User::create(['name' => $name, 'email' => $email, 'password' => Hash::make($pass)]);
+
+        if ($clerkId) {
+            $user->forceFill(['clerk_id' => $clerkId])->save();
+        }
+
         Event::dispatch(new UserCreated(user: $user));
 
         return $user;

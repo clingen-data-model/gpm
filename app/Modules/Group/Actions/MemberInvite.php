@@ -17,8 +17,6 @@ use App\Modules\Person\Actions\PersonInvite;
 use Lorisleiva\Actions\Concerns\AsController;
 use App\Modules\Group\Http\Resources\MemberResource;
 use App\Modules\Group\Models\GroupMember;
-use App\Services\Clerk\ClerkInvitationService;
-use Carbon\Carbon;
 
 class MemberInvite
 {
@@ -30,7 +28,6 @@ class MemberInvite
         private PersonInvite $invitePerson,
         private MemberAdd $addMember,
         private MemberAssignRole $assignRole,
-        private ClerkInvitationService $clerkInvitationService
     ) {
     }
 
@@ -51,23 +48,7 @@ class MemberInvite
             phone: valueAtIndex($data, 'phone'),
         );        
 
-        /* beginning of the clerk */
-        $invite = $this->invitePerson->handle(person: $person, inviter: $group);
-        $clerkInvitation = $this->clerkInvitationService->createForInvite($invite, $group);
-        $clerkExpiresAt = data_get($clerkInvitation, 'expires_at');
-
-        logger()->info('Clerk invitation response', $clerkInvitation);
-
-        $invite->update([
-            'clerk_invitation_id' => data_get($clerkInvitation, 'id'),
-            'expires_at' => $clerkExpiresAt ? Carbon::createFromTimestampMs($clerkExpiresAt) : now()->addDays(30),
-        ]);
-        logger()->info('Local invite updated', [
-            'invite_id' => $invite->id,
-            'clerk_invitation_id' => $invite->fresh()->clerk_invitation_id,
-            'expires_at' => optional($invite->fresh()->expires_at)?->toDateTimeString(),
-        ]);
-        /* end of the clerk */
+        $this->invitePerson->handle(person: $person, inviter: $group);
 
         $isContact = valueAtIndex($data, 'is_contact', false);
         $newMember = $this->addMember

@@ -2,11 +2,13 @@
 
 namespace Tests\Feature\End2End\Person;
 
+use Mockery;
 use Carbon\Carbon;
 use Tests\TestCase;
 use App\Modules\User\Models\User;
 use App\Modules\Person\Models\Invite;
 use App\Modules\Person\Models\Person;
+use App\Services\Clerk\ClerkTokenVerifier;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\Test;
@@ -21,11 +23,10 @@ class RedeemInviteTest extends TestCase
         parent::setup();
 
         $this->invite = Invite::factory()->create(['redeemed_at' => null]);
-        $this->validData = [
-            'email' => 'test@test.com',
-            'password' => 'tester',
-            'password_confirmation' => 'tester'
-        ];
+        $this->email = 'test@test.com';
+        // Sanctum only starts a session (needed for Auth::login()) for
+        // requests it recognises as coming from the SPA.
+        $this->withHeader('Referer', 'http://localhost:8013');
     }
 
     #[Test]
@@ -38,68 +39,31 @@ class RedeemInviteTest extends TestCase
             ->assertStatus(404);
     }
 
-    /**
-     */
-    // public function can_check_if_validation_code_has_been_used()
-    // {
-    //     $this->invite->update(['redeemed_at' => '2021-09-15']);
-
-    //     $this->json('GET', static::URL.'/'.$this->invite->code, $this->validData)
-    //         ->assertStatus(422)
-    //         ->assertJsonFragment([
-    //             'code' => ['This invite has already been redeemed. Please log in to access your account.']
-    //         ]);
-    // }
-
-    /**
-     */
     #[Test]
     public function returns_404_if_invite_not_found_by_code()
     {
-        $this->json('PUT', static::URL.'/gobbeldy-guk', $this->validData)
+        $this->fakeVerifier(['sub' => 'clerk_1', 'email' => $this->email]);
+
+        $this->json('PUT', static::URL.'/gobbeldy-guk', [], ['Authorization' => 'Bearer test-token'])
             ->assertStatus(404);
     }
 
-
-    /**
-     */
-    // public function validates_code_is_valid_before_redeeming()
-    // {
-    //     $this->invite->update(['redeemed_at' => '2021-09-15']);
-
-    //     $this->json('PUT', static::URL.'/'.$this->invite->code, $this->validData)
-    //         ->assertStatus(422)
-    //         ->assertJsonFragment([
-    //             'code' => ['This invite has already been redeemed. Please log in to access your account.']
-    //         ]);
-    // }
-
-    /**
-     */
     #[Test]
-    public function validates_params()
+    public function requires_a_valid_clerk_session()
     {
-        $this->json('PUT', static::URL.'/'.$this->invite->code, ['email' => 'bob', 'password' => 'beans', 'password_confirmation' => 'farts'])
-            ->assertStatus(422)
-            ->assertJsonFragment([
-                'email' => ['The email must be a valid email address.'],
-                'password' => ['The password confirmation does not match.']
-            ]);
+        $this->fakeVerifier(null);
 
-        $otherUser = User::factory()->create();
-        $this->json('PUT', static::URL.'/'.$this->invite->code, ['email' => $otherUser->email, 'password' => 'beans', 'password_confirmation' => 'farts'])
-            ->assertStatus(422)
-            ->assertJsonFragment([
-                'email' => ['The email has already been taken.'],
-            ]);
+        $this->json('PUT', static::URL.'/'.$this->invite->code, [], ['Authorization' => 'Bearer bad-token'])
+            ->assertStatus(401);
     }
-
 
     #[Test]
     public function sets_redeemed_at_date_for_invite()
     {
         Carbon::setTestNow('2021-09-16');
-        $this->json('PUT', static::URL.'/'.$this->invite->code, $this->validData)
+        $this->fakeVerifier(['sub' => 'clerk_1', 'email' => $this->email]);
+
+        $this->json('PUT', static::URL.'/'.$this->invite->code, [], ['Authorization' => 'Bearer test-token'])
             ->assertStatus(200);
 
         $this->assertDatabaseHas('invites', [
@@ -111,13 +75,16 @@ class RedeemInviteTest extends TestCase
     #[Test]
     public function user_created_and_linked_to_invited_person()
     {
-        $this->json('PUT', static::URL.'/'.$this->invite->code, $this->validData)
+        $this->fakeVerifier(['sub' => 'clerk_1', 'email' => $this->email]);
+
+        $this->json('PUT', static::URL.'/'.$this->invite->code, [], ['Authorization' => 'Bearer test-token'])
             ->assertStatus(200);
 
         $this->assertDatabaseHas('users', [
-            'email' => $this->validData['email'],
+            'email' => $this->email,
+            'clerk_id' => 'clerk_1',
         ]);
-        $user = User::findByEmail($this->validData['email']);
+        $user = User::findByEmail($this->email);
 
         $this->assertDatabaseHas('people', [
             'id' => $this->invite->person_id,
@@ -125,11 +92,39 @@ class RedeemInviteTest extends TestCase
         ]);
     }
 
+    #[Test]
+    public function an_existing_user_is_linked_by_email_instead_of_recreated()
+    {
+        $existing = User::factory()->create(['email' => $this->email, 'clerk_id' => null]);
+        $this->fakeVerifier(['sub' => 'clerk_1', 'email' => $this->email]);
+
+        $this->json('PUT', static::URL.'/'.$this->invite->code, [], ['Authorization' => 'Bearer test-token'])
+            ->assertStatus(200);
+
+        $this->assertSame('clerk_1', $existing->fresh()->clerk_id);
+        $this->assertDatabaseHas('people', [
+            'id' => $this->invite->person_id,
+            'user_id' => $existing->id,
+        ]);
+    }
+
+    #[Test]
+    public function it_establishes_a_gpm_session_on_success()
+    {
+        $this->fakeVerifier(['sub' => 'clerk_1', 'email' => $this->email]);
+
+        $this->json('PUT', static::URL.'/'.$this->invite->code, [], ['Authorization' => 'Bearer test-token'])
+            ->assertStatus(200);
+
+        $this->assertAuthenticatedAs(User::findByEmail($this->email));
+    }
 
     #[Test]
     public function logs_invite_redemption_activity()
     {
-        $this->json('PUT', static::URL.'/'.$this->invite->code, $this->validData)
+        $this->fakeVerifier(['sub' => 'clerk_1', 'email' => $this->email]);
+
+        $this->json('PUT', static::URL.'/'.$this->invite->code, [], ['Authorization' => 'Bearer test-token'])
             ->assertStatus(200);
 
         $user = User::orderBy('id', 'desc')->firstOrFail();
@@ -138,7 +133,14 @@ class RedeemInviteTest extends TestCase
             'subject_id' => $this->invite->person_id,
             'activity_type' => 'invite-redeemed',
             'properties->user->id' => $user->id,
-            'properties->user->email' => $this->validData['email'],
+            'properties->user->email' => $this->email,
         ]);
+    }
+
+    private function fakeVerifier(?array $claims): void
+    {
+        $verifier = Mockery::mock(ClerkTokenVerifier::class);
+        $verifier->shouldReceive('verify')->andReturn($claims);
+        $this->app->instance(ClerkTokenVerifier::class, $verifier);
     }
 }
