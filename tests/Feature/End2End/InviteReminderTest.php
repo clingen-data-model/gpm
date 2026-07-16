@@ -8,6 +8,7 @@ use App\Models\Role;
 use App\Modules\Group\Models\Group;
 use App\Modules\Person\Models\Invite;
 use App\Modules\Person\Models\Person;
+use App\Modules\User\Models\User;
 use App\Modules\Group\Actions\MemberAdd;
 use App\Modules\Group\Actions\MemberRetire;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -33,11 +34,22 @@ class InviteReminderTest extends TestCase
     #[Test]
     public function person_can_scope_to_hasActiveMembership()
     {
+        // The scope also requires a linked user account (GPM-536).
+        $this->invite->person->update(['user_id' => User::factory()->create()->id]);
+
         $this->assertEquals(1, Person::hasActiveMembership()->count());
 
         app()->make(MemberRetire::class)->handle($this->gm1, Carbon::now());
 
-        $this->assertEquals(0, person::hasActiveMembership()->count());
+        $this->assertEquals(0, Person::hasActiveMembership()->count());
+    }
+
+    #[Test]
+    public function hasActiveMembership_excludes_people_without_a_user_account()
+    {
+        $this->assertNull($this->invite->person->user_id);
+
+        $this->assertEquals(0, Person::hasActiveMembership()->count());
     }
 
 
