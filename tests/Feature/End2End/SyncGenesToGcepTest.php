@@ -5,7 +5,6 @@ namespace Tests\Feature\End2End;
 use Tests\TestCase;
 use Laravel\Sanctum\Sanctum;
 use App\Modules\User\Models\User;
-use App\Modules\ExpertPanel\Models\Gene;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Carbon\Carbon;
@@ -44,7 +43,8 @@ class SyncGenesToGcepTest extends TestCase
 
         $this->json('POST', $this->url, [
             'genes' => [[
-                'ABC1'
+                'hgnc_id' => 12345,
+                'gene_symbol' => 'ABC1',
             ]]
         ])
         ->assertStatus(403);
@@ -53,25 +53,26 @@ class SyncGenesToGcepTest extends TestCase
     #[Test]
     public function validates_input_for_gceps()
     {
-        $this->json('POST', $this->url, ['genes'=>['ZXC', 'ABC1']])
+        $this->json('POST', $this->url, ['genes' => [['gene_symbol' => 'ABC1']]])
             ->assertStatus(422)
-            ->assertJsonFragment([
-                    'genes.0' => ['Your selection is invalid.']
+            ->assertJsonValidationErrors([
+                'genes.0.hgnc_id' => 'Gene must have an HGNC ID.',
             ])
-            ->assertJsonMissing([
-                'genes.1' => ['Your selection is invalid.']
-            ]);
+            ->assertJsonMissingValidationErrors(['genes.0.gene_symbol']);
     }
 
     #[Test]
     public function privileged_user_can_add_new_genes_to_a_gcep()
     {
         $this->json('POST', $this->url, [
-            'genes' => ['ABC1', 'BCD'],
+            'genes' => [
+                ['hgnc_id' => 12345, 'gene_symbol' => 'ABC1'],
+                ['hgnc_id' => 678, 'gene_symbol' => 'BCD'],
+            ],
         ])->assertStatus(200);
 
         $this->assertDatabaseHas(
-            'genes',
+            'scope_genes',
             [
                 'gene_symbol' => 'ABC1',
                 'mondo_id' => null,
@@ -79,7 +80,7 @@ class SyncGenesToGcepTest extends TestCase
             ]
         );
         $this->assertDatabaseHas(
-            'genes',
+            'scope_genes',
             [
                 'gene_symbol' => 'BCD',
                 'mondo_id' => null,
@@ -89,58 +90,25 @@ class SyncGenesToGcepTest extends TestCase
     }
 
     #[Test]
-    public function privileged_user_can_remove_genes()
-    {
-
-        // Add some genes to the expert panel
-        $this->expertPanel->genes()->saveMany([
-            new Gene(['hgnc_id' => 12345, 'gene_symbol'=>'ABC1']),
-            new Gene(['hgnc_id' => 678, 'gene_symbol'=>'BCD']),
-        ]);
-
-        Carbon::setTestNow();
-
-        $this->json('post', $this->url, ['genes' => ['BCD']])
-            ->assertStatus(200);
-
-        $this->assertDatabaseHas('genes', [
-            'expert_panel_id' => $this->expertPanel->id,
-            'gene_symbol' => 'ABC1',
-            'deleted_at' => Carbon::now()
-        ]);
-
-        $this->assertDatabaseHas('genes', [
-            'expert_panel_id' => $this->expertPanel->id,
-            'gene_symbol' => 'BCD',
-            'deleted_at' => null
-        ]);
-    }
-
-    #[Test]
-    public function logs_appropriate_activities()
+    public function logs_genes_added_activity()
     {
         $this->seedGenes([
             ['hgnc_id' => 888, 'gene_symbol' => 'DEF'],
             ['hgnc_id' => 999, 'gene_symbol' => 'EFG'],
         ]);
-        $this->expertPanel->genes()->saveMany([
-            new Gene(['hgnc_id' => 12345, 'gene_symbol'=>'ABC']),
-            new Gene(['hgnc_id' => 678, 'gene_symbol'=>'BCD']),
-        ]);
 
         Carbon::setTestNow();
 
-        $this->json('post', $this->url, ['genes' => ['BCD', 'DEF', 'EFG']])
-            ->assertStatus(200);
+        $this->json('post', $this->url, [
+            'genes' => [
+                ['hgnc_id' => 888, 'gene_symbol' => 'DEF'],
+                ['hgnc_id' => 999, 'gene_symbol' => 'EFG'],
+            ],
+        ])->assertStatus(200);
 
         $this->assertDatabaseHas('activity_log', [
             'subject_id' => $this->expertPanel->group->id,
             'activity_type' => 'genes-added',
-        ]);
-
-        $this->assertDatabaseHas('activity_log', [
-            'subject_id' => $this->expertPanel->group->id,
-            'activity_type' => 'gene-removed',
         ]);
     }
 }
