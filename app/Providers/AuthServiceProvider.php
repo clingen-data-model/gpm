@@ -5,6 +5,9 @@ namespace App\Providers;
 use App\Models\Document;
 use App\Policies\DocumentPolicy;
 use Illuminate\Auth\Notifications\ResetPassword;
+use App\Services\Clerk\ClerkApiClient;
+use App\Services\Clerk\ClerkTokenVerifier;
+use App\Services\Clerk\ImpersonationTokenService;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
 
@@ -27,6 +30,13 @@ class AuthServiceProvider extends ServiceProvider
      *
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
+    public function register()
+    {
+        $this->app->singleton(ClerkTokenVerifier::class, fn () => ClerkTokenVerifier::fromConfig());
+        $this->app->singleton(ImpersonationTokenService::class, fn () => ImpersonationTokenService::fromConfig());
+        $this->app->singleton(ClerkApiClient::class, fn () => ClerkApiClient::fromConfig());
+    }
+
     public function boot()
     {
         ResetPassword::createUrlUsing(function ($user, string $token) {

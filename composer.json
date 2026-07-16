@@ -10,13 +10,11 @@
     "require": {
         "php": "^8.2",
         "box/spout": "^3.3",
-        "clerkinc/backend-php": "^0.7.0",
         "doctrine/dbal": "^3.1",
         "dompdf/dompdf": "^2.0",
+        "firebase/php-jwt": "^7.0",
         "guzzlehttp/guzzle": "^7.5",
-        "guzzlehttp/psr7": "^2.9",
         "itsgoingd/clockwork": "^5.1",
-        "lab404/laravel-impersonate": "^1.7",
         "laravel/fortify": "^1.7",
         "laravel/framework": "^11.0",
         "laravel/sanctum": "^4.0",
@@ -26,8 +24,7 @@
         "lorisleiva/laravel-actions": "^2.1",
         "rap2hpoutre/laravel-log-viewer": "^2.0",
         "spatie/laravel-activitylog": "^4.0",
-        "spatie/laravel-permission": "^6.0",
-        "svix/svix": "^1.93"
+        "spatie/laravel-permission": "^6.0"
     },
     "require-dev": {
         "brianium/paratest": "^7.16",
