@@ -124,6 +124,9 @@ const store = createStore({
                     alert('You cannot log out because you are not logged in');
                 }
             }
+            // Also end the separate Clerk client-side session, if one exists,
+            // so a fresh sign-in doesn't silently resume the old identity.
+            await window.Clerk?.signOut?.().catch(() => {});
         },
         async checkAuth({commit, state}) {
             if (!state.authenticated) {
