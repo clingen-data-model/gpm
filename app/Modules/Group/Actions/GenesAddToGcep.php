@@ -10,7 +10,7 @@ use App\Modules\Group\Events\GenesAdded;
 use App\Modules\Group\Events\GeneRemoved;
 use Illuminate\Validation\ValidationException;
 
-class GenesSyncToGcep
+class GenesAddToGcep
 {
     public function __construct()
     {

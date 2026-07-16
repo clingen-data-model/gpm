@@ -17,7 +17,7 @@ use PHPUnit\Framework\Attributes\Test;
 #[Group('applications')]
 #[Group('expert-panels')]
 #[Group('gene-list')]
-class SyncGenesToGcepTest extends TestCase
+class AddGenesToGcepTest extends TestCase
 {
     use RefreshDatabase;
     use SeedsHgncGenesAndDiseases;
