@@ -16,7 +16,7 @@ class SubmissionNotifiablesGet
                 //->permission(['ep-applications-approve', 'ep-applications-comment'])
                 ->with('person')
                 ->whereDoesntHave('person', function($q) use ($except) {
-                    $q->whereIn('id', $except);
+                    $q->whereIn('id', $except->pluck('id'));
                 })
                 ->get()
                 ->pluck('person');
