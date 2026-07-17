@@ -16,6 +16,7 @@ class CommentDeleteTest extends CommentTestAbstract
     public function setup():void
     {
         parent::setup();
+        Carbon::setTestNow('2022-06-28 10:00:00');
         $this->setupPermission('ep-applications-comments-manage');
         $this->comment = $this->createComment();
     }
