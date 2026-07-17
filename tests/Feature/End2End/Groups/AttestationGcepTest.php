@@ -3,7 +3,6 @@
 namespace Tests\Feature\End2End\Groups;
 
 use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
 use Illuminate\Support\Carbon;
 use App\Modules\User\Models\User;
 use Illuminate\Support\Facades\Event;
@@ -28,7 +27,7 @@ class AttestationGcepTest extends TestCase
         $this->user = User::factory()->create();
         $this->expertPanel = ExpertPanel::factory()->gcep()->create();
 
-        Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
         Carbon::setTestNow('2021-11-14');
     }
     

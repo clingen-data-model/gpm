@@ -4,7 +4,6 @@ namespace Tests\Feature\End2End;
 
 use Tests\TestCase;
 use App\Models\Email;
-use Laravel\Sanctum\Sanctum;
 use Illuminate\Mail\Mailable;
 use App\Mail\UserDefinedMailable;
 use Illuminate\Support\Facades\Mail;
@@ -28,7 +27,7 @@ class ResendMailTest extends TestCase
         $this->user->notify(new TestMailNotification());
         $this->mail = Email::query()->first();
 
-        Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
     }
 
     #[Test]

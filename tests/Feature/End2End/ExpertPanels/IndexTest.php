@@ -40,7 +40,7 @@ class IndexTest extends TestCase
     #[Test]
     public function sorts_results_by_name()
     {
-        \Laravel\Sanctum\Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
         $response = $this->json('GET', self::URL.'?sort[field]=name&sort[dir]=desc');
 
         $this->assertResultsSorted($this->expertPanels->sortByDesc('group.name'), $response);
@@ -49,7 +49,7 @@ class IndexTest extends TestCase
     #[Test]
     public function sorts_results_by_current_step()
     {
-        \Laravel\Sanctum\Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
         $response = $this->json('GET', self::URL.'?sort[field]=current_step&sort[dir]=asc');
         $this->assertResultsSorted($this->expertPanels->sortBy('current_step')->slice(0, 20), $response);
     }
@@ -58,7 +58,7 @@ class IndexTest extends TestCase
     public function sorts_results_by_cdwg_name()
     {
         $this->expertPanels->load('group.parent');
-        \Laravel\Sanctum\Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
         $response = $this->json('GET', self::URL.'?sort[field]=cdwg.name&sort[dir]=asc');
         $this->assertResultsSorted($this->expertPanels->sortBy('cdwg.name')->slice(0, 20), $response);
     }
@@ -80,7 +80,7 @@ class IndexTest extends TestCase
         $this->expertPanels->load('group.logEntries');
 
 
-        \Laravel\Sanctum\Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
         $response = $this->json('GET', self::URL.'?sort[field]=latestLogEntry.created_at&sort[dir]=asc');
         $this->assertResultsSorted($this->expertPanels->sortBy('latestLogEntry.created_at')->slice(0, 20), $response);
     }
@@ -99,7 +99,7 @@ class IndexTest extends TestCase
             $app->save();
         });
 
-        \Laravel\Sanctum\Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
         $this->json('get', '/api/applications?where[since]='.Carbon::now()->subDays(6)->toJson())
             ->assertStatus(200)
             ->assertJsonCount(2, 'data');

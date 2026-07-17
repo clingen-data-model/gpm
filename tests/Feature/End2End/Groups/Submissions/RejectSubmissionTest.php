@@ -4,7 +4,6 @@ namespace Tests\Feature\End2End\Groups\Submissions;
 
 use Carbon\Carbon;
 use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
 use App\Models\NextActionType;
 use App\Mail\UserDefinedMailable;
 use Illuminate\Support\Facades\Mail;
@@ -45,7 +44,7 @@ class RejectSubmissionTest extends TestCase
                                     'submitter_id' => $this->admin->person->id,
                                 ]);
 
-        Sanctum::actingAs($this->admin);
+        $this->actingAs($this->admin, 'clerk');
     }
 
     #[Test]

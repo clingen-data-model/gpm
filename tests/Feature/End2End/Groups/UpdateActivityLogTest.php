@@ -7,7 +7,6 @@ use App\Modules\Group\Models\Group as GroupModel;
 use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
-use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
@@ -32,7 +31,7 @@ class UpdateActivityLogTest extends TestCase
 
         $this->url = '/api/groups/'.$this->group->uuid.'/activity-logs/'.$this->logEntry->id;
 
-        Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
     }
 
     #[Test]

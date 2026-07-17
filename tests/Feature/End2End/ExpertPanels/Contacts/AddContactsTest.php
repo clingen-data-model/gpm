@@ -4,7 +4,6 @@ namespace Tests\Feature\End2End\ExpertPanels\Contacts;
 
 use Tests\TestCase;
 use Ramsey\Uuid\Uuid;
-use Laravel\Sanctum\Sanctum;
 use App\Modules\User\Models\User;
 use Illuminate\Support\Facades\Bus;
 use App\Modules\Person\Models\Person;
@@ -31,7 +30,7 @@ class AddContactsTest extends TestCase
         $this->setupForGroupTest();
         $this->expertPanel = ExpertPanel::factory()->create();
         $this->user = User::factory()->create();
-        Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
     }
     
 

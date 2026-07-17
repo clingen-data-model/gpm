@@ -3,7 +3,6 @@
 namespace Tests\Feature\End2End\Group;
 
 use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
 use Illuminate\Testing\TestResponse;
 use App\Modules\Group\Models\GroupMember;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -24,7 +23,7 @@ class CoiResponseStoreTest extends TestCase
         $this->member = GroupMember::factory()->create();
         $this->user = $this->setupUser();
         $this->member->person->update(['user_id' => $this->user->id]);
-        Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
     }
 
     #[Test]

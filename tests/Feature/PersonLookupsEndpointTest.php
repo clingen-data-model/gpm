@@ -3,7 +3,6 @@
 namespace Tests\Feature;
 
 use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
 use App\Modules\User\Models\User;
 use Database\Seeders\CountrySeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -19,7 +18,7 @@ class PersonLookupsEndpointTest extends TestCase
         $this->runSeeder([CountrySeeder::class]);
 
         $user = User::factory()->create();
-        Sanctum::actingAs($user);
+        $this->actingAs($user, 'clerk');
     }
 
 

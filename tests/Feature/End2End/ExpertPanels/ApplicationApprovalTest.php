@@ -4,7 +4,6 @@ namespace Tests\Feature\End2End\ExpertPanels;
 
 use Tests\TestCase;
 use Ramsey\Uuid\Uuid;
-use Laravel\Sanctum\Sanctum;
 use Illuminate\Support\Carbon;
 use CreateNextActionTypesTable;
 use App\Mail\UserDefinedMailable;
@@ -45,7 +44,7 @@ class ApplicationApprovalTest extends TestCase
         ContactAdd::run($this->expertPanel->uuid, $this->person->uuid);
 
         $this->user = User::factory()->create();
-        Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
         Carbon::setTestNow('2022-06-01');
     }
 

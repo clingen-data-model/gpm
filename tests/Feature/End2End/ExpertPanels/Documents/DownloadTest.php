@@ -5,7 +5,6 @@ namespace Tests\Feature\End2End\ExpertPanels\Documents;
 use Tests\TestCase;
 use Ramsey\Uuid\Uuid;
 use App\Models\Document;
-use Laravel\Sanctum\Sanctum;
 use App\Modules\User\Models\User;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Bus;
@@ -34,7 +33,7 @@ class DownloadTest extends TestCase
 
         $this->user = $this->setupUserWithPerson();
         app()->make(MemberAdd::class)->handle($this->expertPanel->group, $this->user->person);
-        Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
 
         (new ApplicationDocumentAdd)->handle(
             expertPanelUuid: $this->expertPanel->uuid,

@@ -3,7 +3,6 @@
 namespace Tests\Feature\End2End\ExpertPanels\LogEntries;
 
 use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
 use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Actions\StepApprove;
@@ -42,7 +41,7 @@ class DeleteLogEntryTest extends TestCase
     #[Test]
     public function prevents_deleting_typed_log_entries()
     {
-        Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
         $response = $this->json(
             'delete',
             '/api/applications/'.$this->expertPanel->uuid.'/log-entries/'.$this->autoEntry->id
@@ -59,7 +58,7 @@ class DeleteLogEntryTest extends TestCase
     #[Test]
     public function deletes_manual_log_entries()
     {
-        Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
         $response = $this->json('delete', '/api/applications/'.$this->expertPanel->uuid.'/log-entries/'.$this->logEntry->id);
 
         $response->assertStatus(200);

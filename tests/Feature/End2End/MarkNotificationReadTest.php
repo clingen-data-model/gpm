@@ -4,7 +4,6 @@ namespace Tests\Feature\End2End;
 
 use Carbon\Carbon;
 use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
 use App\Modules\Person\Models\Person;
 use Tests\Stubs\TestDatabaseNotification;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -25,7 +24,7 @@ class MarkNotificationReadTest extends TestCase
         Notification::send($this->person, new TestDatabaseNotification('test test test'));
         $this->notification = $this->person->unreadNotifications()->first();
 
-        Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
     }
 
     #[Test]
@@ -34,7 +33,7 @@ class MarkNotificationReadTest extends TestCase
         $otherUser = $this->setupUser();
         $otherPerson = Person::factory()->create(['user_id' => $otherUser->id]);
 
-        Sanctum::actingAs($otherUser);
+        $this->actingAs($otherUser, 'clerk');
 
         $this->makeRequest()
             ->assertStatus(403);

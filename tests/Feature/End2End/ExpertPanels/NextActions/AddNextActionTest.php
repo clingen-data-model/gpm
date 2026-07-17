@@ -4,7 +4,6 @@ namespace Tests\Feature\End2End\ExpertPanels\NextActions;
 
 use Tests\TestCase;
 use Ramsey\Uuid\Uuid;
-use Laravel\Sanctum\Sanctum;
 use Illuminate\Support\Carbon;
 use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -34,7 +33,7 @@ class AddNextActionTest extends TestCase
         $this->expertPanel = ExpertPanel::factory()->create();
         $this->baseUrl = 'api/applications/'.$this->expertPanel->uuid.'/next-actions';
         Carbon::setTestNow();
-        Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
     }
 
     #[Test]

@@ -3,7 +3,6 @@
 namespace Tests\Feature\End2End\Groups\Genes;
 
 use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
 use App\Modules\User\Models\User;
 use Tests\Traits\SeedsHgncGenesAndDiseases;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -32,7 +31,7 @@ class UpdateGeneTest extends TestCase
             'gene_symbol' => uniqid()
         ]);
         $this->url = '/api/groups/'.$this->expertPanel->group->uuid.'/expert-panel/genes/'.$this->gene1->id;
-        Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
     }
 
     #[Test]
@@ -69,7 +68,7 @@ class UpdateGeneTest extends TestCase
     #[Test]
     public function validates_input_for_vceps()
     {
-        Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
 
         $this->json('PUT', $this->url, [])
             ->assertStatus(422);
@@ -95,7 +94,7 @@ class UpdateGeneTest extends TestCase
     #[Test]
     public function validates_input_for_gceps()
     {
-        Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
 
         $this->expertPanel->group->update(['group_type_id' => config('groups.types.gcep.id')]);
         $this->json('PUT', $this->url, ['hgnc_id'=>null, 'mondo_id' => null])

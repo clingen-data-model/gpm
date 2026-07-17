@@ -3,7 +3,6 @@
 namespace Tests\Feature\End2End\Person;
 
 use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
 use Illuminate\Support\Carbon;
 use App\Modules\Person\Models\Invite;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -27,7 +26,7 @@ class ResetInviteTest extends TestCase
     public function unprivileged_user_cannot_reset_invite()
     {
         $user = $this->setupUser();
-        Sanctum::actingAs($user);
+        $this->actingAs($user, 'clerk');
 
         $this->makeRequest()
             ->assertStatus(403);
@@ -37,7 +36,7 @@ class ResetInviteTest extends TestCase
     public function privileged_user_can_reset_invite()
     {
         $user = $this->setupUser(null, ['people-manage']);
-        Sanctum::actingAs($user);
+        $this->actingAs($user, 'clerk');
 
         $this->makeRequest()
             ->assertStatus(200)

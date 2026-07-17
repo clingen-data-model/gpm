@@ -6,7 +6,6 @@ use Carbon\Carbon;
 use Tests\TestCase;
 use App\Models\Comment;
 use App\Models\Permission;
-use Laravel\Sanctum\Sanctum;
 use Illuminate\Support\Collection;
 use App\Modules\Group\Models\Group;
 use Illuminate\Testing\TestResponse;
@@ -36,7 +35,7 @@ class ApplicationSendToChairsTest extends TestCase
         Permission::firstOrCreate(['name' => 'ep-applications-approve', 'guard' => 'web']);
 
         $this->user = $this->setupUser(permissions: ['ep-applications-manage']);
-        Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
         $this->expertPanel = ExpertPanel::factory()->vcep()->create();
         $this->group = $this->expertPanel->group;
     }

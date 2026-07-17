@@ -3,7 +3,6 @@
 namespace Tests\Feature\End2End\Groups\Members;
 
 use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
 use App\Modules\Group\Models\Group as GroupModel;
 use App\Modules\Group\Models\GroupMember;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -29,7 +28,7 @@ class GrantMemberPermissionTest extends TestCase
         $this->setupEntities()->setupMember();
 
         $this->url = 'api/groups/'.$this->group->uuid.'/members/'.$this->groupMember->id.'/permissions/';
-        Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
     }
 
     #[Test]

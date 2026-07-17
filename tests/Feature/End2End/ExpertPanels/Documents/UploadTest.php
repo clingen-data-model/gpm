@@ -39,7 +39,7 @@ class UploadTest extends TestCase
 
         $data = $this->makeDocumentUploadRequestData();
 
-        \Laravel\Sanctum\Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
         $response = $this->json('POST', '/api/applications/'.$this->expertPanel->uuid.'/documents', $data);
 
         $response->assertStatus(200);
@@ -75,7 +75,7 @@ class UploadTest extends TestCase
         );
         
         $data = $this->makeDocumentUploadRequestData();
-        \Laravel\Sanctum\Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
         $response = $this->json('POST', '/api/applications/'.$this->expertPanel->uuid.'/documents', $data);
 
         $response->assertStatus(200);
@@ -90,7 +90,7 @@ class UploadTest extends TestCase
     #[Test]
     public function validates_required_fields()
     {
-        \Laravel\Sanctum\Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
         $response = $this->json('POST', '/api/applications/'.$this->expertPanel->uuid.'/documents', [])
             ->assertStatus(422)
             ->assertJsonFragment([
@@ -110,7 +110,7 @@ class UploadTest extends TestCase
             'date_received' => 'detach the head',
         ];
 
-        \Laravel\Sanctum\Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
         $response = $this->json('POST', '/api/applications/'.$this->expertPanel->uuid.'/documents', $data)
             ->assertStatus(422)
             ->assertJsonFragment([
@@ -129,7 +129,7 @@ class UploadTest extends TestCase
         $data = $this->makeDocumentUploadRequestData();
         $data['is_final'] = true;
 
-        \Laravel\Sanctum\Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
         $response = $this->json('POST', '/api/applications/'.$this->expertPanel->uuid.'/documents', $data);
 
         $response->assertStatus(200);

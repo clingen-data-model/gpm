@@ -3,7 +3,6 @@
 namespace Tests\Feature\End2End\Groups;
 
 use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
 use App\Modules\User\Models\User;
 use App\Modules\Group\Models\Group;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -22,7 +21,7 @@ class UpdateGroupParentTest extends TestCase
         $this->setupForGroupTest();
 
         $this->user = $this->setupUser(permissions: ['groups-manage']);
-        Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
 
         $this->parent = Group::factory()->create();
         $this->group = Group::factory()->create();

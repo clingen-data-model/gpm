@@ -3,7 +3,6 @@
 namespace Tests\Feature\End2End\Groups\EvidenceSummaries;
 
 use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
 use App\Modules\User\Models\User;
 use App\Modules\Group\Models\Group;
 use App\Modules\ExpertPanel\Models\Gene;
@@ -32,7 +31,7 @@ class CreateSummaryTest extends TestCase
                 return new Gene(['hgnc_id' => $hgnc->hgnc_id, 'gene_symbol' => $hgnc->gene_symbol, 'mondo_id' => 'MONDO:1234567']);
             })
         );
-        Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
 
         $this->url = '/api/groups/'.$this->vcep->group->uuid.'/expert-panel/evidence-summaries';
     }

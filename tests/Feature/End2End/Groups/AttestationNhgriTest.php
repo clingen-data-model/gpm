@@ -8,7 +8,6 @@ use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Laravel\Sanctum\Sanctum;
 use PHPUnit\Framework\Attributes\Test;
 
 class AttestationNhgriTest extends TestCase
@@ -23,7 +22,7 @@ class AttestationNhgriTest extends TestCase
         $this->user = $this->setupUser(permissions: ['ep-applications-manage']);
         $this->expertPanel = ExpertPanel::factory()->vcep()->create();
 
-        Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
         Carbon::setTestNow('2021-11-14');
     }
 

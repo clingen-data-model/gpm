@@ -4,7 +4,6 @@ namespace Tests\Feature\End2End;
 
 use Tests\TestCase;
 use App\Modules\User\Models\User;
-use Laravel\Sanctum\Sanctum;
 use App\Modules\Person\Models\Person;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -27,7 +26,7 @@ class PersonEndpointTest extends TestCase
         $this->user = $this->setupUser();
         $this->user->givePermissionTo('people-manage');
         $this->people = Person::factory(2)->create();
-        Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
     }
 
     #[Test]

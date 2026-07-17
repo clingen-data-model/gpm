@@ -5,7 +5,6 @@ namespace Tests\Feature\End2End\Users;
 use Tests\TestCase;
 use App\Models\Role;
 use Database\Seeders\RolesAndPermissionsSeeder;
-use Laravel\Sanctum\Sanctum;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\Test;
@@ -20,7 +19,7 @@ class UpdateUserRolesAndPermissionsTest extends TestCase
         $this->runSeeder(RolesAndPermissionsSeeder::class);
         
         $this->actingUser = $this->setupUser(permissions: ['users-manage']);
-        Sanctum::actingAs($this->actingUser);
+        $this->actingAs($this->actingUser, 'clerk');
 
         $this->user = $this->setupUserWithPerson(permissions: ['annual-updates-manage']);
         $this->user->assignRole('admin');

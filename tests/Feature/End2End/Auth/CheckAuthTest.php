@@ -28,7 +28,7 @@ class CheckAuthTest extends TestCase
     #[Test]
     public function returns_200_if_authenticated()
     {
-        \Laravel\Sanctum\Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
         $this->json('GET', '/api/authenticated')
             ->assertStatus(200);
     }

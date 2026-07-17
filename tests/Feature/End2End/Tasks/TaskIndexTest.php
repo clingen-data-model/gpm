@@ -8,7 +8,6 @@ use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Database\Seeders\TaskTypeSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Laravel\Sanctum\Sanctum;
 use PHPUnit\Framework\Attributes\Test;
 
 class TaskIndexTest extends TestCase
@@ -30,7 +29,7 @@ class TaskIndexTest extends TestCase
         $this->task3 = (new TaskCreate)->handle($this->vcep2->group, 'sustained-curation-review');
         $this->task4 = (new TaskCreate)->handle($this->vcep2->group, 'sustained-curation-review');
 
-        Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
     }
 
     #[Test]

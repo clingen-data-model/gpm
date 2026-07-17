@@ -3,7 +3,6 @@
 namespace Tests\Feature\End2End\Groups;
 
 use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
 use Illuminate\Support\Carbon;
 use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -24,7 +23,7 @@ class AttestationReanalysisTest extends TestCase
         $this->user = $this->setupUser(permissions: ['ep-applications-manage']);
         $this->expertPanel = ExpertPanel::factory()->vcep()->create();
 
-        Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
         Carbon::setTestNow('2021-11-14');
     }
     

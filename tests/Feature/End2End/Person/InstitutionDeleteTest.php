@@ -4,7 +4,6 @@ namespace Tests\Feature\End2End\Person;
 
 use Carbon\Carbon;
 use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
 use Illuminate\Testing\TestResponse;
 use App\Modules\Person\Models\Institution;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -32,7 +31,7 @@ class InstitutionDeleteTest extends TestCase
     public function user_without_permission_cannot_delete_an_institution()
     {
         $user = $this->setupUser();
-        Sanctum::actingAs($user);
+        $this->actingAs($user, 'clerk');
 
         $this->makeRequest()->assertStatus(403);
     }
@@ -41,7 +40,7 @@ class InstitutionDeleteTest extends TestCase
     public function permissioned_user_can_delete_an_institution()
     {
         $user = $this->setupUser(permissions: ['people-manage']);
-        Sanctum::actingAs($user);
+        $this->actingAs($user, 'clerk');
 
         Carbon::setTestNow('2022-09-23');
         $this->makeRequest()->assertStatus(200);

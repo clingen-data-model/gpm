@@ -64,7 +64,7 @@ class ExpertPanelDetailTest extends TestCase
     #[Test]
     public function gets_application_with_uuid()
     {
-        \Laravel\Sanctum\Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
         $this->json('get', '/api/applications/'.$this->ep->uuid)
             ->assertStatus(200)
             ->assertJsonFragment(['uuid' => $this->ep->uuid]);
@@ -73,7 +73,7 @@ class ExpertPanelDetailTest extends TestCase
     #[Test]
     public function loads_latestLogEntry_by_default()
     {
-        \Laravel\Sanctum\Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
         $response = $this->json('get', '/api/applications/'.$this->ep->uuid)
             ->assertStatus(200);
         $response->assertJsonFragment(['description' => 'TEst me']);
@@ -82,7 +82,7 @@ class ExpertPanelDetailTest extends TestCase
     #[Test]
     public function loads_latestPendingNextAction_by_default()
     {
-        \Laravel\Sanctum\Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
         $this->json('get', '/api/applications/'.$this->ep->uuid)
             ->assertStatus(200)
             ->assertJsonFragment(['entry' => 'TEst me']);

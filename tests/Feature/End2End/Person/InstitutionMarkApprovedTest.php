@@ -4,7 +4,6 @@ namespace Tests\Feature\End2End\Person;
 
 use Tests\TestCase;
 use App\Models\Permission;
-use Laravel\Sanctum\Sanctum;
 use App\Modules\Person\Models\Institution;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -19,7 +18,7 @@ class InstitutionMarkApprovedTest extends TestCase
         parent::setup();
         $this->institution = Institution::factory()->create(['approved' => false]);
         $this->user = $this->setupUser(permissions: ['people-manage']);
-        Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
     }
     
     #[Test]

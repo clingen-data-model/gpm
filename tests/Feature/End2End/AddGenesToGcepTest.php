@@ -3,7 +3,6 @@
 namespace Tests\Feature\End2End;
 
 use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
 use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
@@ -33,7 +32,7 @@ class AddGenesToGcepTest extends TestCase
 
         $this->expertPanel = ExpertPanel::factory()->gcep()->create();
         $this->url = '/api/groups/'.$this->expertPanel->group->uuid.'/expert-panel/genes';
-        Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
     }
 
     #[Test]

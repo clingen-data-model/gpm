@@ -3,7 +3,6 @@
 namespace Tests\Feature\End2End\ExpertPanels\NextActions;
 
 use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
 use Illuminate\Support\Carbon;
 use App\Modules\ExpertPanel\Models\NextAction;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
@@ -39,7 +38,7 @@ class CompleteNextActionTest extends TestCase
             targetDate: $this->nextAction->targetDate,
             step: $this->nextAction->step
         );
-        Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
     }
 
     #[Test]

@@ -4,7 +4,6 @@ namespace Tests\Feature\End2End\Groups;
 
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
 use App\Modules\User\Models\User;
 use Database\Seeders\CurationReviewProtocolsSeeder;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -25,7 +24,7 @@ class UpdateCurationProcessTest extends TestCase
         $this->user = $this->setupUser(permissions: ['ep-applications-manage']);
         $this->expertPanel = ExpertPanel::factory()->vcep()->create();
 
-        Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
     }
 
     #[Test]

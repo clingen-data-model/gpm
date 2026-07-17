@@ -3,7 +3,6 @@
 namespace Tests\Feature\End2End\Person;
 
 use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
 use App\Modules\Person\Models\Person;
 use App\Modules\Person\Models\Institution;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -19,7 +18,7 @@ class MergeInstitutionsTest extends TestCase
         parent::setup();
         $this->setupPermission('people-manage');
         $this->user = $this->setupUser(permissions: ['people-manage']);
-        Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
         
         $this->institution1 = Institution::factory()->create();
         $this->institution2 = Institution::factory()->create();

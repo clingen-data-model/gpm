@@ -3,7 +3,6 @@
 namespace Tests\Feature\End2End\Groups\Genes;
 
 use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
 use Illuminate\Support\Carbon;
 use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -41,7 +40,7 @@ class RemoveGeneFromExpertPanelTest extends TestCase
     {
         $this->user->revokePermissionTo('ep-applications-manage');
 
-        Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
         $this->json('DELETE', $this->url, ['ids' => [$this->gene1->id]])
             ->assertStatus(403);
 
@@ -56,7 +55,7 @@ class RemoveGeneFromExpertPanelTest extends TestCase
     public function does_not_try_to_delete_if_group_is_not_an_expert_panel()
     {
         $this->expertPanel->group->update(['group_type_id' => config('groups.types.wg.id')]);
-        Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
         $this->json('DELETE', $this->url, ['ids' => [$this->gene1->id]])
             ->assertStatus(422);
     }
@@ -66,7 +65,7 @@ class RemoveGeneFromExpertPanelTest extends TestCase
     public function privileged_user_can_remove_genes()
     {
         Carbon::setTestNow('2021-11-01');
-        Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
         $this->json('DELETE', $this->url, ['ids' => [$this->gene1->id]])
             ->assertStatus(200);
 
@@ -80,7 +79,7 @@ class RemoveGeneFromExpertPanelTest extends TestCase
     #[Test]
     public function activity_logged()
     {
-        Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
         $this->json('DELETE', $this->url, ['ids' => [$this->gene1->id]])
             ->assertStatus(200);
 

@@ -3,7 +3,6 @@
 namespace Tests\Feature\End2End\Groups\Members;
 
 use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
 use App\Modules\Group\Models\Group as GroupModel;
 use App\Modules\Group\Models\GroupMember;
 use App\Modules\Person\Models\Person;
@@ -44,7 +43,7 @@ class AssignRoleToMemberTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
-        Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
         $response = $this->json(
             'POST',
             $this->url,
@@ -79,7 +78,7 @@ class AssignRoleToMemberTest extends TestCase
     #[Test]
     public function validates_role_ids_are_present()
     {
-        Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
         $response = $this->json(
             'POST',
             $this->url,
@@ -95,7 +94,7 @@ class AssignRoleToMemberTest extends TestCase
     {
         $systemRole = config('permission.models.role')::factory()->create(['scope' => 'system']);
 
-        Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
         $response = $this->json('POST', $this->url, ['role_ids' => [$this->roles->first()->id, $systemRole->id]])
                         ->assertStatus(422);
 
@@ -107,7 +106,7 @@ class AssignRoleToMemberTest extends TestCase
     #[Test]
     public function logs_member_role_assignment_activity()
     {
-        Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
         $response = $this->json(
             'POST',
             $this->url,

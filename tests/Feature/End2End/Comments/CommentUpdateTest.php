@@ -4,7 +4,6 @@ namespace Tests\Feature\End2End\Comments;
 
 use Carbon\Carbon;
 use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
 use App\Modules\Group\Models\Submission;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Notification;
@@ -39,7 +38,7 @@ class CommentUpdateTest extends CommentTestAbstract
     public function user_with_comments_manage_perm_can_update_others_comment()
     {
         $otherUser = $this->setupUser(null, ['comments-manage']);
-        Sanctum::actingAs($otherUser);
+        $this->actingAs($otherUser, 'clerk');
         $expectedData = $this->getDefaultData();
         $this->makeRequest()
             ->assertStatus(200)
@@ -53,7 +52,7 @@ class CommentUpdateTest extends CommentTestAbstract
     public function user_cannot_update_others_comment()
     {
         $otherUser = $this->setupUser();
-        Sanctum::actingAs($otherUser);
+        $this->actingAs($otherUser, 'clerk');
         $expectedData = $this->getDefaultData();
         $this->makeRequest()
             ->assertStatus(403);

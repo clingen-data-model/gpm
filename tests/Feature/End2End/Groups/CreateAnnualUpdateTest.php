@@ -3,7 +3,6 @@
 namespace Tests\Feature\End2End\Groups;
 
 use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Modules\Group\Actions\AnnualUpdateCreate;
@@ -40,7 +39,7 @@ class CreateAnnualUpdateTest extends TestCase
     public function unpriveleged_user_cannot_create_via_post()
     {
         $user = $this->setupUser();
-        Sanctum::actingAs($user);
+        $this->actingAs($user, 'clerk');
 
         $this->makeRequest()
             ->assertStatus(403);
@@ -55,7 +54,7 @@ class CreateAnnualUpdateTest extends TestCase
     public function priveleged_user_can_create_via_post()
     {
         $user = $this->setupUser(permissions: ['annual-updates-manage']);
-        Sanctum::actingAs($user);
+        $this->actingAs($user, 'clerk');
 
         $this->makeRequest()
             ->assertStatus(201)

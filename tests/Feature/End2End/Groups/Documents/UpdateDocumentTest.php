@@ -5,7 +5,6 @@ namespace Tests\Feature\End2End\Groups\Documents;
 use App\Models\Document;
 use Tests\TestCase;
 use Ramsey\Uuid\Uuid;
-use Laravel\Sanctum\Sanctum;
 use Illuminate\Http\UploadedFile;
 use App\Modules\Group\Models\Group;
 use Illuminate\Support\Facades\Storage;
@@ -32,7 +31,7 @@ class UpdateDocumentTest extends TestCase
         ]);
         $this->document = $this->group->documents()->save($document);
 
-        Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
     }
 
     #[Test]

@@ -5,7 +5,6 @@ namespace Tests\Feature\End2End\Groups;
 use Carbon\Carbon;
 use Tests\TestCase;
 use App\Models\AnnualUpdate;
-use Laravel\Sanctum\Sanctum;
 use App\Modules\Group\Models\GroupMember;
 use Illuminate\Foundation\Testing\WithFaker;
 use Database\Seeders\AnnualUpdateWindowSeeder;
@@ -29,7 +28,7 @@ class SubmitAnnualUpdateTest extends TestCase
                                 ->create(['group_id' => $this->expertPanel->group->id])
                                 ->assignRole('coordinator');
 
-        Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
         Carbon::setTestNow('2022-02-16');
     }
 

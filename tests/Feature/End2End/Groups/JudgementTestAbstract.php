@@ -3,7 +3,6 @@
 namespace Tests\Feature\End2End\Groups;
 
 use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
 use App\Modules\Group\Models\Group;
 use App\Modules\Person\Models\Person;
 use App\Modules\Group\Models\Judgement;
@@ -34,7 +33,7 @@ abstract class JudgementTestAbstract extends TestCase
         $epAndSub = $this->setupExpertPanelAndSubmission();
         $this->expertPanel = $epAndSub['expertPanel'];
         $this->submission = $epAndSub['submission'];
-        Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
     }
 
 

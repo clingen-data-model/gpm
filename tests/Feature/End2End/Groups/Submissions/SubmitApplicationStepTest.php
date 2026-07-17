@@ -5,7 +5,6 @@ namespace Tests\Feature\End2End\Groups\Submissions;
 use Carbon\Carbon;
 use Tests\TestCase;
 use App\Models\Permission;
-use Laravel\Sanctum\Sanctum;
 use App\Modules\Group\Models\Group as GroupModel;
 use Database\Seeders\TaskTypeSeeder;
 use Illuminate\Support\Facades\Mail;
@@ -48,7 +47,7 @@ class SubmitApplicationStepTest extends TestCase
 
         $this->user = $this->setupUserWithPerson(null, ['ep-applications-manage']);
         $this->expertPanel = $this->setupVcep();
-        Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
     }
 
     #[Test]
@@ -81,7 +80,7 @@ class SubmitApplicationStepTest extends TestCase
         ]));
         $membership->givePermissionTo('application-edit');
 
-        Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
         $this->makeRequest()
             ->assertStatus(201);
 

@@ -3,7 +3,6 @@
 namespace Tests\Feature\End2End\Groups;
 
 use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
 use Illuminate\Testing\TestResponse;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -23,7 +22,7 @@ class JudgementDeleteTest extends JudgementTestAbstract
     {
         $this->otherUser = $this->setupUserWithPerson(permissions: ['ep-applications-approve']);
 
-        Sanctum::actingAs($this->otherUser);
+        $this->actingAs($this->otherUser, 'clerk');
         $this->makeRequest()
             ->assertStatus(403);
     }
@@ -32,7 +31,7 @@ class JudgementDeleteTest extends JudgementTestAbstract
     public function user_with_ep_manage_applications_can_delete_another_users_judgement()
     {
         $this->otherUser = $this->setupUserWithPerson(permissions: ['ep-applications-manage']);
-        Sanctum::actingAs($this->otherUser);
+        $this->actingAs($this->otherUser, 'clerk');
 
         $this->makeRequest()
             ->assertStatus(200);

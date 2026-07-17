@@ -4,7 +4,6 @@ namespace Tests\Feature\End2End\Groups;
 
 use Carbon\Carbon;
 use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
 use App\Modules\Group\Models\Group;
 use App\Modules\Group\Models\GroupMember;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -28,7 +27,7 @@ class DeleteGroupTest extends TestCase
         $this->user = $this->setupUser(permissions:['groups-manage']);
         $this->group = Group::factory()->create();
 
-        Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
     }
     
     #[Test]

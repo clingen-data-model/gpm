@@ -7,7 +7,6 @@ use App\Modules\Group\Actions\MemberAssignRole;
 use App\Modules\Group\Actions\MemberGrantPermissions;
 use Carbon\Carbon;
 use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
 use App\Modules\Group\Models\Group;
 use App\Modules\Group\Models\GroupMember;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -26,7 +25,7 @@ class MemberUnretireTest extends TestCase
         // $this->group = Group::factory()->create();
         $this->groupMember = GroupMember::factory()->create(['end_date' => Carbon::now()]);
 
-        Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
     }
 
     #[Test]

@@ -31,7 +31,7 @@ class CompleteApplicationTest extends TestCase
     public function gcep_application_completed_when_step1_approved()
     {
         $dateApproved = Carbon::parse('2021-09-16');
-        \Laravel\Sanctum\Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
         $response = $this->makeRequest(['date_approved' => $dateApproved]);
         $response->assertStatus(200);
         $response->assertJsonFragment([
@@ -64,7 +64,7 @@ class CompleteApplicationTest extends TestCase
         $this->assertNull($this->expertPanel->date_completed);
 
         $dateApproved = Carbon::parse('2021-09-16');
-        \Laravel\Sanctum\Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
         $this->makeRequest(['date_approved' => $dateApproved])
             ->assertStatus(200)
             ->assertJsonFragment([

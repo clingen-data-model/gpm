@@ -2,7 +2,6 @@
 
 namespace Tests\Feature\End2End\Groups;
 
-use Laravel\Sanctum\Sanctum;
 use Illuminate\Testing\TestResponse;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -18,7 +17,7 @@ class JudgementUpdateTest extends JudgementTestAbstract
         parent::setup();
 
         $this->judgement = $this->setupJudgement($this->expertPanel->group);
-        Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
     }
 
     #[Test]
@@ -26,7 +25,7 @@ class JudgementUpdateTest extends JudgementTestAbstract
     {
         $this->otherUser = $this->setupUserWithPerson(permissions: ['ep-applications-approve']);
 
-        Sanctum::actingAs($this->otherUser);
+        $this->actingAs($this->otherUser, 'clerk');
         $this->makeRequest()
             ->assertStatus(403);
     }
@@ -35,7 +34,7 @@ class JudgementUpdateTest extends JudgementTestAbstract
     public function user_with_ep_manage_applications_can_update_another_users_judgement()
     {
         $this->otherUser = $this->setupUserWithPerson(permissions: ['ep-applications-manage']);
-        Sanctum::actingAs($this->otherUser);
+        $this->actingAs($this->otherUser, 'clerk');
 
         $this->makeRequest()
             ->assertStatus(200);

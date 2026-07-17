@@ -3,7 +3,6 @@
 namespace Tests\Feature\End2End\Groups;
 
 use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
 use Illuminate\Testing\TestResponse;
 use App\Modules\ExpertPanel\Models\Ruleset;
 use Illuminate\Database\Eloquent\Collection;
@@ -30,7 +29,7 @@ class GetSpecificationsTest extends TestCase
                                 ->has(Ruleset::factory()->count(3))
                                 ->create(['expert_panel_id' => $this->expertPanel->id]);
 
-        Sanctum::actingAs($this->setupUser());
+        $this->actingAs($this->setupUser(), 'clerk');
     }
 
     #[Test]

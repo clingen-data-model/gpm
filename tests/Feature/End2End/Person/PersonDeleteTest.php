@@ -3,7 +3,6 @@
 namespace Tests\Feature\End2End\Person;
 
 use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
 use App\Modules\Group\Models\Group as GroupModel;
 use App\Modules\Person\Models\Invite;
 use App\Modules\Person\Models\Person;
@@ -29,7 +28,7 @@ class PersonDeleteTest extends TestCase
         $this->invite = Invite::factory()->create(['person_id' => $this->person->id]);
         $this->membership = app()->make(MemberAdd::class)->handle($this->group, $this->person);
 
-        Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
     }
 
     #[Test]

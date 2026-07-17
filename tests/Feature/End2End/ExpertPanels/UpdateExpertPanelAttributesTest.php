@@ -5,7 +5,6 @@ namespace Tests\Feature\End2End\ExpertPanels;
 use Carbon\Carbon;
 use Tests\TestCase;
 use Ramsey\Uuid\Uuid;
-use Laravel\Sanctum\Sanctum;
 use App\Modules\User\Models\User;
 use App\Modules\Group\Models\Group;
 use Illuminate\Testing\TestResponse;
@@ -25,7 +24,7 @@ class UpdateExpertPanelAttributesTest extends TestCase
         $this->setupForGroupTest();
 
         $this->user = User::factory()->create();
-        Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
 
         $this->cdwg = Group::factory()->cdwg()->create();
 

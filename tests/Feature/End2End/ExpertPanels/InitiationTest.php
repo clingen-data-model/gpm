@@ -3,7 +3,6 @@
 namespace Tests\Feature\End2End\ExpertPanels;
 
 use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
 use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -19,7 +18,7 @@ class InitiationTest extends TestCase
         parent::setup();
         $this->setupForGroupTest();
         $this->user = User::factory()->create();
-        Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
     }
 
 

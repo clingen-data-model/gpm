@@ -6,7 +6,6 @@ use Carbon\Carbon;
 use Tests\TestCase;
 use App\Models\Document;
 use Illuminate\Support\Str;
-use Laravel\Sanctum\Sanctum;
 use App\Modules\User\Models\User;
 use Illuminate\Http\UploadedFile;
 use App\Modules\Group\Models\Group as GroupModel;
@@ -36,7 +35,7 @@ class SimpleCoiEndpointTest extends TestCase
         $this->group = GroupModel::factory()->create();
         $user = $this->setupUserWithPerson();
         $this->groupMember = GroupMember::factory()->create(['group_id' => $this->group, 'person_id' => $user->person]);
-        $this->actingAs($user);
+        $this->actingAs($user, 'clerk');
     }
 
     #[Test]

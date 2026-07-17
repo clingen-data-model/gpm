@@ -4,7 +4,6 @@ namespace Tests\Feature\End2End\Person;
 
 use Tests\TestCase;
 use Ramsey\Uuid\Uuid;
-use Laravel\Sanctum\Sanctum;
 use App\Modules\User\Models\User;
 use App\Modules\Person\Models\Person;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -26,7 +25,7 @@ class PersonDetailTest extends TestCase
     #[Test]
     public function user_can_retrieve_a_person_with_uuid()
     {
-        Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
         $person = Person::factory()->create();
         $this->json('GET', '/api/people/'.$person->uuid)
             ->assertStatus(200)
@@ -41,7 +40,7 @@ class PersonDetailTest extends TestCase
     #[Test]
     public function responds_with_404_when_person_not_found()
     {
-        Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
         $this->json('GET', '/api/people/'.Uuid::uuid4()->toString())
             ->assertStatus(404);
     }

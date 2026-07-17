@@ -3,7 +3,6 @@
 namespace Tests\Feature\End2End\Groups;
 
 use App\Modules\Group\Notifications\JudgementActivityNotification as NotificationsJudgementActivityNotification;
-use Laravel\Sanctum\Sanctum;
 use Illuminate\Testing\TestResponse;
 use Illuminate\Support\Facades\Notification;
 use App\Notifications\JudgementActivityNotification;

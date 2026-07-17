@@ -4,7 +4,6 @@ namespace Tests\Feature\End2End\Comments;
 
 use Tests\TestCase;
 use App\Models\Comment;
-use Laravel\Sanctum\Sanctum;
 use App\Modules\Group\Models\Submission;
 use Database\Seeders\CommentTypesSeeder;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -26,7 +25,7 @@ abstract class CommentTestAbstract extends TestCase
         $this->setupSubmissionStatusesAndTypes();
         $this->expertPanel = ExpertPanel::factory()->create();
         (new CommentTypesSeeder)->run();
-        Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
     }
 
     protected function createComment ($data = null) {

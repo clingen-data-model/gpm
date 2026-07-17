@@ -6,7 +6,6 @@ use Carbon\Carbon;
 use Tests\TestCase;
 use App\Models\Document;
 use App\Models\DocumentType;
-use Laravel\Sanctum\Sanctum;
 use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
@@ -25,7 +24,7 @@ class DeleteDocumentTest extends TestCase
         $this->setupForGroupTest();
 
         $this->user = User::factory()->create();
-        Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
 
         $this->expertPanel = ExpertPanel::factory()->create();
         $this->document = Document::factory()->make();

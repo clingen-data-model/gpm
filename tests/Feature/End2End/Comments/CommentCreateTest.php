@@ -5,7 +5,6 @@ namespace Tests\Feature\End2End\Comments;
 use Carbon\Carbon;
 use Tests\TestCase;
 use App\Models\Comment;
-use Laravel\Sanctum\Sanctum;
 use App\Modules\Group\Models\Group;
 use App\Modules\Group\Models\Submission;
 use Database\Seeders\CommentTypesSeeder;
@@ -159,7 +158,7 @@ class CommentCreateTest extends CommentTestAbstract
         ]);
 
         $approver = $this->setupUserWithPerson(permissions: ['ep-applications-approve', 'ep-applications-comment']);
-        Sanctum::actingAs($approver);
+        $this->actingAs($approver, 'clerk');
 
         $otherApprover = $this->setupUserWithPerson(permissions: ['ep-applications-approve']);
 

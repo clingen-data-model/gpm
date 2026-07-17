@@ -4,7 +4,6 @@ namespace Tests\Feature\End2End\Groups\Members;
 
 use Carbon\Carbon;
 use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
 use App\Modules\User\Models\User;
 use App\Models\Role as ModelsRole;
 use Spatie\Permission\Models\Role;
@@ -35,7 +34,7 @@ class AddGroupMemberTest extends TestCase
         $this->group = GroupModel::factory()->create(['group_type_id'=> 1]);
         $this->person = Person::factory()->create();
         $this->user = $this->setupUser(permissions: ['groups-manage']);
-        Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
 
         $this->admin = User::factory()->create();
         $this->role = config('permission.models.role')::factory()

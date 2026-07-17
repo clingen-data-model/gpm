@@ -7,7 +7,6 @@ use App\Models\Role;
 use App\Models\Expertise;
 use App\Models\Credential;
 use App\Models\Permission;
-use Laravel\Sanctum\Sanctum;
 use App\Modules\User\Models\User;
 use App\Modules\Group\Models\Group as GroupModel;
 use App\Modules\Person\Models\Person;
@@ -48,7 +47,7 @@ class UpdateProfileTest extends TestCase
         $this->perm = Permission::factory()->create(['name' => 'people-manage']);
         $this->groupPerm = Permission::factory()->create(['name' => 'members-update', 'scope' => 'group']);
 
-        Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
     }
 
     #[Test]
@@ -128,7 +127,7 @@ class UpdateProfileTest extends TestCase
     #[Test]
     public function another_user_without_permission_cannot_update_profile()
     {
-        Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
         $this->makeRequest()
             ->assertStatus(403);
     }

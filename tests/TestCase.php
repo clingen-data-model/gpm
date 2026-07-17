@@ -5,7 +5,6 @@ namespace Tests;
 use App\Models\Role;
 use Ramsey\Uuid\Uuid;
 use App\Models\Permission;
-use Laravel\Sanctum\Sanctum;
 use Illuminate\Support\Carbon;
 use App\Modules\User\Models\User;
 use App\Modules\Group\Models\Group;
@@ -149,14 +148,14 @@ abstract class TestCase extends BaseTestCase
     protected function login(?array $userData = null, array $permissions = []): User
     {
         $user = $this->setupUser(userData: $userData, permissions: $permissions);
-        Sanctum::actingAs($user);
+        $this->actingAs($user, 'clerk');
         return $user;
     }
 
     protected function loginWithPerson($userData = null, $permissions = [], $personData = []): User
     {
         $user = $this->setupUserWithPerson($userData, $permissions, $personData);
-        Sanctum::actingAs($user);
+        $this->actingAs($user, 'clerk');
         return $user;
     }
 

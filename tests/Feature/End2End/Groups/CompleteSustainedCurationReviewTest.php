@@ -4,7 +4,6 @@ namespace Tests\Feature\End2End\Groups;
 
 use Carbon\Carbon;
 use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
 use App\Tasks\Actions\TaskCreate;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
@@ -32,7 +31,7 @@ class CompleteSustainedCurationReviewTest extends TestCase
         $this->task = (new TaskCreate)->handle($this->expertPanel->group, 'sustained-curation-review');
 
         $this->user = $this->setupUser(permissions: ['ep-applications-manage']);
-        Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
     }
 
     #[Test]

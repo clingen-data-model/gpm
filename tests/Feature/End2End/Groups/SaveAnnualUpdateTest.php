@@ -4,7 +4,6 @@ namespace Tests\Feature\End2End\Groups;
 
 use Tests\TestCase;
 use App\Models\AnnualUpdate;
-use Laravel\Sanctum\Sanctum;
 use App\Modules\Group\Models\GroupMember;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
@@ -29,7 +28,7 @@ class SaveAnnualUpdateTest extends TestCase
                                 ->assignRole('coordinator');
 
         $this->annualReview = AnnualUpdate::create(['expert_panel_id' => $this->expertPanel->id]);
-        Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
     }
 
     #[Test]

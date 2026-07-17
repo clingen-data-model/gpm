@@ -3,7 +3,6 @@
 namespace Tests\Feature\End2End\Person;
 
 use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
 use Illuminate\Http\UploadedFile;
 use App\Modules\Person\Models\Person;
 use Illuminate\Support\Facades\Storage;
@@ -22,7 +21,7 @@ class PersonPhotoStoreTest extends TestCase
         $this->person = Person::factory()->create();
         $this->fakeFile = UploadedFile::fake()->image('beans.jpg');
         $this->user = $this->setupUser(permissions: ['people-manage']);
-        Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
     }
 
     #[Test]

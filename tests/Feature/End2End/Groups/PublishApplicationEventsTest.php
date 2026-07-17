@@ -3,7 +3,6 @@
 namespace Tests\Feature\End2End\Groups;
 
 use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
 use Illuminate\Support\Carbon;
 use App\Modules\Person\Models\Person;
 use App\Modules\Group\Actions\GenesAdd;
@@ -32,7 +31,7 @@ class PublishApplicationEventsTest extends TestCase
         $this->expertPanel = ExpertPanel::factory()->gcep()->create();
         $this->group = $this->expertPanel->group;
 
-        Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
     }
 
     #[Test]

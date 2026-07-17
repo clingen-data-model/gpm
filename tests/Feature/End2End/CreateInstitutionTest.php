@@ -3,7 +3,6 @@
 namespace Tests\Feature\End2End;
 
 use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
 use App\Modules\Person\Models\Country;
 use App\Modules\Person\Models\Institution;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -19,7 +18,7 @@ class CreateInstitutionTest extends TestCase
         parent::setup();
         $this->country = Country::factory(['name' => 'Hildaland'])->create();
         $this->user = $this->setupUser();
-        Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
     }
     
     #[Test]

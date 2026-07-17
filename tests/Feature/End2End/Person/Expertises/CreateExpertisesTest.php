@@ -4,7 +4,6 @@ namespace Tests\Feature\End2End\Person\Expertises;
 
 use Tests\TestCase;
 use App\Models\Expertise;
-use Laravel\Sanctum\Sanctum;
 use Illuminate\Testing\TestResponse;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;

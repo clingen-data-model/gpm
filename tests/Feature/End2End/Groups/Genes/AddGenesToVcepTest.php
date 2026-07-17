@@ -5,7 +5,6 @@ namespace Tests\Feature\End2End\Groups\Genes;
 use Carbon\Carbon;
 use Tests\TestCase;
 use App\Models\Activity;
-use Laravel\Sanctum\Sanctum;
 use App\Modules\User\Models\User;
 use Illuminate\Support\Facades\Mail;
 use App\Modules\Group\Mail\GeneAddedMail;
@@ -46,7 +45,7 @@ class AddGenesToVcepTest extends TestCase
     public function unprivileged_user_can_not_add_genes_to_an_ep()
     {
         $this->user->revokePermissionTo('ep-applications-manage');
-        Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
 
         $this->json('POST', $this->url, [
             'genes' => [[
@@ -61,7 +60,7 @@ class AddGenesToVcepTest extends TestCase
     #[Test]
     public function validates_input_for_vceps()
     {
-        Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
 
         $rsp1 = $this->json('POST', $this->url, []);
         $rsp1->assertStatus(422);
@@ -73,7 +72,7 @@ class AddGenesToVcepTest extends TestCase
     #[Test]
     public function requires_an_hgnc_id_and_gene_symbol_for_each_gene()
     {
-        Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
 
         $this->json('POST', $this->url, ['genes' => [['mondo_id' => 'MONDO:9876543']]])
             ->assertStatus(422)
@@ -87,7 +86,7 @@ class AddGenesToVcepTest extends TestCase
     public function validates_group_is_an_vcep()
     {
         $this->expertPanel->group->update(['group_type_id' => config('groups.types.wg.id')]);
-        Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
 
         $this->json('POST', $this->url, [
             'genes' => [['hgnc_id'=>12345, 'gene_symbol' => 'ABC1', 'mondo_id' => 'MONDO:9876543']]
@@ -103,7 +102,7 @@ class AddGenesToVcepTest extends TestCase
     {
         $this->seedGenes(['hgnc_id' => 789012, 'gene_symbol' => 'ABC12']);
         $this->seedDiseases(['mondo_id' => 'MONDO:8901234', 'name' => 'fartsalot']);
-        Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
         $this->json('POST', $this->url, [
             'genes' => [
                 [
@@ -157,7 +156,7 @@ class AddGenesToVcepTest extends TestCase
             ],
         ];
 
-        Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
         $this->json('POST', $this->url, [
             'genes' => $genesData
         ])->assertStatus(200);

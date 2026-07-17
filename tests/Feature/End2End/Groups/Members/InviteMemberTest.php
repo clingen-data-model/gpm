@@ -3,7 +3,6 @@
 namespace Tests\Feature\End2End\Groups\Members;
 
 use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
 use App\Modules\User\Models\User;
 use App\Modules\Group\Models\Group as GroupModel;
 use App\Modules\Person\Models\Person;
@@ -48,7 +47,7 @@ class InviteMemberTest extends TestCase
     #[Test]
     public function unprivileged_member_cannot_invite_members()
     {
-        Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
         $this->json('POST', $this->url, [])
             ->assertStatus(403);
     }
@@ -62,7 +61,7 @@ class InviteMemberTest extends TestCase
             collect([config('permission.models.permission')::factory()->create(['name' => 'members-invite', 'scope' => 'group'])])
         );
 
-        Sanctum::actingAs($this->user->fresh());
+        $this->actingAs($this->user->fresh(), 'clerk');
         $response = $this->json('POST', $this->url, []);
         $response->assertStatus(422);
         $response->assertJsonFragment([
@@ -93,7 +92,7 @@ class InviteMemberTest extends TestCase
             collect([config('permission.models.permission')::factory()->create(['name' => 'members-invite', 'scope' => 'group'])])
         );
 
-        Sanctum::actingAs($this->user->fresh());
+        $this->actingAs($this->user->fresh(), 'clerk');
         $response = $this->json('POST', $this->url, [
             'first_name' => 'Test',
             'last_name' => 'Testerson',
@@ -151,7 +150,7 @@ class InviteMemberTest extends TestCase
 
         $role = config('permission.models.role')::factory(['scope' => 'group'])->create();
 
-        Sanctum::actingAs($this->user->fresh());
+        $this->actingAs($this->user->fresh(), 'clerk');
         $response = $this->json('POST', $this->url, [
             'first_name' => 'Test',
             'last_name' => 'Testerson',
@@ -173,7 +172,7 @@ class InviteMemberTest extends TestCase
             collect([config('permission.models.permission')::factory()->create(['name' => 'members-invite', 'scope' => 'group'])])
         );
 
-        Sanctum::actingAs($this->user->fresh());
+        $this->actingAs($this->user->fresh(), 'clerk');
         $response = $this->json('POST', $this->url, [
             'first_name' => 'Test',
             'last_name' => 'Testerson',
@@ -203,7 +202,7 @@ class InviteMemberTest extends TestCase
             collect([config('permission.models.permission')::factory()->create(['name' => 'members-invite', 'scope' => 'group'])])
         );
 
-        Sanctum::actingAs($this->user->fresh());
+        $this->actingAs($this->user->fresh(), 'clerk');
 
         Notification::fake();
         $response = $this->json('POST', $this->url, [
@@ -228,7 +227,7 @@ class InviteMemberTest extends TestCase
             collect([config('permission.models.permission')::factory()->create(['name' => 'members-invite', 'scope' => 'group'])])
         );
 
-        Sanctum::actingAs($this->user->fresh());
+        $this->actingAs($this->user->fresh(), 'clerk');
         $response = $this->json('POST', $this->url, [
             'first_name' => 'Test',
             'last_name' => 'Testerson',

@@ -8,7 +8,6 @@ use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;
-use Laravel\Sanctum\Sanctum;
 use PHPUnit\Framework\Attributes\Test;
 
 class UpdateApprovalDateTest extends TestCase
@@ -34,7 +33,7 @@ class UpdateApprovalDateTest extends TestCase
     #[Test]
     public function it_validates_request_params()
     {
-        Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
         $this->json('put', '/api/applications/'.$this->expertPanel->uuid.'/approve', [])
             ->assertStatus(422)
             ->assertJson(['errors' => [
@@ -57,7 +56,7 @@ class UpdateApprovalDateTest extends TestCase
     #[Test]
     public function it_stores_new_date_and_returns_the_document()
     {
-        Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
         $response = $this->json('put', '/api/applications/'.$this->expertPanel->uuid.'/approve', [
             'step' => 1,
             'date_approved' => '2021-04-22T04:00:00.000000Z'

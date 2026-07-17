@@ -4,7 +4,6 @@ namespace Tests\Feature\End2End\Groups\Members;
 
 use DateTime;
 use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
 use App\Modules\User\Models\User;
 use App\Modules\Group\Models\Group as GroupModel;
 use App\Modules\Person\Models\Person;
@@ -30,7 +29,7 @@ class RetireMemberTest extends TestCase
         $this->setupEntities()->setupMember();
 
         $this->url = 'api/groups/'.$this->group->uuid.'/members/'.$this->groupMember->id.'/retire/';
-        Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
         Carbon::setTestNow('2022-07-18');
 
     }

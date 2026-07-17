@@ -4,7 +4,6 @@ namespace Tests\Feature\End2End\Groups\Members;
 
 use App\Modules\Group\Models\GroupMember;
 use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
 use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -36,7 +35,7 @@ class UpdateMemberTest extends TestCase
 
         $this->admin->givePermissionTo('groups-manage');
 
-        Sanctum::actingAs($this->admin);
+        $this->actingAs($this->admin, 'clerk');
         $response = $this->json(
             'PUT',
             $url,
@@ -50,7 +49,7 @@ class UpdateMemberTest extends TestCase
     {
         $url = '/api/groups/'.$this->groupMember->group->uuid.'/members/'.$this->groupMember->id;
 
-        Sanctum::actingAs($this->admin);
+        $this->actingAs($this->admin, 'clerk');
         $response = $this->json(
             'PUT',
             $url,
@@ -64,7 +63,7 @@ class UpdateMemberTest extends TestCase
     {
         $this->admin->givePermissionTo('groups-manage');
         $url = '/api/groups/'.$this->groupMember->group->uuid.'/members/'.$this->groupMember->id;
-        Sanctum::actingAs($this->admin);
+        $this->actingAs($this->admin, 'clerk');
 
         $response = $this->json(
             'PUT',
@@ -89,7 +88,7 @@ class UpdateMemberTest extends TestCase
     {
         $this->admin->givePermissionTo('groups-manage');
         $url = '/api/groups/'.$this->groupMember->group->uuid.'/members/'.$this->groupMember->id;
-        Sanctum::actingAs($this->admin);
+        $this->actingAs($this->admin, 'clerk');
 
         $response = $this->json(
             'PUT',
@@ -114,7 +113,7 @@ class UpdateMemberTest extends TestCase
 
         $url = '/api/groups/'.$this->group->uuid.'/members';
 
-        Sanctum::actingAs($this->admin);
+        $this->actingAs($this->admin, 'clerk');
         $response = $this->json(
             'PUT',
             $url,

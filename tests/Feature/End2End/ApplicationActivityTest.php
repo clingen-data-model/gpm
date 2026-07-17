@@ -4,7 +4,6 @@ namespace Tests\Feature\End2End;
 
 use Tests\TestCase;
 use App\Models\Role;
-use Laravel\Sanctum\Sanctum;
 use Illuminate\Testing\TestResponse;
 use App\Modules\Person\Models\Person;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
@@ -34,7 +33,7 @@ class ApplicationActivityTest extends TestCase
 
         $this->user = $this->setupUser(null, []);
         $this->setupPermission(['ep-applications-manage']);
-        Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
 
     }
 

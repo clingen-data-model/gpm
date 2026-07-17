@@ -3,7 +3,6 @@
 namespace Tests\Feature\End2End\Groups\EvidenceSummaries;
 
 use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
 use App\Modules\User\Models\User;
 use App\Modules\ExpertPanel\Models\Gene;
 use Tests\Traits\SeedsHgncGenesAndDiseases;
@@ -34,7 +33,7 @@ class GetSummariesTest extends TestCase
 
         $this->summary = EvidenceSummary::factory()->create(['expert_panel_id' => $this->vcep->id, 'gene_id' => $this->vcepGenes->first()->id]);
 
-        Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
     }
 
     #[Test]

@@ -4,7 +4,6 @@ namespace Tests\Feature\End2End\ExpertPanels\NextActions;
 
 use Tests\TestCase;
 use Ramsey\Uuid\Uuid;
-use Laravel\Sanctum\Sanctum;
 use App\Modules\User\Models\User;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -29,7 +28,7 @@ class DeleteNextActionTest extends TestCase
         $this->runSeeder([NextActionAssigneesTableSeeder::class]);
 
         $this->user = $this->setupUser();
-        Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
         $this->expertPanel = ExpertPanel::factory()->create();
         $this->baseUrl = '/api/applications/'.$this->expertPanel->uuid.'/next-actions';
 

@@ -3,7 +3,6 @@
 namespace Tests\Feature\End2End\Comments;
 
 use Carbon\Carbon;
-use Laravel\Sanctum\Sanctum;
 use App\Modules\Group\Models\Submission;
 use Illuminate\Support\Facades\Notification;
 use App\Modules\Group\Notifications\CommentActivityNotification;
@@ -35,7 +34,7 @@ class CommentDeleteTest extends CommentTestAbstract
     public function user_with_comments_manage_permission_can_delete_any_comment()
     {
         $otherUser = $this->setupUser(null, ['comments-manage']);
-        Sanctum::actingAs($otherUser);
+        $this->actingAs($otherUser, 'clerk');
         $this->makeRequest()->assertStatus(200);
 
         $this->assertDatabaseHas('comments', [
@@ -48,7 +47,7 @@ class CommentDeleteTest extends CommentTestAbstract
     public function user_without_special_permission_cannot_delete_another_users_comment()
     {
         $otherUser = $this->setupUser(null, ['ep-applications-comment']);
-        Sanctum::actingAs($otherUser);
+        $this->actingAs($otherUser, 'clerk');
 
         $this->makeRequest()->assertStatus(403);
 

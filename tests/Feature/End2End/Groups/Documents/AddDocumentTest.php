@@ -4,7 +4,6 @@ namespace Tests\Feature\End2End\Groups\Documents;
 
 use Tests\TestCase;
 use Ramsey\Uuid\Uuid;
-use Laravel\Sanctum\Sanctum;
 use Illuminate\Http\UploadedFile;
 use App\Modules\Group\Models\Group;
 use Illuminate\Support\Facades\Storage;
@@ -24,7 +23,7 @@ class AddDocumentTest extends TestCase
         $this->user = $this->setupUserWithPerson(null, ['groups-manage']);
         $this->group = Group::factory()->create();
 
-        Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
     }
 
     #[Test]

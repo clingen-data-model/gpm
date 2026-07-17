@@ -9,7 +9,6 @@ use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Laravel\Sanctum\Sanctum;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 
@@ -24,7 +23,7 @@ class UpdateDocumentInfoTest extends TestCase
         $this->setupForGroupTest();
 
         $this->user = $this->setupUser();
-        Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
         $this->expertPanel = ExpertPanel::factory()->create();
         $this->document = Document::factory()->make();
         $this->expertPanel->group->documents()->save($this->document);

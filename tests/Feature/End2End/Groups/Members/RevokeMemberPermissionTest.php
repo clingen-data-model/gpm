@@ -3,7 +3,6 @@
 namespace Tests\Feature\End2End\Groups\Members;
 
 use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
 use App\Modules\User\Models\User;
 use App\Modules\Group\Models\GroupMember;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -26,7 +25,7 @@ class RevokeMemberPermissionTest extends TestCase
         $this->setupForGroupTest();
 
         $this->user = $this->setupUser();
-        Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
 
         $this->setupEntities()->setupMember();
         $this->permissions = config('permission.models.permission')::factory(2)->create(['scope' => 'group']);

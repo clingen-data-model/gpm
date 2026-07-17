@@ -3,7 +3,6 @@
 namespace Tests\Feature\End2End\Mail;
 
 use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -24,7 +23,7 @@ class RenderUserDefinedTemplateTest extends TestCase
         $this->setupForGroupTest();
         $this->expertPanel = ExpertPanel::factory()->create();
         $this->user = $this->setupUser(permissions: ['ep-applications-manage']);
-        Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
     }
 
     #[Test]

@@ -6,7 +6,6 @@ use Tests\TestCase;
 use Illuminate\Support\Str;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Laravel\Sanctum\Sanctum;
 use PHPUnit\Framework\Attributes\Test;
 
 class CreateGroupTest extends TestCase
@@ -19,7 +18,7 @@ class CreateGroupTest extends TestCase
         $this->setupForGroupTest();
 
         $this->user = $this->setupUser(permissions: ['groups-manage']);
-        Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
     }
 
     #[Test]

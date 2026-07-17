@@ -3,7 +3,6 @@
 namespace Tests\Feature\End2End\Person;
 
 use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
 use App\Modules\User\Models\User;
 use App\Modules\Person\Models\Person;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -37,7 +36,7 @@ class ListPeopleTest extends TestCase
     #[Test]
     public function authed_user_can_get_paginated_list_of_people()
     {
-        Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
         $response = $this->json('GET', static::URL);
         $response->assertStatus(200);
         $this->assertEquals(5, $response->original->count());

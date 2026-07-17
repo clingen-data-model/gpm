@@ -5,7 +5,6 @@ namespace Tests\Feature\End2End\ExpertPanels\Documents;
 use Carbon\Carbon;
 use Tests\TestCase;
 use App\Models\Document;
-use Laravel\Sanctum\Sanctum;
 use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
@@ -35,7 +34,7 @@ class MarkFinalTest extends TestCase
     #[Test]
     public function marks_a_document_final()
     {
-        Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
         $this->call('POST', $this->docUrl)
             ->assertStatus(200)
             ->assertJsonFragment([
@@ -46,7 +45,7 @@ class MarkFinalTest extends TestCase
     #[Test]
     public function marks_any_previous_final_documents_for_same_application_and_type_as_not_final()
     {
-        Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
         $d = Document::factory()->make(['metadata'=>['is_final' => 1], 'document_type_id' => $this->document->document_type_id]);
         $document = $this->expertPanel->group->documents()->save($d);
 
@@ -65,7 +64,7 @@ class MarkFinalTest extends TestCase
     #[Test]
     public function event_recorded_when_marked_final()
     {
-        Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
         $this->call('POST', $this->docUrl)
             ->assertStatus(200)
             ->assertJsonFragment([

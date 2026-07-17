@@ -6,7 +6,6 @@ use App\Models\Role;
 use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
-use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 use PHPUnit\Framework\Attributes\Test;
 
@@ -32,7 +31,7 @@ class ImpersonateSearchTest extends TestCase
                 ->assignRole('admin'),
             'vicky' => User::factory()->create(['name' => 'vicky', 'email'=>'vicky@hell.com']),
         ]);
-        Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
     }
 
     #[Test]

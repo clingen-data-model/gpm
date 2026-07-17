@@ -3,7 +3,6 @@
 namespace Tests\Feature;
 
 use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
 use App\Modules\User\Models\User;
 use App\Modules\Group\Models\Group;
 use Database\Seeders\GroupTypeSeeder;
@@ -21,7 +20,7 @@ class CdwgIndextTest extends TestCase
         
         Group::cdwg()->get()->each->delete();
         $this->user = User::factory()->create();
-        Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
     
         $this->cdwgs = Group::factory()->cdwg()->count(10)->create();
     }

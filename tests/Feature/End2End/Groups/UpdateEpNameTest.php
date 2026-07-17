@@ -6,7 +6,6 @@ use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
-use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
@@ -24,7 +23,7 @@ class UpdateEpNameTest extends TestCase
         $this->user = $this->setupUser(permissions: ['groups-manage']);
         $this->expertPanel = ExpertPanel::factory()->gcep()->create();
 
-        Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
     }
 
     #[Test]

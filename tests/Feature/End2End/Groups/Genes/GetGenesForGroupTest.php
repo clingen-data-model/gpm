@@ -8,7 +8,6 @@ use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Modules\Group\Actions\GenesAdd;
 use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Laravel\Sanctum\Sanctum;
 use Tests\Traits\SeedsHgncGenesAndDiseases;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
@@ -42,7 +41,7 @@ class GetGenesForGroupTest extends TestCase
             ['hgnc_id' => 12345, 'gene_symbol' => 'ABC1', 'mondo_id' => 'MONDO:1234567'],
             ['hgnc_id' => 987654, 'gene_symbol' => 'DEF1', 'mondo_id' => 'MONDO:9876543'],
         ]);
-        Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
     }
 
     #[Test]

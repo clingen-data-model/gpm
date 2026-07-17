@@ -4,7 +4,6 @@ namespace Tests\Feature\End2End\Groups;
 
 use Tests\TestCase;
 use App\Tasks\Models\Task;
-use Laravel\Sanctum\Sanctum;
 use App\Tasks\Actions\TaskCreate;
 use App\Tasks\Actions\TaskComplete;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -29,7 +28,7 @@ class GetTasksTest extends TestCase
         (new TaskComplete)->handle($this->completedTask);
 
         $this->user = $this->setupUser();
-        Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
     }
 
     #[Test]

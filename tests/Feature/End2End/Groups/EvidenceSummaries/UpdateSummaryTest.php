@@ -4,7 +4,6 @@ namespace Tests\Feature\End2End\Groups\EvidenceSummaries;
 
 use App\Modules\ExpertPanel\Models\EvidenceSummary;
 use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
 use App\Modules\User\Models\User;
 use App\Modules\Group\Models\Group;
 use App\Modules\ExpertPanel\Models\Gene;
@@ -30,7 +29,7 @@ class UpdateSummaryTest extends TestCase
         $this->evidenceSummary = EvidenceSummary::factory()->create([
             'expert_panel_id' => $this->vcep->id
         ]);
-        Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
 
         $this->url = '/api/groups/'.$this->vcep->group->uuid.'/expert-panel/evidence-summaries/'.$this->evidenceSummary->id;
     }

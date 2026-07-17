@@ -3,7 +3,6 @@
 namespace Tests\Feature\End2End\ExpertPanels\LogEntries;
 
 use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
 use App\Modules\User\Models\User;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -33,7 +32,7 @@ class UpdateLogEntryTest extends TestCase
     #[Test]
     public function updates_log_entry()
     {
-        Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
         $response = $this->json(
             'PUT',
             '/api/applications/'.$this->expertPanel->uuid.'/log-entries/'.$this->logEntry->id,

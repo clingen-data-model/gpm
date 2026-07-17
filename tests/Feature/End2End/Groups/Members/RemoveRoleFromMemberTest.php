@@ -3,7 +3,6 @@
 namespace Tests\Feature\End2End\Groups\Members;
 
 use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
 use App\Modules\User\Models\User;
 use App\Modules\Group\Models\Group as GroupModel;
 use App\Modules\Person\Models\Person;
@@ -39,7 +38,7 @@ class RemoveRoleFromMemberTest extends TestCase
     public function can_remove_a_role_from_a_group_member()
     {
         // (new MemberRemoveRole)->handle($this->groupMember, [$this->roles->first()]);
-        Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
         $this->json('DELETE', $this->url.'/'.$this->roles->first()->id)
             ->assertStatus(200);
 
@@ -58,7 +57,7 @@ class RemoveRoleFromMemberTest extends TestCase
     #[Test]
     public function logs_role_removed_activity()
     {
-        Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
         $this->json('DELETE', $this->url.'/'.$this->roles->first()->id)
             ->assertStatus(200);
 

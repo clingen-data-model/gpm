@@ -6,7 +6,6 @@ use App\Modules\ExpertPanel\Models\Coi;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Carbon\Carbon;
 use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
 use App\Modules\User\Models\User;
 use App\Modules\Group\Models\Group;
 use App\Modules\Person\Models\Invite;
@@ -37,7 +36,7 @@ class PersonMergeTest extends TestCase
         $this->person1 = $this->setupPerson($this->group1);
         $this->person2 = $this->setupPerson($this->group2);
         
-        Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
     }
 
     #[Test]

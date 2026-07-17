@@ -4,7 +4,6 @@ namespace Tests\Feature\End2End\Person;
 
 use App\Modules\Person\Models\Person;
 use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Notification;
@@ -21,7 +20,7 @@ class GetNotificationsTest extends TestCase
         $this->setupForGroupTest();
 
         $this->user = $this->setupUser();
-        Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
         $this->person = Person::factory()->create(['user_id' => $this->user->id]);
 
         Notification::send($this->person, new TestDatabaseNotification('bonkers'));

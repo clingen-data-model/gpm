@@ -3,7 +3,6 @@
 namespace Tests\Feature\End2End\Groups;
 
 use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
 use App\Modules\User\Models\User;
 use App\Modules\Group\Models\Group;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -30,7 +29,7 @@ class UpdateMembershipDescriptionTest extends TestCase
     public function unprivileged_users_cannot_save_membership_description()
     {
         $unprivileged = User::factory()->create();
-        Sanctum::actingAs($unprivileged);
+        $this->actingAs($unprivileged, 'clerk');
         $this->json('PUT', $this->url, ['membership_description' => 'this is a membership description'])
             ->assertStatus(403);
     }
@@ -38,7 +37,7 @@ class UpdateMembershipDescriptionTest extends TestCase
     #[Test]
     public function validates_input()
     {
-        Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
         $this->json('PUT', $this->url, [])
             ->assertStatus(422)
             ->assertJsonFragment([
@@ -49,7 +48,7 @@ class UpdateMembershipDescriptionTest extends TestCase
     #[Test]
     public function privileged_user_can_store_membership_description()
     {
-        Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
         $description = 'I am a description of the membership.  I can be greater than 255 characters.I am a description of the membership.  I can be greater than 255 characters.I am a description of the membership.  I can be greater than 255 characters.I am a description of the membership.  I can be greater than 255 characters.';
         $response = $this->json('PUT', $this->url, ['membership_description' => $description]);
         $response->assertStatus(200);
@@ -68,7 +67,7 @@ class UpdateMembershipDescriptionTest extends TestCase
     public function logs_activity()
     {
         $description = 'Test description';
-        Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
         $response = $this->json('PUT', $this->url, ['membership_description' => $description]);
 
         $response->assertStatus(200);
@@ -87,7 +86,7 @@ class UpdateMembershipDescriptionTest extends TestCase
     {
         $this->expertPanel->group->update(['group_type_id' => config('groups.types.gcep.id')]);
 
-        Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
         $response = $this->json('PUT', $this->url, ['membership_description' => 'test test test']);
 
         $response->assertStatus(422);

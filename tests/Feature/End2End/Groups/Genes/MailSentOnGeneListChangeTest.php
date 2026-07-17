@@ -3,7 +3,6 @@
 namespace Tests\Feature\End2End\Groups\Genes;
 
 use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Mail;
 use App\Modules\Group\Mail\GeneAddedMail;
@@ -153,14 +152,14 @@ class MailSentOnGeneListChangeTest extends TestCase
             ['hgnc_id' => 12345, 'gene_symbol' => 'ABC1', 'mondo_id' => 'MONDO:9876543'],
         ];
 
-        Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
         return $this->json('POST', $this->url, ['genes' => $genesData]);
     }
 
     private function makeRemoveRequest()
     {
         Carbon::setTestNow('2021-11-01');
-        Sanctum::actingAs($this->user);
+        $this->actingAs($this->user, 'clerk');
         return $this->json('DELETE', $this->url, ['ids' => [$this->gene1->id]]);
     }
 }
