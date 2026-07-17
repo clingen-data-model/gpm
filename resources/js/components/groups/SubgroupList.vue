@@ -44,7 +44,7 @@ export default {
         <dropdown-item v-if="showMemberReportButton" class="text-right">
           <a :href="exportUrl">Member Export</a>
           <note class="inline">
-            (CSV)
+            (XLSX)
           </note>
         </dropdown-item>
       </dropdown-menu>
