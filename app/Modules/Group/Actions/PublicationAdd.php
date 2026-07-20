@@ -41,7 +41,7 @@ class PublicationAdd
 
     protected function authorize($user, Group $group): void
     {
-        if (!$user || ($user->cannot('groups-manage') && $user->cannot('application-edit', $group))) {
+        if (!$user || (!$user->hasAnyRole(['super-user', 'super-admin']) && !$group->memberIsCoordinator($user->person->id))) {
             abort(403);
         }
     }
