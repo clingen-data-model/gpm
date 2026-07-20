@@ -1,6 +1,7 @@
 <?php
 namespace App\Modules\Person\Actions;
 
+use Illuminate\Validation\Rule;
 use Lorisleiva\Actions\ActionRequest;
 use App\Modules\Person\Models\Institution;
 use Lorisleiva\Actions\Concerns\AsController;
@@ -17,7 +18,7 @@ class InstitutionUpdate
 
     public function asController(ActionRequest $request, Institution $institution)
     {
-        $data = $request->only(['name', 'abbreviation', 'url', 'country_id', 'address', 'reportable']);
+        $data = $request->only(['name', 'abbreviation', 'url', 'city', 'country_id', 'address', 'reportable']);
         return $this->handle($institution, $data)
                 ->load('country')
                 ->loadCount('people');
@@ -30,13 +31,15 @@ class InstitutionUpdate
 
     public function rules(): array
     {
+        $institution = $request->route('institution');
         return [
-           'name' => 'required|max:255',
-           'abbreviation' => 'nullable|max:255',
-           'url' => 'nullable|max:255',
-           'country_id' => 'nullable|exists:countries,id',
-           'address' => 'nullable|max:255',
-           'reportable' => 'nullable|boolean',
+            'name'          => ['required', 'string', 'max:255', Rule::unique('institutions', 'name')->ignore($institution?->id)],
+            'abbreviation'  => ['nullable', 'string', 'max:255'],
+            'url'           => ['nullable', 'string', 'max:255', Rule::unique('institutions', 'url')->ignore($institution?->id)],
+            'city'          => ['required', 'string', 'max:255'],
+            'country_id'    => ['required', 'integer', 'exists:countries,id'],
+            'address'       => ['nullable', 'string', 'max:255'],
+            'reportable'    => ['nullable', 'boolean'],
         ];
     }
 }

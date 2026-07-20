@@ -51,6 +51,23 @@ class Person extends Entity {
         return this.institution ? this.institution.name : null;
     }
 
+    get institutionCity () {
+        return this.institution?.city ?? null;
+    }
+
+    get institutionCountry () {
+        return this.institution?.country ?? null;
+    }
+
+    get institutionDisplay () {
+        if (!this.institution) {
+            return null;
+        }
+
+        const location = [this.institutionCity, this.institutionCountry].filter(Boolean).join(', ');
+        return location ? `${this.institutionName} — ${location}` : this.institutionName;
+    }
+
     get credentialsString () {
         return this.credentials ? this.credentials.map(c => c.name).join(', ') : null;
     }

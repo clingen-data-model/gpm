@@ -45,7 +45,7 @@ export default {
     <InputErrors class="text-xs" :errors="errors.street2 || []" />
 
     <div class="flex space-x-1">
-      <input v-model="workingCopy.city" type="text" placeholder="City" class="w-1/3 shrink">
+      <input v-model="workingCopy.city" type="text" placeholder="City" required class="w-1/3 shrink">
       <input v-model="workingCopy.state" type="text" placeholder="State" class="w-1/3 shrink">
       <input v-model="workingCopy.zip" type="text" placeholder="Postal Code" class="w-1/3 shrink">
     </div>

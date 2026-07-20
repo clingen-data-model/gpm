@@ -17,9 +17,10 @@ class ReportPeopleMake extends ReportMakeAbstract
     public function csvHeaders(): ?array
     {
         return [
-            'id','first_name','last_name','email','institution','city','state','country','timezone','phone',
-            'credentials','expertises','active_groups', 'active_status', 'biography','orcid_id',
-            'hypothesis_id','has_registered','date created','last_updated'
+            'id', 'first_name', 'last_name', 'email', 'city', 'state', 'country', 'timezone', 'phone',
+            'credentials', 'institution', 'institution_city', 'institution_country', 
+            'expertises', 'active_groups', 'active_status', 'biography', 'orcid_id',
+            'hypothesis_id', 'has_registered', 'date created', 'last_updated'
         ];
     }
 
@@ -53,7 +54,8 @@ class ReportPeopleMake extends ReportMakeAbstract
                     'country:id,name',
                     'credentials:id,name',
                     'expertises:id,name',
-                    'institution:id,name',
+                    'institution:id,name,city,country_id',
+                    'institution.country:id,name',
                 ])
                 ->orderBy('id')
                 ->chunkById(1000, function ($people) use ($push) {
@@ -69,14 +71,17 @@ class ReportPeopleMake extends ReportMakeAbstract
                             'id'             => $person->id,
                             'first_name'     => trim($person->first_name),
                             'last_name'      => trim($person->last_name),
-                            'email'          => $person->email,
-                            'institution'    => optional($person->institution)->name,
+                            'email'          => $person->email,                            
                             'city'           => $person->city ?: null,
                             'state'          => $person->state ?: null,
                             'country'        => optional($person->country)->name,
                             'timezone'       => $person->timezone,
                             'phone'          => $person->phone,
                             'credentials'    => $person->credentialsAsString ?? '',
+                            // Institution GPM-567
+                            'institution'         => $person->institution?->name,
+                            'institution_city'    => $person->institution?->city,
+                            'institution_country' => $person->institution?->country?->name,
                             'expertises'     => preg_replace('/\r?\n/', '; ', $person->expertisesAsString ?? ''),
                             'active_groups'  => $activeGroups,
                             'active_status'  => $isActive ? 'Active' : 'Inactive',
