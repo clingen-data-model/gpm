@@ -103,7 +103,7 @@ class ProfileUpdate
             'timezone' => [Rule::in(DateTimeZone::listIdentifiers())],
             'street1' => ['nullable','max:255'],
             'street2' => ['nullable','max:255'],
-            'city' => ['nullable','max:255'],
+            'city' => ['required', 'string', 'max:255'],
             'state' => ['nullable','max:255'],
             'zip' => ['nullable','max:255'],
         ];

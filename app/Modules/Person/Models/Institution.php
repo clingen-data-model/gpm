@@ -34,6 +34,7 @@ class Institution extends Model
         'abbreviation',
         'url',
         'address',
+        'city',
         'country_id',
         'website_id',
         'approved',

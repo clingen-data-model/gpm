@@ -200,7 +200,13 @@
       type="large-text"
     />
 
-    <input-row v-if="canEditAllFields" label="Address">
+    <input-row v-if="canEditAllFields">
+      <template #label>
+        Address
+        <span class="text-xs text-gray-500">
+          (City is required)
+        </span>
+      </template>
       <AddressInput v-model="profile" :errors="errors" />
     </input-row>
 

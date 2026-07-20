@@ -6,6 +6,7 @@ export const fields = computed(() => [
     {
         name: 'name',
         placeholder: 'University of Liliput',
+        required: true,
     },
     {
         name: 'abbreviation',
@@ -16,10 +17,22 @@ export const fields = computed(() => [
         placeholder: 'https://lilu.edu'
     },
     {
+        name: 'address',
+        label: 'Address',
+        placeholder: '123 Main Street',
+    },
+    {
+        name: 'city',
+        label: 'City',
+        placeholder: 'Chapel Hill',
+        required: true,
+    },
+    {
         name: 'country_id',
         label: 'Country',
         type: 'select',
-        options: countries.value
+        options: countries.value,
+        required: true,
     },
     {
         name: 'reportable',

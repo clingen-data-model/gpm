@@ -41,13 +41,19 @@ export default {
         }
     },
     methods: {
-        editPerson () {
-            this.$store.commit('people/setCurrentItemIndex', this.person);
-            this.showEditForm = true;
-        },
-        hideEditForm () {
-            this.showEditForm = false;
-        }
+      editPerson () {
+        this.$store.commit('people/setCurrentItemIndex', this.person);
+        this.showEditForm = true;
+      },
+      hideEditForm () {
+        this.showEditForm = false;
+      },
+      async handleProfileSaved (updatedPerson) {
+        this.showEditForm = false;
+        await this.$store.dispatch('people/getPerson', {
+            uuid: updatedPerson?.uuid || this.person.uuid
+        });
+      }
     }
 }
 </script>
@@ -79,7 +85,7 @@ export default {
           <h3>Profile</h3>
           <div>
             <dictionary-row class="pb-2" label-class="w-40" label="Institution">
-              {{ person.institutionName }}
+              {{ person.institutionDisplay }}
             </dictionary-row>
             <dictionary-row class="pb-2" label-class="w-40" label="Credentials">
               <CredentialsView :person="person" />
@@ -193,7 +199,7 @@ export default {
 
     <teleport to="body">
       <modal-dialog v-model="showEditForm" :title="formDialogTitle">
-        <ProfileForm :person="person" @saved="hideEditForm" @canceled="hideEditForm" />
+        <ProfileForm :person="person" @saved="handleProfileSaved" @canceled="hideEditForm" />
       </modal-dialog>
     </teleport>
   </div>

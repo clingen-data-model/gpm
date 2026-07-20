@@ -12,13 +12,13 @@ class InstitutionCreate
     use AsController;
 
     public function handle(
-        String $name,
-        ?String $abbreviation = null,
-        ?String $url = null,
-        ?String $address = null,
-        ?int $country_id = null,
+        string $name,
+        string $city,
+        int $country_id,
+        ?string $abbreviation = null,
+        ?string $url = null,
+        ?string $address = null,
         ?bool $reportable = true,
-        // ?int $website_id = null,
     ): Institution {
         return Institution::create([
             'uuid' => Uuid::uuid4(),
@@ -26,31 +26,41 @@ class InstitutionCreate
             'abbreviation' => $abbreviation,
             'url' => $url,
             'address' => $address,
+            'city' => $city,
             'country_id' => $country_id,
-            'reportable' => $reportable
-            // 'website_id' => $website_id
+            'reportable' => $reportable,
         ]);
     }
 
     public function asController(ActionRequest $request)
     {
-        return $this->handle(...$request->only('name', 'abbreviation', 'url', 'address', 'country_id', 'reportable', 'website_id'));
+        return $this->handle(
+            ...$request->only([
+                'name',
+                'city',
+                'country_id',
+                'abbreviation',
+                'url',
+                'address',
+                'reportable',
+            ])
+        );
     }
 
     public function rules(): array
     {
         return [
-           'name' => 'required|max:256|unique:institutions,name',
-           'abbreviation' => 'nullable|max:32',
-           'url' => 'nullable|unique:institutions,url',
-           'address' => 'nullable|max:256',
-           'country_id' => 'nullable|exists:countries,id',
-           'reportable' => 'nullable|boolean',
-        //    'website_id' => 'nullable|unique:institutions,website_id',
+            'name' => ['required', 'string', 'max:256', 'unique:institutions,name'],
+            'city' => ['required', 'string', 'max:255'],
+            'country_id' => ['required', 'integer', 'exists:countries,id'],
+            'abbreviation' => ['nullable', 'string', 'max:32'],
+            'url' => ['nullable', 'unique:institutions,url'],
+            'address' => ['nullable', 'string', 'max:256'],
+            'reportable' => ['nullable', 'boolean'],
         ];
     }
 
-    public function getValidationMessages()
+    public function getValidationMessages(): array
     {
         return [
             'required' => 'This is required.',

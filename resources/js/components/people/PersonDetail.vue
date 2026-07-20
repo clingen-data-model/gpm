@@ -169,7 +169,7 @@ export default {
             {{ person.email }}
           </dictionary-row>
           <dictionary-row label="Institution" label-class="w-24 font-bold">
-            {{ person.institution ? person.institution.name : null }}
+            {{ person.institutionDisplay }}
           </dictionary-row>
         </div>
       </div>

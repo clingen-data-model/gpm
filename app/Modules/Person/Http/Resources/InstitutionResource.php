@@ -17,6 +17,9 @@ class InstitutionResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'city' => $this->city,
+            'country_id' => $this->country_id,
+            'country' => $this->country?->name,
             'abbreviation' => $this->abbreviation,
             'uuid' => $this->uuid
         ];
