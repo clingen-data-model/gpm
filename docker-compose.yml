@@ -34,9 +34,6 @@ services:
             - redis
         expose:
             - "9000"
-        links:
-            - db:db
-            - redis:redis
         extra_hosts:
             - "host.docker.internal:host-gateway"
         volumes:

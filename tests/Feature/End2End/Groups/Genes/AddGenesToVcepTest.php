@@ -8,8 +8,6 @@ use App\Models\Activity;
 use Laravel\Sanctum\Sanctum;
 use App\Modules\User\Models\User;
 use Illuminate\Support\Facades\Mail;
-use App\Services\HgncLookupInterface;
-use App\Services\DiseaseLookupInterface;
 use App\Modules\Group\Mail\GeneAddedMail;
 use Tests\Traits\SeedsHgncGenesAndDiseases;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -42,28 +40,6 @@ class AddGenesToVcepTest extends TestCase
 
         $this->expertPanel = ExpertPanel::factory()->vcep()->create();
         $this->url = '/api/groups/'.$this->expertPanel->group->uuid.'/expert-panel/genes';
-        
-        app()->bind(HgncLookupInterface::class, function ($app) {
-            return new class implements HgncLookupInterface {
-                public function findSymbolById($hgncId): string
-                {
-                    return 'ABC1';
-                }
-                public function findHgncIdBySymbol($geneSymbol): int
-                {
-                    return 12345;
-                }
-            };
-        });
-
-        app()->bind(DiseaseLookupInterface::class, function ($app) {
-            return new class implements DiseaseLookupInterface {
-                public function findNameByOntologyId(string $ontologyId): string
-                {
-                    return 'gladiola syndrome';
-                }
-            };
-        });
     }
 
     #[Test]
@@ -75,6 +51,7 @@ class AddGenesToVcepTest extends TestCase
         $this->json('POST', $this->url, [
             'genes' => [[
                 'hgnc_id' => 12345,
+                'gene_symbol' => 'ABC1',
                 'mondo_id' => 'MONDO:9876543',
             ]]
         ])
@@ -89,8 +66,21 @@ class AddGenesToVcepTest extends TestCase
         $rsp1 = $this->json('POST', $this->url, []);
         $rsp1->assertStatus(422);
         $rsp1->assertJsonFragment([
-            'genes' => ['This field is required.']
+            'genes' => ['Please provide a gene.']
         ]);
+    }
+
+    #[Test]
+    public function requires_an_hgnc_id_and_gene_symbol_for_each_gene()
+    {
+        Sanctum::actingAs($this->user);
+
+        $this->json('POST', $this->url, ['genes' => [['mondo_id' => 'MONDO:9876543']]])
+            ->assertStatus(422)
+            ->assertJsonValidationErrors([
+                'genes.0.hgnc_id' => 'Gene must have an HGNC ID.',
+                'genes.0.gene_symbol' => 'Gene must have a gene symbol.',
+            ]);
     }
 
     #[Test]
@@ -99,10 +89,12 @@ class AddGenesToVcepTest extends TestCase
         $this->expertPanel->group->update(['group_type_id' => config('groups.types.wg.id')]);
         Sanctum::actingAs($this->user);
 
-        $this->json('POST', $this->url, ['genes' => [['hgnc_id'=>12345, 'mondo_id' => 'MONDO:9876543']]])
+        $this->json('POST', $this->url, [
+            'genes' => [['hgnc_id'=>12345, 'gene_symbol' => 'ABC1', 'mondo_id' => 'MONDO:9876543']]
+        ])
             ->assertStatus(422)
             ->assertJsonFragment([
-                'group' => ['Genes can only be added to an Expert Panel.'],
+                'group' => ['Gene can only be added to an Expert Panel.'],
             ]);
     }
     
@@ -114,13 +106,22 @@ class AddGenesToVcepTest extends TestCase
         Sanctum::actingAs($this->user);
         $this->json('POST', $this->url, [
             'genes' => [
-                ['hgnc_id'=>12345, 'mondo_id' => 'MONDO:9876543'],
-                ['hgnc_id'=>789012, 'mondo_id' => 'MONDO:8901234']
+                [
+                    'hgnc_id' => 12345,
+                    'gene_symbol' => 'ABC1',
+                    'mondo_id' => 'MONDO:9876543',
+                    'disease_name' => 'gladiola syndrome',
+                ],
+                [
+                    'hgnc_id' => 789012,
+                    'gene_symbol' => 'ABC12',
+                    'mondo_id' => 'MONDO:8901234',
+                ],
             ]
         ])->assertStatus(200);
 
         $this->assertDatabaseHas(
-            'genes',
+            'scope_genes',
             [
                 'hgnc_id' => 12345,
                 'gene_symbol' => 'ABC1',
@@ -130,9 +131,10 @@ class AddGenesToVcepTest extends TestCase
             ]
         );
         $this->assertDatabaseHas(
-            'genes',
+            'scope_genes',
             [
                 'hgnc_id' => 789012,
+                'gene_symbol' => 'ABC12',
                 'mondo_id' => 'MONDO:8901234',
                 'expert_panel_id' => $this->expertPanel->id
             ]
@@ -147,8 +149,12 @@ class AddGenesToVcepTest extends TestCase
         $this->seedDiseases(['mondo_id' => 'MONDO:8901234', 'name' => 'fartsalot']);
 
         $genesData = [
-            ['hgnc_id'=>12345, 'mondo_id' => 'MONDO:9876543'],
-            // ['hgnc_id'=>789012, 'mondo_id' => 'MONDO:8901234']
+            [
+                'hgnc_id' => 12345,
+                'gene_symbol' => 'ABC1',
+                'mondo_id' => 'MONDO:9876543',
+                'disease_name' => 'gladiola syndrome',
+            ],
         ];
 
         Sanctum::actingAs($this->user);

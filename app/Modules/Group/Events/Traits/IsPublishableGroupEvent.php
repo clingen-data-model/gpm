@@ -76,10 +76,14 @@ trait IsPublishableGroupEvent
             'publications' => $group->publications->map->toExchangePayload()->all(),
             'status' => $group->groupStatus->name,
             'visibility' => optional($group->groupVisibility)->name,
-            'status_date' => $group->groupStatus->updated_at->toISO8601String(),
+            'status_date' => $group->groupStatus->updated_at->toISO8601String(),            
             'type' => $group->type->name,
             'coi' => url('/coi-group/'.$group->uuid),
         ];
+
+        if ($group->isScvcep) {
+            $data['website_url'] = $group->website_url ?? '';
+        }
 
         // Whatever happens, do not send membership information for private working groups, as this is the only way to be sure we don't leak membership info for private groups that have had their visibility changed to public at some point in the past.
         $hideMembersForPrivateWg = (int) $group->group_type_id === (int) config('groups.types.wg.id') && (int) $group->group_visibility_id === (int) config('groups.visibilities.private.id');
@@ -125,6 +129,19 @@ trait IsPublishableGroupEvent
 
             $awards = $group->fundingAwards()->get();
             $epData['funding_awards'] = $awards->map->toExchangePayload()->all();
+
+            if ($group->isScvcep) {
+                $finalSpecsTypeId = config('documents.types.final-specs.id');
+                $documents = $group->documents()->where('document_type_id', $finalSpecsTypeId)->latest('created_at')->get();                
+                $epData['scvcep_final_specification_documents'] = $documents->map(fn ($document) => [
+                    'uuid' => $document->uuid,
+                    'filename' => $document->filename,
+                    'download_url' => route('groups.final-specification.download', [
+                        'group' => $group->uuid,
+                        'document' => $document->uuid,
+                    ]),
+                ])->values()->all();
+            }
 
             $data['expert_panel'] = $epData;
         }

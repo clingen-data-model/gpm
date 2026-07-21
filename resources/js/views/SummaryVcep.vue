@@ -2,7 +2,7 @@
 import ApplicationsSummaryTable from '@/components/applications/ApplicationsSummaryTable.vue'
 
 export default {
-    name: 'GcepsSummary',
+    name: 'VcepsSummary',
     components: {
         ApplicationsSummaryTable
     },

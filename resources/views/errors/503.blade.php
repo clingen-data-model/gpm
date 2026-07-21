@@ -1,5 +1,5 @@
 @extends('errors::minimal')
 
-@section('title', __('Service Unavailable'))
+@section('title', __('GPM Temporarily Unavailable'))
 @section('code', '503')
-@section('message', __('Service Unavailable'))
+@section('message', __('GPM is currently undergoing maintenance. Please check back shortly.'))

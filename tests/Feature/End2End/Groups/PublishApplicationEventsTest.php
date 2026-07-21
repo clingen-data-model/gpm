@@ -142,7 +142,10 @@ class PublishApplicationEventsTest extends TestCase
     {
         $genes = $this->seedGenes([['hgnc_id' => 678, 'gene_symbol' => 'BCD'], ['hgnc_id' => 12345, 'gene_symbol' => 'ABC1']]);
         $action = app()->make(GenesAdd::class);
-        $action->handle($this->expertPanel->group, $genes->pluck('gene_symbol'));
+        $action->handle(
+            $this->expertPanel->group,
+            $genes->map(fn ($gene) => ['hgnc_id' => $gene->hgnc_id, 'gene_symbol' => $gene->gene_symbol])->all()
+        );
     }
 
 

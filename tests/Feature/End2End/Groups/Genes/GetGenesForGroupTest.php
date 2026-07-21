@@ -39,8 +39,8 @@ class GetGenesForGroupTest extends TestCase
         $this->expertPanel = ExpertPanel::factory()->vcep()->create();
         $this->url = '/api/groups/'.$this->expertPanel->group->uuid.'/expert-panel/genes';
         GenesAdd::run($this->expertPanel->group, [
-            ['hgnc_id' => 12345, 'mondo_id' => 'MONDO:1234567'],
-            ['hgnc_id' => 987654, 'mondo_id' => 'MONDO:9876543'],
+            ['hgnc_id' => 12345, 'gene_symbol' => 'ABC1', 'mondo_id' => 'MONDO:1234567'],
+            ['hgnc_id' => 987654, 'gene_symbol' => 'DEF1', 'mondo_id' => 'MONDO:9876543'],
         ]);
         Sanctum::actingAs($this->user);
     }

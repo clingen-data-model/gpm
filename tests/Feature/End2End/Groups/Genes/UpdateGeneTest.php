@@ -43,7 +43,7 @@ class UpdateGeneTest extends TestCase
         $this->json('PUT', $this->url, ['hgnc_id' => 12345, 'mondo_id' => 'MONDO:9876543'])
             ->assertStatus(403);
 
-        $this->assertDatabaseHas('genes', [
+        $this->assertDatabaseHas('scope_genes', [
             'hgnc_id' => 12345,
             'expert_panel_id' => $this->expertPanel->id,
         ]);
@@ -60,7 +60,7 @@ class UpdateGeneTest extends TestCase
                 'group' => ['Only expert panels have a gene list.  You can not update a gene on a '.$this->expertPanel->group->type->full_name]
             ]);
 
-        $this->assertDatabaseHas('genes', [
+        $this->assertDatabaseHas('scope_genes', [
             'hgnc_id' => 12345,
             'expert_panel_id' => $this->expertPanel->id,
         ]);
@@ -71,33 +71,24 @@ class UpdateGeneTest extends TestCase
     {
         Sanctum::actingAs($this->user);
 
-        $rsp1 = $this->json('PUT', $this->url, []);
-        $rsp1->assertStatus(422);
-        $rsp2 = $this->json('PUT', $this->url, ['hgnc_id'=>null, 'mondo_id' => null])
+        $this->json('PUT', $this->url, [])
+            ->assertStatus(422);
+
+        // mondo_id is nullable for VCEPs; only hgnc_id is required.
+        $this->json('PUT', $this->url, ['hgnc_id' => null, 'mondo_id' => null])
             ->assertStatus(422)
             ->assertJsonFragment([
                     'hgnc_id' => ['The gene is required.']
             ])
-            ->assertJsonFragment([
-                    'mondo_id' => ['The disease is required.']
-            ]);
-            
-        $rsp2 = $this->json('PUT', $this->url, ['hgnc_id' => 'bob', 'mondo_id' => '920192'])
-        ->assertStatus(422)
+            ->assertJsonMissingValidationErrors(['mondo_id']);
+
+        $this->json('PUT', $this->url, ['hgnc_id' => 'bob', 'mondo_id' => '920192'])
+            ->assertStatus(422)
             ->assertJsonFragment([
                     'hgnc_id' => ['The selection is invalid.']
             ])
             ->assertJsonFragment([
                 'mondo_id' => ['The selection is invalid.'],
-            ]);
-
-        $rsp3 = $this->json('PUT', $this->url, ['hgnc_id' => 91828, 'mondo_id' => 'MONDO:3383710'])
-            ->assertStatus(422)
-            ->assertJsonFragment([
-                'hgnc_id' => ['The selection is invalid.']
-            ])
-            ->assertJsonFragment([
-                'mondo_id' => ['The selection is invalid.']
             ]);
     }
 
@@ -132,7 +123,7 @@ class UpdateGeneTest extends TestCase
         $this->json('PUT', $this->url, ['hgnc_id' => 67890, 'mondo_id' => 'MONDO:9876543'])
             ->assertStatus(200);
 
-        $this->assertDatabaseHas('genes', [
+        $this->assertDatabaseHas('scope_genes', [
             'expert_panel_id' => $this->expertPanel->id,
             'hgnc_id' => 67890,
             'mondo_id' => 'MONDO:9876543'

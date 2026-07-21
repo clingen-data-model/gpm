@@ -43,11 +43,42 @@ onMounted(() => {
 // GROUPS
 // TODO: Get groups by search with TONS of info.
 // TODO: Extract that work to a module.
+const showPastGroups = ref(false);
 const groups = computed(() => {
-    return user.value.person.memberships
-        .map(m => m.group)
-        .filter(g => g !== null)
-        .map(group => new Group(group))
+  return (user.value.person?.memberships || [])
+    .map(membership => membership.group)
+    .filter(group => group !== null)
+    .map(group => new Group(group));
+});
+const currentGroups = computed(() => {
+  const currentStatusIds = [
+    configs.groups.statuses.applying.id,
+    configs.groups.statuses.active.id,
+  ];
+  return groups.value.filter(group =>
+    currentStatusIds.includes(group.status?.id)
+  );
+});
+
+const pastGroups = computed(() => {
+  const pastStatusIds = [
+    configs.groups.statuses.retired.id,
+    configs.groups.statuses.inactive.id,
+  ];
+
+  return groups.value.filter(group =>
+    pastStatusIds.includes(group.status?.id)
+  );
+});
+
+const groupSort = ref({
+  field: 'displayName',
+  desc: false,
+});
+
+const pastGroupSort = ref({
+  field: 'displayName',
+  desc: false,
 });
 
 const groupFields = ref([
@@ -74,19 +105,16 @@ const groupFields = ref([
         sortable: true,
     }
 ]);
-const groupSort = ref({
-    field: 'displayName',
-    desc: false
-});
 
 const groupBadgeColor = (status) => {
     const map = {
-        Active: 'green',
-        Applying: 'blue',
-        Retired: 'yellow',
-        Removed: 'red'
-    }
-    return map[status] || 'blue'
+        active: 'green',
+        applying: 'blue',
+        retired: 'yellow',
+        inactive: 'gray',
+        removed: 'red',
+    };
+    return map[status?.toLowerCase()] || 'blue';
 };
 
 const showApplicationActivity = computed(() => {
@@ -125,22 +153,41 @@ const navigateToGroup = (item) => {
 
     <tabs-container class="mt-8">
       <tab-item label="Your Groups">
-        <div v-if="!groups.length" class="well">
-          You are not assigned to any groups.
-        </div>
-        <data-table
-          v-else v-model:sort="groupSort" :data="groups" :fields="groupFields"
-          row-class="cursor-pointer" @row-click="navigateToGroup"
-        >
-          <template #cell-status_name="{ value }">
-            <badge :color="groupBadgeColor(value)">
-              {{ value }}
-            </badge>
-          </template>
-          <template #cell-displayName="{ item }">
-            {{ item.name }} {{ item.type.display_name }}
-          </template>
-        </data-table>
+        <div v-if="!groups.length" class="well">You are not assigned to any groups.</div>
+        <template v-else>
+          <div v-if="!currentGroups.length" class="well">You are not assigned to any active or applying groups.</div>
+          <data-table v-else v-model:sort="groupSort" :data="currentGroups" :fields="groupFields" row-class="cursor-pointer" @row-click="navigateToGroup">
+            <template #cell-status_name="{ value }">
+              <badge :color="groupBadgeColor(value)">{{ value }}</badge>
+            </template>
+            <template #cell-displayName="{ item }">
+              {{ item.name }} {{ item.type.display_name }}
+            </template>
+          </data-table>
+
+          <div v-if="pastGroups.length" class="mt-4">
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input v-model="showPastGroups" type="checkbox">
+              <span>Show inactive and retired groups ({{ pastGroups.length }})</span>
+            </label>
+          </div>
+
+          <div v-if="showPastGroups && pastGroups.length" class="mt-4">
+            <h3>Inactive and retired groups</h3>
+            <p class="text-sm text-gray-600">These groups are no longer active but remain available for reference.</p>
+
+            <data-table
+              v-model:sort="pastGroupSort"
+              :data="pastGroups"
+              :fields="groupFields"
+              row-class="cursor-pointer"
+              @row-click="navigateToGroup"
+            >
+              <template #cell-status_name="{ value }"><badge :color="groupBadgeColor(value)">{{ value }}</badge></template>
+              <template #cell-displayName="{ item }">{{ item.name }} {{ item.type.display_name }}</template>
+            </data-table>
+          </div>
+        </template>
       </tab-item>
 
       <tab-item label="Your Info">

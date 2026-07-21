@@ -125,17 +125,26 @@ export default {
           <dictionary-row class="pb-2" label-class="w-40" label="Status">
             {{ person?.coc?.status || 'ERROR'}}
           </dictionary-row>
-          <dictionary-row class="pb-2" label-class="w-40" label="Version">
-            {{ person?.coc?.version || 'N/A' }}
-          </dictionary-row>
           <dictionary-row class="pb-2" label-class="w-40" label="Completed At">
             {{ person?.coc?.completed_at ? formatDate(person.coc.completed_at) : 'Not completed' }}
           </dictionary-row>
           <dictionary-row class="pb-2" label-class="w-40" label="Expires At">
             {{ person?.coc?.expires_at ? formatDate(person.coc.expires_at) : 'Not completed' }}
           </dictionary-row>
-          <dictionary-row class="pb-2" label-class="w-40" label="Days Remaining">
-            {{ person?.coc?.days_remaining !== null && person?.coc?.days_remaining !== undefined ? person.coc.days_remaining : 'N/A' }}
+        </section>
+
+        <section v-if="hasPermission('people-manage') && person?.has_core_member_attestation" class="mt-4 border-t pt-4">
+          <h3>Core Approval Member Completed</h3>
+          <dictionary-row class="pb-2" label-class="w-40" label="Completed">
+            {{ person?.core_member_attestation_completed ? 'Yes' : 'No' }}
+          </dictionary-row>
+          <dictionary-row class="pb-2" label-class="w-40" label="Completed At">
+            {{ person?.core_member_attestation_completion_date ? formatDate(person.core_member_attestation_completion_date) : 'Not completed' }}
+          </dictionary-row>
+          <dictionary-row class="pb-2" label-class="w-40" label="Response">
+            <ul class="list-disc pl-5 text-sm text-gray-700 space-y-1">
+              <li v-for="response in person?.core_member_attestation_responses || []" :key="response">{{ response }}</li>
+            </ul>
           </dictionary-row>
         </section>
 

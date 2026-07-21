@@ -97,9 +97,6 @@ export default {
     saveUpdates () {
       if (this.applicationIsDirty() ) {
         return this.$store.dispatch('groups/saveApplicationData', this.group)
-                .then(() => {
-                  this.$emit('saved');
-                });
       }
     },
     saveWebDescription() {

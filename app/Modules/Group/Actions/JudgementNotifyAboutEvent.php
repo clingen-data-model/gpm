@@ -20,7 +20,7 @@ class JudgementNotifyAboutEvent
 
     public function handle(Judgement $judgement, string $type)
     {
-        $approvers = $this->getSubmissionNotifiables->handle(collect($judgement->person));
+        $approvers = $this->getSubmissionNotifiables->handle(collect([$judgement->person]));
 
         Notification::send(
             $approvers,

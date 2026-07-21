@@ -4,6 +4,7 @@ namespace App\Console;
 
 use App\Actions\SendSubmissionDigestNotifications;
 use App\Actions\SendCoiReminders;
+use App\Actions\SendCocReminders;
 use App\Actions\SendAttestationReminders;
 use Illuminate\Support\Facades\Log;
 use App\Actions\SendInviteReminders;

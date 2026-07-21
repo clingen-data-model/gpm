@@ -16,6 +16,7 @@ class CommentDeleteTest extends CommentTestAbstract
     public function setup():void
     {
         parent::setup();
+        Carbon::setTestNow('2022-06-28 10:00:00');
         $this->setupPermission('ep-applications-comments-manage');
         $this->comment = $this->createComment();
     }
@@ -77,9 +78,9 @@ class CommentDeleteTest extends CommentTestAbstract
             CommentActivityNotification::class,
             function ($notification) {
                 return true
-                    && $notification->group->id = $this->expertPanel->group_id
-                    && $notification->comment->id = $this->comment->id
-                    && $notification->event = 'deleted';
+                    && $notification->group->id === $this->expertPanel->group_id
+                    && $notification->comment->id === $this->comment->id
+                    && $notification->event === 'Deleted';
             }
         );
     }

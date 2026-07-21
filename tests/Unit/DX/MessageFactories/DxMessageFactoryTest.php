@@ -245,8 +245,11 @@ class DxMessageFactoryTest extends TestCase
                 'current_step' => $this->expertPanel->current_step,
                 'gcep_final_approval' => $this->expertPanel->step_1_approval_date,
                 'inactive_date' => null,
+                // The fixture group has neither awards nor publications.
+                'funding_awards' => [],
             ],
             'status_date' => $this->expertPanel->group->groupStatus->updated_at->toISO8601String(),
+            'publications' => [],
         ], $message['data']['group']);
     }
 }

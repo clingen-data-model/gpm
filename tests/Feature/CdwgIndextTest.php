@@ -29,8 +29,21 @@ class CdwgIndextTest extends TestCase
     #[Test]
     public function lists_all_cdwgs_sorted_by_name()
     {
-        $this->json('GET', '/api/cdwgs', ['*'])
-            ->assertStatus(200)
-            ->assertJson($this->cdwgs->sortBy('name')->toArray());
+        $expected = $this->cdwgs
+            ->sortBy('name')
+            ->map(fn ($cdwg) => ['id' => $cdwg->id, 'name' => $cdwg->name])
+            ->values()
+            ->all();
+
+        $response = $this->json('GET', '/api/cdwgs', ['*'])
+            ->assertStatus(200);
+
+        // The endpoint selects only id and name; the model's appended accessors
+        // still serialize, so compare on the fields it actually promises.
+        $actual = collect($response->json())
+            ->map(fn ($cdwg) => ['id' => $cdwg['id'], 'name' => $cdwg['name']])
+            ->all();
+
+        $this->assertEquals($expected, $actual);
     }
 }

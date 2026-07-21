@@ -143,8 +143,7 @@ class UpdateProfileTest extends TestCase
 
         $userPerson = Person::factory()->create(['user_id' => $this->user->id]);
         $userMember = MemberAdd::run($group, $userPerson);
-        $action = new MemberAssignRole();
-        $action->handle($userMember, [$role]);
+        MemberAssignRole::run($userMember, [$role]);
         $credentials = Credential::factory()->count(2)->create();
         $expertises = Expertise::factory()->count(2)->create();
 

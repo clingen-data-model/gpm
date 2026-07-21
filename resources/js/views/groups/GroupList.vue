@@ -26,17 +26,27 @@ export default {
                 {
                     label: 'VCEPs',
                     typeId: 4,
-                    filter: (g) => g.is_vcep_or_scvcep,
+                    filter: (g) => g.is_vcep,
                 },
                 {
                     label: 'GCEPs',
                     typeId: 3,
                     filter: (g) => g.is_gcep,
+                },                              
+                {
+                    label: 'SC-VCEPs',
+                    typeId: 5,
+                    filter: g => g.is_scvcep,
                 },
 {
                     label: 'CDWGs',
                     typeId: 2,
                     filter: g => g.isCdwg()
+                },
+                {
+                    label: 'SC-CDWGs',
+                    typeId: 6,
+                    filter: g => g.isScCdwg()
                 },
                 {
                     label: 'WGs',
@@ -104,7 +114,9 @@ export default {
             loadedFor: {
                 'VCEPs': false,
                 'GCEPs': false,
+                'SC-VCEPs': false,
                 'CDWGs': false,
+                'SC-CDWGs': false,
                 'WGs': false,
             },
             sort: {

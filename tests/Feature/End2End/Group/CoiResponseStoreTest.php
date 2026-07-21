@@ -35,18 +35,20 @@ class CoiResponseStoreTest extends TestCase
     }
 
     #[Test]
-    public function responds_404_if_group_member_not_found()
+    public function responds_403_if_group_member_not_found()
     {
         $data = $this->makeDefaultData();
         $data['group_member_id'] = 666;
         $this->makeRequest(data: $data)
-            ->assertStatus(404);
+            ->assertStatus(403);
     }
 
     #[Test]
     public function validates_base_required_data()
     {
-        $this->makeRequest(data: [])
+        // Authorization keys off group_member_id and runs before validation,
+        // so it has to be present for the request to reach the rules at all.
+        $this->makeRequest(data: ['group_member_id' => $this->member->id])
             ->assertStatus(422)
             ->assertJsonValidationErrors([
                 'work_fee_lab' => 'This is required.',

@@ -12,7 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('evidence_summaries', function (Blueprint $table) {
-            $table->dropForeign('evidence_summaries_gene_id_foreign');
+            // SQLite can't drop a foreign key by name (it rebuilds the table by
+            // column); MySQL drops by the explicit constraint name.
+            if (Schema::getConnection()->getDriverName() === 'sqlite') {
+                $table->dropForeign(['gene_id']);
+            } else {
+                $table->dropForeign('evidence_summaries_gene_id_foreign');
+            }
         });
 
         Schema::table('evidence_summaries', function (Blueprint $table) {

@@ -36,7 +36,7 @@ class CommentNotifyAboutEvent
             $submission = $group->latestSubmission;
 
             if ($submission && $submission->isUnderChairReview) {
-                $approvers = $this->getSubmissionNotifiables->handle(collect($comment->creator));
+                $approvers = $this->getSubmissionNotifiables->handle(collect([$comment->creator]));
 
                 Notification::send(
                     $approvers,

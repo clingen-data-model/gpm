@@ -11,6 +11,8 @@ use App\Actions\ReportInstitutionsMake;
 use App\Http\Controllers\ViewController;
 use App\Actions\ReportVcepApplicationMake;
 use App\Actions\ReportPublicationsMake;
+use App\Actions\ReportScvcepApplicationMake;
+use App\Actions\ReportScvcepGenesMake;
 use App\Http\Controllers\DocumentController;
 use App\Modules\Group\Actions\GroupMembersMakeCsv;
 use App\Modules\ExpertPanel\Actions\CoiReportMakePdf;
@@ -34,6 +36,7 @@ Route::get('/{any}', [ViewController::class, 'app'])
     ->where('any', '^(?!(api|sanctum|impersonate|dev|documents|downloads|clockwork|profile-photos|storage)).*$');
 
 Route::get('/documents/{uuid?}', [DocumentController::class, 'show'])->middleware('auth:sanctum');
+Route::get('/downloads/groups/{group:uuid}/final-specification/{document:uuid}', [DocumentController::class, 'downloadGroupFinalSpecification'])->name('groups.final-specification.download');
 Route::get('/storage/profile-photos/{filename}', function ($filename) {
     return redirect('/profile-photos/'.$filename, 301);
 });
@@ -41,8 +44,10 @@ Route::get('/storage/profile-photos/{filename}', function ($filename) {
 Route::group(['prefix' => '/api/report'], function () {
     Route::get('/basic-summary', ReportSummaryMake::class);
     Route::get('/vcep-application-summary', ReportVcepApplicationMake::class);
+    Route::get('/scvcep-application-summary', ReportScvcepApplicationMake::class);
     Route::get('/gcep-genes', ReportGcepGenesMake::class);
     Route::get('/vcep-genes', ReportVcepGenesMake::class);
+    Route::get('/scvcep-genes', ReportScvcepGenesMake::class);
     Route::get('/institutions', ReportInstitutionsMake::class);
     Route::get('/countries', ReportCountriesMake::class);
     Route::get('/people', ReportPeopleMake::class);

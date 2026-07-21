@@ -163,7 +163,7 @@ class Person extends Model implements HasLogEntries
 
     public function activeGroups(): BelongsToMany
     {
-        return $this->groups()->whereNull('group_members.end_date');
+        return $this->groups()->whereNull('group_members.end_date')->whereNull('group_members.deleted_at');
     }
 
     /**
@@ -293,17 +293,16 @@ class Person extends Model implements HasLogEntries
 
     public function scopeHasActiveMembership($query)
     {
-        return $query->whereHas('memberships', function ($q) {
-            $q->isActive();
+        return $query
+                    ->whereNotNull('people.user_id')
+                    ->whereHas('memberships', function ($q) {
+                        $q->isActive();
         });
     }
 
     public function scopeHasPendingInvite($query)
     {
-        return $query->hasActiveMembership()
-                ->whereHas('invite', function ($q) {
-                    $q->pending();
-                });
+        return $query->whereHas('invite', function ($q) { $q->pending(); });
     }
 
 

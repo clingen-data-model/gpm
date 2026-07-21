@@ -26,6 +26,9 @@ export const getters = {
     cdwgs: state => {
         return state.items.filter(item => item.group_type_id === 2);
     },
+    sccdwgs: state => {
+        return state.items.filter(item => item.group_type_id === 6);
+    },
     wgs: state => {
         return state.items.filter(item => item.group_type_id === 1);
     },
@@ -390,7 +393,7 @@ export const actions = {
     getSpecifications({ commit }, group) {
         if (!group.is_vcep_or_scvcep) {
             throw new Error(
-                "Can not retreive specfications. Only VCEPS have specifications."
+                "Can not retreive specfications. Only VCEPS or SC-VCEPs have specifications."
             );
         }
 

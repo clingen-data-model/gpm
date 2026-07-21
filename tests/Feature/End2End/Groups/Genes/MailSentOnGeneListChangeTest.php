@@ -149,7 +149,9 @@ class MailSentOnGeneListChangeTest extends TestCase
         $this->seedGenes(['hgnc_id' => 789012, 'gene_symbol' => 'ABC12']);
         $this->seedDiseases(['mondo_id' => 'MONDO:8901234', 'name' => 'fartsalot']);
 
-        $genesData = $data ?? [ ['hgnc_id'=>12345, 'mondo_id' => 'MONDO:9876543'] ];
+        $genesData = $data ?? [
+            ['hgnc_id' => 12345, 'gene_symbol' => 'ABC1', 'mondo_id' => 'MONDO:9876543'],
+        ];
 
         Sanctum::actingAs($this->user);
         return $this->json('POST', $this->url, ['genes' => $genesData]);
@@ -159,7 +161,6 @@ class MailSentOnGeneListChangeTest extends TestCase
     {
         Carbon::setTestNow('2021-11-01');
         Sanctum::actingAs($this->user);
-        return $this->json('DELETE', $this->url.'/'.$this->gene1->id)
-            ->assertStatus(200);
+        return $this->json('DELETE', $this->url, ['ids' => [$this->gene1->id]]);
     }
 }

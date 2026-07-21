@@ -12,7 +12,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('attestations', function (Blueprint $table) {
+        $driver = Schema::getConnection()->getDriverName();
+
+        // MySQL has IF(); SQLite (test DBs) uses IIF(). Both produce the same
+        // stored generated column: the person_id while active, else NULL.
+        $activePersonExpr = $driver === 'sqlite'
+            ? 'IIF("revoked_at" IS NULL AND "deleted_at" IS NULL, "person_id", NULL)'
+            : 'IF(`revoked_at` IS NULL AND `deleted_at` IS NULL, `person_id`, NULL)';
+
+        Schema::create('attestations', function (Blueprint $table) use ($activePersonExpr) {
             $table->uuid('uuid')->primary();
 
             $table->foreignId('person_id')->constrained('people');
@@ -28,14 +36,20 @@ return new class extends Migration
             $table->softDeletes();
 
             // Uniqueness: one active per person (not revoked, not soft-deleted)
-            $table->unsignedBigInteger('active_person_id')->nullable()->storedAs('IF(`revoked_at` IS NULL AND `deleted_at` IS NULL, `person_id`, NULL)');
+            $table->unsignedBigInteger('active_person_id')->nullable()->storedAs($activePersonExpr);
             $table->unique('active_person_id', 'uniq_active_attestation_per_person');
-            
+
             $table->index(['person_id', 'attestation_version']);
             $table->index('attested_at');
             $table->index('revoked_at');
             $table->index('deleted_at');
         });
+
+        // Production backfill uses MySQL-only UUID()/NOW(); test DBs (sqlite)
+        // start empty, so there is nothing to seed.
+        if ($driver === 'sqlite') {
+            return;
+        }
 
         $gmModel      = 'App\\Modules\\Group\\Models\\GroupMember';
         $coreRoleName = 'core-approval-member';
