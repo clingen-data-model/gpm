@@ -31,6 +31,17 @@ class ClerkAuthenticate
 
             $requestState = AuthenticateRequest::authenticateRequest($psrRequest, $options);
 
+            $claims = $this->decodeJwtPayload($request->bearerToken());
+
+            \Log::debug('Clerk token debug', [
+                'sub' => data_get($claims, 'sub'),
+                'iss' => data_get($claims, 'iss'),
+                'azp' => data_get($claims, 'azp'),
+                'aud' => data_get($claims, 'aud'),
+                'exp' => data_get($claims, 'exp'),
+                'authorized_parties' => config('clerk.authorized_parties'),
+            ]);
+
             if (!$requestState->isSignedIn()) {
                 return response()->json([
                     'message' => 'Unauthorized.',
