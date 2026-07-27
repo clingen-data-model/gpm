@@ -29,14 +29,14 @@ class UpdateProfileTest extends TestCase
 {
     use RefreshDatabase;
     use WithFaker;
+    use TestEventPublished;
 
     private $institution;
     private $race;
     private $primaryOcc;
     private $gender;
     private $country;
-    private $credential;
-    use TestEventPublished;
+    private $credential;    
 
     public function setup():void
     {
@@ -151,6 +151,7 @@ class UpdateProfileTest extends TestCase
                 'first_name' => 'early',
                 'last_name' => 'dog',
                 'email' => 'earlydog@turds.com',
+                'city' => 'Dogtown',
                 'credential_ids' => $credentials->pluck('id')->toArray(),
                 'expertise_ids' => $expertises->pluck('id')->toArray(),
                 'biography' => 'A real turd burgler'
@@ -185,8 +186,9 @@ class UpdateProfileTest extends TestCase
                 'institution_id' => ['This is required.'],
                 'credential_ids' => ['This is required.'],
                 'expertise_ids' => ['This is required.'],
+                'city' => ['This is required.'],
                 'country_id' => ['This is required.'],
-                'timezone' => ['This is required.'],
+                'timezone' => ['This is required.'],                
             ]);
     }
 
@@ -199,6 +201,7 @@ class UpdateProfileTest extends TestCase
             'first_name' => $this->person->first_name,
             'last_name' => $this->person->last_name,
             'email' => $this->person->email,
+            'city' => 'Teapot City',
             'biography' => 'I\'m a little teapot.'
         ])
         ->assertStatus(200)
@@ -216,6 +219,7 @@ class UpdateProfileTest extends TestCase
             'primary_occupation_id' => 666,
             'gender_id' => 666,
             'country_id' => 666,
+            'city' => 'Invalid City',
             'orcid_id' => 12345,
             'hypothesis_id' => 12345,
             'biography' => $this->faker->paragraph(),
@@ -244,6 +248,7 @@ class UpdateProfileTest extends TestCase
             'first_name' => $this->person->first_name,
             'last_name' => $this->person->last_name,
             'email' => 'beans@beans.com',
+            'city' => "Bean City",
             'biography' => 'I\'m a little teapot.',
         ])
         ->assertStatus(422)
@@ -262,6 +267,7 @@ class UpdateProfileTest extends TestCase
             'first_name' => $this->person->first_name,
             'last_name' => $this->person->last_name,
             'email' => 'beans@beans.com',
+            'city' => "Bean City",
             'biography' => 'I\'m a little teapot.',
         ])
         ->assertStatus(422)
@@ -304,6 +310,7 @@ class UpdateProfileTest extends TestCase
             'credential_ids' => [$this->credential->id],
             'expertise_ids' => [$this->expertise->id],
             'country_id' => $this->country->id,
+            'city' => "Trollberg",
             'orcid_id' => 12345,
             'hypothesis_id' => 12345,
             'biography' => $this->faker->paragraph(),
@@ -315,7 +322,7 @@ class UpdateProfileTest extends TestCase
 
     private function setupLookups()
     {
-        $this->institution = \App\Modules\Person\Models\Institution::factory()->create();
+        $this->institution = \App\Modules\Person\Models\Institution::factory()->create(['city' => 'Trollberg']);
         $this->country = \App\Modules\Person\Models\Country::factory()->create();
         $this->credential = Credential::factory()->create();
         $this->expertise = Expertise::factory()->create(['approved' => true]);

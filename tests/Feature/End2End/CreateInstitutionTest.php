@@ -14,6 +14,8 @@ class CreateInstitutionTest extends TestCase
 {
     use RefreshDatabase;
 
+    private Country $country;
+
     public function setup():void
     {
         parent::setup();
@@ -33,6 +35,7 @@ class CreateInstitutionTest extends TestCase
                 'abbreviation' => 'Troll U',
                 'url' => 'https://trollu.edu',
                 'address' => null,
+                'city' => 'Trollberg',
                 'country_id' => $this->country->id,
                 'reportable' => false
             ]);
@@ -44,7 +47,8 @@ class CreateInstitutionTest extends TestCase
         $this->makeRequest([])
             ->assertStatus(422)
             ->assertJsonFragment([
-                'name' => ['This is required.']
+                'name' => ['This is required.'],
+                'city' => ['This is required.'],
             ]);
     }
     
@@ -53,21 +57,23 @@ class CreateInstitutionTest extends TestCase
     {
         Institution::factory([
             'name' => 'University of Trollberg',
-            'url' => 'https://trollu.edu'
+            'url' => 'https://trollu.edu',
+            'city' => 'Trollberg',
+            'country_id' => $this->country->id,
         ])->create();
 
         $this->makeRequest()
             ->assertStatus(422)
             ->assertJsonFragment([
                 'name' => ['The name has already been taken.'],
-                'url' => ['The url has already been taken.']
+                'url' => ['The url has already been taken.'],
             ]);
     }
     
     #[Test]
     public function validates_country_exists()
     {
-        $this->makeRequest(['country_id' => 666])
+        $this->makeRequest($this->validParams(['country_id' => 666]))
             ->assertStatus(422)
             ->assertJsonFragment([
                 'country_id' => ['The selection is invalid.'],
@@ -75,17 +81,25 @@ class CreateInstitutionTest extends TestCase
     }
     
 
-    private function makeRequest($data = null)
+    private function validParams(array $overrides = []): array
     {
-        $data = $data ?? [
+        return array_merge([
             'name' => 'University of Trollberg',
             'abbreviation' => 'Troll U',
             'url' => 'https://trollu.edu',
             'address' => null,
+            'city' => 'Trollberg',
             'country_id' => $this->country->id,
-            'reportable' => false
-        ];
+            'reportable' => false,
+        ], $overrides);
+    }
 
-        return $this->json('POST', '/api/institutions', $data);
+    private function makeRequest(?array $data = null)
+    {
+        return $this->json(
+            'POST',
+            '/api/institutions',
+            $data ?? $this->validParams()
+        );
     }
 }

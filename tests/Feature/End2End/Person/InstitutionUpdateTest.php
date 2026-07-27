@@ -21,7 +21,7 @@ class InstitutionUpdateTest extends TestCase
         $this->user = $this->setupUser(permissions: ['people-manage']);
         Sanctum::actingAs($this->user);
 
-        $this->institution = Institution::factory()->create(['country_id' => null]);
+        $this->institution = Institution::factory()->create(['country_id' => null, 'city' => null]);
     }
 
     #[Test]
@@ -41,6 +41,7 @@ class InstitutionUpdateTest extends TestCase
             ->assertJson([
                 'name' => 'Beans University',
                 'abbreviation' => 'BU',
+                'city' => 'Bean Town',
                 'country_id' => $this->country->id,
                 'url' => 'https://www.beansu.edu'
             ]);
@@ -48,6 +49,7 @@ class InstitutionUpdateTest extends TestCase
         $this->assertDatabaseHas('institutions', [
             'name' => 'Beans University',
             'abbreviation' => 'BU',
+            'city' => 'Bean Town',
             'country_id' => $this->country->id,
             'url' => 'https://www.beansu.edu'
         ]);
@@ -61,6 +63,7 @@ class InstitutionUpdateTest extends TestCase
             ->assertJson([
                 'errors'=>[
                     'name' => ['This is required.'],
+                    'city' => ['This is required.'],
                     'country_id' => ['The selection is invalid.']
                 ]
             ]);
@@ -72,6 +75,7 @@ class InstitutionUpdateTest extends TestCase
         $data = $data ?? [
             'name' => 'Beans University',
             'abbreviation' => 'BU',
+            'city' => 'Bean Town',
             'country_id' => $this->country->id,
             'url' => 'https://www.beansu.edu'
         ];
