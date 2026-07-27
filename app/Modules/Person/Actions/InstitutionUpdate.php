@@ -31,11 +31,13 @@ class InstitutionUpdate
 
     public function rules(): array
     {
-        $institution = $request->route('institution');
+        $institution = request()->route('institution');
+        $institutionId = $institution instanceof Institution ? $institution->id : $institution;
+        
         return [
-            'name'          => ['required', 'string', 'max:255', Rule::unique('institutions', 'name')->ignore($institution?->id)],
+            'name'          => ['required', 'string', 'max:255', Rule::unique('institutions', 'name')->ignore($institutionId)],
             'abbreviation'  => ['nullable', 'string', 'max:255'],
-            'url'           => ['nullable', 'string', 'max:255', Rule::unique('institutions', 'url')->ignore($institution?->id)],
+            'url'           => ['nullable', 'string', 'max:255', Rule::unique('institutions', 'url')->ignore($institutionId)],
             'city'          => ['required', 'string', 'max:255'],
             'country_id'    => ['required', 'integer', 'exists:countries,id'],
             'address'       => ['nullable', 'string', 'max:255'],
