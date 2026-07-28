@@ -47,7 +47,7 @@ export default [
                     // default: GroupDetail,
                     showModal: true,
                     protected: true,
-                    title: 'Add Group Member'
+                    title: 'Edit Group Member'
                 },
                 props: true,
                 beforeEnter: async (to) => {
@@ -92,7 +92,7 @@ export default [
                     // default: GroupDetail,
                     showModal: true,
                     protected: true,
-                    title: 'Add Group Member'
+                    title: 'Edit Group Member'
                 },
                 props: true,
                 beforeEnter: async (to) => {
@@ -143,7 +143,7 @@ export default [
                 meta: {
                     showModal: true,
                     protected: true,
-                    title: 'Add Group Member'
+                    title: 'Edit Group Member'
                 },
                 props: true,
                 beforeEnter: async (to) => {

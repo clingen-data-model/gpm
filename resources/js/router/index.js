@@ -83,7 +83,7 @@ const routes = [
                 meta: {
                     showModal: true,
                     protected: true,
-                    title: 'Add Group Member'
+                    title: 'Edit Group Member'
                 },
                 props: true,
                 // beforeEnter: async (to) => {

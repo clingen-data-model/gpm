@@ -20,6 +20,15 @@ use App\Modules\Group\Models\GroupMember;
 use App\Services\Clerk\ClerkInvitationService;
 use Carbon\Carbon;
 
+use App\Modules\Person\Models\Person;
+use App\Modules\User\Models\User;
+use App\Services\Clerk\ClerkUserLinkService;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Str;
+use App\Modules\Person\Events\PersonInvited;
+
 class MemberInvite
 {
     use AsController;
@@ -30,17 +39,40 @@ class MemberInvite
         private PersonInvite $invitePerson,
         private MemberAdd $addMember,
         private MemberAssignRole $assignRole,
-        private ClerkInvitationService $clerkInvitationService
+        private ClerkInvitationService $clerkInvitationService,
+        private ClerkUserLinkService $clerkUserLinkService
     ) {
     }
 
     public function handle(Group $group, array $data): GroupMember
     {
-        $roleIds = null;
-        if (isset($data['role_ids'])) {
-            $roleIds = $data['role_ids'];
-            unset($data['role_ids']);
+        $roleIds = $data['role_ids'] ?? null;
+        unset($data['role_ids']);
+
+        $email = $this->normalizeEmail($data['email']);
+
+        // A. Existing GPM person
+        $person = Person::query()->whereRaw('lower(email) = ?', [$email])->first();
+        if ($person) {
+            return $this->addPersonToGroup($group, $person, $data, $roleIds, $sendAddedToGroupNotification = true);
         }
+
+        // B. Existing Clerk user, not yet in GPM
+        $clerkUser = $this->clerkUserLinkService->findByEmail($email);
+        if ($clerkUser) {
+            $person = $this->createGpmPersonFromClerkUser($clerkUser, $data, $email);
+            return $this->addPersonToGroup($group, $person, $data, $roleIds, $sendAddedToGroupNotification = true);
+        }
+
+        // C. Brand-new person
+        return $this->inviteBrandNewPerson($group, $data, $roleIds, $email);
+    }
+
+    /* public function handle(Group $group, array $data): GroupMember
+    {
+        $roleIds = $data['role_ids'] ?? null;
+        unset($data['role_ids']);
+        $email = $this->normalizeEmail($data['email']);
 
         $personUuid = Uuid::uuid4();
         $person = $this->createPerson->handle(
@@ -51,7 +83,7 @@ class MemberInvite
             phone: valueAtIndex($data, 'phone'),
         );        
 
-        /* beginning of the clerk */
+        // beginning of the clerk 
         $invite = $this->invitePerson->handle(person: $person, inviter: $group);
         $clerkInvitation = $this->clerkInvitationService->createForInvite($invite, $group);
         $clerkExpiresAt = data_get($clerkInvitation, 'expires_at');
@@ -67,7 +99,7 @@ class MemberInvite
             'clerk_invitation_id' => $invite->fresh()->clerk_invitation_id,
             'expires_at' => optional($invite->fresh()->expires_at)?->toDateTimeString(),
         ]);
-        /* end of the clerk */
+        // end of the clerk 
 
         $isContact = valueAtIndex($data, 'is_contact', false);
         $newMember = $this->addMember
@@ -84,7 +116,7 @@ class MemberInvite
         }
 
         return $newMember;
-    }
+    } */
 
     public function asController(ActionRequest $request, $groupUuid)
     {
@@ -108,7 +140,7 @@ class MemberInvite
         return [
             'first_name' => 'required|max:255',
             'last_name' => 'required|max:255',
-            'email' => 'required|email|unique:people,email',
+            'email' => 'required|email',
         ];
     }
 
@@ -119,7 +151,94 @@ class MemberInvite
             'first_name.required' => 'A first name is required.',
             'last_name.required' => 'A last name is required.',
             'email.required' => 'An email is required.',
-            'email.unique' => 'A person with this email address is already in the GPM.  Please click \'Add as member\' next the person\'s name to the right.'
         ];
+    }
+
+    protected function createGpmPersonFromClerkUser(array $clerkUser, array $data, string $email): Person
+    {
+        $clerkUserId = data_get($clerkUser, 'id');
+
+        if (!$clerkUserId) {
+            throw new \RuntimeException('Clerk user did not include an id.');
+        }
+
+        $externalId = data_get($clerkUser, 'external_id');
+
+        if ($externalId) {
+            $existingPersonForUuid = Person::where('uuid', $externalId)->first();
+            if ($existingPersonForUuid) {
+                throw ValidationException::withMessages(['email' => ["This Clerk user is already linked to {$existingPersonForUuid->email} in GPM."]]);
+            }
+            $personUuid = $externalId;
+        } else {
+            $personUuid = Uuid::uuid4()->toString();
+            $this->clerkUserLinkService->setExternalId($clerkUserId, $personUuid);
+        }
+
+        return DB::transaction(function () use ($data, $email, $personUuid, $clerkUserId) {
+            $name = trim(($data['first_name'] ?? '').' '.($data['last_name'] ?? ''));
+            $user = User::firstOrCreate(['email' => $email], [
+                    'name' => $name,
+                    'password' => Hash::make(Str::random(40)),
+                ]
+            );
+
+            $person = $this->createPerson->handle(
+                uuid: $personUuid,
+                first_name: $data['first_name'],
+                last_name: $data['last_name'],
+                email: $email,
+                phone: valueAtIndex($data, 'phone'),
+            );
+
+            $person->forceFill(['user_id' => $user->id, 'clerk_user_id' => $clerkUserId])->save();
+            $this->clerkUserLinkService->addApplication($clerkUserId, 'GPM');
+
+            return $person;
+        });
+    }
+
+    protected function inviteBrandNewPerson(Group $group, array $data, ?array $roleIds, string $email): GroupMember
+    {
+        $person = $this->createPerson->handle(
+            uuid: Uuid::uuid4(),
+            first_name: $data['first_name'],
+            last_name: $data['last_name'],
+            email: $email,
+            phone: valueAtIndex($data, 'phone'),
+        );
+
+        $invite = $this->invitePerson->handle(person: $person, inviter: $group, dispatchEvent: false);
+        $clerkInvitation = $this->clerkInvitationService->createForInvite($invite, $group);
+        $clerkExpiresAt = data_get($clerkInvitation, 'expires_at');
+        $invite->update([
+            'clerk_invitation_id' => data_get($clerkInvitation, 'id'),
+            'clerk_invitation_url' => data_get($clerkInvitation, 'url'),
+            'expires_at' => $clerkExpiresAt ? Carbon::createFromTimestampMs($clerkExpiresAt) : now()->addDays(30),
+        ]);
+        Event::dispatch(new PersonInvited($invite->fresh()));
+        return $this->addPersonToGroup($group, $person, $data, $roleIds, $sendAddedToGroupNotification = false);
+    }
+
+    protected function addPersonToGroup(Group $group, Person $person, array $data, ?array $roleIds, bool $sendAddedToGroupNotification = true): GroupMember 
+    {
+        $memberAdd = $sendAddedToGroupNotification ? $this->addMember->sendNotification() : $this->addMember->cancelNotification();
+        $newMember = $memberAdd->handle($group, $person, [
+                        'is_contact' => valueAtIndex($data, 'is_contact', false),
+                        'notes' => valueAtIndex($data, 'notes'),
+                        'training_level_1' => valueAtIndex($data, 'training_level_1'),
+                        'training_level_2' => valueAtIndex($data, 'training_level_2'),
+                    ]);
+        if ($roleIds) {
+            $newMember = $this->assignRole->handle($newMember, $roleIds);
+        }
+        return $newMember;
+    }
+
+    protected function normalizeEmail(?string $email): ?string
+    {
+        if (!$email) { return null; }
+        $email = trim(mb_strtolower($email));
+        return $email === '' ? null : $email;
     }
 }

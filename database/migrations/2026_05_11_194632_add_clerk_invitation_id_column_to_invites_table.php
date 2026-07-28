@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::table('invites', function (Blueprint $table) {
             $table->string('clerk_invitation_id')->nullable()->unique()->after('person_id');
+            $table->text('clerk_invitation_url')->nullable()->after('clerk_invitation_id');
             $table->dateTime('expires_at')->nullable()->after('redeemed_at');
         });
     }
@@ -24,6 +25,7 @@ return new class extends Migration
     {
         Schema::table('invites', function (Blueprint $table) {
             $table->dropColumn('clerk_invitation_id');
+            $table->dropColumn('clerk_invitation_url');
             $table->dropColumn('expires_at');
         });
     }

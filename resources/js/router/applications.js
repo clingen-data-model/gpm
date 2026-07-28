@@ -173,7 +173,7 @@ export default [{
                     // default: GroupDetail,
                     showModal: true,
                     protected: true,
-                    title: 'Add Group Member'
+                    title: 'Edit Group Member'
                 },
                 props: true
             },
