@@ -40,10 +40,10 @@ class Kernel extends ConsoleKernel
             })->everyMinute();
         }
 
-        $schedule->job(new SendCoiReminders)->weeklyOn(1, '6:00');
-        $schedule->job(new SendInviteReminders)->weeklyOn(1, '6:00');
-        $schedule->job(new SendAttestationReminders)->weeklyOn(1, '6:00');
-        $schedule->job(new SendCocReminders)->weeklyOn(1, '6:00');
+        $schedule->job(new SendCoiReminders)->weeklyOn(1, '2:10');
+        $schedule->job(new SendInviteReminders)->weeklyOn(1, '3:10');
+        $schedule->job(new SendAttestationReminders)->weeklyOn(1, '4:10');
+        $schedule->job(new SendCocReminders)->weeklyOn(1, '5:10');
 
         if (config('dx.consume')) {
             $schedule->command(DxConsume::class, array_values(config('dx.topics.incoming')))
@@ -58,7 +58,7 @@ class Kernel extends ConsoleKernel
                 app()->make(SendSubmissionDigestNotifications::class)->handle();
             });
 
-        $schedule->command('invites:expire-group')->weeklyOn(6, '02:10')->withoutOverlapping();
+        $schedule->command('invites:expire-group')->weeklyOn(6, '01:10')->withoutOverlapping();
     }
 
     /**
