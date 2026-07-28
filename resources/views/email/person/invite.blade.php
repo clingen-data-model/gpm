@@ -10,9 +10,11 @@
         You have been invited to join the Clinical Genome Resource's Group and Personnel Management System.
     @endif
 
-    To accept this invitation, please visit 
-    <a href="{{url('/invites/'.$invite->code)}}">{{url('/invites/'.$invite->code)}}</a>
-    and follow the instructions.
+    @php
+        $acceptUrl = $invite->clerk_invitation_url ?: url('/accept-invitation?code='.$invite->code);
+    @endphp
+
+    To accept this invitation, please visit <a href="{{ $acceptUrl }}">here</a> and follow the instructions.
 </p>
 <p>
     Thanks,<br />

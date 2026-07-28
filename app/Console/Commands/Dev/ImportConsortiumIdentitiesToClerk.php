@@ -38,12 +38,7 @@ class ImportConsortiumIdentitiesToClerk extends Command
             ->orderBy('id');
 
         if ($this->option('ids')) {
-            $ids = collect(explode(',', $this->option('ids')))
-                ->map(fn ($id) => (int) trim($id))
-                ->filter()
-                ->values()
-                ->all();
-
+            $ids = collect(explode(',', $this->option('ids')))->map(fn ($id) => (int) trim($id))->filter()->values()->all();
             $query->whereIn('id', $ids);
         } else {
             if (!$force) {
@@ -292,31 +287,21 @@ class ImportConsortiumIdentitiesToClerk extends Command
     protected function applicationsFromSourceSystems(?string $sourceSystemsJson): array
     {
         $sourceSystems = json_decode($sourceSystemsJson ?: '[]', true);
-
         if (!is_array($sourceSystems)) {
             return [];
         }
 
-        return collect($sourceSystems)
-            ->map(fn ($system) => match (strtoupper((string) $system)) {
+        return collect($sourceSystems)->map(fn ($system) => match (strtoupper((string) $system)) {
                 'GPM' => 'GPM',
                 'GT' => 'GeneTracker',
                 default => (string) $system,
-            })
-            ->filter()
-            ->unique()
-            ->values()
-            ->all();
+            })->filter()->unique()->values()->all();
     }
 
     protected function normalizeEmail(?string $email): ?string
     {
-        if (!$email) {
-            return null;
-        }
-
+        if (!$email) { return null; }
         $email = trim(mb_strtolower($email));
-
         return $email === '' ? null : $email;
     }
 

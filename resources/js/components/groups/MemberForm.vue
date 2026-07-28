@@ -16,102 +16,111 @@ const groups = config.groups;
 export default {
     name: 'AddMemberForm',
     components: {
-        MemberSuggestions,
-        CredentialsView,
-        ExpertisesView,
-        ProfileForm
+      MemberSuggestions,
+      CredentialsView,
+      ExpertisesView,
+      ProfileForm
     },
     props: {
-        uuid: {
-            required: true,
-            type: String
-        },
-        memberId: {
-            required: false,
-            default: null
-        }
+      uuid: {
+        required: true,
+        type: String
+      },
+      memberId: {
+        required: false,
+        default: null
+      }
     },
     emits: [
-        'saved',
-        'canceled',
-        'closed'
+      'saved',
+      'canceled',
+      'closed'
     ],
     setup () {
-        const store = useStore();
-        const group = computed(() => store.getters['groups/currentItemOrNew'] || {});
-        const people = computed(() => store.getters['people/all'] || {});
-        const roles = groups.roles;
-        const permissions = groups.permissions;
+      const store = useStore();
+      const group = computed(() => store.getters['groups/currentItemOrNew'] || {});
+      const people = computed(() => store.getters['people/all'] || {});
+      const roles = groups.roles;
+      const permissions = groups.permissions;
 
-        return {
-            group,
-            people,
-            roles,
-            permissions,
-        }
+      return {
+        group,
+        people,
+        roles,
+        permissions,
+      }
     },
     data () {
-        return {
-            newMember: new GroupMember(),
-            errors: {},
-            suggestedPeople: [],
-            legendValues: [1,2],
-            showProfileForm: false,
-            addAnother: false,
-            saving: false, // state for saving
-        }
+      return {
+        newMember: new GroupMember(),
+        errors: {},
+        suggestedPeople: [],
+        selectedClerkCandidate: null,
+        legendValues: [1,2],
+        showProfileForm: false,
+        addAnother: false,
+        saving: false, // state for saving
+      }
     },
     computed: {
-        originalMember () {
-            return this.group.findMember(this.memberId);
-        },
-        nameErrors () {
-            return [this.errors.first_name, this.errors.last_name]
-                    .flat()
-                    .filter(i => i);
-        },
-        needsCredentials () {
-            return !this.newMember.person.credentials || this.newMember.person.credentials.length === 0;
-        },
-        needsExpertise () {
-            return !this.newMember.person.expertises || this.newMember.person.expertises.length === 0
-        },
-        roleRequiresNotification () {
-            return this.newMember.hasRole('coordinator') || this.newMember.hasRole('grant-liaison');
-        }
+      originalMember () {
+        return this.group.findMember(this.memberId);
+      },
+      nameErrors () {
+        return [this.errors.first_name, this.errors.last_name].flat().filter(i => i);
+      },
+      needsCredentials () {
+        return !this.newMember.person.credentials || this.newMember.person.credentials.length === 0;
+      },
+      needsExpertise () {
+        return !this.newMember.person.expertises || this.newMember.person.expertises.length === 0
+      },
+      roleRequiresNotification () {
+        return this.newMember.hasRole('coordinator') || this.newMember.hasRole('grant-liaison');
+      },
+      hasSelectedCandidate () {
+        return Boolean(this.newMember.id || this.newMember.person_id || this.selectedClerkCandidate);
+      }
     },
     watch: {
-        group () {
-            this.syncMember();
-        },
+      group () {
+        this.syncMember();
+      },
     },
     mounted () {
-        this.initNewMember();
-        this.syncMember();
+      this.initNewMember();
+      this.syncMember();
     },
     created () {
-        this.debounceSuggestions = debounce(this.getSuggestedPeople, 500)
+      this.debounceSuggestions = debounce(this.getSuggestedPeople, 500)
     },
     methods: {
         async getSuggestedPeople() {
-            if (!this.newMember.first_name && !this.newMember.last_name && !this.newMember.email) {
-                this.suggestedPeople = [];
-                return;
-            }
-            const params = {
-                page: 1,
-                'sort[field]': 'name',
-                'sort[dir]': 'ASC',
-                'where[first_name]': this.newMember.first_name,
-                'where[last_name]': this.newMember.last_name,
-                'where[email]': this.newMember.email,
-                with: ['memberships']
-            }
-            this.suggestedPeople = await api.get(`/api/people`, {params})
-                .then(rsp => rsp.data.data.map(p => {
-                    p.alreadyMember = this.isAlreadyMember(p);
-                    return new Person(p);
-                }));
+          if (!this.newMember.person.email && !this.newMember.person.first_name && !this.newMember.person.last_name) {
+            this.suggestedPeople = [];
+            return;
+          }
+
+          const params = {
+            email: this.newMember.person.email,
+            first_name: this.newMember.person.first_name,
+            last_name: this.newMember.person.last_name,
+          };
+
+          this.suggestedPeople = await api.get(`/api/groups/${this.uuid}/member-candidates`, { params })
+            .then(rsp => rsp.data.data.map(candidate => {
+              if (candidate.type === 'gpm_person') {
+                const person = new Person(candidate);
+                person.type = 'gpm_person';
+                person.alreadyMember = candidate.alreadyMember;
+                return person;
+              }
+
+              return {
+                ...candidate,
+                isClerkOnly: true,
+              };
+            }));
         },
         initNewMember() {
             this.newMember = new GroupMember();
@@ -129,11 +138,12 @@ export default {
             }
         },
         clearForm () {
-            this.initNewMember();
+          this.initNewMember();
+          this.selectedClerkCandidate = null;
         },
         cancel () {
-            this.clearForm();
-            this.$emit('canceled');
+          this.clearForm();
+          this.$emit('canceled');
         },
         async saveAndExit () {
             if (this.saving) return;
@@ -318,26 +328,51 @@ export default {
         },
 
         useExistingPerson(person) {
-            this.newMember.person_id = person.id;
-            this.newMember.person = person.clone()
+          if (person.isClerkOnly || person.type === 'clerk_user') {
+            const firstName = person.first_name || person.firstName || '';
+            const lastName = person.last_name || person.lastName || '';
+            const name = person.name || `${firstName} ${lastName}`.trim();
+
+            this.selectedClerkCandidate = {
+              ...person,
+              first_name: firstName,
+              last_name: lastName,
+              name,
+            };
+
+            this.newMember.person_id = null;
+
+            this.newMember.person.first_name = firstName;
+            this.newMember.person.last_name = lastName;
+            this.newMember.person.email = person.email;
+            this.newMember.person.name = name;
+
+            this.suggestedPeople = [];
+            return;
+          }
+
+          this.selectedClerkCandidate = null;
+          this.newMember.person_id = person.id;
+          this.newMember.person = person.clone();
+          this.suggestedPeople = [];
         },
         isAlreadyMember(person) {
-            return this.group.members.map(m => m.person.id).includes(person.id)
+          return this.group.members.map(m => m.person.id).includes(person.id)
         },
 
         handleRoleChange () {
-            // setTimeout(() => {
-            //     if (this.newMember.hasRole('coordinator')) {
-            //         this.newMember.is_contact = true;
-            //     }
-            // }, 1)
+          // setTimeout(() => {
+          //     if (this.newMember.hasRole('coordinator')) {
+          //         this.newMember.is_contact = true;
+          //     }
+          // }, 1)
         },
 
-        handleProfileUpdate (updatedPerson) {
-            this.newMember.person = updatedPerson;
-            this.showProfileForm = false;
-            this.$store.dispatch('groups/getMembers', this.group)
-        }
+      handleProfileUpdate (updatedPerson) {
+        this.newMember.person = updatedPerson;
+        this.showProfileForm = false;
+        this.$store.dispatch('groups/getMembers', this.group)
+      }
     }
 }
 </script>
@@ -345,7 +380,15 @@ export default {
   <div>
     <div class="flex">
       <div class="flex-1">
-        <div v-if="!newMember.id && !newMember.person_id">
+        <div v-if="!hasSelectedCandidate">
+          <input-row
+            v-model="newMember.person.email"
+            label="Email"
+            placeholder="example@example.com"
+            input-class="w-full"
+            :errors="errors.email"
+            @input="debounceSuggestions"
+          />
           <input-row
             label="Name"
             :errors="nameErrors"
@@ -367,17 +410,9 @@ export default {
                 @input="debounceSuggestions"
               >
             </div>
-          </input-row>
-          <input-row
-            v-model="newMember.person.email"
-            label="Email"
-            placeholder="example@example.com"
-            input-class="w-full"
-            :errors="errors.email"
-            @input="debounceSuggestions"
-          />
+          </input-row>          
         </div>
-        <div v-if="newMember.id || newMember.person_id">
+        <div v-if="hasSelectedCandidate">
           <dictionary-row label="Name">
             {{ newMember.person.name }}
           </dictionary-row>
@@ -393,7 +428,10 @@ export default {
           <dictionary-row label="Expertise">
             <ExpertisesView :person="newMember.person" :legacy-expertise="newMember.legacy_expertise" />
           </dictionary-row>
-          <static-alert v-if="!newMember.id">
+          <static-alert v-if="selectedClerkCandidate">
+            Adding existing ClinGen account, {{ newMember.person.email }}, to GPM and this group.
+          </static-alert>
+          <static-alert v-else-if="!newMember.id">
             Adding existing person, {{ newMember.person.name }}, as a group member.
           </static-alert>
           <dictionary-row v-if="newMember.id" label="" class="text-sm">
@@ -478,7 +516,7 @@ export default {
       </div>
       <transition name="slide-fade">
         <div
-          v-if="suggestedPeople.length > 0 && newMember.person_id === null"
+          v-if="suggestedPeople.length > 0 && !hasSelectedCandidate"
           class="pt-2 border-l pl-2  ml-2 flex-1"
         >
           <h5 class="font-bold border-b mb-1 pb-1">

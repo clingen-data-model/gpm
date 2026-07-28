@@ -104,6 +104,7 @@ class Person extends Model implements HasLogEntries
         'hypothesis_id',
         'country_id',
         'timezone',
+        'clerk_user_id',
         /* demographics_completed_date is not a "demographics_private_field" because:
             - it is not sensitive data
             - coordinators may want to see it to know who needs to complete/update their info
