@@ -28,20 +28,13 @@ class ClerkInvitationService
         $response = $this->clientFactory->make()->post('/invitations', [
             'email_address' => $invite->email,
             'redirect_url' => $redirectUrl,
-            'public_metadata' => [
-                'person_uuid' => $invite->person->uuid,
-                'invite_code' => $invite->code,
-            ],
-            'notify' => true,
+            'notify' => false,
             'expires_in_days' => 30,
         ]);
 
         logger()->info('Clerk invitation response', $response->json());
-
-        $response->throw();
-        
+        $response->throw();        
         logger()->info('Clerk invitation created successfully');
-
         return $response->json();
     }
 }
