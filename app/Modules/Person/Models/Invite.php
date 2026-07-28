@@ -27,6 +27,7 @@ class Invite extends Model
         'person_id',
         'redeemed_at',
         'clerk_invitation_id',
+        'clerk_invitation_url',
         'expires_at'
     ];
 
@@ -35,6 +36,7 @@ class Invite extends Model
         'person_id' => 'integer',
         'redeemed_at' => 'datetime',
         'expires_at' => 'datetime',
+        'clerk_invitation_url' => 'string',
     ];
 
     protected static function booted()

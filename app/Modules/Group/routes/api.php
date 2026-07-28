@@ -65,6 +65,7 @@ use App\Modules\Group\Actions\EmitGroupCheckpoints;
 use App\Modules\Group\Http\Controllers\Api\GroupPublicationsController;
 use App\Modules\Group\Actions\PublicationAdd;
 use App\Modules\Group\Actions\PublicationDelete;
+use App\Modules\Group\Actions\MemberCandidatesList;
 
 Route::group([
     'prefix' => 'api',
@@ -208,8 +209,7 @@ Route::group([
                 });
             });
         });
-
-
+        
         Route::get('/next-actions', [GroupRelationsController::class, 'nextActions']);
         Route::put('/name', GroupNameUpdate::class);
         Route::put('/parent', ParentUpdate::class);
@@ -218,6 +218,7 @@ Route::group([
         Route::put('/status', GroupStatusUpdate::class);
         Route::put('/visibility', GroupVisibilityUpdate::class);
         Route::put('/excerpt', WebTextUpdate::class);
+        Route::get('/member-candidates', MemberCandidatesList::class);
 
         // PUBLICATIONS
         Route::group(['prefix' => '/publications'], function () {

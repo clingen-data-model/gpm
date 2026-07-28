@@ -15,7 +15,7 @@ class PersonInvite
     {
     }
 
-    public function handle(Person $person, ?Model $inviter = null): Invite
+    public function handle(Person $person, ?Model $inviter = null, bool $dispatchEvent = true): Invite
     {
         $invite = Invite::create([
             'inviter_id' => ($inviter) ? $inviter->id : null,
@@ -26,7 +26,9 @@ class PersonInvite
             'last_name' => $person->last_name,
         ]);
 
-        Event::dispatch(new PersonInvited($invite));
+        if ($dispatchEvent) {
+            Event::dispatch(new PersonInvited($invite));
+        }
 
         return $invite;
     }
