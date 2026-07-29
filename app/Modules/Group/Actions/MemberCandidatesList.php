@@ -45,47 +45,42 @@ class MemberCandidatesList
         }
 
         $candidates = $people->map(fn (Person $person) => $this->gpmCandidate($group, $person))->values();
-        $hasExactGpmEmailMatch = $email ? $people->contains(fn (Person $person) => mb_strtolower($person->email) === $email) : false;
 
-        // Only search Clerk by exact email, and only if GPM did not already find that email.
-        logger()->info('Member candidate search', [
-            'group_uuid' => $group->uuid,
-            'email' => $email,
-            'valid_email' => filter_var($email, FILTER_VALIDATE_EMAIL) ? true : false,
-            'gpm_people_count' => $people->count(),
-            'has_exact_gpm_email_match' => $hasExactGpmEmailMatch ?? null,
-        ]);
-        if ($email && !$hasExactGpmEmailMatch && filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            logger()->info('Searching Clerk for member candidate', [
-                'email' => $email,
-            ]);
+        if ($email && filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $clerkUser = $this->clerkUserLinkService->findByEmail($email);
 
-            logger()->info('Clerk member candidate result', [
-                'email' => $email,
-                'found' => (bool) $clerkUser,
-                'clerk_user_id' => data_get($clerkUser, 'id'),
-            ]);
+            if ($clerkUser && !$this->clerkUserAlreadyExistsInGpm($clerkUser)) {
+                $primaryEmail = $this->primaryEmailFromClerkUser($clerkUser);
 
-            if ($clerkUser) {
-                $candidates->push($this->clerkCandidate($clerkUser, $email));
-            }
-        } elseif ($people->isEmpty() && ($firstName || $lastName)) {
-            $nameQuery = trim($firstName.' '.$lastName);
-            if (mb_strlen($nameQuery) >= 3) {
-                $clerkUsers = $this->clerkUserLinkService->searchByQuery($nameQuery, 10);
-                foreach ($clerkUsers as $clerkUser) {
-                    $primaryEmail = $this->primaryEmailFromClerkUser($clerkUser);
-                    if (!$primaryEmail) { continue; }
-                    $alreadyInGpm = Person::query()->whereRaw('lower(email) = ?', [$primaryEmail])->exists();
-                    if ($alreadyInGpm) { continue; }
+                if ($primaryEmail) {
                     $candidates->push($this->clerkCandidate($clerkUser, $primaryEmail));
                 }
             }
         }
 
+        if (!$email && $this->canSearchClerkByName($firstName, $lastName)) {
+            $clerkUsers = $this->clerkUserLinkService->searchByQuery(
+                trim($firstName.' '.$lastName),
+                5
+            );
+
+            foreach ($clerkUsers as $clerkUser) {
+                if ($this->clerkUserAlreadyExistsInGpm($clerkUser)) {
+                    continue;
+                }
+
+                $primaryEmail = $this->primaryEmailFromClerkUser($clerkUser);
+
+                if (!$primaryEmail) {
+                    continue;
+                }
+
+                $candidates->push($this->clerkCandidate($clerkUser, $primaryEmail));
+            }
+        }
+
         return response()->json([
-            'data' => $candidates,
+            'data' => $candidates->values(),
         ]);
     }
 
@@ -146,13 +141,37 @@ class MemberCandidatesList
 
     protected function normalizeEmail(?string $email): ?string
     {
-        if (!$email) {
-            return null;
-        }
-
+        if (!$email) { return null; }
         $email = trim(mb_strtolower($email));
-
         return $email === '' ? null : $email;
+    }
+
+    protected function canSearchClerkByName(?string $firstName, ?string $lastName): bool
+    {
+        return mb_strlen(trim((string) $firstName)) >= 3 || mb_strlen(trim((string) $lastName)) >= 3;
+    }
+
+    protected function clerkUserAlreadyExistsInGpm(array $clerkUser): bool
+    {
+        $clerkUserId = data_get($clerkUser, 'id');
+        $externalId = data_get($clerkUser, 'external_id');
+        $primaryEmail = $this->primaryEmailFromClerkUser($clerkUser);
+
+        return Person::query()
+            ->where(function ($query) use ($clerkUserId, $externalId, $primaryEmail) {
+                if ($clerkUserId) {
+                    $query->orWhere('clerk_user_id', $clerkUserId);
+                }
+
+                if ($externalId) {
+                    $query->orWhere('uuid', $externalId);
+                }
+
+                if ($primaryEmail) {
+                    $query->orWhereRaw('lower(email) = ?', [$primaryEmail]);
+                }
+            })
+            ->exists();
     }
 
     protected function primaryEmailFromClerkUser(array $clerkUser): ?string
