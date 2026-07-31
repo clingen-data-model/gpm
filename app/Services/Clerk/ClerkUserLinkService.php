@@ -104,11 +104,8 @@ class ClerkUserLinkService
 
     public function findByEmail(?string $email): ?array
     {
-        $email = $this->normalizeEmail($email);
-
-        if (!$email) {
-            return null;
-        }
+        $email = UserIdentityNormalizer::normalizeEmail($email);
+        if (!$email) { return null; }
 
         $response = $this->clientFactory->make()->get('/users', [
             'query' => $email,
@@ -150,19 +147,8 @@ class ClerkUserLinkService
     protected function clerkUserHasEmail(array $user, string $email): bool
     {
         return collect(data_get($user, 'email_addresses', []))
-            ->map(fn ($row) => $this->normalizeEmail(data_get($row, 'email_address')))
+            ->map(fn ($row) => UserIdentityNormalizer::normalizeEmail(data_get($row, 'email_address')))
             ->contains($email);
-    }
-
-    protected function normalizeEmail(?string $email): ?string
-    {
-        if (!$email) {
-            return null;
-        }
-
-        $email = trim(mb_strtolower($email));
-
-        return $email === '' ? null : $email;
     }
 
     public function addApplication(string $clerkUserId, string $application): void

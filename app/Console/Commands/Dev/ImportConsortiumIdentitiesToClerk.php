@@ -6,6 +6,7 @@ use App\Services\Clerk\ClerkClientFactory;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Throwable;
+use App\Services\Identity\UserIdentityNormalizer;
 
 class ImportConsortiumIdentitiesToClerk extends Command
 {
@@ -168,7 +169,7 @@ class ImportConsortiumIdentitiesToClerk extends Command
     {
         $payload = [
             'external_id' => $candidate->resolved_gpm_uuid,
-            'email_address' => [$this->normalizeEmail($candidate->canonical_email)],
+            'email_address' => [UserIdentityNormalizer::normalizeEmail($candidate->canonical_email)],
             'private_metadata' => $this->privateMetadata($candidate),
         ];
 
@@ -204,7 +205,7 @@ class ImportConsortiumIdentitiesToClerk extends Command
             return $externalIdMatches[0];
         }
 
-        $email = $this->normalizeEmail($email);
+        $email = UserIdentityNormalizer::normalizeEmail($email);
 
         if (!$email) {
             return null;
@@ -296,13 +297,6 @@ class ImportConsortiumIdentitiesToClerk extends Command
                 'GT' => 'GeneTracker',
                 default => (string) $system,
             })->filter()->unique()->values()->all();
-    }
-
-    protected function normalizeEmail(?string $email): ?string
-    {
-        if (!$email) { return null; }
-        $email = trim(mb_strtolower($email));
-        return $email === '' ? null : $email;
     }
 
     protected function syncExistingGpmPerson(object $candidate, string $clerkUserId): void

@@ -5,6 +5,7 @@ namespace App\Console\Commands\Dev;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use App\Services\Identity\UserIdentityNormalizer;
 
 class ImportConsortiumIdentityCsv extends Command
 {
@@ -81,10 +82,10 @@ class ImportConsortiumIdentityCsv extends Command
                 'local_user_id' => trim($localUserId),
 
                 'email' => $email,
-                'email_normalized' => $this->normalizeEmail($email),
+                'email_normalized' => UserIdentityNormalizer::normalizeEmail($email),
 
                 'full_name' => $fullName,
-                'full_name_normalized' => $this->normalizeName($fullName),
+                'full_name_normalized' => UserIdentityNormalizer::normalizeName($fullName),
 
                 'gpm_uuid' => $gpmUuid,
                 'password_digest' => $password,
@@ -155,50 +156,5 @@ class ImportConsortiumIdentityCsv extends Command
             return null;
         }
         return $value;
-    }
-
-    protected function normalizeEmail(?string $email): ?string
-    {
-        if (!$email) {
-            return null;
-        }
-
-        return mb_strtolower(trim($email));
-    }
-
-    protected function normalizeName(?string $name): ?string
-    {
-        if (!$name) {
-            return null;
-        }
-
-        $name = mb_strtolower(trim($name));
-        $name = preg_replace('/\s+/', ' ', $name);
-        $name = preg_replace('/[^a-z0-9\s]/u', '', $name);
-        $name = trim($name);
-
-        return $name === '' ? null : $name;
-    }
-
-    protected function splitName(?string $fullName): array
-    {
-        if (!$fullName) {
-            return [null, null];
-        }
-
-        $parts = preg_split('/\s+/', trim($fullName)) ?: [];
-
-        if (count($parts) === 0) {
-            return [null, null];
-        }
-
-        if (count($parts) === 1) {
-            return [$parts[0], null];
-        }
-
-        $firstName = array_shift($parts);
-        $lastName = implode(' ', $parts);
-
-        return [$firstName, $lastName];
     }
 }

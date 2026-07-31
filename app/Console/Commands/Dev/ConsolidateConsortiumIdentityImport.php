@@ -6,6 +6,7 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use App\Services\Identity\UserIdentityNormalizer;
 
 class ConsolidateConsortiumIdentityImport extends Command
 {
@@ -32,11 +33,11 @@ class ConsolidateConsortiumIdentityImport extends Command
             ->orderBy('id')
             ->get()
             ->map(function ($row) {
-                $row->email_normalized = $this->normalizeEmail($row->email);
+                $row->email_normalized = UserIdentityNormalizer::normalizeEmail($row->email);
 
                 [$firstName, $lastName] = $this->splitName($row->full_name);
-                $row->first_name_normalized = $this->normalizeNamePart($firstName);
-                $row->last_name_normalized = $this->normalizeNamePart($lastName);
+                $row->first_name_normalized = UserIdentityNormalizer::normalizeNamePart($firstName);
+                $row->last_name_normalized = UserIdentityNormalizer::normalizeNamePart($lastName);
 
                 return $row;
             });
@@ -142,14 +143,7 @@ class ConsolidateConsortiumIdentityImport extends Command
 
         $localIdsBySystem = $rows->groupBy('source_system')->map(fn ($group) => $group->pluck('local_user_id')->values()->all())->toArray();
 
-        $exactEmailCrossSystem = $rows->pluck('email_normalized')->filter()->unique()->count() === 1 && $sourceSystems->count() > 1;
-        $sameNameDiffEmailCrossSystem =
-            $rows->map(fn ($row) => ($row->last_name_normalized ?? '') . '|' . ($row->first_name_normalized ?? ''))
-                ->filter(fn ($v) => $v !== '|')
-                ->unique()
-                ->count() === 1
-            && $rows->pluck('email_normalized')->filter()->unique()->count() > 1
-            && $sourceSystems->count() > 1;
+        $exactEmailCrossSystem = $rows->pluck('email_normalized')->filter()->unique()->count() === 1 && $sourceSystems->count() > 1;        
 
         // Prefer GPM data when the same email exists in both GPM and GT.
         $canonicalRow = $rows->first(fn ($row) => strtoupper($row->source_system) === 'GPM') ?? $rows->first();
@@ -167,7 +161,6 @@ class ConsolidateConsortiumIdentityImport extends Command
             'matched_by' => $matchedBy,
             'cross_system' => $sourceSystems->count() > 1,
             'exact_email_cross_system' => $exactEmailCrossSystem,
-            'same_name_diff_email_cross_system' => $sameNameDiffEmailCrossSystem,
             'has_existing_gpm_uuid' => $gpmUuids->isNotEmpty(),
             'raw_row_count' => $rows->count(),
             'has_password' => !empty($passwordDigest),
@@ -194,7 +187,6 @@ class ConsolidateConsortiumIdentityImport extends Command
             'recommended_action' => $recommendedAction,
 
             'exact_email_cross_system' => $exactEmailCrossSystem,
-            'same_name_diff_email_cross_system' => $sameNameDiffEmailCrossSystem,
             'has_existing_gpm_uuid' => $gpmUuids->isNotEmpty(),
             'needs_manual_review' => $needsManualReview,
 
@@ -213,51 +205,5 @@ class ConsolidateConsortiumIdentityImport extends Command
             'created_at' => now(),
             'updated_at' => now(),
         ];
-    }
-
-    protected function normalizeEmail(?string $email): ?string
-    {
-        if (!$email) {
-            return null;
-        }
-
-        $email = trim(mb_strtolower($email));
-        return $email === '' ? null : $email;
-    }
-
-    protected function normalizeNamePart(?string $name): ?string
-    {
-        if (!$name) {
-            return null;
-        }
-
-        $name = mb_strtolower(trim($name));
-        $name = preg_replace('/\s+/', ' ', $name);
-        $name = preg_replace('/[^a-z0-9\s]/u', '', $name);
-        $name = trim($name);
-
-        return $name === '' ? null : $name;
-    }
-
-    protected function splitName(?string $fullName): array
-    {
-        if (!$fullName) {
-            return [null, null];
-        }
-
-        $parts = preg_split('/\s+/', trim($fullName)) ?: [];
-
-        if (count($parts) === 0) {
-            return [null, null];
-        }
-
-        if (count($parts) === 1) {
-            return [$parts[0], null];
-        }
-
-        $firstName = array_shift($parts);
-        $lastName = implode(' ', $parts);
-
-        return [$firstName, $lastName];
     }
 }
