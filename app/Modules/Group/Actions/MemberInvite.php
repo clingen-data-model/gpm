@@ -28,6 +28,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Str;
 use App\Modules\Person\Events\PersonInvited;
+use App\Services\Identity\UserIdentityNormalizer;
 
 class MemberInvite
 {
@@ -49,7 +50,7 @@ class MemberInvite
         $roleIds = $data['role_ids'] ?? null;
         unset($data['role_ids']);
 
-        $email = $this->normalizeEmail($data['email']);
+        $email = UserIdentityNormalizer::normalizeEmail($data['email']);
 
         // A. Existing GPM person
         $person = Person::query()->whereRaw('lower(email) = ?', [$email])->first();
@@ -67,56 +68,6 @@ class MemberInvite
         // C. Brand-new person
         return $this->inviteBrandNewPerson($group, $data, $roleIds, $email);
     }
-
-    /* public function handle(Group $group, array $data): GroupMember
-    {
-        $roleIds = $data['role_ids'] ?? null;
-        unset($data['role_ids']);
-        $email = $this->normalizeEmail($data['email']);
-
-        $personUuid = Uuid::uuid4();
-        $person = $this->createPerson->handle(
-            uuid: $personUuid,
-            first_name: $data['first_name'],
-            last_name: $data['last_name'],
-            email: $data['email'],
-            phone: valueAtIndex($data, 'phone'),
-        );        
-
-        // beginning of the clerk 
-        $invite = $this->invitePerson->handle(person: $person, inviter: $group);
-        $clerkInvitation = $this->clerkInvitationService->createForInvite($invite, $group);
-        $clerkExpiresAt = data_get($clerkInvitation, 'expires_at');
-
-        logger()->info('Clerk invitation response', $clerkInvitation);
-
-        $invite->update([
-            'clerk_invitation_id' => data_get($clerkInvitation, 'id'),
-            'expires_at' => $clerkExpiresAt ? Carbon::createFromTimestampMs($clerkExpiresAt) : now()->addDays(30),
-        ]);
-        logger()->info('Local invite updated', [
-            'invite_id' => $invite->id,
-            'clerk_invitation_id' => $invite->fresh()->clerk_invitation_id,
-            'expires_at' => optional($invite->fresh()->expires_at)?->toDateTimeString(),
-        ]);
-        // end of the clerk 
-
-        $isContact = valueAtIndex($data, 'is_contact', false);
-        $newMember = $this->addMember
-                        ->cancelNotification()
-                        ->handle($group, $person, [
-                            'is_contact' => $isContact,
-                            'notes' => valueAtIndex($data, 'notes'),
-                            'training_level_1' => valueAtIndex($data, 'training_level_1'),
-                            'training_level_2' => valueAtIndex($data, 'training_level_2'),
-                        ]);
-
-        if ($roleIds) {
-            $newMember = $this->assignRole->handle($newMember, $roleIds);
-        }
-
-        return $newMember;
-    } */
 
     public function asController(ActionRequest $request, $groupUuid)
     {
@@ -233,12 +184,5 @@ class MemberInvite
             $newMember = $this->assignRole->handle($newMember, $roleIds);
         }
         return $newMember;
-    }
-
-    protected function normalizeEmail(?string $email): ?string
-    {
-        if (!$email) { return null; }
-        $email = trim(mb_strtolower($email));
-        return $email === '' ? null : $email;
     }
 }

@@ -9,6 +9,7 @@ use App\Services\Clerk\ClerkUserLinkService;
 use Illuminate\Auth\Access\Response;
 use Illuminate\Http\Request;
 use Lorisleiva\Actions\Concerns\AsController;
+use App\Services\Identity\UserIdentityNormalizer;
 
 class MemberCandidatesList
 {
@@ -23,7 +24,7 @@ class MemberCandidatesList
     {
         $group = Group::findByUuidOrFail($group);
 
-        $email = $this->normalizeEmail($request->get('email'));
+        $email = UserIdentityNormalizer::normalizeEmail($request->get('email'));
         $firstName = trim((string) $request->get('first_name'));
         $lastName = trim((string) $request->get('last_name'));
 
@@ -139,13 +140,6 @@ class MemberCandidatesList
             ->exists();
     }
 
-    protected function normalizeEmail(?string $email): ?string
-    {
-        if (!$email) { return null; }
-        $email = trim(mb_strtolower($email));
-        return $email === '' ? null : $email;
-    }
-
     protected function canSearchClerkByName(?string $firstName, ?string $lastName): bool
     {
         return mb_strlen(trim((string) $firstName)) >= 3 || mb_strlen(trim((string) $lastName)) >= 3;
@@ -182,6 +176,6 @@ class MemberCandidatesList
         if (!$email) {
             $email = data_get($clerkUser, 'email_addresses.0.email_address');
         }
-        return $this->normalizeEmail($email);
+        return UserIdentityNormalizer::normalizeEmail($email);
     }
 }
