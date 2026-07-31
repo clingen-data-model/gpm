@@ -37,7 +37,6 @@ return new class extends Migration
             $table->string('recommended_action', 50)->nullable()->index(); // link_existing_gpm / create_new_gpm_uuid / manual_review / skip
 
             $table->boolean('exact_email_cross_system')->default(false)->index('cic_exact_email_cross_idx');
-            $table->boolean('same_name_diff_email_cross_system')->default(false)->index('cic_same_name_diff_email_idx');
             $table->boolean('has_existing_gpm_uuid')->default(false)->index('cic_has_gpm_uuid_idx');
             $table->boolean('needs_manual_review')->default(false)->index('cic_needs_review_idx');
             
