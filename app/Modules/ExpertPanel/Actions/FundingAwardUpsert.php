@@ -12,6 +12,7 @@ use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsController;
 use Lorisleiva\Actions\Concerns\AsObject;
 use Ramsey\Uuid\Uuid;
+use App\Services\Identity\UserIdentityNormalizer;
 
 class FundingAwardUpsert
 {
@@ -99,10 +100,10 @@ class FundingAwardUpsert
     {
         return collect($contacts)->map(function ($contact) {
             return [
-                'role'  => $this->normalizeString($contact['role'] ?? null),
-                'name'  => $this->normalizeString($contact['name'] ?? null),
-                'email' => $this->normalizeString($contact['email'] ?? null),
-                'phone' => $this->normalizeString($contact['phone'] ?? null),
+                'role'  => UserIdentityNormalizer::normalizeString($contact['role'] ?? null),
+                'name'  => UserIdentityNormalizer::normalizeString($contact['name'] ?? null),
+                'email' => UserIdentityNormalizer::normalizeString($contact['email'] ?? null),
+                'phone' => UserIdentityNormalizer::normalizeString($contact['phone'] ?? null),
             ];
         })->filter(function ($contact) {
             return filled($contact['role']) || filled($contact['name']) || filled($contact['email']) || filled($contact['phone']);
@@ -130,10 +131,5 @@ class FundingAwardUpsert
         $fundingAward->contactPis()->sync($piIds->mapWithKeys(fn ($id) => [$id => ['is_primary' => $primaryId === $id]])->all());
     }
 
-    private function normalizeString($value): ?string
-    {
-        if ($value === null) return null;
-        $value = trim((string) $value);
-        return $value === '' ? null : $value;
-    }
+    
 }
