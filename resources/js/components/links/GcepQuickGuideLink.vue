@@ -5,7 +5,7 @@ export default {
 </script>
 <template>
   <a
-    href="https://www.clinicalgenome.org/site/assets/files/3263/gcep_quick_guide_jan_2021.pdf"
+    href="https://www.clinicalgenome.org/docs/clingen-gene-curation-expert-panel-protocol/"
     target="gcep-quick-guide"
   >
     <slot>GCEP Quick Guide</slot>

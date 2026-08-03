@@ -81,7 +81,7 @@ export default {
           <li>Indicate why curation efforts would benefit this disease area</li>
           <li>Indicate how the gene list will be prioritized</li>
           <li>Describe plans to collaborate with other GCEPs on any genes on your gene list that overlap in scope</li>
-          <li>see the <GcepQuickGuideLink /> for more information</li>
+          <li>See the <GcepQuickGuideLink /> for more information</li>
         </ul>
       </div>
 
