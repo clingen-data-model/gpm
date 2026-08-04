@@ -61,8 +61,8 @@
                     {uuid: props.person.uuid, attributes: profile.value}
                 ).then(rsp => {
                     store.dispatch('getCurrentUser', {force: true})
-                    store.commit('pushSuccess', 'Your profile has been updated.')
-                    return rsp.data;
+                    store.commit('pushSuccess', 'Profile has been updated.')
+                    return rsp.data.data;
                 })
 
                 saving.value = false;

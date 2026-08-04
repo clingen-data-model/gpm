@@ -103,7 +103,7 @@ class ProfileUpdate
             'timezone' => [Rule::in(DateTimeZone::listIdentifiers())],
             'street1' => ['nullable','max:255'],
             'street2' => ['nullable','max:255'],
-            'city' => ['required', 'string', 'max:255'],
+            'city' => [ Rule::requiredIf($this->requiresFullProfileFields($request)), 'nullable', 'string', 'max:255'],
             'state' => ['nullable','max:255'],
             'zip' => ['nullable','max:255'],
         ];
@@ -131,5 +131,15 @@ class ProfileUpdate
             'exists' => 'The selection is invalid.',
             'email.unique' => 'Somebody is already using that email address.'
         ];
+    }
+
+    private function requiresFullProfileFields(ActionRequest $request): bool
+    {
+        $person = $request->route('person');
+
+        $isOwnProfile = $person->user_id === $request->user()->id;
+        $canManagePeople = $request->user()->can('people-manage');
+
+        return $isOwnProfile && !$canManagePeople;
     }
 }

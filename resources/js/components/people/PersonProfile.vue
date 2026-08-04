@@ -51,7 +51,8 @@ export default {
       async handleProfileSaved (updatedPerson) {
         this.showEditForm = false;
         await this.$store.dispatch('people/getPerson', {
-            uuid: updatedPerson?.uuid || this.person.uuid
+            uuid: updatedPerson?.uuid || this.person.uuid, 
+            force: true,
         });
       }
     }
