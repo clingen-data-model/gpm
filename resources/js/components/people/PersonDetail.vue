@@ -34,34 +34,38 @@ export default {
         }
     },
     data() {
-        return {
-            showDeleteConfirmation: false,
-            showMergeForm: false,
-            mailLoading: false,
-            logsLoading: false,
-            showRetireAllConfirmation: false,
-            retireAlsoDisableLogin: false,
-            retireReason: '',
-            retireAllBusy: false,
-        }
+      return {
+        showDeleteConfirmation: false,
+        showMergeForm: false,
+        mailLoading: false,
+        logsLoading: false,
+        showRetireAllConfirmation: false,
+        retireAlsoDisableLogin: false,
+        retireReason: '',
+        retireAllBusy: false,
+        clerkLookupEmail: '',
+        clerkLookupResult: null,
+        clerkLookupBusy: false,
+        clerkRelinkBusy: false,
+      }
     },
     watch: {
-        uuid: {
-            immediate: true,
-            async handler () {
-                await this.$store.dispatch('people/getPerson', { uuid: this.uuid });
-                if (this.coordinatesPerson(this.person)) {
-                    this.getLogEntries();
-                    this.getMailLog();
-                }
-            }
-        },
-        'person.memberships': function (to) {
-            if (to.length > 0) {
-                this.getLogEntries();
-                this.getMailLog();
-            }
+      uuid: {
+        immediate: true,
+        async handler () {
+          await this.$store.dispatch('people/getPerson', { uuid: this.uuid });
+          if (this.coordinatesPerson(this.person)) {
+            this.getLogEntries();
+            this.getMailLog();
+          }
         }
+      },
+      'person.memberships': function (to) {
+        if (to.length > 0) {
+          this.getLogEntries();
+          this.getMailLog();
+        }
+      }
     },
     computed: {
         ...mapGetters({
@@ -127,6 +131,57 @@ export default {
             this.$store.commit('pushError', 'Failed to retire user — see console/logs.')
           } finally {
             this.retireAllBusy = false
+          }
+        },
+        async findClerkAccount() {
+          try {
+            this.clerkLookupBusy = true
+            this.clerkLookupResult = await this.$store.dispatch('people/findClerkAccount', {
+              person: this.person,
+              email: this.clerkLookupEmail
+            })
+
+            if (!this.clerkLookupResult) {
+              this.$store.commit('pushError', 'No Clerk account found for that email.')
+            }
+          } catch (e) {
+            this.$store.commit('pushError', 'Failed to search Clerk account.')
+          } finally {
+            this.clerkLookupBusy = false
+          }
+        },
+
+        async updateClerkAccount() {
+          if (!this.clerkLookupResult?.clerk_user_id) return
+
+          const message = this.clerkLookupResult.will_update_person_uuid
+            ? `This will update this GPM person's UUID to ${this.clerkLookupResult.external_id} and link to Clerk account ${this.clerkLookupResult.clerk_user_id}. Continue?`
+            : `This will link this person to Clerk account ${this.clerkLookupResult.clerk_user_id}. Continue?`
+
+          if (!window.confirm(message)) return
+
+          try {
+            this.clerkRelinkBusy = true
+
+            const updatedPerson = await this.$store.dispatch('people/updateClerkAccount', {
+              person: this.person,
+              clerkUserId: this.clerkLookupResult.clerk_user_id
+            })
+
+            this.$store.commit('pushSuccess', 'Clerk account link updated.')
+
+            if (updatedPerson?.uuid && updatedPerson.uuid !== this.person.uuid) {
+              this.$router.replace({ name: 'PersonDetail', params: { uuid: updatedPerson.uuid } })
+            } else {
+              await this.$store.dispatch('people/getPerson', { uuid: this.person.uuid })
+            }
+
+            this.clerkLookupResult = null
+            this.clerkLookupEmail = ''
+          } catch (e) {
+            this.$store.commit('pushError', 'Failed to update Clerk account link.')
+          } finally {
+            this.clerkRelinkBusy = false
           }
         },
     },
@@ -242,6 +297,62 @@ export default {
             </button>
           </p>
         </section>
+        <section class="border my-4 p-4 bg-gray-100 border-gray-200 rounded" v-if="hasRole('super-admin') || hasRole('super-user')">
+          <h2 class="mb-2">
+            Clerk Account Link
+          </h2>
+
+          <dictionary-row label="Current Clerk ID">
+            {{ person.clerk_user_id || 'Not linked' }}
+          </dictionary-row>
+
+          <div class="flex space-x-2 items-center mt-2">
+            <input
+              v-model="clerkLookupEmail"
+              type="email"
+              class="w-full"
+              placeholder="Search Clerk by exact email"
+            >
+            <button class="btn btn-sm" :disabled="clerkLookupBusy" @click="findClerkAccount">
+              {{ clerkLookupBusy ? 'Searching...' : 'Search Clerk' }}
+            </button>
+          </div>
+
+          <div v-if="clerkLookupResult" class="border rounded p-2 mt-3 bg-white">
+            <dictionary-row label="Name">
+              {{ clerkLookupResult.name }}
+            </dictionary-row>
+            <dictionary-row label="Email">
+              {{ clerkLookupResult.email }}
+            </dictionary-row>
+            <dictionary-row label="Clerk ID">
+              {{ clerkLookupResult.clerk_user_id }}
+            </dictionary-row>
+            <dictionary-row label="External ID">
+              {{ clerkLookupResult.external_id || 'None' }}
+            </dictionary-row>
+            <dictionary-row label="Applications">
+              {{ (clerkLookupResult.applications || []).join(', ') || 'None' }}
+            </dictionary-row>
+
+            <static-alert v-if="clerkLookupResult.linked_person_uuid && clerkLookupResult.linked_person_uuid !== person.uuid">
+              This Clerk account is already linked to another GPM person:
+              {{ clerkLookupResult.linked_person_name }}.
+            </static-alert>
+
+            <static-alert v-if="clerkLookupResult.will_update_person_uuid">
+              This Clerk account already has an external ID. Linking it will update this GPM person's UUID to match Clerk.
+            </static-alert>
+
+            <button
+              class="btn btn-sm blue mt-2"
+              :disabled="clerkRelinkBusy || (clerkLookupResult.linked_person_uuid && clerkLookupResult.linked_person_uuid !== person.uuid)"
+              @click="updateClerkAccount"
+            >
+              {{ clerkRelinkBusy ? 'Updating...' : 'Link this Clerk account' }}
+            </button>
+          </div>
+        </section>
       </tab-item>
     </TabsContainer>
 
@@ -255,6 +366,8 @@ export default {
           <li>User record, system roles, and system permissions (if account is activated)</li>
           <li>Invite</li>
           <li>Group Memberships and group roles (if any)</li>
+          <li>GPM access will be removed from the linked Clerk account, if one exists</li>
+          <li>The Clerk account itself will not be deleted</li>
         </ul>
         <div class="border my-4 px-2 py-1 font-bold bg-red-100 border-red-200 rounded text-red-800">
           This cannot be undone.

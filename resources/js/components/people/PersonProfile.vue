@@ -24,7 +24,8 @@ export default {
     },
     data () {
         return {
-            showEditForm: false
+            showEditForm: false,
+            syncingFromClerk: false,
         }
     },
     computed: {
@@ -54,7 +55,19 @@ export default {
             uuid: updatedPerson?.uuid || this.person.uuid, 
             force: true,
         });
-      }
+      },
+      async syncFromClerk() {
+        try {
+          this.syncingFromClerk = true
+          await this.$store.dispatch('people/syncFromClerk', this.person)
+          await this.$store.dispatch('people/getPerson', { uuid: this.person.uuid })
+          this.$store.commit('pushSuccess', 'Profile synced from Clerk.')
+        } catch (e) {
+          this.$store.commit('pushError', 'Failed to sync profile from Clerk.')
+        } finally {
+          this.syncingFromClerk = false
+        }
+      },
     }
 }
 </script>
@@ -79,8 +92,17 @@ export default {
           label-class="w-40"
           :label="titleCase(key)"
         >
-          {{ person[key] }}
+          {{ person[key] }}          
         </dictionary-row>
+
+        <p v-if="userIsPerson(person) || hasPermission('people-manage')">
+          <button class="btn btn" @click="syncFromClerk" :disabled="syncingFromClerk || !person.clerk_user_id">
+            {{ syncingFromClerk ? 'Syncing...' : 'Sync profile from Clerk' }}
+          </button>
+          <small class="text-gray-500 block mt-1">
+            Updates first name, last name, and primary email from the linked Clerk account.
+          </small>
+        </p>
 
         <section class="mt-4 border-t pt-4">
           <h3>Profile</h3>

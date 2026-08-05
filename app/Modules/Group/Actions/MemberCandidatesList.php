@@ -9,7 +9,7 @@ use App\Services\Clerk\ClerkUserLinkService;
 use Illuminate\Auth\Access\Response;
 use Illuminate\Http\Request;
 use Lorisleiva\Actions\Concerns\AsController;
-use App\Services\Identity\UserIdentityNormalizer;
+use App\Services\UserIdentityNormalizer;
 
 class MemberCandidatesList
 {

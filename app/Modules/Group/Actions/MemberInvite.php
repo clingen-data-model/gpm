@@ -28,7 +28,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Str;
 use App\Modules\Person\Events\PersonInvited;
-use App\Services\Identity\UserIdentityNormalizer;
+use App\Services\UserIdentityNormalizer;
 
 class MemberInvite
 {
