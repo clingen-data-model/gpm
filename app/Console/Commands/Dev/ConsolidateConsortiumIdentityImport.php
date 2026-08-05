@@ -6,7 +6,7 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
-use App\Services\Identity\UserIdentityNormalizer;
+use App\Services\UserIdentityNormalizer;
 
 class ConsolidateConsortiumIdentityImport extends Command
 {
