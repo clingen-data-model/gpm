@@ -12,7 +12,7 @@ use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsController;
 use Lorisleiva\Actions\Concerns\AsObject;
 use Ramsey\Uuid\Uuid;
-use App\Services\Identity\UserIdentityNormalizer;
+use App\Services\UserIdentityNormalizer;
 
 class FundingAwardUpsert
 {

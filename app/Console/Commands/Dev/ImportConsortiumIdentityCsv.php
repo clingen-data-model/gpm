@@ -5,7 +5,7 @@ namespace App\Console\Commands\Dev;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
-use App\Services\Identity\UserIdentityNormalizer;
+use App\Services\UserIdentityNormalizer;
 
 class ImportConsortiumIdentityCsv extends Command
 {

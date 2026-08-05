@@ -9,18 +9,21 @@ use App\Modules\User\Actions\UserDelete;
 use App\Modules\Group\Actions\MemberRemove;
 use App\Modules\Person\Events\PersonDeleted;
 use Lorisleiva\Actions\Concerns\AsController;
+use App\Services\Clerk\ClerkUserLinkService;
 
 class PersonDelete
 {
     use AsController;
 
-    public function __construct(private UserDelete $deleteUser, private MemberRemove $removeMember)
+    public function __construct(private UserDelete $deleteUser, private MemberRemove $removeMember, private ClerkUserLinkService $clerkUserLinkService)
     {
     }
 
 
     public function handle(Person $person)
     {
+        $this->clerkUserLinkService->unlinkGpmApplicationFromPerson($person);
+        
         if ($person->invite) {
             $person->invite->delete();
         }

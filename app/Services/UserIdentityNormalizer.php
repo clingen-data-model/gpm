@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Identity;
+namespace App\Services;
 
 class UserIdentityNormalizer
 {
