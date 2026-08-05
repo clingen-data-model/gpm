@@ -157,7 +157,19 @@ export const actions = {
                 commit('addItem', response.data);
                 commit('removeItem', obsolete);
             })
-    }
+    },
+
+    syncFromClerk ({ commit }, person) {
+        return api.post(`/api/people/${person.uuid}/sync-from-clerk`);
+    },
+
+    findClerkAccount ({}, { person, email }) {
+        return api.get(`/api/people/${person.uuid}/clerk-account`, { params: { email } }).then(response => response.data.data);
+    },
+
+    updateClerkAccount ({}, { person, clerkUserId }) {
+        return api.post(`/api/people/${person.uuid}/clerk-account`, { clerk_user_id: clerkUserId }).then(response => response.data.data);
+    },
 };
 
 export default {

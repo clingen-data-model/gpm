@@ -11,6 +11,7 @@ use App\Modules\Group\Actions\MemberRetire;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use App\Modules\User\Actions\UserDelete;
+use App\Services\Clerk\ClerkUserLinkService;
 
 class PersonRetireAll
 {
@@ -18,7 +19,8 @@ class PersonRetireAll
 
     public function __construct(
         private MemberRetire $memberRetire,
-        private UserDelete $userDelete
+        private UserDelete $userDelete,
+        private ClerkUserLinkService $clerkUserLinkService
     ) {}
 
     public function handle(Person $person, bool $disableLogin = false, ?string $reason = null): array
@@ -41,10 +43,18 @@ class PersonRetireAll
         }
 
         $loginDisabled  = false;
-        if ($person->user && $disableLogin) {
-            $person->update(['user_id' => null]);
-            $this->userDelete->handle($person->user);
-            $loginDisabled = true;
+        if ($disableLogin) {
+            $user = $person->user()->first();
+            $hadClerkLink = (bool) $person->clerk_user_id;
+
+            if ($user || $hadClerkLink) {
+                $this->clerkUserLinkService->unlinkGpmApplicationFromPerson($person);
+                if ($user) {
+                    $person->forceFill(['user_id' => null])->save();
+                    $this->userDelete->handle($user);
+                }
+                $loginDisabled = true;
+            }
         }
 
         return [

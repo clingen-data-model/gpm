@@ -6,7 +6,7 @@ use App\Services\Clerk\ClerkClientFactory;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Throwable;
-use App\Services\Identity\UserIdentityNormalizer;
+use App\Services\UserIdentityNormalizer;
 
 class ImportConsortiumIdentitiesToClerk extends Command
 {
