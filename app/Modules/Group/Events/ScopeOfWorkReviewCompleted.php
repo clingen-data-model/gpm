@@ -34,7 +34,11 @@ class ScopeOfWorkReviewCompleted extends GroupEvent
 
     public function getLogEntry(): string
     {
-        return 'Scope of Work revision ' . $this->revision->version_label . ' review completed: ' . $this->outcome;
+        return match ($this->outcome) {
+            'approved' => 'Scope of Work revision ' . $this->revision->version_label . ' was approved.',
+            'revisions_requested' => 'Revisions were requested for Scope of Work revision ' . $this->revision->version_label . '.',
+            default => 'Scope of Work revision ' . $this->revision->version_label . ' review completed: ' . $this->outcome . '.',
+        };
     }
 
     public function shouldPublish(): bool

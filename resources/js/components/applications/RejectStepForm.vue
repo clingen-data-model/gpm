@@ -41,6 +41,7 @@ const clearForm = () => {
   email.value = emptyEmail()
   errors.value = {}
   saving.value = false
+  responseContent.value = ''
 }
 
 const cancel = () => {
@@ -53,12 +54,15 @@ const cancel = () => {
 }
 
 const getEmailTemplate = async () => {
-  if (!notifyContacts.value) { return }
+  if (!notifyContacts.value) {
+    return
+  }
+
   const response = await api.get(`/api/email-drafts/groups/${props.group.uuid}`, {
-      params: { templateClass: 'App\\Mail\\UserDefinedMailTemplates\\ApplicationRevisionRequestTemplate', },
-    }
-  )
-   
+      params: {
+        templateClass: revisionRequestTemplateClass.value,
+  }})
+
   email.value = {
     ...response.data,
     files: [],
@@ -84,7 +88,7 @@ const save = async () => {
       notify_contacts: notifyContacts.value,
       subject: email.value.subject,
       body: email.value.body,
-      attachments: email.value.files,
+      response_content: isScopeOfWorkRevision.value ? responseContent.value : null,
     }
 
     const url = `/api/groups/${props.group.uuid}/application/submission/${props.submission.id}/rejection`
@@ -104,6 +108,17 @@ const save = async () => {
     saving.value = false
   }
 }
+
+const isScopeOfWorkRevision = computed(() => {
+  return props.submission?.data?.context === 'scope_of_work_revision'
+})
+const responseContent = ref('')
+const revisionRequestTemplateClass = computed(() => {
+  return isScopeOfWorkRevision.value
+    ? 'App\\Mail\\UserDefinedMailTemplates\\ScopeOfWorkRevisionRequestTemplate'
+    : 'App\\Mail\\UserDefinedMailTemplates\\ApplicationRevisionRequestTemplate'
+})
+
 defineExpose({
   clearForm,
   getEmailTemplate,
@@ -111,6 +126,15 @@ defineExpose({
 </script>
 <template>
   <form-container>
+
+    <input-row
+      v-if="isScopeOfWorkRevision"
+      v-model="responseContent"
+      type="large-text"
+      label="Revision notes to Expert Panel"
+      :errors="errors.response_content"
+      vertical
+    />
     <dictionary-row label="">
       <div>
         <label class="text-sm">

@@ -54,7 +54,7 @@ class EvidenceSummary extends Model implements BelongsToExpertPanel
      */
     public function gene()
     {
-        return $this->belongsTo(Gene::class);
+        return $this->belongsTo(Gene::class)->withoutGlobalScopes();
     }
 
     // Factory support

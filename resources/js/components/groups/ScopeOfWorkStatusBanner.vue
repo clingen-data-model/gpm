@@ -14,17 +14,9 @@
 		</div>
 
 		<div v-else>
-			<div v-if="status.active_revision.status === 'draft'" class="font-semibold text-blue-900">Draft Scope of Work changes detected.</div>
-			<div v-else-if="status.active_revision.status === 'submitted'" class="font-semibold text-blue-900">Scope of Work revision submitted for review.</div>
-			<div v-else-if="status.active_revision.status === 'revisions_requested'" class="font-semibold text-blue-900">Revisions requested for this Scope of Work update.</div>
-			<div class="mt-1 text-blue-800">
-				Version:
-				<span class="font-semibold">{{ status.active_revision.version_label }}</span>
-				<template v-if="status.active_revision.base_version">
-					based on version
-					<span class="font-semibold"> {{ status.active_revision.base_version.version_label }} </span>
-				</template>
-			</div>
+			<h3 v-if="status.active_revision.status === 'draft'" class="font-semibold text-blue-900">Draft Scope of Work changes detected.</h3>
+			<h3 v-else-if="status.active_revision.status === 'submitted'" class="font-semibold text-blue-900">Scope of Work revision submitted for review.</h3>
+			<h3 v-else-if="status.active_revision.status === 'revisions_requested'" class="font-semibold text-blue-900">Revisions requested for this Scope of Work update.</h3>		
 
 			<div
 				v-if="status.active_revision.status === 'revisions_requested' && status.active_revision.submission?.response_content"
@@ -34,6 +26,15 @@
 				<div class="mt-1 whitespace-pre-line">
 					{{ status.active_revision.submission.response_content }}
 				</div>
+			</div>
+
+			<div class="mt-3 text-blue-800">
+				Version:
+				<span class="font-semibold">{{ status.active_revision.version_label }}</span>
+				<template v-if="status.active_revision.base_version">
+					based on version
+					<span class="font-semibold"> {{ status.active_revision.base_version.version_label }} </span>
+				</template>
 			</div>
 
 			<div class="mt-2 text-blue-800">
@@ -57,11 +58,7 @@
 				</button>
 				<button v-if="['draft', 'revisions_requested'].includes(status.active_revision.status) && status.active_revision.summary.requires_submission" type="button" class="btn btn-xs" @click="showSubmitRevisionModal = true">
 					{{ status.active_revision.status === 'revisions_requested' ? 'Resubmit for approval' : 'Submit for approval' }}
-        </button>
-				<template v-if="canManage && status.active_revision.status === 'submitted'">
-					<button type="button" class="btn btn-xs" @click="$emit('approve', status.active_revision)">Approve revision</button>
-					<button type="button" class="btn btn-xs" @click="$emit('request-revisions', status.active_revision)">Request revisions</button>					
-				</template>
+        		</button>				
 				<button v-if="['draft', 'revisions_requested'].includes(status.active_revision.status)" type="button" class="btn btn-xs" @click="$emit('discard', status.active_revision)">Discard changes</button>
 			</div>
 		</div>

@@ -11,6 +11,7 @@ use App\Notifications\ValueObjects\MailAttachment;
 use App\Modules\ExpertPanel\Actions\NotifyContacts;
 use App\Modules\Group\Events\ApplicationRevisionsRequested;
 use App\Modules\Group\Actions\ScopeOfWork\RevisionRequestRevisionsFromSubmission;
+use App\Modules\Group\Events\ScopeOfWorkReviewCompleted;
 
 class ApplicationSubmissionReject
 {
@@ -23,30 +24,42 @@ class ApplicationSubmissionReject
     {
     }
     
-    public function handle(Group $group, Submission $submission, ?string $responseContent = null): Submission
+    public function handle(Group $group, Submission $submission, ?string $responseContent = null): Submission 
     {
+        if ((int) $submission->group_id !== (int) $group->id) { abort(404); }
         $submission->reject($responseContent);
-        $this->requestScopeOfWorkRevisions->handle($submission);
-        event(new ApplicationRevisionsRequested($submission, $responseContent));
-        // event(new ScopeOfWorkReviewCompleted(submission: $submission->fresh(), revision: $revision, outcome: 'revisions_requested'));
-        return $submission->fresh();
+        $revision = $this->requestScopeOfWorkRevisions->handle($submission);
+        $submission = $submission->fresh();
+
+        if ($revision) {
+            event(new ScopeOfWorkReviewCompleted(
+                submission: $submission,
+                revision: $revision,
+                outcome: 'revisions_requested'
+            ));
+        } else {
+            event(new ApplicationRevisionsRequested($submission, $responseContent ));
+        }
+        return $submission;
     }
 
     public function asController(ActionRequest $request, Group $group, Submission $submission)
     {
         DB::beginTransaction();
         try {
+            $isScopeOfWorkRevision = data_get($submission->data, 'context') === 'scope_of_work_revision';
+            $responseContent = $isScopeOfWorkRevision ? $request->response_content : $request->body;
             $submission = $this->handle(
                 group: $group, 
                 submission: $submission,
-                responseContent: $request->body
+                responseContent: $responseContent
             );
 
             $attachments = collect($request->attachments)
                 ->map(function ($file) {
                     return MailAttachment::createFromUploadedFile($file);
                 })
-                ->toArray();
+                ->toArray();            
 
             if ($request->notify_contacts) {
                 $this->notifyContactsAction->handle(
