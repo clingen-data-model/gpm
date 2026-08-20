@@ -112,7 +112,7 @@ export default {
     </transition>
     <teleport to="body">
       <modal-dialog v-model="showDeleteConfirm" title="You are about to delete an example evidence summary.">
-        You are about to delete an evidence summary for {{ summary.gene.gene_symbol }} - {{ summary.variant }}.  Are you sure you want to continue?
+        You are about to delete an evidence summary for {{ summary.gene_symbol }} - {{ summary.variant }}.  Are you sure you want to continue?
         <button-row submit-text="Delete Summary" @submit="deleteSummary" @cancel="cancelDelete" />
       </modal-dialog>
     </teleport>
