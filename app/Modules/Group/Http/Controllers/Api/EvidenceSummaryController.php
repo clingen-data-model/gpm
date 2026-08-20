@@ -13,7 +13,7 @@ class EvidenceSummaryController extends Controller
     {
         $group = Group::where('uuid', $groupUuid)->sole();
         $group->expertPanel->load('evidenceSummaries.gene');
-        $group->expertPanel->evidenceSummaries->pluck('gene')->filter()->each->append('gt_gene');
+        // $group->expertPanel->evidenceSummaries->pluck('gene')->filter()->each->append('gt_gene');
         
         return ['data' => $group->expertPanel->evidenceSummaries];
     }
