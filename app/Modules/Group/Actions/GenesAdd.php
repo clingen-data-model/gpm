@@ -19,8 +19,8 @@ class GenesAdd
     use AsObject;
 
     public function __construct(
-        private GenesAddToVcep $addGenesToVcep, 
-        private GenesSyncToGcep $addGenesToGcep, 
+        private GenesAddToVcep $addGenesToVcep,
+        private GenesAddToGcep $addGenesToGcep,
         private RevisionGuard $scopeOfWorkRevisionGuard)
     {
     }
