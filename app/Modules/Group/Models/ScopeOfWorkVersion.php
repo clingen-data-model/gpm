@@ -152,4 +152,20 @@ class ScopeOfWorkVersion extends Model
     {
         return $this->hasMany(Submission::class);
     }
+
+    public function scopeActiveRevision($query)
+    {
+        return $query->whereIn('status', [
+            self::STATUS_DRAFT,
+            self::STATUS_SUBMITTED,
+            self::STATUS_REVISIONS_REQUESTED,
+        ]);
+    }
+
+    public static function groupHasActiveRevision($group): bool
+    {
+        return static::forGroup($group)
+            ->activeRevision()
+            ->exists();
+    }
 }
