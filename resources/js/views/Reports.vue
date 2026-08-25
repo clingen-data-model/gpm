@@ -48,6 +48,10 @@ const reports = [
     name: 'People in >1 EP',
   },
   {
+    url: '/api/report/foreign-components',
+    name: 'Foreign Components',
+  },
+  {
     url: '/api/report/publications',
     name: 'Publications',
   },

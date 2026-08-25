@@ -19,6 +19,7 @@ use App\Modules\ExpertPanel\Actions\CoiReportMakePdf;
 use App\Modules\Group\Actions\SubgroupMembersMakeExcel;
 use App\Modules\Group\Models\Group;
 use App\Modules\Funding\Http\Controllers\Api\FundingSourceController;
+use App\Actions\ReportForeignComponentsMake;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -52,6 +53,7 @@ Route::group(['prefix' => '/api/report'], function () {
     Route::get('/countries', ReportCountriesMake::class);
     Route::get('/people', ReportPeopleMake::class);
     Route::get('/people-in-multiple-eps', ReportMultipleEpsMake::class);
+    Route::get('/foreign-components', ReportForeignComponentsMake::class);
     Route::get('/publications', ReportPublicationsMake::class);
 
     Route::group(['prefix' => '/groups/{group:uuid}'], function () {
