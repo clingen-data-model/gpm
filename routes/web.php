@@ -11,13 +11,16 @@ use App\Actions\ReportInstitutionsMake;
 use App\Http\Controllers\ViewController;
 use App\Actions\ReportVcepApplicationMake;
 use App\Actions\ReportPublicationsMake;
+use App\Actions\ReportScvcepApplicationMake;
+use App\Actions\ReportScvcepGenesMake;
 use App\Http\Controllers\DocumentController;
 use App\Modules\Group\Actions\GroupMembersMakeCsv;
 use App\Modules\ExpertPanel\Actions\CoiReportMakePdf;
 use App\Modules\Group\Actions\SubgroupMembersMakeExcel;
 use App\Modules\Group\Models\Group;
-use App\Http\Controllers\PublicIconController;
 use App\Modules\Funding\Http\Controllers\Api\FundingSourceController;
+use App\Actions\ReportForeignComponentsMake;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -29,13 +32,13 @@ use App\Modules\Funding\Http\Controllers\Api\FundingSourceController;
 |
 */
 Route::get('/coi-group/{group:uuid}', function (Group $group) { return app(CoiReportMakePdf::class)->handle($group); })->whereUuid('group')->name('coi.pdf');
-Route::get('/workinggroups/icon/{icon_path}', [PublicIconController::class, 'show'])->where('icon_path', '^[A-Fa-f0-9-]+\.(png|jpg|jpeg|gif)$')->name('wg.icon');
 Route::get('/funding-sources/logo/{logo_path}', [FundingSourceController::class, 'logo'])->where('logo_path', '^[A-Za-z0-9_-]+\.(png|jpg|jpeg|gif)$')->name('funding.logo');
 
 Route::get('/{any}', [ViewController::class, 'app'])
     ->where('any', '^(?!(api|sanctum|impersonate|dev|documents|downloads|clockwork|profile-photos|storage)).*$');
 
 Route::get('/documents/{uuid?}', [DocumentController::class, 'show'])->middleware('auth:sanctum');
+Route::get('/downloads/groups/{group:uuid}/final-specification/{document:uuid}', [DocumentController::class, 'downloadGroupFinalSpecification'])->name('groups.final-specification.download');
 Route::get('/storage/profile-photos/{filename}', function ($filename) {
     return redirect('/profile-photos/'.$filename, 301);
 });
@@ -43,12 +46,15 @@ Route::get('/storage/profile-photos/{filename}', function ($filename) {
 Route::group(['prefix' => '/api/report'], function () {
     Route::get('/basic-summary', ReportSummaryMake::class);
     Route::get('/vcep-application-summary', ReportVcepApplicationMake::class);
+    Route::get('/scvcep-application-summary', ReportScvcepApplicationMake::class);
     Route::get('/gcep-genes', ReportGcepGenesMake::class);
     Route::get('/vcep-genes', ReportVcepGenesMake::class);
+    Route::get('/scvcep-genes', ReportScvcepGenesMake::class);
     Route::get('/institutions', ReportInstitutionsMake::class);
     Route::get('/countries', ReportCountriesMake::class);
     Route::get('/people', ReportPeopleMake::class);
     Route::get('/people-in-multiple-eps', ReportMultipleEpsMake::class);
+    Route::get('/foreign-components', ReportForeignComponentsMake::class);
     Route::get('/publications', ReportPublicationsMake::class);
 
     Route::group(['prefix' => '/groups/{group:uuid}'], function () {
