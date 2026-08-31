@@ -11,7 +11,11 @@ class ReportCountriesMake extends ReportMakeAbstract
 
     public function csvHeaders(): ?array
     {
-        return ['Name', '# of People'];
+        return [
+            'Name',
+            '# of Active People',
+            '# of Total People',
+        ];
     }
 
     public function streamRows(callable $push): void
@@ -19,6 +23,7 @@ class ReportCountriesMake extends ReportMakeAbstract
         $connection = DB::connection();
         $queryLogEnabled = $connection->logging();
         $connection->disableQueryLog();
+
         try {
             $this->baseQuery()
                 ->orderBy('name')
@@ -26,6 +31,7 @@ class ReportCountriesMake extends ReportMakeAbstract
                     foreach ($countries as $c) {
                         $push($this->formatRow($c));
                     }
+
                     $countries->each->unsetRelations();
                     gc_collect_cycles();
                 });
@@ -40,15 +46,23 @@ class ReportCountriesMake extends ReportMakeAbstract
     {
         return Country::query()
             ->has('people')
-            ->select(['id','name'])
-            ->withCount('people');
+            ->select(['id', 'name'])
+            ->withCount([
+                'people as total_people_count',
+                'people as active_people_count' => function ($query) {
+                    $query->whereHas('memberships', function ($query) {
+                        $query->isActive();
+                    });
+                },
+            ]);
     }
 
     private function formatRow(Country $c): array
     {
         return [
-            'Name'        => $c->name,
-            '# of People' => $c->people_count,
+            'Name'               => $c->name,
+            '# of Active People' => $c->active_people_count,
+            '# of Total People'  => $c->total_people_count,
         ];
     }
 }
