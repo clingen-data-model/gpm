@@ -210,7 +210,7 @@ const qualityRows = computed(() => [
   {
     label: 'Publications',
     value: getMetric('Number of Publications'),
-    meta: 'Consider adding a reporting period label later',
+    meta: 'Total Publication from all Groups',
   },
 ])
 

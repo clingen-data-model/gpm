@@ -76,12 +76,10 @@ class ReportForeignComponentsMake extends ReportMakeAbstract
                 // Earliest membership is when they were first added to GPM.
                 ->withMin('memberships', 'start_date')
 
-                // Latest end date is used only when they currently
-                // have no active memberships.
+                // Latest end date is used only when they currently have no active memberships.
                 ->withMax('memberships', 'end_date')
 
-                // Any membership without an end date means the person
-                // is still active somewhere in GPM.
+                // Any membership without an end date means the person is still active somewhere in GPM.
                 ->withCount([
                     'memberships as active_memberships_count' => function ($query) {
                         $query->isActive();
@@ -123,7 +121,7 @@ class ReportForeignComponentsMake extends ReportMakeAbstract
                             'Has this foreign site already been approved for this award? (Y/N)' => 'N',
                             'Will my NIH-funded work lead to a publication with a foreign scientist? (Y/N)' => 'Y',
                             'Does the foreign site play a role in the goals and objectives of the NIH award beyond the joint publication? (Y/N; If yes, please describe.)' => 'Y',
-                            'Will funds from the NIH award be used abroad? (Y/N; If yes, please describe.)' => '',
+                            'Will funds from the NIH award be used abroad? (Y/N; If yes, please describe.)' => 'N',
                             'Will human subjects, vertebrate animals, select agents and toxins work for this award take place at the foreign site? (Y/N; If yes, please describe.)' => 'N',
                         ]);
                     }
