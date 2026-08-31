@@ -178,7 +178,7 @@ class GroupMember extends Model implements BelongsToGroup, BelongsToExpertPanel
             return false;
         }
 
-        if ($this->coiLastCompleted?->gt(Carbon::today()->subDays(365))) {
+        if ($this->coiLastCompleted?->gt(Carbon::today()->subYear())) {
             return false;
         }
 
@@ -221,27 +221,5 @@ class GroupMember extends Model implements BelongsToGroup, BelongsToExpertPanel
     public function guardName()
     {
         return 'web';
-    }
-
-    public function getCoiDueDateAttribute(): Carbon
-    {
-        if ($this->coiLastCompleted) {
-            return $this->coiLastCompleted->copy()->startOfDay()->addDays(365);
-        }
-        return $this->start_date->copy()->startOfDay();
-    }
-
-    public function getCoiRetirementDateAttribute(): Carbon
-    {
-        return $this->coiDueDate->copy()->addDays(60);
-    }
-
-    public function getCoiRetirementEligibleAttribute(): bool
-    {
-        if (!$this->coi_needed) {
-            return false;
-        }
-
-        return Carbon::today()->gt($this->coiRetirementDate);
     }
 }

@@ -40,9 +40,8 @@ class CoiReminderNotification extends Notification
      */
     public function toMail($notifiable)
     {
-        $memberships = $notifiable->membershipsWithPendingCoi;
         return (new MailMessage)
-            ->view('email.coi_reminder', compact('notifiable', 'memberships'));
+                    ->view('email.coi_reminder', compact('notifiable'));
     }
 
     /**
