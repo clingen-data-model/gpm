@@ -1,8 +1,7 @@
 <script setup>
-import { ref, reactive, computed, onMounted, watch } from 'vue'
+import { ref, reactive, computed, watch } from 'vue'
 import api from '@/http/api'
 import SubmissionWrapper from '@/components/groups/SubmissionWrapper.vue'
-import PersonTypeaheadMultiSelect from '@/components/people/PersonTypeaheadMultiSelect.vue'
 import { hasRole, hasPermission } from '@/auth_utils'
 import SearchSelect from '@/components/forms/SearchSelect.vue'
 
@@ -20,19 +19,14 @@ const awards = ref([])
 const fundingSourcesLoading = ref(false)
 const fundingSources = ref([])
 
-const piOptionsLoading = ref(false)
-const piOptions = ref([])
-
 const showForm = ref(false)
 const editing = ref(null)
 const errors = ref({})
 
 const canManage = computed(() => hasRole('super-user') || hasRole('super-admin') || hasPermission('funding-sources-manage'))
 
-const selectedPiIds = ref([])
+const selectedPis = ref([])
 const primaryPiId = ref(null)
-const piById = reactive({})
-const groupMemberIdSet = computed(() => new Set((piOptions.value || []).map(p => Number(p.id))))
 
 const deletingAgreementAward = ref(null)
 
@@ -43,33 +37,6 @@ function emptyRepContact() {
     email: '',
     phone: '',
   }
-}
-
-function cachePeople(list) {
-  for (const p of (list || [])) {
-    if (!p?.id) continue
-    piById[Number(p.id)] = p
-  }
-}
-
-function cachePerson(payload) {
-  if (Array.isArray(payload)) {
-    cachePeople(payload)
-    return
-  }
-  if (payload?.id) {
-    piById[Number(payload.id)] = payload
-  }
-}
-
-function isGroupMember(id) {
-  return groupMemberIdSet.value.has(Number(id))
-}
-
-function piLabel(id) {
-  const p = piById[Number(id)]
-  const name = p?.name || p?.full_name || `Person #${id}`
-  return isGroupMember(id) ? `${name} (Group member)` : name
 }
 
 function addRepContact() {
@@ -91,7 +58,7 @@ function firstRepContactError(index, field) {
 }
 
 const form = reactive({
-  funding_source_ids: [],
+  funding_sources: [],
   award_number: '',
   start_date: '',
   end_date: '',
@@ -117,7 +84,7 @@ const fields = computed(() => {
 })
 
 function resetForm() {
-  form.funding_source_ids = []
+  form.funding_sources  = []
   form.award_number = ''
   form.start_date = ''
   form.end_date = ''
@@ -127,7 +94,7 @@ function resetForm() {
   form.notes = ''
   errors.value = {}
 
-  selectedPiIds.value = []
+  selectedPis.value = []
   primaryPiId.value = null
 }
 
@@ -141,7 +108,7 @@ function startEdit(item) {
   editing.value = item
   errors.value = {}
 
-  form.funding_sources = [ ...(item.fundingSources || item.funding_sources || [])]
+  form.funding_sources = [ ...(item.funding_sources || [])]
   form.award_number = item.award_number ?? ''
   form.start_date = item.start_date ?? ''
   form.end_date = item.end_date ?? ''
@@ -156,48 +123,20 @@ function startEdit(item) {
       }))
     : [emptyRepContact()]
   form.notes = item.notes ?? ''
-
-  const pis = item.contactPis || item.contact_pis || []
-  cachePeople(pis)
-
-  selectedPiIds.value = pis.map(p => Number(p.id)).filter(Boolean)
-
+  const pis = item.contact_pis || []
+  selectedPis.value = [...pis]
   const primary = pis.find(p => Boolean(p?.pivot?.is_primary))
-  primaryPiId.value = primary ? Number(primary.id) : (selectedPiIds.value[0] ?? null)
+  primaryPiId.value = primary ? Number(primary.id) : (pis[0]?.id ? Number(pis[0].id) : null)
 
   showForm.value = true
 }
-
-watch(
-  selectedPiIds,
-  (ids) => {
-    const normalized = (ids || []).map(v => Number(v)).filter(v => Number.isFinite(v))
-    if (normalized.length !== (ids || []).length || normalized.some((v, i) => v !== ids[i])) {
-      selectedPiIds.value = normalized
-      return
-    }
-
-    if (!normalized.length) {
-      primaryPiId.value = null
-      return
-    }
-    if (primaryPiId.value == null || !normalized.includes(Number(primaryPiId.value))) {
-      primaryPiId.value = normalized[0]
-    }
-  },
-  { deep: true }
-)
 
 async function fetchAwards() {
   if (!expertPanelUuid.value) return
   loading.value = true
   try {
     const res = await api.get(`/api/applications/${expertPanelUuid.value}/funding-awards`)
-    const rows = Array.isArray(res.data) ? res.data : []
-    awards.value = rows
-
-    const people = rows.flatMap(r => r.contactPis || r.contact_pis || [])
-    cachePeople(people)
+    awards.value = Array.isArray(res.data) ? res.data : []
   } finally {
     loading.value = false
   }
@@ -210,18 +149,6 @@ async function fetchFundingSources() {
     fundingSources.value = Array.isArray(res.data) ? res.data : []
   } finally {
     fundingSourcesLoading.value = false
-  }
-}
-
-async function fetchPiOptions() {
-  if (!expertPanelUuid.value) return
-  piOptionsLoading.value = true
-  try {
-    const res = await api.get(`/api/applications/${expertPanelUuid.value}/funding-awards/pi-options`)
-    piOptions.value = Array.isArray(res.data) ? res.data : []
-    cachePeople(piOptions.value)
-  } finally {
-    piOptionsLoading.value = false
   }
 }
 
@@ -245,16 +172,16 @@ function sanitizeNotes(text) {
 }
 
 function pisParts(row) {
-  const pis = row?.contactPis || row?.contact_pis || []
+  const pis = row?.contact_pis || []
   if (!pis.length) return { primary: '', others: '' }
 
   const primary = pis.find(p => Boolean(p?.pivot?.is_primary))
-  const primaryName = primary?.name || primary?.full_name || ''
+  const primaryName = primary?.name || ''
 
   const others = pis
     .filter(p => !p?.pivot?.is_primary)
     .filter(p => !primary?.id || p?.id !== primary.id)
-    .map(p => p?.name || p?.full_name)
+    .map(p => p?.name)
     .filter(Boolean)
     .join(', ')
 
@@ -292,7 +219,7 @@ async function save() {
         Object.values(contact).some(value => value !== null && String(value).trim() !== '')
       ),
     notes: sanitizeNotes(form.notes) || null,
-    contact_pi_person_ids: selectedPiIds.value.map(Number),
+    contact_pi_person_ids: selectedPis.value.map(person => Number(person.id)).filter(Boolean),
     primary_contact_pi_id: primaryPiId.value ? Number(primaryPiId.value) : null,
   }
 
@@ -374,21 +301,15 @@ function partnershipAgreementDownloadUrl(item) {
   return `/api/applications/${expertPanelUuid.value}/funding-awards/${item.id}/agreement`
 }
 
-const searchFundingSources = async (keyword, options) => {
+const searchFundingSources = (keyword, options) => {
   const term = (keyword ?? '').trim().toLowerCase()
-
   if (!term) {
     return options
   }
 
   return options.filter(source => {
     const name = (source.name ?? '').toLowerCase()
-    const type = (
-      source.funding_type?.name ??
-      source.fundingType?.name ??
-      ''
-    ).toLowerCase()
-
+    const type = (source.funding_type?.name ?? '').toLowerCase()
     return name.includes(term) || type.includes(term)
   })
 }
@@ -405,18 +326,43 @@ async function deleteAgreement(item) {
   }
 }
 
+async function searchPis(keyword) {
+  const q = (keyword ?? '').trim()
+  if (q.length < 3) { return []; }
+  const res = await api.get(`/api/applications/${expertPanelUuid.value}/funding-awards/pi-options`, {params: { q, limit: 25 }})
+  return Array.isArray(res.data) ? res.data : []
+}
+
+watch(
+  selectedPis,
+  (pis) => {
+    const ids = (pis || []).map(p => Number(p.id)).filter(Boolean)
+    if (!ids.length) {
+      primaryPiId.value = null
+      return
+    }
+
+    if (primaryPiId.value == null || !ids.includes(Number(primaryPiId.value))) {
+      primaryPiId.value = ids[0]
+    }
+  },
+  { deep: true }
+)
+
 watch(
   expertPanelUuid,
   async (uuid) => {
-    if (!uuid) return
-    // always load awards for viewers
+    if (!uuid) {
+      return
+    }
+
     await fetchAwards()
 
-    // only load these for super admins/users (needed for the modal)
     if (canManage.value) {
-      await Promise.all([fetchFundingSources(), fetchPiOptions()])
+      await fetchFundingSources()
     }
-  }, { immediate: true }
+  },
+  { immediate: true }
 )
 </script>
 
@@ -428,19 +374,22 @@ watch(
         Add Award
       </button>
     </div>
+    <div v-if="!canManage" class="text-sm text-gray-600 mb-3">
+      If your group has funding awards that should be added or updated in GPM, please contact<a class="link" href="mailto:gpm_support@clinicalgenome.org">gpm_support@clinicalgenome.org</a> for assistance.
+    </div>
 
     <div v-if="loading" class="text-center w-full">Loading...</div>
 
     <div v-else :class="{ 'max-h-[600px] overflow-y-auto': awards.length > 20 }">
       <data-table v-model:sort="sort" :data="awards" :fields="fields" row-class="active:bg-blue-100">
         <template #cell-fundingSources="{ item }">
-          <div v-for="source in (item.fundingSources || item.funding_sources || [])" :key="source.id" class="mb-1 last:mb-0">
+          <div v-for="source in (item.funding_sources || [])" :key="source.id" class="mb-1 last:mb-0">
             <div class="font-medium">{{ source.name }}</div>
-            <div v-if="source.fundingType?.name || source.funding_type?.name" class="text-xs text-gray-600">
-              Funding Type: {{ source.fundingType?.name || source.funding_type?.name }}
+            <div v-if="source.funding_type?.name" class="text-xs text-gray-600">
+              Funding Type: {{ source.funding_type?.name }}
             </div>
           </div>
-          <div v-if="!(item.fundingSources || item.funding_sources || []).length" class="text-gray-500"> — </div>
+          <div v-if="!item.funding_sources?.length" class="text-gray-500"> — </div>
         </template>
 
         <template #cell-award_number="{ item }">
@@ -525,31 +474,30 @@ watch(
           <div class="border rounded p-3">
             <div class="flex items-center justify-between mb-2">
               <h3 class="text-sm font-semibold m-0">Contact PI(s)</h3>
-              <div v-if="piOptionsLoading" class="text-xs text-gray-600">Loading...</div>
             </div>
 
-            <div class="text-xs text-gray-600 mb-2">
-              Search active ClinGen members. Group members will be labeled “(Group member)” in the Primary PI dropdown.
-            </div>
-
-            <PersonTypeaheadMultiSelect
-              v-model="selectedPiIds"
-              :expert-panel-uuid="expertPanelUuid"
+            <SearchSelect
+              v-model="selectedPis"
+              :options="[]"
+              multiple
+              :search-function="searchPis"
               :disabled="!canManage"
-              :people-by-id="piById"
-              placeholder="Search people…"
-              @selected="cachePerson"
-            />
+              placeholder="Type at least 2 characters to search…"
+            >
+              <template #selection-label="{ selection }">{{ selection.name }}</template>
+              <template #option="{ option }">
+                <div>
+                  <div class="font-medium">{{ option.name }}</div>
+                  <div v-if="option.email" class="text-xs text-gray-600">{{ option.email }}</div>
+                </div>
+              </template>
+            </SearchSelect>
 
             <div class="mt-3">
               <label class="block text-sm">Primary PI</label>
-              <select v-model="primaryPiId" class="w-full" :disabled="selectedPiIds.length === 0">
-                <option v-if="selectedPiIds.length === 0" :value="null">
-                  Select PI(s) first…
-                </option>
-                <option v-for="id in selectedPiIds" :key="id" :value="id">
-                  {{ piLabel(id) }}
-                </option>
+              <select v-model="primaryPiId" class="w-full" :disabled="selectedPis.length === 0">
+                <option v-if="selectedPis.length === 0" :value="null">Select PI(s) first…</option>
+                <option v-for="person in selectedPis" :key="person.id" :value="Number(person.id)">{{ person.name }}</option>
               </select>
 
               <div v-if="firstError('contact_pi_person_ids')" class="text-sm text-red-600 mt-1">
