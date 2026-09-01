@@ -4,6 +4,7 @@ import api from '@/http/api'
 import SubmissionWrapper from '@/components/groups/SubmissionWrapper.vue'
 import PersonTypeaheadMultiSelect from '@/components/people/PersonTypeaheadMultiSelect.vue'
 import { hasRole, hasPermission } from '@/auth_utils'
+import SearchSelect from '@/components/forms/SearchSelect.vue'
 
 const props = defineProps({
   expertPanel: { type: Object, required: true },
@@ -90,7 +91,7 @@ function firstRepContactError(index, field) {
 }
 
 const form = reactive({
-  funding_source_id: '',
+  funding_source_ids: [],
   award_number: '',
   start_date: '',
   end_date: '',
@@ -103,7 +104,7 @@ const form = reactive({
 const sort = ref({ field: 'id', desc: true })
 const baseFields = [
   { name: 'id', label: 'ID', sortable: true },
-  { name: 'fundingSource', label: 'Funding Source', sortable: false },
+  { name: 'fundingSources', label: 'Funding Sources', sortable: false },
   { name: 'award_number', label: 'Award #', sortable: false },
   { name: 'dates', label: 'Dates', sortable: false },
   { name: 'contactPis', label: 'Contact PI(s)', sortable: false },
@@ -116,7 +117,7 @@ const fields = computed(() => {
 })
 
 function resetForm() {
-  form.funding_source_id = ''
+  form.funding_source_ids = []
   form.award_number = ''
   form.start_date = ''
   form.end_date = ''
@@ -140,9 +141,7 @@ function startEdit(item) {
   editing.value = item
   errors.value = {}
 
-  form.funding_source_id = String(
-    item.funding_source_id ?? item.fundingSource?.id ?? item.funding_source?.id ?? ''
-  )
+  form.funding_sources = [ ...(item.fundingSources || item.funding_sources || [])]
   form.award_number = item.award_number ?? ''
   form.start_date = item.start_date ?? ''
   form.end_date = item.end_date ?? ''
@@ -226,20 +225,6 @@ async function fetchPiOptions() {
   }
 }
 
-function fundingSourceName(row) {
-  return row?.fundingSource?.name || row?.funding_source?.name || '—'
-}
-
-function fundingTypeName(row) {
-  return (
-    row?.fundingSource?.fundingType?.name ||
-    row?.funding_source?.funding_type?.name ||
-    row?.fundingSource?.type ||
-    row?.funding_source?.type ||
-    ''
-  )
-}
-
 function fmtDates(row) {
   const s = row?.start_date || '—'
   const e = row?.end_date || 'Present'
@@ -290,7 +275,7 @@ async function save() {
   errors.value = {}
 
   const payload = {
-    funding_source_id: form.funding_source_id || null,
+    funding_source_ids: form.funding_sources.map(source => Number(source.id)).filter(Boolean),
     award_number: form.award_number || null,
     start_date: form.start_date || null,
     end_date: form.end_date || null,
@@ -389,6 +374,25 @@ function partnershipAgreementDownloadUrl(item) {
   return `/api/applications/${expertPanelUuid.value}/funding-awards/${item.id}/agreement`
 }
 
+const searchFundingSources = async (keyword, options) => {
+  const term = (keyword ?? '').trim().toLowerCase()
+
+  if (!term) {
+    return options
+  }
+
+  return options.filter(source => {
+    const name = (source.name ?? '').toLowerCase()
+    const type = (
+      source.funding_type?.name ??
+      source.fundingType?.name ??
+      ''
+    ).toLowerCase()
+
+    return name.includes(term) || type.includes(term)
+  })
+}
+
 async function deleteAgreement(item) {
   if (!item?.partnership_agreement_file) return
   if (!confirm('Remove this partnership agreement file?')) return
@@ -428,19 +432,15 @@ watch(
     <div v-if="loading" class="text-center w-full">Loading...</div>
 
     <div v-else :class="{ 'max-h-[600px] overflow-y-auto': awards.length > 20 }">
-      <data-table
-        v-model:sort="sort"
-        :data="awards"
-        :fields="fields"
-        row-class="active:bg-blue-100"
-      >
-        <template #cell-fundingSource="{ item }">
-          <div class="font-medium">
-            {{ fundingSourceName(item) }}
+      <data-table v-model:sort="sort" :data="awards" :fields="fields" row-class="active:bg-blue-100">
+        <template #cell-fundingSources="{ item }">
+          <div v-for="source in (item.fundingSources || item.funding_sources || [])" :key="source.id" class="mb-1 last:mb-0">
+            <div class="font-medium">{{ source.name }}</div>
+            <div v-if="source.fundingType?.name || source.funding_type?.name" class="text-xs text-gray-600">
+              Funding Type: {{ source.fundingType?.name || source.funding_type?.name }}
+            </div>
           </div>
-          <div v-if="fundingTypeName(item)" class="text-xs text-gray-600">
-            {{ fundingTypeName(item) }}
-          </div>
+          <div v-if="!(item.fundingSources || item.funding_sources || []).length" class="text-gray-500"> — </div>
         </template>
 
         <template #cell-award_number="{ item }">
@@ -452,9 +452,7 @@ watch(
         </template>
 
         <template #cell-dates="{ item }">
-          <div class="text-sm">
-            {{ fmtDates(item) }}
-          </div>
+          <div class="text-sm"> {{ fmtDates(item) }} </div>
         </template>
 
         <template #cell-contactPis="{ item }">
@@ -504,28 +502,23 @@ watch(
       <SubmissionWrapper @submitted="save" @canceled="showForm = false">
         <div class="space-y-4">
           <div>
-            <label class="block text-sm">Funding Source</label>
-            <select v-model="form.funding_source_id" class="w-full" :disabled="fundingSourcesLoading">
-              <option value="" disabled>
-                {{ fundingSourcesLoading ? 'Loading…' : 'Select a funding source…' }}
-              </option>
-              <option v-for="s in fundingSources" :key="s.id" :value="String(s.id)">
-                {{ s.name }}
-                <template v-if="s.funding_type?.name || s.fundingType?.name">
-                  — {{ s.funding_type?.name || s.fundingType?.name }}
-                </template>
-              </option>
-            </select>
+            <label class="block text-sm">Funding Sources <span class="text-red-500">*</span></label>
+            <SearchSelect
+              v-model="form.funding_sources"
+              :options="fundingSources"
+              multiple
+              show-options-on-focus
+              show-options-when-empty
+              :search-function="searchFundingSources"
+              :disabled="fundingSourcesLoading"
+            />
 
             <div class="text-xs text-gray-600 mt-1">
-              Don't see the funding source you need?
-              <a class="link" href="mailto:partnership@clinicalgenome.org">partnership@clinicalgenome.org</a>
-              or
-              <a class="link" href="mailto:gpm_support@clinicalgenome.org">gpm_support@clinicalgenome.org</a>
+              Don't see the funding source you need? <a class="link" href="mailto:partnership@clinicalgenome.org">partnership@clinicalgenome.org</a> 
+              or <a class="link" href="mailto:gpm_support@clinicalgenome.org">gpm_support@clinicalgenome.org</a>
             </div>
-
-            <div v-if="firstError('funding_source_id')" class="text-sm text-red-600 mt-1">
-              {{ firstError('funding_source_id') }}
+            <div v-if="firstError('funding_source_ids') || firstError('funding_source_ids.0')" class="text-sm text-red-600 mt-1">
+              {{ firstError('funding_source_ids') || firstError('funding_source_ids.0') }}
             </div>
           </div>
 

@@ -15,7 +15,7 @@ class FundingAwardController extends Controller
     {
         return FundingAward::query()
             ->where('expert_panel_id', $expertPanel->id)
-            ->with(['fundingSource.fundingType', 'contactPis'])
+            ->with(['fundingSources.fundingType', 'contactPis'])
             ->orderByRaw('start_date IS NULL')
             ->orderByDesc('start_date')
             ->orderByDesc('id')

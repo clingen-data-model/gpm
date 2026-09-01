@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Storage;
 use App\Models\Traits\HasUuid;
 use Illuminate\Support\Str;
 use App\Modules\Funding\Support\FundingSourceSchema;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class FundingSource extends Model
 {
@@ -71,5 +72,10 @@ class FundingSource extends Model
     public function toExchangePayload(): array
     {
         return FundingSourceSchema::forMessage($this);
+    }
+
+    public function fundingAwards(): BelongsToMany
+    {
+        return $this->belongsToMany(FundingAward::class, 'funding_award_funding_source')->withTimestamps();
     }
 }

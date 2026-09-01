@@ -19,7 +19,8 @@ class FundingAwardUpdated extends ExpertPanelEvent
 
     public function getLogEntry(): string
     {   
-        return 'Updated funding award ' . $this->fundingAward->fundingSource->name . '.'  ;
+        $sourceNames = $this->fundingAward->fundingSources->pluck('name')->join(', ');
+        return 'Updated funding award ' . $sourceNames . '.'  ;
     }
 
     public function getProperties(): array

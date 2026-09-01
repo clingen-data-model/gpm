@@ -3,16 +3,15 @@
 namespace App\Modules\ExpertPanel\Service;
 
 use App\Modules\ExpertPanel\Models\FundingAward;
-use App\Modules\Funding\Support\FundingSourceSchema;
 
 final class FundingAwardSchema
 {
     public static function forMessage(FundingAward $award): array
     {
-        $award->loadMissing(['fundingSource.fundingType', 'contactPis']);
+        $award->loadMissing(['fundingSources.fundingType', 'contactPis']);
         return [
             'uuid' => (string) $award->uuid,
-            'funding_source' => $award->fundingSource ? FundingSourceSchema::forMessage($award->fundingSource) : null,
+            'funding_sources' => $award->fundingSources ? $award->fundingSources->map->toExchangePayload()->values()->all() : null,
             'award_number' => $award->award_number,
             'start_date'   => $award->start_date?->format('Y-m-d'),
             'end_date'     => $award->end_date?->format('Y-m-d'),

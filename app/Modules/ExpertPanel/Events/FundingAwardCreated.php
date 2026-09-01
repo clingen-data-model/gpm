@@ -19,8 +19,8 @@ class FundingAwardCreated extends ExpertPanelEvent
 
     public function getLogEntry(): string
     {   
-        return 'Added funding award ' . $this->fundingAward->fundingSource->name . 
-                ' from ' . $this->fundingAward->start_date?->format('Y-m-d') . ' to ' . $this->fundingAward->end_date?->format('Y-m-d') . '.'  ;
+        $sourceNames = $this->fundingAward->fundingSources->pluck('name')->join(', ');
+        return 'Added funding award ' . $sourceNames . ' from ' . $this->fundingAward->start_date?->format('Y-m-d') . ' to ' . $this->fundingAward->end_date?->format('Y-m-d') . '.'  ;
     }
 
     public function getProperties(): array
