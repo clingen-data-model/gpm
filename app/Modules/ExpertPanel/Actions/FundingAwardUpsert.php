@@ -35,8 +35,9 @@ class FundingAwardUpsert
             $fundingAward->save();
         }
 
+        $this->syncFundingSources($fundingAward, $originalData, $isCreate);
         $this->syncContactPis($fundingAward, $originalData, $isCreate);
-        $fundingAward = $fundingAward->fresh(['fundingSource.fundingType', 'contactPis']);
+        $fundingAward = $fundingAward->fresh(['fundingSources.fundingType', 'contactPis']);
         Event::dispatch($isCreate ? new FundingAwardCreated($expertPanel, $fundingAward) : new FundingAwardUpdated($expertPanel, $fundingAward));
         return $fundingAward;
     }
@@ -56,7 +57,8 @@ class FundingAwardUpsert
         $isUpdate = (bool) $request->route('fundingAward');
 
         return [
-            'funding_source_id' => $isUpdate ? ['sometimes', 'required', 'integer', Rule::exists('funding_sources', 'id')] : ['required', 'integer', Rule::exists('funding_sources', 'id')],
+            'funding_source_ids'        => $isUpdate ? ['sometimes', 'required', 'array', 'min:1'] : ['required', 'array', 'min:1'],
+            'funding_source_ids.*'      => ['integer', 'distinct', Rule::exists('funding_sources', 'id')],
 
             'award_number'             => ['nullable', 'string', 'max:30'],
             'start_date'               => ['nullable', 'date'],
@@ -91,7 +93,7 @@ class FundingAwardUpsert
         if (array_key_exists('rep_contacts', $data)) {
             $data['rep_contacts'] = $this->normalizeRepContacts($data['rep_contacts'] ?? []);
         }
-        unset($data['contact_pi_person_ids'], $data['primary_contact_pi_id']);
+        unset($data['funding_source_ids'], $data['contact_pi_person_ids'], $data['primary_contact_pi_id']);
         return $data;
     }
 
@@ -135,5 +137,15 @@ class FundingAwardUpsert
         if ($value === null) return null;
         $value = trim((string) $value);
         return $value === '' ? null : $value;
+    }
+
+    private function syncFundingSources(FundingAward $fundingAward, array $data, bool $isCreate): void 
+    {
+        $hasFundingSources = array_key_exists('funding_source_ids', $data);
+        if (! $isCreate && ! $hasFundingSources) {
+            return;
+        }
+        $sourceIds = collect($data['funding_source_ids'] ?? [])->map(fn ($id) => (int) $id)->filter()->unique()->values()->all();
+        $fundingAward->fundingSources()->sync($sourceIds);
     }
 }

@@ -19,7 +19,6 @@ class FundingAward extends Model
     protected $fillable = [
         'uuid',
         'expert_panel_id',
-        'funding_source_id',
         'start_date',
         'end_date',
         'award_number',
@@ -41,9 +40,12 @@ class FundingAward extends Model
         return $this->belongsTo(ExpertPanel::class);
     }
 
-    public function fundingSource(): BelongsTo
+    public function fundingSources(): BelongsToMany
     {
-        return $this->belongsTo(FundingSource::class);
+        return $this->belongsToMany(
+            FundingSource::class,
+            'funding_award_funding_source'
+        )->withTimestamps();
     }
 
     public function contactPis(): BelongsToMany
