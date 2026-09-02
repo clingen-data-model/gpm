@@ -60,22 +60,23 @@ class FundingAwardUpsert
             'funding_source_ids'        => $isUpdate ? ['sometimes', 'required', 'array', 'min:1'] : ['required', 'array', 'min:1'],
             'funding_source_ids.*'      => ['integer', 'distinct', Rule::exists('funding_sources', 'id')],
 
-            'award_number'             => ['nullable', 'string', 'max:30'],
-            'start_date'               => ['nullable', 'date'],
-            'end_date'                 => ['nullable', 'date', 'after_or_equal:start_date'],
-            'award_url'                => ['nullable', 'string', 'max:255', 'url'],
-            'funding_source_division'  => ['nullable', 'string', 'max:255'],
+            'award_number'              => ['nullable', 'string', 'max:30'],
+            'start_date'                => ['nullable', 'date'],
+            'end_date'                  => ['nullable', 'date', 'after_or_equal:start_date'],
+            'award_url'                 => ['nullable', 'string', 'max:255', 'url'],
+            'funding_source_division'   => ['nullable', 'string', 'max:255'],
 
-            'rep_contacts'             => ['nullable', 'array'],
-            'rep_contacts.*.role'      => ['nullable', 'string', 'max:100'],
-            'rep_contacts.*.name'      => ['nullable', 'string', 'max:250'],
-            'rep_contacts.*.email'     => ['nullable', 'string', 'max:255', 'email'],
-            'rep_contacts.*.phone'     => ['nullable', 'string', 'max:25'],
-            'notes'                    => ['nullable', 'string'],
+            'rep_contacts'              => ['nullable', 'array'],
+            'rep_contacts.*.role'       => ['nullable', 'string', 'max:100'],
+            'rep_contacts.*.name'       => ['nullable', 'string', 'max:250'],
+            'rep_contacts.*.email'      => ['nullable', 'string', 'max:255', 'email'],
+            'rep_contacts.*.phone'      => ['nullable', 'string', 'max:25'],
+            'rep_contacts.*.publish'    => ['nullable', 'boolean'],
+            'notes'                     => ['nullable', 'string'],
 
-            'contact_pi_person_ids'    => ['nullable', 'array'],
-            'contact_pi_person_ids.*'  => ['integer', 'exists:people,id'],
-            'primary_contact_pi_id'    => ['nullable', 'integer', 'exists:people,id'],
+            'contact_pi_person_ids'     => ['nullable', 'array'],
+            'contact_pi_person_ids.*'   => ['integer', 'exists:people,id'],
+            'primary_contact_pi_id'     => ['nullable', 'integer', 'exists:people,id'],
         ];
     }
 

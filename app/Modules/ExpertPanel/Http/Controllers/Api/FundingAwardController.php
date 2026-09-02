@@ -27,6 +27,7 @@ class FundingAwardController extends Controller
                         'name'  => $contact['name'] ?? null,
                         'email' => $contact['email'] ?? null,
                         'phone' => $contact['phone'] ?? null,
+                        'publish' => (bool) ($contact['publish'] ?? false),
                     ])
                     ->values()
                     ->all();
