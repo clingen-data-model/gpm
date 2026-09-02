@@ -36,6 +36,7 @@ function emptyRepContact() {
     name: '',
     email: '',
     phone: '',
+    publish: false,
   }
 }
 
@@ -120,6 +121,7 @@ function startEdit(item) {
         name: contact?.name ?? '',
         email: contact?.email ?? '',
         phone: contact?.phone ?? '',
+        publish: Boolean(contact?.publish),
       }))
     : [emptyRepContact()]
   form.notes = item.notes ?? ''
@@ -214,6 +216,7 @@ async function save() {
         name: contact.name || null,
         email: contact.email || null,
         phone: contact.phone || null,
+        publish: Boolean(contact.publish),
       }))
       .filter(contact =>
         Object.values(contact).some(value => value !== null && String(value).trim() !== '')
@@ -656,6 +659,14 @@ watch(
                   <div v-if="firstRepContactError(index, 'phone')" class="text-sm text-red-600 mt-1">
                     {{ firstRepContactError(index, 'phone') }}
                   </div>
+                </div>
+
+                <div class="mt-3">
+                  <label class="flex items-center gap-2">
+                    <input v-model="contact.publish" type="checkbox" />
+                    <span class="text-sm">Publish</span>
+                  </label>
+                  <div class="text-xs text-gray-600 mt-1">Allow this representative contact to be published.</div>
                 </div>
               </div>
             </div>

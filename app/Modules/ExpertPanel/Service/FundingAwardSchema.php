@@ -17,7 +17,13 @@ final class FundingAwardSchema
             'end_date'     => $award->end_date?->format('Y-m-d'),
             'award_url'    => $award->award_url,
             'funding_source_division' => $award->funding_source_division,
-            'rep_contacts' => $award->rep_contacts ?? [],
+            'rep_contacts' => collect($award->rep_contacts ?? [])->map(fn ($contact) => [
+                                    'role' => $contact['role'] ?? null,
+                                    'name' => $contact['name'] ?? null,
+                                    'email' => $contact['email'] ?? null,
+                                    'phone' => $contact['phone'] ?? null,
+                                    'publish' => (bool) ($contact['publish'] ?? false),
+                                ])->values()->all(),
             'notes'        => $award->notes,
             'contact_pis'  => $award->contactPis->map(fn ($p) => [
                 'uuid'       => (string) $p->uuid,
