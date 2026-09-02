@@ -106,6 +106,7 @@ class FundingAwardUpsert
                 'name'  => $this->normalizeString($contact['name'] ?? null),
                 'email' => $this->normalizeString($contact['email'] ?? null),
                 'phone' => $this->normalizeString($contact['phone'] ?? null),
+                'publish' => $this->normalizeString($contact['publish'] ?? false),
             ];
         })->filter(function ($contact) {
             return filled($contact['role']) || filled($contact['name']) || filled($contact['email']) || filled($contact['phone']);
