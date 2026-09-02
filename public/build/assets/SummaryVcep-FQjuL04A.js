@@ -1,0 +1,2 @@
+import{A as o}from"./ApplicationsSummaryTable-C-50ZNlx.js";import{_ as a,r as t,a as n,c as p,e as r}from"./app-DP2X72V0.js";import"./router_aware_sort_and_filter-C3QcY_45.js";const c={name:"VcepsSummary",components:{ApplicationsSummaryTable:o}};function s(m,i,l,_,u,d){const e=t("ApplicationsSummaryTable");return n(),p("div",null,[r(e,{"ep-type-id":2})])}const A=a(c,[["render",s]]);export{A as default};
+//# sourceMappingURL=SummaryVcep-FQjuL04A.js.map

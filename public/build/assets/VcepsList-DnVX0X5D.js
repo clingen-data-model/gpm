@@ -1,0 +1,2 @@
+import{A as o}from"./ApplicationsTable-CRrQN_NT.js";import{_ as t,a as s,c as n,e as p,r as a}from"./app-DP2X72V0.js";import"./router_aware_sort_and_filter-C3QcY_45.js";const c={components:{ApplicationsTable:o}};function r(i,l,_,m,d,f){const e=a("ApplicationsTable");return s(),n("div",null,[p(e,{"ep-type-id":2})])}const b=t(c,[["render",r]]);export{b as default};
+//# sourceMappingURL=VcepsList-DnVX0X5D.js.map
