@@ -3,14 +3,12 @@
 namespace App\Modules\Group\Actions\ScopeOfWork;
 
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsAction;
 use App\Modules\Group\Models\Group;
 use App\Modules\Group\Models\Submission;
 use App\Modules\Group\Actions\SubmissionApprove;
-use App\Modules\Group\Events\ScopeOfWorkReviewCompleted;
 
 class RevisionSubmissionApprove
 {
@@ -44,12 +42,7 @@ class RevisionSubmissionApprove
             ]);
         }
 
-        $approvedSubmission = DB::transaction(function () use ($submission, $dateApproved) {
-            return $this->approveSubmission->handle($submission, $dateApproved);            
-        });
-        $approvedSubmission->load('scopeOfWorkVersion');
-        event(new ScopeOfWorkReviewCompleted(submission: $approvedSubmission, revision: $approvedSubmission->scopeOfWorkVersion, outcome: 'approved'));
-        return $approvedSubmission;
+        return $this->approveSubmission->handle($submission, $dateApproved);
     }
 
     public function asController(ActionRequest $request,Group $group,Submission $submission): Submission {

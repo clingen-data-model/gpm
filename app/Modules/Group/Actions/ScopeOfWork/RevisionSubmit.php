@@ -32,37 +32,44 @@ class RevisionSubmit
             abort(404);
         }
 
-        if (!in_array($revision->status, [
-            ScopeOfWorkVersion::STATUS_DRAFT,
-            ScopeOfWorkVersion::STATUS_REVISIONS_REQUESTED,
-        ], true)) {
-            throw ValidationException::withMessages([
-                'revision' => 'Only draft or revisions-requested Scope of Work revisions can be submitted.',
-            ]);
-        }
-
-        $revision->load('changes');
-
-        if ($revision->changes->isEmpty()) {
-            throw ValidationException::withMessages([
-                'revision' => 'This Scope of Work revision does not have any changes to submit.',
-            ]);
-        }
-
-        $requiresApproval = $revision->changes->contains(function (ScopeOfWorkChange $change) {
-            return in_array($change->requires_approval, [
-                ScopeOfWorkChange::APPROVAL_YES,
-                ScopeOfWorkChange::APPROVAL_CONDITIONAL,
-            ], true);
-        });
-
-        if (!$requiresApproval) {
-            throw ValidationException::withMessages([
-                'revision' => 'This Scope of Work revision does not require approval and can be finalized directly.',
-            ]);
-        }
-
         return DB::transaction(function () use ($group, $revision, $submitter, $notes) {
+            $revision = ScopeOfWorkVersion::whereKey($revision->id)->lockForUpdate()->firstOrFail();
+            if (!in_array($revision->status, [
+                ScopeOfWorkVersion::STATUS_DRAFT,
+                ScopeOfWorkVersion::STATUS_REVISIONS_REQUESTED,
+            ], true)) {
+                throw ValidationException::withMessages([
+                    'revision' => 'Only draft or revisions-requested Scope of Work revisions can be submitted.',
+                ]);
+            }
+
+            $revision->load('changes');
+
+            if ($revision->changes->isEmpty()) {
+                throw ValidationException::withMessages([
+                    'revision' => 'This Scope of Work revision does not have any changes to submit.',
+                ]);
+            }
+
+            $requiresApproval = $revision->changes->contains(function (ScopeOfWorkChange $change) {
+                return in_array($change->requires_approval, [
+                    ScopeOfWorkChange::APPROVAL_YES,
+                    ScopeOfWorkChange::APPROVAL_CONDITIONAL,
+                ], true);
+            });
+
+            if (!$requiresApproval) {
+                throw ValidationException::withMessages([
+                    'revision' => 'This Scope of Work revision does not require approval and can be finalized directly.',
+                ]);
+            }
+
+            if ($revision->submissions()->pending()->exists()) {
+                throw ValidationException::withMessages([
+                    'revision' => 'This Scope of Work revision already has an active submission.',
+                ]);
+            }
+
             $submissionType = $this->resolveSubmissionType($revision);
 
             $submission = new Submission([

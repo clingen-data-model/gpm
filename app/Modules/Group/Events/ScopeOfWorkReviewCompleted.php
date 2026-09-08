@@ -43,6 +43,16 @@ class ScopeOfWorkReviewCompleted extends GroupEvent
 
     public function shouldPublish(): bool
     {
-        return false;
+        return $this->outcome === 'approved' && parent::shouldPublish();
+    }
+
+    public function getPublishableMessage(): array
+    {
+        $message = $this->getProperties();
+        if ($this->outcome === 'approved') {
+            $message['group'] = $this->mapGroupForMessage(true, true);
+        }
+
+        return $message;
     }
 }

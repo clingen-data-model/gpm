@@ -12,10 +12,7 @@ class RevisionRequestRevisionsFromSubmission
 
     public function handle(Submission $submission): ?ScopeOfWorkVersion
     {
-        $revision = ScopeOfWorkVersion::where('submission_id', $submission->id)
-            ->where('status', ScopeOfWorkVersion::STATUS_SUBMITTED)
-            ->first();
-
+        $revision = app(ReviewRoundGuard::class)->handle($submission);
         if (!$revision) {
             return null;
         }
