@@ -4,6 +4,8 @@ import ApplicationLog from '@/components/applications/ApplicationLog.vue'
 import NextActions from '@/components/next_actions/NextActions.vue'
 import ProgressChart from '@/components/applications/ProgressChart.vue'
 import StepTabs from '@/components/applications/StepTabs.vue'
+import StepOne from '@/components/applications/StepOne.vue'
+import StepFour from '@/components/applications/StepFour.vue'
 import BasicInfoData from '@/components/applications/BasicInfoData.vue'
 import SubmissionContextSummary from '@/components/applications/Review/SubmissionContextSummary.vue'
 
@@ -14,8 +16,13 @@ export default {
       NextActions,
       ProgressChart,
       StepTabs,
+      StepOne,
+      StepFour,
       BasicInfoData,
       SubmissionContextSummary
+    },
+    inject: {
+      latestSubmission: { default: null }
     },
     props: {
       loading: {
@@ -42,6 +49,15 @@ export default {
         }),
         application () {
             return this.group.expert_panel;
+        },
+        scopeOfWorkReviewComponent () {
+            const submission = this.latestSubmission?.value ?? this.latestSubmission;
+            if (submission?.data?.context !== 'scope_of_work_revision') {
+                return null;
+            }
+
+            const step = Number.parseInt(submission.data.approval_step ?? 1);
+            return ({ 1: 'StepOne', 4: 'StepFour' })[step] ?? null;
         },
         hasPendingNextAction () {
             if (typeof this.application == 'undefined') {
@@ -119,7 +135,14 @@ export default {
 
       <tabs-container>
         <tab-item label="Application">
+          <component
+            :is="scopeOfWorkReviewComponent"
+            v-if="scopeOfWorkReviewComponent"
+            @updated="$emit('updated')"
+            @approved="$emit('updated')"
+          />
           <StepTabs
+            v-else
             :application="application"
             @updated="$emit('updated')"
             @approved="$emit('updated')"
