@@ -2,7 +2,7 @@
 
 namespace App\Modules\Group\Actions\ScopeOfWork;
 
-use App\Models\User;
+use App\Modules\User\Models\User;
 use App\Modules\Group\Models\Group;
 use App\Modules\Group\Models\ScopeOfWorkVersion;
 use Illuminate\Support\Facades\Auth;
@@ -31,25 +31,16 @@ class RevisionApprove
         }
 
         return DB::transaction(function () use ($revision, $user) {
-            $revision->update([
-                'status' => ScopeOfWorkVersion::STATUS_APPROVED,
-                'approved_by' => $user?->id,
-                'approved_at' => now(),
-            ]);
-
-            if ($revision->submission) {
-                $revision->submission->update([
-                    'submission_status_id' => config('submissions.statuses.approved.id'),
-                    'closed_at' => now(),
+            $revision = ScopeOfWorkVersion::whereKey($revision->id)->lockForUpdate()->firstOrFail();
+            $submission = $revision->submission;
+            if (!$submission || (int) $submission->scope_of_work_version_id !== $revision->id) {
+                throw ValidationException::withMessages([
+                    'submission' => 'The revision has no current submission to approve.',
                 ]);
             }
+            app(RevisionApproveFromSubmission::class)->handle($submission, now(), $user?->id);
 
-            return $revision->fresh([
-                'changes',
-                'latestSnapshot',
-                'baseVersion',
-                'submission',
-            ]);
+            return $revision->fresh(['changes', 'latestSnapshot', 'baseVersion', 'submission']);
         });
     }
 

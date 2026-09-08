@@ -23,6 +23,6 @@ class InitialVersionCreateFromApplicationCompleted
 
     public function asListener(ApplicationCompleted $event): void
     {
-        $this->handle($event->expertPanel);
+        $this->handle($event->application);
     }
 }
