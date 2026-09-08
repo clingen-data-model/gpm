@@ -27,20 +27,22 @@ class ApplicationSubmissionReject
     public function handle(Group $group, Submission $submission, ?string $responseContent = null): Submission 
     {
         if ((int) $submission->group_id !== (int) $group->id) { abort(404); }
-        $submission->reject($responseContent);
-        $revision = $this->requestScopeOfWorkRevisions->handle($submission);
-        $submission = $submission->fresh();
+        return DB::transaction(function () use ($submission, $responseContent) {
+            $revision = $this->requestScopeOfWorkRevisions->handle($submission);
+            $submission->reject($responseContent);
+            $submission = $submission->fresh();
 
-        if ($revision) {
-            event(new ScopeOfWorkReviewCompleted(
-                submission: $submission,
-                revision: $revision,
-                outcome: 'revisions_requested'
-            ));
-        } else {
-            event(new ApplicationRevisionsRequested($submission, $responseContent ));
-        }
-        return $submission;
+            if ($revision) {
+                event(new ScopeOfWorkReviewCompleted(
+                    submission: $submission,
+                    revision: $revision,
+                    outcome: 'revisions_requested'
+                ));
+            } else {
+                event(new ApplicationRevisionsRequested($submission, $responseContent ));
+            }
+            return $submission;
+        });
     }
 
     public function asController(ActionRequest $request, Group $group, Submission $submission)
@@ -74,6 +76,9 @@ class ApplicationSubmissionReject
             DB::commit();
 
             return $submission;
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            DB::rollBack();
+            throw $e;
         } catch (\Exception $e) {
             DB::rollback();
             report($e);

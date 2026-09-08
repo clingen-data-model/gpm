@@ -14,11 +14,14 @@ class SubmissionApprove
 
     public function handle(Submission $submission, $dateApproved): Submission
     {
+        if ($this->approveScopeOfWorkRevision->handle($submission, \Carbon\Carbon::parse($dateApproved))) {
+            return $submission->refresh();
+        }
+
         $submission->update([
             'submission_status_id' => config('submissions.statuses.approved.id'),
             'closed_at' => $dateApproved
         ]);
-        $this->approveScopeOfWorkRevision->handle($submission, $dateApproved);
         return $submission;
     }
 }

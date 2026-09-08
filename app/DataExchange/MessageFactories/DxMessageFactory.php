@@ -28,9 +28,13 @@ class DxMessageFactory implements MessageFactoryInterface
     public function makeFromEvent(PublishableEvent $event): array
     {
         $schemaVersion = method_exists($event, 'getSchemaVersion') ? $event->getSchemaVersion() : null;
+        $message = $event->getPublishableMessage();
+        if ($event instanceof \App\Modules\Group\Events\GroupEvent) {
+            $message = app(\App\Modules\Group\Services\ScopeOfWorkDxPayloadProjector::class)->project($event, $message);
+        }
         return $this->make(
             eventType: $event->getEventType(),
-            message: $event->getPublishableMessage(),
+            message: $message,
             schemaVersion: $schemaVersion,
             date: $event->getLogDate()
         );

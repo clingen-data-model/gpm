@@ -1,13 +1,14 @@
 <?php
 namespace App\Modules\Group\Events;
 
+use App\Modules\Group\Models\ScopeOfWorkVersion;
+
 use App\Modules\Group\Models\Group;
 use Illuminate\Queue\SerializesModels;
 use App\Modules\Group\Events\GeneEvent;
 use App\Modules\ExpertPanel\Models\Gene;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use App\Modules\Group\Models\ScopeOfWorkVersion;
 
 class GeneRemoved extends GeneEvent
 {
@@ -29,7 +30,7 @@ class GeneRemoved extends GeneEvent
 
     public function shouldPublish(): bool
     {
-        return parent::shouldPublish() && ! ScopeOfWorkVersion::forGroup($this->group)->approved()->exists();
+        return parent::shouldPublish() && ! ScopeOfWorkVersion::groupHasActiveRevision($this->group);
     }
 
 }
