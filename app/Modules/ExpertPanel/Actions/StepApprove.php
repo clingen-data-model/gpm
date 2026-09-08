@@ -49,6 +49,14 @@ class StepApprove
         ?string $body = null,
         $attachments = []
     ) {
+        $submission = $this->getSubmission($expertPanel, $expertPanel->current_step);
+        if ($submission && ($submission->scope_of_work_version_id
+            || data_get($submission->data, 'context') === 'scope_of_work_revision')) {
+            throw \Illuminate\Validation\ValidationException::withMessages([
+                'submission' => 'Use Scope of Work approval for this submission.',
+            ]);
+        }
+
         $stepManager = ($this->stepManagerFactory)($expertPanel);
         $dateApproved = $dateApproved ? Carbon::parse($dateApproved) : Carbon::now();
 
@@ -64,7 +72,6 @@ class StepApprove
         }
         $expertPanel->save();
 
-        $submission = $this->getSubmission($expertPanel, $approvedStep);
         if ($submission) {
             $this->approveSubmission->handle($submission, $dateApproved);
         }

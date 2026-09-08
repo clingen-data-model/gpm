@@ -80,7 +80,7 @@ class RejectSubmissionTest extends TestCase
     {
         Carbon::setTestNow('2022-07-12');
         Mail::fake();
-        $data = $this->makeDefaultData(['notify_contacts' => true]);
+        $data = $this->makeDefaultData(['notify_contacts' => true, 'response_content' => 'Separate reviewer note']);
 
         $person1 = Person::factory()->create();
         ContactAdd::run($this->expertPanel->uuid, $person1->uuid);
@@ -117,7 +117,7 @@ class RejectSubmissionTest extends TestCase
 
         $this->assertLoggedActivity(
             subject: $this->expertPanel->group,
-            description: 'Revisions requested for step '.$this->expertPanel->current_step,
+            description: 'Revisions requested for step '.$this->expertPanel->current_step.":\n".static::NOTE,
             properties:  [
                 'submission_id' => $this->submission->id,
             ],
