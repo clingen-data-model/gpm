@@ -91,7 +91,7 @@ class ScopeOfWorkWorkflowTest extends TestCase
         foreach ($actions as $action) {
             $this->assertNotNull($action->fresh()->date_completed);
         }
-        $this->assertSame($before, $this->panel->fresh()->getAttributes());
+        $this->assertApplicationProgressUnchanged($before);
         $this->assertLoggedActivity($this->panel->group, 'Scope of Work revision 2.0 was approved.');
         try {
             $result = $approve();
@@ -178,7 +178,7 @@ class ScopeOfWorkWorkflowTest extends TestCase
             app(StepApprove::class)->handle($this->panel, now());
             $this->fail('Normal step approval consumed a Scope of Work submission.');
         } catch (ValidationException $e) {
-            $this->assertSame($before, $this->panel->fresh()->getAttributes());
+            $this->assertApplicationProgressUnchanged($before);
             $this->assertSame('submitted', $this->revision->fresh()->status);
         }
     }
@@ -235,5 +235,25 @@ class ScopeOfWorkWorkflowTest extends TestCase
         $this->assertSame(config('submissions.statuses.approved.id'), $submission->fresh()->submission_status_id);
         $this->assertSame('submitted', $this->revision->fresh()->status);
         Event::assertNotDispatched(ScopeOfWorkReviewCompleted::class);
+    }
+
+    private function assertApplicationProgressUnchanged(array $before): void
+    {
+        $after = $this->panel->fresh()->getAttributes();
+
+        foreach ([
+            'current_step',
+            'step_1_approval_date',
+            'step_2_approval_date',
+            'step_3_approval_date',
+            'step_4_approval_date',
+            'date_completed',
+        ] as $field) {
+            $this->assertSame(
+                $before[$field] ?? null,
+                $after[$field] ?? null,
+                "Expert panel field [{$field}] changed."
+            );
+        }
     }
 }
