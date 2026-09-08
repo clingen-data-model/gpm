@@ -130,6 +130,20 @@ class ScopeOfWorkVersion extends Model
         return $query->where('status', self::STATUS_APPROVED);
     }
 
+    public function scopeLatestApproved($query)
+    {
+        return $query->approved()
+            ->latest('major_version')
+            ->latest('minor_version');
+    }
+
+    public static function latestApprovedForGroup(Group|int $group): ?self
+    {
+        return static::forGroup($group)
+            ->latestApproved()
+            ->first();
+    }
+
     public function scopeDraft($query)
     {
         return $query->where('status', self::STATUS_DRAFT);

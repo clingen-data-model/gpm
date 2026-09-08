@@ -2,13 +2,14 @@
 
 namespace App\Modules\Group\Events;
 
+use App\Modules\Group\Models\ScopeOfWorkVersion;
+
 use Illuminate\Queue\SerializesModels;
 use App\Modules\Group\Events\GroupEvent;
 use App\Modules\Group\Models\GroupMember;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Support\Carbon;
-use App\Modules\Group\Models\ScopeOfWorkVersion;
 
 class MemberUpdated extends GroupEvent
 {
@@ -44,7 +45,7 @@ class MemberUpdated extends GroupEvent
 
     public function shouldPublish(): bool
     {
-        return parent::shouldPublish() && ! ScopeOfWorkVersion::forGroup($this->groupMember->group)->approved()->exists();
+        return parent::shouldPublish() && ! ScopeOfWorkVersion::groupHasActiveRevision($this->group);
     }
 
 }

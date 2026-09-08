@@ -1,13 +1,14 @@
 <?php
 namespace App\Modules\Group\Events;
 
+use App\Modules\Group\Models\ScopeOfWorkVersion;
+
 use Illuminate\Support\Collection;
 use App\Modules\Group\Models\Group;
 use Illuminate\Queue\SerializesModels;
 use App\Modules\Group\Events\GeneEvent;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use App\Modules\Group\Models\ScopeOfWorkVersion;
 
 class GenesAdded extends GeneEvent
 {
@@ -36,6 +37,6 @@ class GenesAdded extends GeneEvent
 
     public function shouldPublish(): bool
     {
-        return parent::shouldPublish() && ! ScopeOfWorkVersion::forGroup($this->group)->approved()->exists();
+        return parent::shouldPublish() && ! ScopeOfWorkVersion::groupHasActiveRevision($this->group);
     }
 }
