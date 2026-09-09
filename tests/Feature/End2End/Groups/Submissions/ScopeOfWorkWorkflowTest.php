@@ -61,6 +61,53 @@ class ScopeOfWorkWorkflowTest extends TestCase
     }
 
     #[Test]
+    public function submission_snapshot_captures_scope_genes_people_and_roles(): void
+    {
+        $group = $this->panel->group;
+        $group->update(['name' => 'Submitted group name', 'description' => 'Submitted description']);
+        $panelFields = [
+            'long_base_name' => 'Submitted long name',
+            'short_base_name' => 'Submitted short name',
+            'scope_description' => 'Submitted scope',
+            'membership_description' => 'Submitted membership',
+        ];
+        $this->panel->update($panelFields);
+        $gene = \App\Modules\ExpertPanel\Models\Gene::factory()->create([
+            'expert_panel_id' => $this->panel->id, 'gene_symbol' => 'BRCA1',
+        ]);
+        $member = \App\Modules\Group\Models\GroupMember::factory()->create(['group_id' => $group->id]);
+        $role = config('permission.models.role')::factory()->create(['scope' => 'group']);
+        $member->roles()->attach($role->id);
+
+        // Start without loaded relations, as on a fresh submission request.
+        $group = $group->fresh()->unsetRelations();
+        app(\App\Modules\Group\Actions\ApplicationSnapshotCreate::class)->asListener(
+            new ApplicationStepSubmitted($group, $this->submission)
+        );
+        $applicationSnapshot = $this->submission->applicationSnapshot()->sole();
+        $snapshot = $applicationSnapshot->snapshot;
+        $this->assertSame('Submitted group name', data_get($snapshot, 'attributes.name'));
+        $this->assertSame('Submitted description', data_get($snapshot, 'attributes.description'));
+        foreach ($panelFields as $field => $value) {
+            $this->assertSame($value, data_get($snapshot, "relations.expertPanel.attributes.$field"));
+        }
+        $capturedGene = collect(data_get($snapshot, 'relations.expertPanel.relations.genes'))
+            ->firstWhere('attributes.id', $gene->id);
+        $this->assertSame('BRCA1', data_get($capturedGene, 'attributes.gene_symbol'));
+        $capturedMember = collect(data_get($snapshot, 'relations.members'))
+            ->firstWhere('attributes.id', $member->id);
+        $this->assertSame($member->person_id, data_get($capturedMember, 'relations.person.attributes.id'));
+        $this->assertSame($member->person->first_name, data_get($capturedMember, 'relations.person.attributes.first_name'));
+        $this->assertSame($role->name, data_get($capturedMember, 'relations.roles.0.attributes.name'));
+        $this->assertSame($applicationSnapshot->id, data_get($this->submission->fresh()->data, 'application_snapshot_id'));
+        $this->assertSame('scope_of_work_revision', data_get($this->submission->fresh()->data, 'context'));
+
+        $gene->update(['gene_symbol' => 'Changed later']);
+        $member->roles()->detach();
+        $this->assertSame($snapshot, $applicationSnapshot->fresh()->snapshot);
+    }
+
+    #[Test]
     #[DataProvider('approvalPaths')]
     public function approval_paths_complete_actions_and_log_exactly_once_without_advancing_application(string $path): void
     {
