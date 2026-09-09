@@ -123,6 +123,7 @@ Route::group([
                 Route::post('/', ApplicationSubmitStep::class);
                 Route::post('/{submission}/rejection', ApplicationSubmissionReject::class);
                 Route::post('/{submission}/scope-of-work/approve', RevisionSubmissionApprove::class);
+                Route::get('/{submission}/scope-of-work/comparison', \App\Modules\Group\Actions\ScopeOfWork\ReviewRoundComparisonGet::class);
             });
 
             Route::get('/latest-submission', [GroupSubmissionsController::class, 'latestSubmission']);
