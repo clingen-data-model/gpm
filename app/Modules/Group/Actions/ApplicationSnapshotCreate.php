@@ -23,7 +23,7 @@ class ApplicationSnapshotCreate
         $latestVersion = $this->getLatestVersion($group);
 
         $group->load([
-            'expertPanel',
+            'expertPanel.genes',
             'type',
             'status',
             'members',
