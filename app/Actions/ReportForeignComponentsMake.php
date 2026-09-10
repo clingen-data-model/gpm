@@ -68,7 +68,7 @@ class ReportForeignComponentsMake extends ReportMakeAbstract
                             'Has this foreign site already been approved for this award? (Y/N)' => 'N',
                             'Will my NIH-funded work lead to a publication with a foreign scientist? (Y/N)' => 'Y',
                             'Does the foreign site play a role in the goals and objectives of the NIH award beyond the joint publication? (Y/N; If yes, please describe.)' => 'Y',
-                            'Will funds from the NIH award be used abroad? (Y/N; If yes, please describe.)' => '',
+                            'Will funds from the NIH award be used abroad? (Y/N; If yes, please describe.)' => 'N',
                             'Will human subjects, vertebrate animals, select agents and toxins work for this award take place at the foreign site? (Y/N; If yes, please describe.)' => 'N',
                         ]);
                     }
