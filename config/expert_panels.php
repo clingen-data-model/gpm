@@ -17,7 +17,7 @@ return [
         'scvcep' => [
             'id' => 3,
             'name' => 'scvcep',
-            'display_name' => 'SCVCEP',
+            'display_name' => 'SC-VCEP',
             'full_name' => 'Somatic Cancer Variant Curation Expert Panel',
         ]
     ],
