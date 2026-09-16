@@ -1,2 +1,0 @@
-import{A as a}from"./ApplicationsSummaryTable-qaCQJ81j.js";import{_ as o,r as t,a as n,c as p,e as r}from"./app-DnhohnVT.js";import"./router_aware_sort_and_filter-OfNtJyl3.js";const c={name:"GcepsSummary",components:{ApplicationsSummaryTable:a}};function s(m,i,l,_,u,d){const e=t("ApplicationsSummaryTable");return n(),p("div",null,[r(e,{"expert-panel-type-id":1})])}const x=o(c,[["render",s]]);export{x as default};
-//# sourceMappingURL=SummaryGcep-70zg5WVa.js.map
