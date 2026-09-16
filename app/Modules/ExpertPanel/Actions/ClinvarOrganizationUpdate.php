@@ -42,8 +42,9 @@ class ClinvarOrganizationUpdate
             abort(404, 'Group not found for this Expert Panel.');
         }
 
-        if ($group->group_type_id !== config('groups.types.vcep.id')) {
-            abort(422, 'ClinVar Organization ID can only be set for VCEP groups.');
+        if ($group->group_type_id == config('groups.types.vcep.id') || $group->group_type_id == config('groups.types.scvcep.id')) {            
+        } else {
+            abort(422, 'ClinVar Organization ID can only be set for VCEP or SC-VCEP groups.');
         }
 
         $this->handle($expertPanel, $data['clinvar_org_id']);

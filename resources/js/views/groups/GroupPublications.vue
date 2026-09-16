@@ -168,6 +168,7 @@ function clearAddModal() {
                         <th class="px-3 py-2 text-left">Journal</th>
                         <th class="px-3 py-2 text-left">Identifiers</th>
                         <th class="px-3 py-2 text-left">Published</th>
+                        <th class="px-3 py-2 text-left">Added to GPM</th>
                         <th class="px-3 py-2 text-left">Actions</th>
                     </tr>
                 </thead>
@@ -197,6 +198,7 @@ function clearAddModal() {
                         <td class="px-3 py-2">{{ p.meta?.journal }}</td>
                         <td class="px-3 py-2">{{ String(p.source || '').toUpperCase() }}: {{ p.identifier }}</td>
                         <td class="px-3 py-2">{{ formatDate(p.published_at) }}</td>
+                        <td class="px-3 py-2">{{ formatDate(p.created_at) }}</td>
                         <td class="px-3 py-2">
                             <div class="flex flex-wrap items-center gap-x-2 gap-y-2">
                                 <button class="btn btn-xs inline-flex items-center shrink-0" @click="showDetails(p)" title="View details"> Details </button>

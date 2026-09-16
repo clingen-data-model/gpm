@@ -394,7 +394,7 @@ export default {
           </tab-item>
           <tab-item label="Website Description">
 
-            <template v-if="group.is_vcep" >
+            <template v-if="group.is_vcep || group.is_scvcep" >
               <ClinvarForm :group="group" />
               <br />
             </template>
