@@ -107,26 +107,35 @@ class MemberInvite
 
     protected function createGpmPersonFromClerkUser(array $clerkUser, array $data, string $email): Person
     {
+        // Creating new user from exisiting Clerk Account. Ideal condition: 
+        // a. GPM person.clerk_id should be empty -> update GPM person.clerk_id 
+        // b. Clerk external id should be empty -> update clerk.external_id with GPM person.uuid
+        
+        // CASE A. Missing Clerk ID
         $clerkUserId = data_get($clerkUser, 'id');
-
         if (!$clerkUserId) {
             throw new \RuntimeException('Clerk user did not include an id.');
         }
 
-        $externalId = data_get($clerkUser, 'external_id');
-
-        if ($externalId) {
-            $existingPersonForUuid = Person::where('uuid', $externalId)->first();
-            if ($existingPersonForUuid) {
-                throw ValidationException::withMessages(['email' => ["This Clerk user is already linked to {$existingPersonForUuid->email} in GPM."]]);
-            }
-            $personUuid = $externalId;
-        } else {
-            $personUuid = Uuid::uuid4()->toString();
-            $this->clerkUserLinkService->setExternalId($clerkUserId, $personUuid);
+        // CASE B. Somehow the Clerk ID is already used in GPM -> Do not create another GPM Person for a Clerk account that is already linked to an existing Person. REVIEW MANUALLY.
+        $existingPersonForClerkUser = Person::query()->where('clerk_user_id', $clerkUserId)->first();
+        if ($existingPersonForClerkUser) {
+            throw ValidationException::withMessages(['email' => ["This Clerk user is already linked to {$existingPersonForClerkUser->first_name} {$existingPersonForClerkUser->last_name} with email {$existingPersonForClerkUser->email} in GPM. Please review the identity manually before continue the next process."]]);
         }
 
-        return DB::transaction(function () use ($data, $email, $personUuid, $clerkUserId) {
+        // CASE C. Clerk External ID (aka GPM UUID) is not empty (ideally it should be empty when adding new user from exisiting Clerk Account) -> REVIEW MANUALLY
+        $externalId = trim((string) data_get($clerkUser, 'external_id'));
+        if ($externalId) {
+            $existingPersonForExternalId = Person::query()->where('uuid', $externalId)->first();
+            if ($existingPersonForExternalId) {
+                throw ValidationException::withMessages(['email' => ['This Clerk account references an existing GPM Person UUID but is not linked to that Person. Please review the identity manually before continue the next process.']]);
+            }
+        }
+
+        // GPM owns the ClinGen Person UUID. Never adopt Clerk external_id as the Person UUID. Instead, GPM should replace existing Clerk external ID when adding that clerk account to GPM
+        $personUuid = Uuid::uuid4()->toString();        
+
+        $person = DB::transaction(function () use ($data, $email, $personUuid, $clerkUserId) {
             $name = trim(($data['first_name'] ?? '').' '.($data['last_name'] ?? ''));
             $user = User::firstOrCreate(['email' => $email], [
                     'name' => $name,
@@ -143,10 +152,13 @@ class MemberInvite
             );
 
             $person->forceFill(['user_id' => $user->id, 'clerk_user_id' => $clerkUserId])->save();
-            $this->clerkUserLinkService->addApplication($clerkUserId, 'GPM');
-
             return $person;
         });
+
+        // GPM is authoritative for the UUID.
+        $this->clerkUserLinkService->setExternalId($clerkUserId, $personUuid);
+        $this->clerkUserLinkService->addApplication($clerkUserId, 'GPM');
+        return $person->fresh();
     }
 
     protected function inviteBrandNewPerson(Group $group, array $data, ?array $roleIds, string $email): GroupMember

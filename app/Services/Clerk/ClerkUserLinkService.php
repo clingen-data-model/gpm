@@ -31,46 +31,23 @@ class ClerkUserLinkService
         $person = $invite->person;
 
         if (!$person) {
-            throw ValidationException::withMessages([
-                'invite' => 'Invite is missing an associated person.',
-            ]);
+            throw ValidationException::withMessages(['invite' => 'Invite is missing an associated person.']);
         }
-
         $clerkUser = $this->getUser($clerkUserId);
-
-        $emails = collect(data_get($clerkUser, 'email_addresses', []))
-            ->map(fn ($row) => strtolower((string) data_get($row, 'email_address')))
-            ->filter()
-            ->values();
+        $emails = collect(data_get($clerkUser, 'email_addresses', []))->map(fn ($row) => strtolower((string) data_get($row, 'email_address')))->filter()->values();
 
         if (!$emails->contains(strtolower($invite->email))) {
-            throw ValidationException::withMessages([
-                'email' => 'The invited email address is not present on the Clerk account. Please resolve that in Clerk first.',
-            ]);
+            throw ValidationException::withMessages(['email' => 'The invited email address is not present on the Clerk account. Please resolve that in Clerk first.']);
         }
 
-        $alreadyLinkedElsewhere = Person::query()
-            ->where('clerk_user_id', $clerkUserId)
-            ->where('id', '!=', $person->id)
-            ->exists();
-
+        $alreadyLinkedElsewhere = Person::query()->where('clerk_user_id', $clerkUserId)->where('id', '!=', $person->id)->exists();
         if ($alreadyLinkedElsewhere) {
-            throw ValidationException::withMessages([
-                'clerk_user_id' => 'This Clerk account is already linked to another person in GPM.',
-            ]);
+            throw ValidationException::withMessages(['clerk_user_id' => 'This Clerk account is already linked to another person in GPM.']);
         }
 
         $legacyUser = $this->ensureLegacyUser($person);
-
-        $person->forceFill([
-            'clerk_user_id' => $clerkUserId,
-            'user_id' => $person->user_id ?: $legacyUser->id,
-        ])->save();
-
-        $invite->forceFill([
-            'redeemed_at' => now(),
-        ])->save();
-
+        $person->forceFill(['clerk_user_id' => $clerkUserId, 'user_id' => $person->user_id ?: $legacyUser->id])->save();
+        $invite->forceFill(['redeemed_at' => now()])->save();
         $this->setExternalId($clerkUserId, $person->uuid);
         $this->addApplication($clerkUserId, 'GPM');
 
@@ -95,12 +72,10 @@ class ClerkUserLinkService
         return $user;
     }
 
-    public function setExternalId(string $clerkUserId, string $personUuid): void
+    // Setting Clerk external ID, allow to set it to NULL to erase the external ID in case of person deletion
+    public function setExternalId(string $clerkUserId, ?string $personUuid): void
     {
-        $response = $this->clientFactory->make()->patch("/users/{$clerkUserId}", [
-            'external_id' => $personUuid,
-        ]);
-
+        $response = $this->clientFactory->make()->patch("/users/{$clerkUserId}", ['external_id' => $personUuid]);
         $response->throw();
     }
 
@@ -173,10 +148,12 @@ class ClerkUserLinkService
         return $this->usersFromClerkListResponse($response->json());
     }
 
+    // Unlink GPM information of a person from Clerk. CLear external ID, as well as the application private meta data on Clerk
     public function unlinkGpmApplicationFromPerson(Person $person): void
     {
         $clerkUserId = $person->clerk_user_id;
         if (!$clerkUserId) { return; }
+        $this->setExternalId($clerkUserId, null);
         $this->removeApplication($clerkUserId, 'GPM');
         $person->forceFill(['clerk_user_id' => null])->save();
     }
@@ -204,40 +181,19 @@ class ClerkUserLinkService
     public function relinkPersonToClerkAccount(Person $person, string $clerkUserId): Person
     {
         $clerkUser = $this->getUser($clerkUserId);
-        $alreadyLinkedElsewhere = Person::query()->where('clerk_user_id', $clerkUserId)->where('id', '!=', $person->id)->exists();
+        $alreadyLinkedElsewhere = Person::query()->where('clerk_user_id', $clerkUserId)->where('id', '!=', $person->id)->first();
         if ($alreadyLinkedElsewhere) {
-            throw ValidationException::withMessages(['clerk_user_id' => 'This Clerk account is already linked to another person in GPM.']);
-        }
-
-        $externalId = trim((string) data_get($clerkUser, 'external_id'));
-        $resolvedPersonUuid = $person->uuid;
-        if ($externalId) {
-            if (!\Illuminate\Support\Str::isUuid($externalId)) {
-                throw ValidationException::withMessages([
-                    'external_id' => 'This Clerk account has an external ID, but it is not a valid UUID. Please review this manually.',
-                ]);
-            }
-
-            $uuidUsedByAnotherPerson = Person::query()->where('uuid', $externalId)->where('id', '!=', $person->id)->exists();
-            if ($uuidUsedByAnotherPerson) {
-                throw ValidationException::withMessages([
-                    'external_id' => 'This Clerk external ID already belongs to another person in GPM.',
-                ]);
-            }
-
-            // Important: Clerk already has a ClinGen identity UUID, so GPM adopts it.
-            $resolvedPersonUuid = $externalId;
-        } else {
-            // Clerk has no external identity yet, so use the current GPM person UUID.
-            $this->setExternalId($clerkUserId, $person->uuid);
-        }
-
+            throw ValidationException::withMessages(['clerk_user_id' => 'This Clerk account is already linked to ' . $alreadyLinkedElsewhere->first_name . ' ' . $alreadyLinkedElsewhere->last_name . ' with email  ' . $alreadyLinkedElsewhere->email . ' in GPM.']);
+        }                
+        
         $oldClerkUserId = $person->clerk_user_id;
+
+        // GPM owns the UUID, so Clerk always gets the GPM UUID.
+        $this->setExternalId($clerkUserId, $person->uuid);
         $this->addApplication($clerkUserId, 'GPM');
 
         DB::transaction(function () use ($person, $clerkUserId, $resolvedPersonUuid) {
             $person->forceFill([
-                'uuid' => $resolvedPersonUuid,
                 'clerk_user_id' => $clerkUserId,
             ])->save();
         });

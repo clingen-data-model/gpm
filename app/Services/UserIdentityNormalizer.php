@@ -35,11 +35,4 @@ class UserIdentityNormalizer
             self::normalizeNamePart($parts[1] ?? null),
         ];
     }
-
-    private function normalizeString($value): ?string
-    {
-        if ($value === null) return null;
-        $value = trim((string) $value);
-        return $value === '' ? null : $value;
-    }
 }

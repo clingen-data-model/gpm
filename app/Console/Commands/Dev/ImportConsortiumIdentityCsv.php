@@ -73,7 +73,7 @@ class ImportConsortiumIdentityCsv extends Command
                 continue;
             }
 
-            [$firstName, $lastName] = $this->splitName($fullName);
+            [$firstName, $lastName] = UserIdentityNormalizer::splitName($fullName);
             $password = $this->nullIfEmpty($this->csvValue($data, $headerMap, 'password'));
 
             $row = [

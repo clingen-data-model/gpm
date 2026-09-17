@@ -35,7 +35,7 @@ class ConsolidateConsortiumIdentityImport extends Command
             ->map(function ($row) {
                 $row->email_normalized = UserIdentityNormalizer::normalizeEmail($row->email);
 
-                [$firstName, $lastName] = $this->splitName($row->full_name);
+                [$firstName, $lastName] = UserIdentityNormalizer::splitName($row->full_name);
                 $row->first_name_normalized = UserIdentityNormalizer::normalizeNamePart($firstName);
                 $row->last_name_normalized = UserIdentityNormalizer::normalizeNamePart($lastName);
 
@@ -155,7 +155,7 @@ class ConsolidateConsortiumIdentityImport extends Command
 
         $canonicalEmail = $canonicalRow?->email_normalized ?? $emails->first();
         $canonicalFullName = $canonicalRow?->full_name ?? $names->first();
-        [$canonicalFirstName, $canonicalLastName] = $this->splitName($canonicalFullName);
+        [$canonicalFirstName, $canonicalLastName] = UserIdentityNormalizer::splitName($canonicalFullName);
 
         $flags = [
             'matched_by' => $matchedBy,
