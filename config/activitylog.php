@@ -4,13 +4,13 @@ return [
     /*
      * If set to false, no activities will be saved to the database.
      */
-    'enabled' => env('ACTIVITY_LOGGER_ENABLED', true),
+    'enabled' => env('ACTIVITYLOG_ENABLED', true),
 
     /*
      * When the clean-command is executed, all recording activities older than
      * the number of days specified here will be deleted.
      */
-    'delete_records_older_than_days' => 365,
+    'clean_after_days' => 365,
 
     /*
      * If no log name is passed to the activity() helper
@@ -25,9 +25,10 @@ return [
     'default_auth_driver' => null,
 
     /*
-     * If set to true, the subject returns soft deleted models.
+     * If set to true, the subject relationship on activities
+     * will include soft deleted models.
      */
-    'subject_returns_soft_deleted_models' => false,
+    'include_soft_deleted_subjects' => false,
 
     /*
      * This model will be used to log activity.
@@ -35,17 +36,4 @@ return [
      * and extend Illuminate\Database\Eloquent\Model.
      */
     'activity_model' => \App\Models\Activity::class,
-
-    /*
-     * This is the name of the table that will be created by the migration and
-     * used by the Activity model shipped with this package.
-     */
-    'table_name' => 'activity_log',
-
-    /*
-     * This is the database connection that will be used by the migration and
-     * the Activity model shipped with this package. In case it's not set
-     * Laravel database.default will be used instead.
-     */
-    'database_connection' => env('ACTIVITY_LOGGER_DB_CONNECTION'),
 ];
