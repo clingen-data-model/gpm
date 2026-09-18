@@ -3,13 +3,12 @@
 namespace App\Models\Traits;
 
 use Exception;
-use Spatie\Permission\Contracts\Role;
-use Spatie\Permission\Contracts\Permission;
 use Spatie\Permission\Traits\HasRoles as SpatieHasRoles;
 
 trait HasRoles
 {
     use SpatieHasRoles {
+        assignRole as protected traitAssignRole;
         givePermissionTo as protected traitGivePermissionTo;
     }
 
@@ -24,10 +23,13 @@ trait HasRoles
             throw new Exception('Invalid role or permission given to '.__CLASS__, 422);
         }
     }
-    
-    
+
     /**
      * Assign the given role to the model.
+     *
+     * Scope is validated here, then the actual assignment is delegated to
+     * Spatie's own implementation so this stays compatible as its internals
+     * (team pivots, wildcard index, events, ...) evolve across versions.
      *
      * @param array|string|\Spatie\Permission\Contracts\Role ...$roles
      *
@@ -35,48 +37,22 @@ trait HasRoles
      */
     public function assignRole(...$roles)
     {
-        $roles = collect($roles)
+        collect($roles)
             ->flatten()
-            ->map(function ($role) {
-                if (empty($role)) {
-                    return false;
-                }
-
-                return $this->getStoredRole($role);
-            })
-            ->filter(function ($role) {
-                return $role instanceof Role;
-            })
+            ->filter()
             ->each(function ($role) {
-                $this->ensureModelSharesGuard($role);
-                $this->ensureInScope($role);
-            })
-            ->map->id
-            ->all();
+                $this->ensureInScope($this->getStoredRole($role));
+            });
 
-        $model = $this->getModel();
-
-        if ($model->exists) {
-            $this->roles()->sync($roles, false);
-            $model->load('roles');
-        } else {
-            $class = \get_class($model);
-
-            $class::saved(
-                function ($object) use ($roles, $model) {
-                    $model->roles()->sync($roles, false);
-                    $model->load('roles');
-                }
-            );
-        }
-
-        $this->forgetCachedPermissions();
-
-        return $this;
+        return $this->traitAssignRole(...$roles);
     }
 
     /**
      * Grant the given permission(s) to a role.
+     *
+     * Scope is validated here, then the actual assignment is delegated to
+     * Spatie's own implementation so this stays compatible as its internals
+     * evolve across versions.
      *
      * @param string|array|\Spatie\Permission\Contracts\Permission|\Illuminate\Support\Collection $permissions
      *
@@ -84,43 +60,13 @@ trait HasRoles
      */
     public function givePermissionTo(...$permissions)
     {
-        $permissions = collect($permissions)
+        collect($permissions)
             ->flatten()
-            ->map(function ($permission) {
-                if (empty($permission)) {
-                    return false;
-                }
-
-                return $this->getStoredPermission($permission);
-            })
-            ->filter(function ($permission) {
-                return $permission instanceof Permission;
-            })
+            ->filter()
             ->each(function ($permission) {
-                $this->ensureModelSharesGuard($permission);
-                $this->ensureInScope($permission);
-            })
-            ->map->id
-            ->all();
+                $this->ensureInScope($this->getStoredPermission($permission));
+            });
 
-        $model = $this->getModel();
-
-        if ($model->exists) {
-            $this->permissions()->sync($permissions, false);
-            $model->load('permissions');
-        } else {
-            $class = \get_class($model);
-
-            $class::saved(
-                function ($object) use ($permissions, $model) {
-                    $model->permissions()->sync($permissions, false);
-                    $model->load('permissions');
-                }
-            );
-        }
-
-        $this->forgetCachedPermissions();
-
-        return $this;
+        return $this->traitGivePermissionTo(...$permissions);
     }
 }
