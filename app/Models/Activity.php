@@ -25,7 +25,7 @@ class Activity extends BaseActivity
             if (!$activity->properties) {
                 return;
             }
-            $activity->activity_type = $activity->getExtraProperty('activity_type');
+            $activity->activity_type = $activity->getProperty('activity_type');
         });
     }
 
