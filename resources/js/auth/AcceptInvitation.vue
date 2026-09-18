@@ -14,7 +14,6 @@ const { isLoaded, signUp, setActive } = useSignUp()
 const password = ref('')
 const submitting = ref(false)
 const errorMessage = ref('')
-const successMessage = ref('')
 
 const inviteCode = computed(() => route.query.code || '')
 const ticket = computed(() => route.query.__clerk_ticket || '')
@@ -40,11 +39,13 @@ async function goToDashboardAfterRedeem() {
   await finishGpmRedeem()
   await startGpmSession()
   router.replace({ name: 'Dashboard' })
-  // successMessage.value = 'Invitation accepted successfully. Your GPM account is now linked.'
 }
 
 async function acceptInvitation() {
   if (!isLoaded.value || !ticket.value || !inviteCode.value || submitting.value) {
+    if (isLoaded.value && !submitting.value) {
+      errorMessage.value = 'This invitation link is incomplete or expired. Please request a new invitation.'
+    }
     return
   }
 
@@ -66,14 +67,12 @@ async function acceptInvitation() {
     await setActive.value({
       session: signUpAttempt.createdSessionId,
     })
-    await debugClerkAuth()
     await goToDashboardAfterRedeem()
   } catch (error) {
     const clerkCode = error?.errors?.[0]?.code
 
     if (clerkCode === 'session_exists') {
       try {
-        await debugClerkAuth()
         await goToDashboardAfterRedeem()
         return
       } catch (redeemError) {
@@ -88,23 +87,10 @@ async function acceptInvitation() {
   }
 }
 
-async function debugClerkAuth() {
-  const token = await getToken.value()
-
-  const response = await axios.get('/api/auth/clerk/me', {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  })
-
-  console.log('Clerk /me response', response.data)
-  return response.data
-}
-
 watch(
   () => isSignedIn.value,
   async (signedIn) => {
-    if (!signedIn || !inviteCode.value || !ticket.value || submitting.value || successMessage.value) {
+    if (!signedIn || !inviteCode.value || !ticket.value || submitting.value) {
       return
     }
 
@@ -128,6 +114,7 @@ watch(
 
     <div v-if="errorMessage" class="alert alert-danger">
       {{ errorMessage }}
+      <!-- FIXME: I don't think it makes sense to show this link here, since signup didn't work -->
       <div class="mt-2">
         <router-link to="/" class="btn btn-outline-primary btn-sm">
           Go to GPM dashboard
@@ -135,11 +122,7 @@ watch(
       </div>
     </div>
 
-    <div v-else-if="successMessage" class="alert alert-success">
-      {{ successMessage }}
-    </div>
-
-    <form v-else @submit.prevent="acceptInvitation">
+    <form @submit.prevent="acceptInvitation">
       <div class="mb-3">
         <label class="form-label">Password</label>
         <input v-model="password" type="password" class="form-control">
