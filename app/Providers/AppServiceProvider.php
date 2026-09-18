@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use GuzzleHttp\Client;
+use Carbon\CarbonInterval;
+use Laravel\Passport\Passport;
 use App\Services\HgncLookup;
 use App\Services\DiseaseLookup;
 use GuzzleHttp\ClientInterface;
@@ -36,6 +38,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        Passport::tokensCan([
+            'clingen-people-read' => 'Read GPM people and their group memberships',
+        ]);
+        Passport::tokensExpireIn(CarbonInterval::minutes(3));
+
         $this->app->bind(DiseaseLookupInterface::class, DiseaseLookup::class);
         $this->app->bind(HgncLookupInterface::class, HgncLookup::class);
 

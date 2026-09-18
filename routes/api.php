@@ -1,6 +1,7 @@
 <?php
 
 use App\Actions\MailResend;
+use App\Actions\ClingenPersonFind;
 use App\Actions\CommentFind;
 use App\Actions\CommentList;
 use App\Models\DocumentType;
@@ -50,6 +51,12 @@ use App\Actions\Auth\ClerkWebhookReceive;
 use App\Actions\Auth\ClerkRedeemInvitation;
 
 Route::post('/clerk/webhooks', ClerkWebhookReceive::class);
+Route::prefix('clingen/v1')
+    ->withoutMiddleware(\Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class)
+    ->middleware('client:clingen-people-read')
+    ->group( function() {
+        Route::get('/people/{person:uuid}', ClingenPersonFind::class);
+    });
 Route::middleware('clerk.auth')->post('/auth/clerk/redeem-invitation', ClerkRedeemInvitation::class);
 Route::middleware('clerk.auth')->get('/auth/clerk/me', ClerkMe::class);
 Route::middleware('clerk.auth')->post('/auth/clerk/session-login', ClerkSessionLogin::class);
