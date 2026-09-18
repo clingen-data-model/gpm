@@ -198,4 +198,19 @@ return [
 
     'same_site' => 'lax',
 
+    /*
+    |--------------------------------------------------------------------------
+    | Session Serialization
+    |--------------------------------------------------------------------------
+    |
+    | Session data is serialized before it's stored, either using PHP's
+    | native serialization or JSON. JSON serialization is more secure
+    | but a bit slower. Switching this invalidates existing sessions.
+    |
+    | Supported: "php", "json"
+    |
+    */
+
+    'serialization' => 'json',
+
 ];
