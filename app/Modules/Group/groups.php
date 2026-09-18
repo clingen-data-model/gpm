@@ -145,6 +145,12 @@ return [
             'display_name' => 'CIViC Editor',
             'description' => 'Individual who approves the submission of edits to CIViC. Indicates a higher level of training.  No default permissions.',
         ],
+        'nih-extramural' => [
+            'id' => 110,
+            'name' => 'nih-extramural',
+            'display_name' => 'NIH Extramural Rep',
+            'description' => 'Representative of NIH Extramural. User with this role should not be published to Data Exchange or any downstream systems.',
+        ],
     ],
     'permissions' => [
         'info-edit' => [

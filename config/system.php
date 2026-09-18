@@ -5,7 +5,7 @@ return [
        'super-user' => [
            'id' => 1,
            'name' => 'super-user',
-           'display_name' => 'SuperUser',
+           'display_name' => 'Super User',
            'description' => 'Full access user with ALL permissions.  Reserved for programmers and technically versed users charged with administering the application.',
            'guard_name' => 'web',
            'scope' => 'system'
@@ -13,7 +13,7 @@ return [
        'super-admin' => [
             'id' => 2,
             'name' => 'super-admin',
-            'display_name' => 'SuperAdmin',
+            'display_name' => 'Super Admin',
             'description' => 'Administrator with full group, application, annual update, and person management permissions.  A super-admin should be able take any action that does not require technical expertise.',
             'guard_name' => 'web',
             'scope' => 'system'
@@ -121,7 +121,7 @@ return [
             'id' => 50,
             'name' => 'comments-manage',
             'display_name' => 'Manage comments',
-            'description' => 'Can edit/delete comments made by other users.',
+            'description' => 'Can edit and delete comments made by other users.',
             'scope' => 'system',
             'guard_name' => 'web',
         ],
@@ -129,7 +129,7 @@ return [
             'id' => 60,
             'name' => 'funding-sources-manage',
             'display_name' => 'Manage Funding Sources',
-            'description' => 'Can edit/delete funding sources.',
+            'description' => 'Can edit and delete funding sources.',
             'scope' => 'system',
             'guard_name' => 'web',
         ],

@@ -421,7 +421,7 @@ export default {
         <div class="border-t mt-4 pt-2">
           <h3>Group Roles</h3>
           <div class="flex flex-col h-24 flex-wrap">
-            <checkbox v-for="role in roles" :key="role.id" v-model="newMember.roles" :value="role" :label="titleCase(role.name)" @input="handleRoleChange" />
+            <checkbox v-for="role in roles" :key="role.id" v-model="newMember.roles" :value="role" :label="role.display_name" @input="handleRoleChange" />
           </div>
           <transition name="fade-down">
             <div

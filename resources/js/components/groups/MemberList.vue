@@ -70,8 +70,8 @@ export default {
                     label: 'Roles',
                     sortable: true,
                     sortFunction (a,  b) {
-                        const aComp = a.roles.map(r => r.name).join(',');
-                        const bComp = b.roles.map(r => r.name).join(',');
+                        const aComp = a.roles.map(r => r.display_name).join(',');
+                        const bComp = b.roles.map(r => r.display_name).join(',');
 
                         if (aComp === bComp) {
                             return 0;
@@ -457,7 +457,7 @@ export default {
                 :key="role.id"
                 :value="role.id"
               >
-                {{ role.name }}
+                {{ role.display_name }}
               </option>
             </select>
           </input-row>
@@ -488,7 +488,7 @@ export default {
           </button>
         </template>
         <template #cell-roles="{value}">
-          {{ titleCase(value.map(i => i.name).join(', ')) }}
+          {{ value.map(i => i.display_name).join(', ') }}
         </template>
         <template #cell-coi_last_completed="{item}">
           <div class="flex space-x-2">
