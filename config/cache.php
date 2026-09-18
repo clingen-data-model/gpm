@@ -99,4 +99,29 @@ return [
     */
 
     'prefix' => env('CACHE_PREFIX', Str::slug(env('APP_NAME', 'epam'), '_').'_cache'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Serializable Classes
+    |--------------------------------------------------------------------------
+    |
+    | Laravel leaves cache unserialization unrestricted when this key is absent.
+    | Setting it opts in to an allow-list, which guards against deserialization
+    | gadget-chain attacks but silently degrades any class left out: it comes
+    | back as __PHP_Incomplete_Class rather than raising. So this list must
+    | cover every class reachable from a cached value, including the pivot and
+    | relation models hanging off cached Eloquent collections.
+    |
+    */
+
+    'serializable_classes' => [
+        \App\Models\Permission::class,
+        \App\Models\Role::class,
+        \App\Modules\ExpertPanel\Models\NextActionAssignee::class,
+        \App\Modules\User\Models\User::class,
+        \Illuminate\Database\Eloquent\Collection::class,
+        \Illuminate\Database\Eloquent\Relations\MorphPivot::class,
+        \Illuminate\Database\Eloquent\Relations\Pivot::class,
+        \Illuminate\Support\Collection::class,
+    ],
 ];

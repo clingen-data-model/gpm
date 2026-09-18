@@ -92,7 +92,7 @@ class Coi extends Model
                     : static::getDefinition();
 
         // Pre-compute the questions collection once instead of in the closure
-        $questions = collect($coiDef->questions)->keyBy('name');
+        $questions = collect($coiDef['questions'])->keyBy('name');
 
         $responseData = collect($this->data)
             ->map(function ($value, $key) use ($questions) {
@@ -100,7 +100,7 @@ class Coi extends Model
                     return null;
                 }
                 return [
-                    'question' => $questions->get($key)->question,
+                    'question' => $questions->get($key)['question'],
                     'response' => $value
                 ];
             })
@@ -118,18 +118,18 @@ class Coi extends Model
     public function getResponseForHumansAttribute()
     {
         $data = (array)$this->data;
-        $questions = collect($this->getDefinition()->questions)->keyBy('name');
+        $questions = collect($this->getDefinition()['questions'])->keyBy('name');
 
         $humanReadable = [];
 
         foreach ($questions as $name => $def) {
             $response = $data[$name];
             $readableResponse = $response;
-            if (in_array($def->type, ['multiple-choice'])) {
-                $options = collect($def->options)->pluck('label', 'value');
+            if (in_array($def['type'], ['multiple-choice'])) {
+                $options = collect($def['options'])->pluck('label', 'value');
                 $readableResponse = $options[$response];
             }
-            if ($def->type == 'yes-no') {
+            if ($def['type'] == 'yes-no') {
                 $readableResponse = $response == 1 ? 'Yes' : 'No';
             }
             $humanReadable[$name] = $readableResponse;
@@ -144,14 +144,14 @@ class Coi extends Model
     {
         return Cache::remember('coi-definition-'.$this->version, 360, function () {
             $defPath = config('coi.definitions')[$this->version];
-            return json_decode(file_get_contents(base_path($defPath)));
+            return json_decode(file_get_contents(base_path($defPath)), true);
         });
     }
 
     public static function getLegacyDefinition()
     {
         return Cache::remember('legacy-coi-definition', 360, function () {
-            return json_decode(file_get_contents(base_path('resources/surveys/legacy_coi.json')));
+            return json_decode(file_get_contents(base_path('resources/surveys/legacy_coi.json')), true);
         });
     }
 
