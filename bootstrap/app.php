@@ -52,4 +52,16 @@ $app->singleton(
 |
 */
 
+$app->afterResolving(Illuminate\Contracts\Http\Kernel::class, function ($kernel) {
+    // Passport 13 renamed CheckClientCredentials to EnsureClientIsResourceOwner.
+    $middleware = Laravel\Passport\Http\Middleware\EnsureClientIsResourceOwner::class;
+    $kernel->setMiddlewareAliases(array_merge($kernel->getMiddlewareAliases(), [
+        'client' => $middleware,
+    ]));
+    $kernel->addToMiddlewarePriorityBefore(
+        Illuminate\Routing\Middleware\SubstituteBindings::class,
+        $middleware
+    );
+});
+
 return $app;
