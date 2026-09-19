@@ -36,11 +36,12 @@ class ClerkAuthenticate
             if (!$clerkUserId) { abort(401); }
             $request->attributes->set('clerk_user_id', $clerkUserId);
             $request->attributes->set('clerk_auth', $claims);
-            return $next($request);
-        } catch (\Throwable $e) {            
+        } catch (\Throwable $e) {
             return response()->json([
                 'message' => 'Unable to authenticate Clerk request.',
             ], 401);
         }
+
+        return $next($request);
     }
 }
