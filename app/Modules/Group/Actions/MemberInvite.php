@@ -152,12 +152,17 @@ class MemberInvite
             );
 
             $person->forceFill(['user_id' => $user->id, 'clerk_user_id' => $clerkUserId])->save();
+
+            // GPM is authoritative for the UUID. These run inside the transaction so a Clerk
+            // failure rolls the local rows back: committing them first would leave clerk_user_id
+            // set with Clerk unpatched, and the retry would then trip the CASE B guard above
+            // with no way for an operator to clear it.
+            $this->clerkUserLinkService->setExternalId($clerkUserId, $personUuid);
+            $this->clerkUserLinkService->addApplication($clerkUserId, 'GPM');
+
             return $person;
         });
 
-        // GPM is authoritative for the UUID.
-        $this->clerkUserLinkService->setExternalId($clerkUserId, $personUuid);
-        $this->clerkUserLinkService->addApplication($clerkUserId, 'GPM');
         return $person->fresh();
     }
 
