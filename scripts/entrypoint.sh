@@ -33,6 +33,7 @@ fi
 
 if [[ "$PRODUCTION_MODE" == "true" ]]; then
     echo "Caching configuration..."
+    php artisan cache:clear
     php artisan config:cache
     php artisan route:cache
     php artisan view:cache
