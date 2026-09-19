@@ -89,6 +89,16 @@ class ClerkUserLinkService
         return $matches->first(fn ($user) => $this->clerkUserHasEmail($user, $email));
     }
 
+    public function findByExternalId(?string $externalId): ?array
+    {
+        $externalId = trim((string) $externalId);
+        if (!$externalId) { return null; }
+        $response = $this->clientFactory->make()->get('/users', ['external_id' => $externalId, 'limit' => 10]);
+        $response->throw();
+        $matches = collect($this->usersFromClerkListResponse($response->json()));
+        return $matches->first(fn ($user) => (string) data_get($user, 'external_id') === $externalId);
+    }
+
     protected function usersFromClerkListResponse(?array $body): array
     {
         if (!$body) {

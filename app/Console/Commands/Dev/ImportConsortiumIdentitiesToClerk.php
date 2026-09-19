@@ -3,6 +3,7 @@
 namespace App\Console\Commands\Dev;
 
 use App\Services\Clerk\ClerkClientFactory;
+use App\Services\Clerk\ClerkUserLinkService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Throwable;
@@ -19,8 +20,10 @@ class ImportConsortiumIdentitiesToClerk extends Command
 
     protected $description = 'Create or link Clerk users from resolved consortium identity candidates and store Clerk user IDs back into staging.';
 
-    public function __construct(private ClerkClientFactory $clerkClientFactory)
-    {
+    public function __construct(
+        private ClerkClientFactory $clerkClientFactory,
+        private ClerkUserLinkService $clerkUserLinkService
+    ) {
         parent::__construct();
     }
 
@@ -76,7 +79,7 @@ class ImportConsortiumIdentitiesToClerk extends Command
                     throw new \RuntimeException("Candidate #{$candidate->id} has no resolved_gpm_uuid. Run consortium-identities:resolve-export first.");
                 }
 
-                $existingClerkUser = $this->findExistingClerkUser(client: $client, externalId: $candidate->resolved_gpm_uuid, email: $candidate->canonical_email);
+                $existingClerkUser = $this->findExistingClerkUser(externalId: $candidate->resolved_gpm_uuid, email: $candidate->canonical_email);
                 if ($dryRun) {
                     if ($existingClerkUser) {
                         $this->line("Would link candidate #{$candidate->id} {$candidate->canonical_email} to existing Clerk user ".data_get($existingClerkUser, 'id'));
@@ -101,7 +104,7 @@ class ImportConsortiumIdentitiesToClerk extends Command
 
                 if ($response->failed()) {
                     // Fallback: if create failed because the email/external_id already exists, we'll link it instead.
-                    $fallbackUser = $this->findExistingClerkUser(client: $client,  externalId: $candidate->resolved_gpm_uuid, email: $candidate->canonical_email);
+                    $fallbackUser = $this->findExistingClerkUser(externalId: $candidate->resolved_gpm_uuid, email: $candidate->canonical_email);
                     if ($fallbackUser) {
                         $result = $this->linkExistingClerkUser($client, $candidate, $fallbackUser);
                         if ($result === 'linked') {
@@ -190,37 +193,13 @@ class ImportConsortiumIdentitiesToClerk extends Command
         return $payload;
     }
 
-    protected function findExistingClerkUser($client, string $externalId, ?string $email): ?array
+    protected function findExistingClerkUser(string $externalId, ?string $email): ?array
     {
-        $externalIdResponse = $client->get('/users', [
-            'external_id' => [$externalId],
-            'limit' => 1,
-        ]);
-
-        $externalIdResponse->throw();
-
-        $externalIdMatches = data_get($externalIdResponse->json(), 'data', []);
-
-        if (!empty($externalIdMatches)) {
-            return $externalIdMatches[0];
-        }
-
-        $email = UserIdentityNormalizer::normalizeEmail($email);
-
-        if (!$email) {
-            return null;
-        }
-
-        $emailResponse = $client->get('/users', [
-            'email_address' => [$email],
-            'limit' => 1,
-        ]);
-
-        $emailResponse->throw();
-
-        $emailMatches = data_get($emailResponse->json(), 'data', []);
-
-        return !empty($emailMatches) ? $emailMatches[0] : null;
+        // Both lookups go through ClerkUserLinkService so the list-response shape and the
+        // post-filter confirming the returned user actually matches stay in one place: an
+        // unverified match here is written straight into people.clerk_user_id.
+        return $this->clerkUserLinkService->findByExternalId($externalId)
+            ?? $this->clerkUserLinkService->findByEmail($email);
     }
 
     protected function linkExistingClerkUser($client, object $candidate, array $existingClerkUser): string
