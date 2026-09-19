@@ -32,8 +32,9 @@ class ClerkInvitationService
             'expires_in_days' => 30,
         ]);
 
-        logger()->info('Clerk invitation response', $response->json());
-        $response->throw();        
+        // json() is null when Clerk answers with a non-JSON body, and the context arg is typed array.
+        logger()->info('Clerk invitation response', $response->json() ?? []);
+        $response->throw();
         logger()->info('Clerk invitation created successfully');
         return $response->json();
     }
