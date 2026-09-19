@@ -20,7 +20,7 @@ export default {
 <template>
   <div>
     <ul>
-      <li v-for="suggestion in suggestions" :key="suggestion.clerk_user_id" class="flex justify-between my-2" :class="{'text-gray-500': suggestion.alreadyMember}">
+      <li v-for="suggestion in suggestions" :key="suggestion.uuid" class="flex justify-between my-2" :class="{'text-gray-500': suggestion.alreadyMember}">
         <div>
           <div>{{ suggestion.name }}</div>
           <div class="text-xs text-gray-500">{{ suggestion.email }}</div>
