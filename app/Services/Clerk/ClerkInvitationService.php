@@ -12,7 +12,7 @@ class ClerkInvitationService
     ) {
     }
 
-    public function createForInvite(Invite $invite, Group $group): array
+    public function createForInvite(Invite $invite, ?Group $group = null): array
     {
         $redirectUrl = config('clerk.invitation_redirect_url');
         $separator = str_contains($redirectUrl, '?') ? '&' : '?';
@@ -21,8 +21,8 @@ class ClerkInvitationService
         logger()->info('Sending Clerk invitation', [
             'email' => $invite->email,
             'redirect_url' => $redirectUrl,
-            'group_uuid' => $group->uuid,
-            'person_uuid' => $invite->person->uuid,
+            'group_uuid' => $group?->uuid,
+            'person_uuid' => $invite->person?->uuid,
         ]);
 
         $response = $this->clientFactory->make()->post('/invitations', [
