@@ -69,7 +69,7 @@ class ClingenPersonEndpointTest extends TestCase
     {
         $this->getJson($this->endpoint())->assertUnauthorized();
         // Authentication precedes UUID binding, even for a missing person.
-        $this->getJson('/api/clingen/people/unknown')->assertUnauthorized();
+        $this->getJson('/api/clingen/v1/people/unknown')->assertUnauthorized();
     }
 
     public function test_invalid_client_token_is_rejected(): void
@@ -95,7 +95,7 @@ class ClingenPersonEndpointTest extends TestCase
 
     public function test_unknown_or_deleted_person_returns_404(): void
     {
-        $this->withToken($this->token())->getJson('/api/clingen/people/00000000-0000-4000-8000-000000000000')
+        $this->withToken($this->token())->getJson('/api/clingen/v1/people/00000000-0000-4000-8000-000000000000')
             ->assertNotFound();
 
         DB::table('people')->where('id', 1)->update(['deleted_at' => '2026-01-01']);
@@ -183,6 +183,6 @@ class ClingenPersonEndpointTest extends TestCase
 
     private function endpoint(): string
     {
-        return '/api/clingen/people/'.self::PERSON_UUID;
+        return '/api/clingen/v1/people/'.self::PERSON_UUID;
     }
 }

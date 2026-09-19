@@ -26,7 +26,7 @@ class ClingenPersonResource extends JsonResource
                     'type' => $membership->group->type?->name,
                     'affiliation_id' => $membership->group->expertPanel?->affiliation_id,
                 ],
-                'roles' => $membership->roles->pluck('display_name')->values(),
+                'roles' => $membership->roles->pluck('name')->values(),
             ])->values(),
         ];
     }
