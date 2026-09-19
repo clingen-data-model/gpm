@@ -154,8 +154,8 @@ export default {
         async updateClerkAccount() {
           if (!this.clerkLookupResult?.clerk_user_id) return
 
-          const message = this.clerkLookupResult.will_update_person_uuid
-            ? `This will update this GPM person's UUID to ${this.clerkLookupResult.external_id} and link to Clerk account ${this.clerkLookupResult.clerk_user_id}. Continue?`
+          const message = this.clerkLookupResult.will_overwrite_clerk_external_id
+            ? `This will link this person to Clerk account ${this.clerkLookupResult.clerk_user_id} and replace that account's external ID (${this.clerkLookupResult.external_id}) with this GPM person's UUID (${this.person.uuid}). Continue?`
             : `This will link this person to Clerk account ${this.clerkLookupResult.clerk_user_id}. Continue?`
 
           if (!window.confirm(message)) return
@@ -340,8 +340,9 @@ export default {
               {{ clerkLookupResult.linked_person_name }}.
             </static-alert>
 
-            <static-alert v-if="clerkLookupResult.will_update_person_uuid">
-              This Clerk account already has an external ID. Linking it will update this GPM person's UUID to match Clerk.
+            <static-alert v-if="clerkLookupResult.will_overwrite_clerk_external_id">
+              This Clerk account already has an external ID ({{ clerkLookupResult.external_id }}). GPM owns the
+              UUID, so linking will overwrite it with this person's UUID ({{ person.uuid }}).
             </static-alert>
 
             <button

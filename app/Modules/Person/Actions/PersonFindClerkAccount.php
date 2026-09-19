@@ -68,7 +68,7 @@ class PersonFindClerkAccount
             'external_id_person_uuid' => $externalIdPerson?->uuid,
             'external_id_person_name' => $externalIdPerson?->name,
 
-            'will_update_person_uuid' => $externalId && $externalId !== $person->uuid,
+            'will_overwrite_clerk_external_id' => $externalId && $externalId !== $person->uuid,
         ];
     }
 }
