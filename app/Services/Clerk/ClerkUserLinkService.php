@@ -192,7 +192,7 @@ class ClerkUserLinkService
         $this->setExternalId($clerkUserId, $person->uuid);
         $this->addApplication($clerkUserId, 'GPM');
 
-        DB::transaction(function () use ($person, $clerkUserId, $resolvedPersonUuid) {
+        DB::transaction(function () use ($person, $clerkUserId) {
             $person->forceFill([
                 'clerk_user_id' => $clerkUserId,
             ])->save();
