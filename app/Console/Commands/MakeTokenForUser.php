@@ -13,14 +13,14 @@ class MakeTokenForUser extends Command implements PromptsForMissingInput
      *
      * @var string
      */
-    protected $signature = 'make:user-token {email : email of user}';
+    protected $signature = 'make:user-token {email : email of user} {--expires-days=30 : Lifetime in days (0 = never)}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Create a sanctum API token for a user';
+    protected $description = 'Create a Sanctum API token for a user, e.g. for local API testing (machines use OAuth clients)';
 
     /**
      * Execute the console command.
@@ -28,7 +28,15 @@ class MakeTokenForUser extends Command implements PromptsForMissingInput
     public function handle()
     {
         $user = User::findByEmail($this->argument('email'));
-        $token = $user->createToken('api-token');
+        if (! $user) {
+            $this->error('No user with that email.');
+
+            return self::FAILURE;
+        }
+        $days = (int) $this->option('expires-days');
+        $token = $user->createToken('api-token', ['*'], $days > 0 ? now()->addDays($days) : null);
         $this->line('Token created for user '.$user->name.' has value '.$token->plainTextToken);
+
+        return self::SUCCESS;
     }
 }
