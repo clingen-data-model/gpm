@@ -23,6 +23,8 @@
     <env name="LOG_LEVEL" value="error"/>
     <env name="DX_ENABLE_PUSH" value="false"/>
     <env name="SANCTUM_STATEFUL_DOMAINS" value="*"/>
+    <env name="IDP_DRIVER" value="fake"/>
+    <env name="IDP_FAKE_STORE" value=""/>
   </php>
   <source>
     <include>

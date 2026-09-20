@@ -1,0 +1,37 @@
+<?php
+
+namespace App\Services\Idp\Contracts;
+
+use App\Services\Idp\IdpUser;
+use App\Services\Idp\Exceptions\IdpException;
+
+/**
+ * Server-to-server access to the identity provider's user directory.
+ *
+ * User attributes are provider-neutral: email, first_name, last_name,
+ * external_id, password (plaintext), password_digest + password_hasher,
+ * created_at (RFC3339). Implementations map them to the provider's API.
+ */
+interface IdpClient
+{
+    public function getUser(string $id): ?IdpUser;
+
+    public function findUserByEmail(string $email): ?IdpUser;
+
+    public function findUserByExternalId(string $externalId): ?IdpUser;
+
+    /**
+     * @throws IdpException
+     */
+    public function createUser(array $attributes): IdpUser;
+
+    /**
+     * @throws IdpException
+     */
+    public function updateUser(string $id, array $attributes): IdpUser;
+
+    /**
+     * @throws IdpException
+     */
+    public function updatePassword(string $id, string $password): void;
+}
