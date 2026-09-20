@@ -22,7 +22,7 @@ class RecordEvent
     {
         $this->logger = activity($event->getLog());
 
-        $this->addCauser();
+        $this->addCauser($event);
         $this->addSubject($event);
         $this->addProperties($event);
         $this->addEventUuid($event);
@@ -57,9 +57,15 @@ class RecordEvent
         });
     }
 
-    private function addCauser()
+    /**
+     * Events may name their own causer (e.g. impersonation, where the
+     * authenticated user has already been swapped); otherwise it is the
+     * currently authenticated user.
+     */
+    private function addCauser($event)
     {
-        $causer = User::find(Auth::id());
+        $causer = method_exists($event, 'getCauser') ? $event->getCauser() : null;
+        $causer = $causer ?? User::find(Auth::id());
         if ($causer) {
             $this->logger->causedBy($causer);
         }

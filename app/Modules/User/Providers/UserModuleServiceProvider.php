@@ -10,11 +10,16 @@ use Illuminate\Support\ServiceProvider;
 use Lorisleiva\Actions\Facades\Actions;
 use Illuminate\Auth\Events\Authenticated;
 use App\Modules\Foundation\ModuleServiceProvider;
+use Lab404\Impersonate\Events\TakeImpersonation;
+use Lab404\Impersonate\Events\LeaveImpersonation;
+use App\Modules\User\Listeners\RecordImpersonationLeft;
+use App\Modules\User\Listeners\RecordImpersonationTaken;
 
 class UserModuleServiceProvider extends ModuleServiceProvider
 {
     protected $listeners = [
-        // EventClass::class => [ListenerClass::class]
+        TakeImpersonation::class => [RecordImpersonationTaken::class],
+        LeaveImpersonation::class => [RecordImpersonationLeft::class],
     ];
 
     /**
