@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Route;
 use App\Actions\ReportMultipleEpsMake;
 use App\Actions\ReportInstitutionsMake;
 use App\Http\Controllers\ViewController;
+use App\Actions\Auth\IdpSessionLogin;
 use App\Actions\ReportVcepApplicationMake;
 use App\Actions\ReportPublicationsMake;
 use App\Actions\ReportScvcepApplicationMake;
@@ -64,5 +65,12 @@ Route::group(['prefix' => '/api/report', 'middleware' => ['auth:sanctum']], func
 
 
 });
+
+// IdP sign-in: the SPA exchanges an identity-provider session token for a
+// Laravel session. Lives in the web group (like Fortify's login) so the
+// session and CSRF protection apply.
+Route::post('/api/idp/session-login', IdpSessionLogin::class)
+    ->middleware('throttle:10,1')
+    ->name('idp.session-login');
 
 Route::impersonate();

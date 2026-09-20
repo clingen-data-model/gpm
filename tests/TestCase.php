@@ -160,6 +160,33 @@ abstract class TestCase extends BaseTestCase
         return $user;
     }
 
+    /**
+     * Establish a real session for $user through the IdP exchange endpoint,
+     * using the fake IdP driver. Links the user to a fake identity if needed.
+     */
+    protected function loginViaIdp(User $user): User
+    {
+        $store = app(\App\Services\Idp\Fake\FakeIdpStore::class);
+        $idpId = $user->idp_id ?? $store->nextId();
+        if (! $store->find($idpId)) {
+            $store->put([
+                'id' => $idpId,
+                'email' => $user->email,
+                'first_name' => $user->person?->first_name,
+                'last_name' => $user->person?->last_name,
+                'external_id' => $user->person?->uuid,
+            ]);
+        }
+        if (! $user->isLinkedToIdp()) {
+            $user->forceFill(['idp_provider' => config('idp.provider_name'), 'idp_id' => $idpId])->save();
+        }
+
+        $token = app(\App\Services\Idp\Fake\FakeTokenIssuer::class)->issue($idpId);
+        $this->postJson(route('idp.session-login'), [], ['Authorization' => 'Bearer '.$token])->assertOk();
+
+        return $user;
+    }
+
 
     protected function setupPermission(String|array $permissions, $scope = 'system')
     {
