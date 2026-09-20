@@ -5,8 +5,21 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
+import { getIdpConfig, registerClerkIdpModule } from '@/idp'
 
 const app = createApp(App)
+
+// External identity provider. Clerk is only loaded when it is the configured
+// driver, so the fake and null drivers stay fully offline.
+async function installIdp(app) {
+    const idpConfig = getIdpConfig()
+    if (idpConfig.driver !== 'clerk') {
+        return
+    }
+    const [{ clerkPlugin }, clerkIdp] = await Promise.all([import('@clerk/vue'), import('@/idp/clerk_idp')])
+    registerClerkIdpModule(clerkIdp)
+    app.use(clerkPlugin, { publishableKey: idpConfig.clerk?.publishableKey || '' })
+}
 
 const registerComponents = (modules) => {
     for (const path in modules) {
@@ -62,7 +75,7 @@ import "./assets/styles/popper-theme.css"
 app.config.globalProperties.append = (path, pathToAppend) =>
   path + (path.endsWith('/') ? '' : '/') + pathToAppend
 
-app.use(store)
+installIdp(app).then(() => app.use(store)
     .mixin({
         methods: {
             userCan,
@@ -98,4 +111,4 @@ app.use(store)
         }
     })
     .use(router)
-    .mount('#app')
+    .mount('#app'))
