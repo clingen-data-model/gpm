@@ -7,6 +7,7 @@ use Tests\TestCase;
 use App\Modules\User\Models\User;
 use App\Modules\Person\Models\Invite;
 use App\Modules\Person\Models\Person;
+use App\Services\Idp\Fake\FakeIdpClient;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\Test;
@@ -140,5 +141,36 @@ class RedeemInviteTest extends TestCase
             'properties->user->id' => $user->id,
             'properties->user->email' => $this->validData['email'],
         ]);
+    }
+
+    #[Test]
+    public function mirrors_the_new_user_to_the_identity_provider()
+    {
+        $this->json('PUT', static::URL.'/'.$this->invite->code, $this->validData)
+            ->assertStatus(200);
+
+        $user = User::where('email', $this->validData['email'])->firstOrFail();
+        $this->assertSame('clerk', $user->idp_provider);
+        $this->assertNotNull($user->idp_id);
+
+        $client = app(FakeIdpClient::class);
+        $idpUser = $client->getUser($user->idp_id);
+        $this->assertSame($this->invite->person->uuid, $idpUser->externalId);
+        $this->assertSame($this->validData['email'], $idpUser->email);
+        $this->assertSame($this->invite->person->first_name, $idpUser->firstName);
+        $this->assertTrue($client->passwordMatches($user->idp_id, $this->validData['password']));
+    }
+
+    #[Test]
+    public function still_creates_the_user_when_the_identity_provider_fails()
+    {
+        app(FakeIdpClient::class)->failNext();
+
+        $this->json('PUT', static::URL.'/'.$this->invite->code, $this->validData)
+            ->assertStatus(200);
+
+        $user = User::where('email', $this->validData['email'])->firstOrFail();
+        $this->assertNull($user->idp_id);
+        $this->assertSame($user->id, $this->invite->person->fresh()->user_id);
     }
 }

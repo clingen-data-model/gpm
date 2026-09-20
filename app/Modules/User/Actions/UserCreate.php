@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Event;
 use App\Modules\User\Events\UserCreated;
+use App\Modules\Person\Models\Person;
 use Illuminate\Support\Facades\Validator;
 use Lorisleiva\Actions\Concerns\AsAction;
 
@@ -32,20 +33,28 @@ class UserCreate
     }
 
     /**
-     * Creates a user entity with name, email, and password.
+     * Creates a user entity with name, email, and password, optionally
+     * linked to a Person, and mirrors it to the identity provider.
      * Password value is hashed before storage. If password is null, a random password is created and hashed.
      *
      * @param string $name User's name
      * @param string $email Email for the user account
      * @param string|null $password Password (or null).
-     *
-     * @return void
+     * @param Person|null $person Person this login belongs to.
      */
-    public function handle(string $name, string $email, ?string $password = null): User
+    public function handle(string $name, string $email, ?string $password = null, ?Person $person = null): User
     {
         $pass = $password ?? uniqid();
         $user = User::create(['name' => $name, 'email' => $email, 'password' => Hash::make($pass)]);
+
+        if ($person) {
+            $person->user()->associate($user)->save();
+            $user->setRelation('person', $person);
+        }
+
         Event::dispatch(new UserCreated(user: $user));
+
+        UserIdpMirror::run($user, $password);
 
         return $user;
     }
