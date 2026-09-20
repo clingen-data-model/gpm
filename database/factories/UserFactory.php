@@ -30,4 +30,15 @@ class UserFactory extends Factory
             'remember_token' => Str::random(10),
         ];
     }
+
+    /**
+     * A user already linked to an identity at the external IdP.
+     */
+    public function linkedToIdp(?string $idpId = null, string $provider = 'clerk'): static
+    {
+        return $this->state(fn () => [
+            'idp_provider' => $provider,
+            'idp_id' => $idpId ?? 'user_'.Str::random(27),
+        ]);
+    }
 }

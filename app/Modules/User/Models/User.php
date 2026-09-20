@@ -37,6 +37,8 @@ class User extends Authenticatable implements CanResetPassword, HasLogEntries
         'name',
         'email',
         'password',
+        'idp_provider',
+        'idp_id',
     ];
 
     /**
@@ -109,6 +111,15 @@ class User extends Authenticatable implements CanResetPassword, HasLogEntries
     public function isLinkedToPerson(): bool
     {
         return (bool)$this->person;
+    }
+
+    /**
+     * Whether this user has been linked to an identity at an external
+     * identity provider (see users.idp_provider / users.idp_id).
+     */
+    public function isLinkedToIdp(): bool
+    {
+        return $this->idp_provider !== null && $this->idp_id !== null;
     }
 
     /**
