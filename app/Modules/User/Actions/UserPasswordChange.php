@@ -35,6 +35,8 @@ class UserPasswordChange
             'password' => Hash::make($newPassword)
         ]);
 
+        UserIdpPasswordSync::run($user, $newPassword);
+
         return $user;
     }
 

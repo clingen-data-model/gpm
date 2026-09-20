@@ -4,6 +4,7 @@ namespace App\Actions\Fortify;
 
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use App\Modules\User\Actions\UserIdpPasswordSync;
 use Laravel\Fortify\Contracts\ResetsUserPasswords;
 
 class ResetUserPassword implements ResetsUserPasswords
@@ -26,5 +27,7 @@ class ResetUserPassword implements ResetsUserPasswords
         $user->forceFill([
             'password' => Hash::make($input['password']),
         ])->save();
+
+        UserIdpPasswordSync::run($user, $input['password']);
     }
 }

@@ -4,6 +4,7 @@ namespace App\Actions\Fortify;
 
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use App\Modules\User\Actions\UserIdpPasswordSync;
 use Laravel\Fortify\Contracts\UpdatesUserPasswords;
 
 class UpdateUserPassword implements UpdatesUserPasswords
@@ -31,5 +32,7 @@ class UpdateUserPassword implements UpdatesUserPasswords
         $user->forceFill([
             'password' => Hash::make($input['password']),
         ])->save();
+
+        UserIdpPasswordSync::run($user, $input['password']);
     }
 }
