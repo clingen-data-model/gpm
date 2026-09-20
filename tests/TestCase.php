@@ -25,11 +25,16 @@ abstract class TestCase extends BaseTestCase
     use CreatesApplication;
     use WithFaker;
     use RefreshDatabase;
+
+    /** One RSA key pair per test process for Passport (see usePassportTestKeys). */
+    private static ?array $passportKeys = null;
+
     // Helper methods
 
     public function setup():void
     {
         parent::setup();
+        $this->usePassportTestKeys();
         $this->seed(GroupTypeSeeder::class);
         TestResponse::macro('assertValidationErrors', function($validationErrrors) {
             $this->assertStatus(422)
@@ -158,6 +163,24 @@ abstract class TestCase extends BaseTestCase
         $user = $this->setupUserWithPerson($userData, $permissions, $personData);
         Sanctum::actingAs($user);
         return $user;
+    }
+
+    /**
+     * Point Passport at a throwaway RSA key pair so tests can issue and verify
+     * real client-credentials tokens without keys on disk.
+     */
+    protected function usePassportTestKeys(): void
+    {
+        if (self::$passportKeys === null) {
+            $resource = openssl_pkey_new(['private_key_bits' => 2048, 'private_key_type' => OPENSSL_KEYTYPE_RSA]);
+            openssl_pkey_export($resource, $private);
+            self::$passportKeys = ['private' => $private, 'public' => openssl_pkey_get_details($resource)['key']];
+        }
+
+        config([
+            'passport.private_key' => self::$passportKeys['private'],
+            'passport.public_key' => self::$passportKeys['public'],
+        ]);
     }
 
     /**

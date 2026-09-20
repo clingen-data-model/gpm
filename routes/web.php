@@ -43,7 +43,9 @@ Route::get('/storage/profile-photos/{filename}', function ($filename) {
     return redirect('/profile-photos/'.$filename, 301);
 });
 
-Route::group(['prefix' => '/api/report', 'middleware' => ['auth:sanctum']], function () {
+// Reports are the first endpoints open to machine callers: a signed-in
+// session passes, otherwise an OAuth client token with reports:read is required.
+Route::group(['prefix' => '/api/report', 'middleware' => ['auth.session-or-client:reports:read']], function () {
     Route::get('/basic-summary', ReportSummaryMake::class);
     Route::get('/vcep-application-summary', ReportVcepApplicationMake::class);
     Route::get('/scvcep-application-summary', ReportScvcepApplicationMake::class);
