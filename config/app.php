@@ -59,6 +59,7 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\FortifyServiceProvider::class,
         App\Providers\IdpServiceProvider::class,
+        App\Providers\OAuthServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         App\Providers\ApiServiceProvider::class,
         /**

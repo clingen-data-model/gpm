@@ -17,6 +17,7 @@
         "lab404/laravel-impersonate": "^1.7",
         "laravel/fortify": "^1.7",
         "laravel/framework": "^13.0",
+        "laravel/passport": "^13.8",
         "laravel/sanctum": "^4.0",
         "laravel/slack-notification-channel": "^3.4",
         "laravel/tinker": "^3.0",
