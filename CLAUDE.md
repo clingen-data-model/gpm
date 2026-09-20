@@ -53,6 +53,8 @@ docker compose exec -T app php artisan config:export   # writes resources/js/con
 docker compose exec -T app php artisan make:action Name --as-controller   # also --as-command, --as-listener=
 docker compose exec -T app php artisan make:module ModuleName
 docker compose exec -T app php artisan make:user-token user@example.com  # sanctum token for a human user (API testing)
+docker compose exec -T app php artisan passport:keys                      # once per dev environment (OAuth signing keys)
+docker compose exec -T app php artisan passport:client --client --name=X  # OAuth client for a machine caller
 docker compose exec -T app php artisan idp:import-users --all --dry-run  # import local users into the IdP
 ```
 
@@ -98,8 +100,10 @@ a matching event fires later; see README for the pattern.
 bridge**: the SPA signs in with the IdP and posts the token once to `POST /api/idp/session-login`, which
 verifies it and starts a normal session. Contracts and drivers (`clerk`, `fake`, `null`, chosen by
 `IDP_DRIVER`) live in `app/Services/Idp`; the link is `users.idp_provider` + `users.idp_id`. Tests and
-offline dev use the `fake` driver (`/dev/idp/*` endpoints, login-page picker). See
-`documentation/idp-clerk.md`.
+offline dev use the `fake` driver (`/dev/idp/*` endpoints, login-page picker). Machine callers use
+OAuth client credentials (Passport, `POST /oauth/token`, 10-minute scoped tokens); routes open to them carry
+`auth.session-or-client:<scope>`, which also passes a normal session. Never run `passport:install` here
+(see `documentation/m2m-oauth-clients.md`). See `documentation/idp-clerk.md` for the IdP design.
 Roles/permissions are spatie/laravel-permission v8 with a group-scoped extension in
 `app/Models/Traits/HasRoles.php` (permissions can be scoped to a group). Permission checks in the SPA use
 `resources/js/auth_utils.js`. `Person` (a ClinGen member, soft-deletable) and `User` (a login, hard-deleted)

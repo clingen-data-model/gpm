@@ -187,6 +187,15 @@ through:
 Production sends from your own verified domain, so delivery should not be the
 problem there; sign-in tickets still work if it is.
 
+## Machine-to-machine access (OAuth clients)
+
+Other systems authenticate with OAuth 2.0 client credentials (Laravel
+Passport): a client id and secret are exchanged at `POST /oauth/token` for a
+10-minute bearer token carrying scopes. Routes open to machines carry
+`auth.session-or-client:<scope>`, which passes a signed-in session and
+otherwise requires a client token with the scope. Full details, caller guide
+and key handling: `documentation/m2m-oauth-clients.md`.
+
 ## Impersonation
 
 Unchanged mechanism (lab404/laravel-impersonate session swap via

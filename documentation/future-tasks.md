@@ -16,3 +16,9 @@ Small follow-up items intentionally deferred during other work.
   hide the local password form for linked users once the cutover has settled, or add a Clerk webhook
   endpoint (`user.updated`/`user.deleted`, svix-signed) and sync from it. Name/email are already
   refreshed from Clerk at each session login.
+
+* **Extend OAuth scopes beyond reports** (2026-09). Only `/api/report/*` carries the
+  `auth.session-or-client` middleware. When other systems need machine access (e.g. people or groups read
+  endpoints), add the scope to `App\Providers\OAuthServiceProvider::SCOPES` and the middleware to those
+  routes. If a machine-callable route ever writes, add an activity-log causer for OAuth clients first:
+  client-credentials tokens carry no user, so `RecordEvent` records none today.

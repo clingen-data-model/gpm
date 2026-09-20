@@ -18,7 +18,7 @@ downstream (permissions, impersonation, downloads, tests) had to change.
 | New users | invite → local account | invite → local account **and** a mirrored Clerk identity |
 | Password changes | local only | pushed to Clerk for linked users |
 | Name/email changes in Clerk | n/a | refreshed into GPM at each Clerk sign-in |
-| Machine access | ad-hoc `make:user-token` | flagged service accounts with scoped, expiring Sanctum tokens; `abilities:` middleware on `/api/report/*` |
+| Machine access | ad-hoc `make:user-token` | OAuth 2.0 client credentials (Passport): 10-minute scoped tokens from `POST /oauth/token`; `auth.session-or-client:<scope>` middleware on `/api/report/*` |
 | Impersonation | lab404 session swap, unlogged | same mechanism, take/leave written to the activity log with the admin as causer |
 | Local dev / CI | needs nothing | `IDP_DRIVER=fake`: offline stand-in with a login-page picker, dev endpoints, in-memory store for PHPUnit |
 | Stack cleanup | Passport leftovers, unused 2FA, duplicate reset route, ~20 unguarded routes | removed / fixed / guarded |
@@ -40,7 +40,7 @@ php artisan idp:import-users --all --throttle=200
 php artisan idp:import-users 123 jane@example.com  # specific ids or emails
 ```
 
-For each **unlinked, non-service-account** user, in order:
+For each **unlinked** user, in order:
 
 1. **Link if Clerk already has the person.** Look up by `external_id` equal to
    the user's `people.uuid`, then by email. Other ClinGen systems may share the
@@ -145,10 +145,10 @@ docker-compose changes are needed.
 ## 4. Cutover plan
 
 1. **Deploy the branch with `IDP_DRIVER=null`.** Migrations run from the
-   entrypoint (drop oauth tables, drop 2FA columns, add IdP columns). The login
-   page is unchanged in this mode. Announce that reports and reference
-   endpoints now require a session (external scripts should move to a service
-   account, §5).
+   entrypoint (drop old oauth tables, drop 2FA columns, add IdP columns, create
+   Passport tables). The login page is unchanged in this mode. Announce that
+   reports and reference endpoints now require a session (external scripts
+   should move to an OAuth client, §5).
 2. **Staging / dev instance:** set `IDP_DRIVER=clerk` and the Clerk values.
    - `idp:import-users --all --dry-run`, review the plan, then `--all`.
    - Sign in through Clerk with an imported account using its old password.
@@ -156,27 +156,28 @@ docker-compose changes are needed.
    - Redeem a fresh invite, confirm the Clerk identity appears with the person
      uuid as `external_id`.
    - Impersonate and leave, check the two activity-log entries.
-   - Issue a service-account token and call `/api/report/basic-summary`.
+   - Create an OAuth client, fetch a token from `/oauth/token`, call `/api/report/basic-summary`.
 3. **Production:** flip `IDP_DRIVER=clerk`, run the dry-run, then the import
    off-hours with `--throttle=200`, watch the summary, re-run once for
    stragglers.
 4. **Rollback:** `IDP_DRIVER=null`. Sessions already established keep working;
    the exchange endpoint returns 404; mirroring and sync become no-ops.
 
-## 5. Service accounts for machine callers
+## 5. OAuth clients for machine callers
 
 ```
-php artisan service-account:create "GeneTracker sync" --token --abilities=reports:read --expires-days=365
-php artisan service-account:token svc+genetracker-sync@gpm.local --abilities=reports:read
-php artisan service-account:revoke svc+genetracker-sync@gpm.local
+php artisan passport:client --client --name="GeneTracker"   # prints id + secret once
+php artisan oauth-client:list
+php artisan oauth-client:revoke <client-id>
 ```
 
-Callers send `Authorization: Bearer <token>`. Only routes carrying
-`abilities:<ability>` next to `auth:sanctum` accept them for that ability
-(today: `/api/report/*` with `reports:read`); add abilities in
-`App\Modules\User\TokenAbilities` and the middleware on new routes as needed.
-Service accounts cannot log in with a password, exchange a Clerk token, or
-impersonate / be impersonated.
+Callers POST `grant_type=client_credentials`, `client_id`, `client_secret`
+and `scope` to `/oauth/token` and send the returned 10-minute token as
+`Authorization: Bearer`. Only routes carrying `auth.session-or-client:<scope>`
+accept client tokens (today `/api/report/*` with `reports:read`); scopes are
+declared in `App\Providers\OAuthServiceProvider`. Deployed environments need
+the `PASSPORT_PRIVATE_KEY`/`PASSPORT_PUBLIC_KEY` secrets; local dev runs
+`php artisan passport:keys`. See `documentation/m2m-oauth-clients.md`.
 
 ## 6. Known gaps
 
