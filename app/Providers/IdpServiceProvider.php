@@ -5,10 +5,12 @@ namespace App\Providers;
 use InvalidArgumentException;
 use Illuminate\Support\ServiceProvider;
 use App\Services\Idp\Fake\FakeIdpStore;
+use App\Services\Idp\Clerk\ClerkClient;
 use App\Services\Idp\Fake\FakeIdpClient;
 use App\Services\Idp\Fake\FakeTokenIssuer;
 use App\Services\Idp\Contracts\IdpClient;
 use App\Services\Idp\Fake\FakeTokenVerifier;
+use App\Services\Idp\Clerk\ClerkTokenVerifier;
 use App\Services\Idp\NullDriver\NullIdpClient;
 use App\Services\Idp\Contracts\TokenVerifier;
 use App\Services\Idp\NullDriver\NullTokenVerifier;
@@ -48,6 +50,7 @@ class IdpServiceProvider extends ServiceProvider
     protected function makeTokenVerifier($app): TokenVerifier
     {
         return match (self::driver()) {
+            'clerk' => ClerkTokenVerifier::fromConfig(),
             'fake' => $app->make(FakeTokenVerifier::class),
             'null' => new NullTokenVerifier(),
             default => throw new InvalidArgumentException('Unsupported IdP driver: '.self::driver()),
@@ -57,6 +60,7 @@ class IdpServiceProvider extends ServiceProvider
     protected function makeClient($app): IdpClient
     {
         return match (self::driver()) {
+            'clerk' => ClerkClient::fromConfig(),
             'fake' => $app->make(FakeIdpClient::class),
             'null' => new NullIdpClient(),
             default => throw new InvalidArgumentException('Unsupported IdP driver: '.self::driver()),
