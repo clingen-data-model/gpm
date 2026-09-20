@@ -45,7 +45,6 @@ use App\Actions\PublicationLookup;
 
 Route::group(['middleware' => ['guest']], function () {
     Route::post('/send-reset-password-link', [AuthController::class, 'sendResetPasswordLink']);
-    Route::post('/reset-password', [AuthController::class, 'resetPassword']);
 });
 
 Route::get('/document-types', function () {
