@@ -68,10 +68,6 @@ export default {
       <router-link class="text-blue-500 underline" :to="{name: 'reset-password'}">
         Forgot your password?
       </router-link>
-      <br>
-      <router-link class="text-blue-500 underline" :to="{name: 'RedeemInvite'}">
-        Redeem your invite
-      </router-link>
     </div>
 
     <!-- Left-align the Log In button -->

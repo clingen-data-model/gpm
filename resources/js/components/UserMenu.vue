@@ -2,12 +2,16 @@
 import {mapGetters} from 'vuex'
 import ImpersonateControl from '@/components/ImpersonateControl.vue'
 import AnnouncementControl from '@/components/alerts/AnnouncementControl.vue'
+import { useIdp } from '@/idp'
 
 export default {
     name: 'UserMenu',
     components: {
         ImpersonateControl,
         AnnouncementControl
+    },
+    setup() {
+        return { idp: useIdp() }
     },
     data() {
         return {
@@ -30,9 +34,12 @@ export default {
                 this.$refs.dropdownMenu.focus()
             }
         },
-        logout () {
+        async logout () {
             try{
-                this.$store.dispatch('logout')
+                await this.$store.dispatch('logout')
+                // Also end the identity-provider session, otherwise the login
+                // page would immediately sign the user back in.
+                await this.idp.signOut()
             } catch (error) {
                 // eslint-disable-next-line no-alert
                 alert(error)

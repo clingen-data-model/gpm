@@ -112,6 +112,20 @@ const store = createStore({
                     store.dispatch('getCurrentUser', true);
                 });
         },
+        /**
+         * Exchange an identity-provider session token for a GPM session.
+         * The exchange lives in the web middleware group, so the CSRF cookie
+         * is needed just as for the password login.
+         */
+        async idpSessionLogin({commit, dispatch}, token) {
+            await axios.get('/sanctum/csrf-cookie')
+            await axios.post('/api/idp/session-login', {}, {
+                headers: { Authorization: `Bearer ${token}` },
+                skipErrorAlert: true,
+            })
+            commit('setAuthenticated', true)
+            await dispatch('forceGetCurrentUser')
+        },
         async logout({commit}) {
             try {
                 await axios.post('/api/logout')
@@ -221,6 +235,12 @@ axios.interceptors.response.use(
             case 401:
                 store.commit('setAuthenticated', false)
                 return Promise.reject(error);
+        }
+        // Callers that handle their own failures (e.g. the IdP exchange) opt out of the global alerts.
+        if (error.config?.skipErrorAlert) {
+            return Promise.reject(error);
+        }
+        switch (error.response.status) {
             case 403:
                 if (typeof error.response.data === 'string' && error.response.data.includes('Reference this support identifier')) {
                     reportClientsideEvent(error)
