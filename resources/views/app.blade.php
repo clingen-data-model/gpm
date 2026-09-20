@@ -17,6 +17,7 @@
         </strong>
     </noscript>
     <div id="app" v-cloak></div>
+    <script>window.__GPM_IDP__ = {{ Illuminate\Support\Js::from($idp ?? ['driver' => 'null', 'clerk' => null]) }};</script>
     @vite(['resources/js/app.js'])
 </body>
 
