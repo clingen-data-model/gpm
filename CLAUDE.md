@@ -52,7 +52,8 @@ docker compose exec -T app php artisan config:export   # writes resources/js/con
 # Scaffolding
 docker compose exec -T app php artisan make:action Name --as-controller   # also --as-command, --as-listener=
 docker compose exec -T app php artisan make:module ModuleName
-docker compose exec -T app php artisan make:user-token user@example.com  # sanctum token for API testing
+docker compose exec -T app php artisan make:user-token user@example.com  # sanctum token for a human user (API testing)
+docker compose exec -T app php artisan idp:import-users --all --dry-run  # import local users into the IdP
 ```
 
 Notes on tests: `tests/TestCase.php` seeds `GroupTypeSeeder` for every test and adds an
@@ -92,7 +93,13 @@ event is the mechanism that records history and triggers notifications, so new m
 a matching event fires later; see README for the pattern.
 
 **Auth.** Sanctum SPA cookie auth (`auth:sanctum` on API routes, `EnsureFrontendRequestsAreStateful` in the
-`api` middleware group), Fortify for login/password flows, `lab404/laravel-impersonate` for impersonation.
+`api` middleware group), Fortify for local login/password flows, `lab404/laravel-impersonate` for impersonation
+(take/leave are activity-logged). An external identity provider (Clerk) is supported through a **session
+bridge**: the SPA signs in with the IdP and posts the token once to `POST /api/idp/session-login`, which
+verifies it and starts a normal session. Contracts and drivers (`clerk`, `fake`, `null`, chosen by
+`IDP_DRIVER`) live in `app/Services/Idp`; the link is `users.idp_provider` + `users.idp_id`. Tests and
+offline dev use the `fake` driver (`/dev/idp/*` endpoints, login-page picker). See
+`documentation/idp-clerk.md`.
 Roles/permissions are spatie/laravel-permission v8 with a group-scoped extension in
 `app/Models/Traits/HasRoles.php` (permissions can be scoped to a group). Permission checks in the SPA use
 `resources/js/auth_utils.js`. `Person` (a ClinGen member, soft-deletable) and `User` (a login, hard-deleted)
@@ -122,6 +129,8 @@ lists them under `vue/no-undef-components`.
 
 Backend config (group types, EP types, next actions, feature flags, document types) is exported to
 `resources/js/configs.json` by `php artisan config:export`; keep it in sync when those configs change.
+IdP runtime settings (driver, Clerk publishable key) reach the SPA via `window.__GPM_IDP__`, injected by
+`ViewController`; `resources/js/idp/` wraps `@clerk/vue` and the fake driver behind `useIdp()`.
 
 **`public/build/` is committed.** Run `npm run build` when frontend changes need to ship, and expect large
 generated diffs; keep them in their own commit.

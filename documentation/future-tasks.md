@@ -9,3 +9,10 @@ Small follow-up items intentionally deferred during other work.
   These are currently allow-listed in `config/cache.php`. Note that the allow-list has to name every class reachable from a cached value — the permissions cache also drags in `App\Models\Role`, the `User` model and the `Pivot`/`MorphPivot` instances attached to each permission — and a class left out comes back as `__PHP_Incomplete_Class` with no error, so the omission surfaces as silently missing data. The test suite runs on the `array` cache driver, which does not serialize, so it cannot catch a gap here.
 
   Converting these sites to cache plain arrays instead (and adapting the downstream consumers) would fully align with the hardening's intent and remove the allow-list entries along with that footgun.
+
+* **Password changes made inside Clerk do not reach GPM** (Clerk IdP work, 2026-09). Local password
+  changes are pushed to Clerk, but a password changed through Clerk's own account UI leaves the local
+  hash untouched, so the local password form keeps accepting the old password for linked users. Options:
+  hide the local password form for linked users once the cutover has settled, or add a Clerk webhook
+  endpoint (`user.updated`/`user.deleted`, svix-signed) and sync from it. Name/email are already
+  refreshed from Clerk at each session login.
