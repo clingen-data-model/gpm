@@ -146,7 +146,7 @@ const store = createStore({
                         commit('setAuthenticated', true)
                     })
                     .catch(error => {
-                        if (error.response.status && error.response.status === 401) {
+                        if (error?.response?.status === 401) {
                             commit('setAuthenticated', false)
                         }
                     })
@@ -231,16 +231,29 @@ axios.interceptors.response.use(
     },
     error => {
         store.commit('removeRequest');
-        switch (error.response.status) {
+        const status = error?.response?.status
+        switch (status) {
             case 401:
                 store.commit('setAuthenticated', false)
+                return Promise.reject(error);
+            case 419:
+                // Session or CSRF token expired.
+                store.commit('setAuthenticated', false)
+                if (!error.config?.skipErrorAlert) {
+                    store.commit('pushError', 'Your session has expired. Please sign in again.')
+                }
                 return Promise.reject(error);
         }
         // Callers that handle their own failures (e.g. the IdP exchange) opt out of the global alerts.
         if (error.config?.skipErrorAlert) {
             return Promise.reject(error);
         }
-        switch (error.response.status) {
+        if (status === undefined) {
+            // No response at all: network failure, CORS, or the server is down.
+            store.commit('pushError', 'GPM could not reach the server. Check your connection and try again.')
+            return Promise.reject(error);
+        }
+        switch (status) {
             case 403:
                 if (typeof error.response.data === 'string' && error.response.data.includes('Reference this support identifier')) {
                     reportClientsideEvent(error)
