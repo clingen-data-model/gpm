@@ -45,18 +45,30 @@ use App\Modules\Person\Http\Controllers\Api\CocController;
 use App\Modules\Person\Actions\CocAttest;
 
 Route::group(['prefix' => 'api/people', 'middleware' => ['api'] ], function () {
-    Route::get('/institutions', [InstitutionController::class, 'index']);
-
-    Route::get('/timezones', function (Request $request) {
-        return Institution::select('name', 'abbreviation', 'id')->get();
-    });
-
-    Route::get('/coc', [CocController::class, 'show']);
-    Route::post('/coc/attest', CocAttest::class);
-
     Route::group([
         'middleware' => ['auth:sanctum']
     ], function () {
+        Route::get('/institutions', [InstitutionController::class, 'index']);
+
+        Route::get('/timezones', function (Request $request) {
+            return Institution::select('name', 'abbreviation', 'id')->get();
+        });
+
+        Route::get('/coc', [CocController::class, 'show']);
+        Route::post('/coc/attest', CocAttest::class);
+
+        Route::put('/existing-user/invites/{code}', InviteRedeemForExistingUser::class);
+
+        // Lookups
+        Route::get('/lookups/timezones', [TimezoneController::class, 'index'])
+            ->name('people.timezones.index');
+
+        Route::get('/lookups/{model}', [ApiController::class, 'index'])
+            ->name('people.catchall.index');
+
+        Route::get('/lookups/{model}/{id}', [ApiController::class, 'show'])
+            ->name('people.catchall.show');
+
         Route::get('/', [PeopleController::class, 'index']);
         Route::get('/invites/', [InviteController::class, 'index']);
         Route::put('/merge', PersonMerge::class);
@@ -88,21 +100,10 @@ Route::group(['prefix' => 'api/people', 'middleware' => ['api'] ], function () {
         });
     });
 
+    // Invite redemption happens before the person has an account.
     Route::get('/invites/{code}', InviteValidateCode::class);
     Route::put('/invites/{code}', InviteRedeem::class);
-    Route::put('/existing-user/invites/{code}', InviteRedeemForExistingUser::class);
     Route::put('/invites/{code}/reset', InviteReset::class);
-
-    // Lookups
-    Route::get('/lookups/timezones', [TimezoneController::class, 'index'])
-        ->name('people.timezones.index');
-
-    Route::get('/lookups/{model}', [ApiController::class, 'index'])
-    ->name('people.catchall.index');
-
-    Route::get('/lookups/{model}/{id}', [ApiController::class, 'show'])
-        ->name('people.catchall.show');
-
 });
 
 
@@ -142,7 +143,7 @@ Route::group([
 
 Route::group([
     'prefix' => 'api/countries',
-    // 'middleware' => ['api', 'auth:sanctum']
+    'middleware' => ['api', 'auth:sanctum']
 ], function () {
     Route::get('/', [CountryController::class, 'index']);
 });

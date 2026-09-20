@@ -47,13 +47,13 @@ Route::group(['middleware' => ['guest']], function () {
     Route::post('/send-reset-password-link', [AuthController::class, 'sendResetPasswordLink']);
 });
 
-Route::get('/document-types', function () {
-    return DocumentType::all();
-});
-
 Route::get('/authenticated', [AuthController::class, 'isAuthenticated']);
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
+    Route::get('/document-types', function () {
+        return DocumentType::all();
+    });
+
     Route::get('/system-info', [SystemInfoController::class, 'index']);
     Route::get('/user', function (Request $request) {
         return $request->user();
@@ -99,24 +99,21 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/activity-logs', LogEntrySearch::class);
 
     Route::post('/publications/lookup', PublicationLookup::class);
+
+    Route::get('/cdwgs', [CdwgController::class, 'index']);
+
+    Route::post('/genes/check-genes', [GeneLookupController::class, 'check']);
+    Route::get('/diseases/search', [DiseaseLookupController::class, 'search']);
+    Route::get('/diseases/{mondo_id}', [DiseaseLookupController::class, 'show']);
+
+    Route::get('/genes/search', [GeneLookupController::class, 'search']);
+    Route::get('/genes/{hgnc_id}', [GeneLookupController::class, 'show']);
+    Route::post('/genes/availability', [GeneLookupController::class, 'genesAvailability']);
+    Route::get('/curations', [GeneLookupController::class, 'curations']);
+    Route::post('/curationids', [GeneLookupController::class, 'curationids']);
+    Route::get('/mois', [MoiLookupController::class, 'index']);
 });
 
-Route::get('/cdwgs', [CdwgController::class, 'index']);
-
-Route::post('/genes/check-genes', [GeneLookupController::class, 'check']);
-Route::get('/diseases/search', [DiseaseLookupController::class, 'search']);
-Route::get('/diseases/{mondo_id}', [DiseaseLookupController::class, 'show']);
-
-Route::get('/genes/search', [GeneLookupController::class, 'search']);
-Route::get('/genes/{hgnc_id}', [GeneLookupController::class, 'show']);
-Route::post('/genes/availability', [GeneLookupController::class, 'genesAvailability']);
-Route::get('/curations', [GeneLookupController::class, 'curations']);
-Route::post('/curationids', [GeneLookupController::class, 'curationids']);
-Route::get('/mois', [MoiLookupController::class, 'index']);
-
-Route::get('/curations', [GeneLookupController::class, 'curations']);
-Route::post('/curationids', [GeneLookupController::class, 'curationids']);
-Route::get('/mois', [MoiLookupController::class, 'index']);
-
+// User documentation is public: the help button also renders on the login page.
 Route::get('/docs', [DocumentationController::class, 'index']);
 Route::get('/docs/{slug}', [DocumentationController::class, 'show']);

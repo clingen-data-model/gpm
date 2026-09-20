@@ -6,7 +6,7 @@ use App\Modules\User\Http\Controllers\Api\UserController;
 
 Route::group([
     'prefix' => 'api/users',
-    'middleware' => ['api']
+    'middleware' => ['api', 'auth:sanctum']
 ], function () {
     Route::get('/', [UserController::class, 'index']);
     Route::get('/{user}', [UserController::class, 'show']);

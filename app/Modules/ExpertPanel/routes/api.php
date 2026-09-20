@@ -32,15 +32,19 @@ use App\Modules\ExpertPanel\Actions\FundingAwardUpsert;
 use App\Modules\ExpertPanel\Actions\FundingAwardAgreementUpload;
 use App\Modules\ExpertPanel\Actions\FundingAwardDelete;
 
-Route::get('/next-actions/assignees', [NextActionAssigneeController::class, 'index']);
+Route::group([
+    'prefix' => 'api',
+    'middleware' => ['api', 'auth:sanctum']
+], function () {
+    Route::get('/next-actions/assignees', [NextActionAssigneeController::class, 'index']);
+});
 
 Route::group([
     'prefix' => 'api/applications',
     'middleware' => ['api']
 ], function () {
-    Route::get('/', [ApplicationController::class, 'index']);
-
     Route::group(['middleware' => ['auth:sanctum']], function () {
+        Route::get('/', [ApplicationController::class, 'index']);
         Route::post('/', ExpertPanelCreate::class);
         Route::get('/{app_uuid}', [ApplicationController::class, 'show']);
         Route::put('/{app_uuid}', ExpertPanelUpdateAttributes::class);

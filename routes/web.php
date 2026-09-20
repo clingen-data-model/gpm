@@ -30,19 +30,19 @@ use App\Actions\ReportForeignComponentsMake;
 | contains the "web" middleware group. Now create something great!
 |
 */
-Route::get('/coi-group/{group:uuid}', function (Group $group) { return app(CoiReportMakePdf::class)->handle($group); })->whereUuid('group')->name('coi.pdf');
+Route::get('/coi-group/{group:uuid}', function (Group $group) { return app(CoiReportMakePdf::class)->handle($group); })->whereUuid('group')->middleware('auth:sanctum')->name('coi.pdf');
 Route::get('/funding-sources/logo/{logo_path}', [FundingSourceController::class, 'logo'])->where('logo_path', '^[A-Za-z0-9_-]+\.(png|jpg|jpeg|gif)$')->name('funding.logo');
 
 Route::get('/{any}', [ViewController::class, 'app'])
     ->where('any', '^(?!(api|sanctum|impersonate|dev|documents|downloads|clockwork|profile-photos|storage)).*$');
 
 Route::get('/documents/{uuid?}', [DocumentController::class, 'show'])->middleware('auth:sanctum');
-Route::get('/downloads/groups/{group:uuid}/final-specification/{document:uuid}', [DocumentController::class, 'downloadGroupFinalSpecification'])->name('groups.final-specification.download');
+Route::get('/downloads/groups/{group:uuid}/final-specification/{document:uuid}', [DocumentController::class, 'downloadGroupFinalSpecification'])->middleware('auth:sanctum')->name('groups.final-specification.download');
 Route::get('/storage/profile-photos/{filename}', function ($filename) {
     return redirect('/profile-photos/'.$filename, 301);
 });
 
-Route::group(['prefix' => '/api/report'], function () {
+Route::group(['prefix' => '/api/report', 'middleware' => ['auth:sanctum']], function () {
     Route::get('/basic-summary', ReportSummaryMake::class);
     Route::get('/vcep-application-summary', ReportVcepApplicationMake::class);
     Route::get('/scvcep-application-summary', ReportScvcepApplicationMake::class);

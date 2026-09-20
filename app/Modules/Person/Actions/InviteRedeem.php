@@ -56,7 +56,6 @@ class InviteRedeem
     public function rules(): array
     {
         return [
-            'code' => 'required'|'exists:invites,code',
             'email' => 'required|email|unique:users',
             'password' => 'required|max:255|confirmed',
         ];
