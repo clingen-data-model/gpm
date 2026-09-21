@@ -4,6 +4,7 @@ namespace App\Modules\User\Actions;
 
 use Exception;
 use Illuminate\Console\Command;
+use App\Services\Idp\IdpUser;
 use App\Modules\User\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -41,8 +42,9 @@ class UserCreate
      * @param string $email Email for the user account
      * @param string|null $password Password (or null).
      * @param Person|null $person Person this login belongs to.
+     * @param IdpUser|null $idpUser Existing IdP identity to link instead of mirroring a new one.
      */
-    public function handle(string $name, string $email, ?string $password = null, ?Person $person = null): User
+    public function handle(string $name, string $email, ?string $password = null, ?Person $person = null, ?IdpUser $idpUser = null): User
     {
         $pass = $password ?? uniqid();
         $user = User::create(['name' => $name, 'email' => $email, 'password' => Hash::make($pass)]);
@@ -52,9 +54,15 @@ class UserCreate
             $user->setRelation('person', $person);
         }
 
+        if ($idpUser) {
+            $user->linkIdp($idpUser->id);
+        }
+
         Event::dispatch(new UserCreated(user: $user));
 
-        UserIdpMirror::run($user, $password);
+        if (! $idpUser) {
+            UserIdpMirror::run($user, $password);
+        }
 
         return $user;
     }
