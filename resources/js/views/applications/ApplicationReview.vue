@@ -1,4 +1,7 @@
 <script setup>
+import ScopeOfWorkNameComparison from '@/components/groups/ScopeOfWorkNameComparison.vue'
+
+
 import { computed, inject } from 'vue'
 import {useStore} from 'vuex';
 import {hasPermission} from '@/auth_utils.js'
@@ -52,6 +55,12 @@ const screenTitle = computed(() => {
 </script>
 <template>
   <ScreenTemplate :title="screenTitle" :breadcrumbs="breadcrumbs">
+    <template #header>
+      <div>
+        <h1>{{ screenTitle }}</h1>
+        <ScopeOfWorkNameComparison />
+      </div>
+    </template>
     <ChairApproverControls
       v-if="hasPermission('ep-applications-approve')"
       @deleted="emits('deleted')"

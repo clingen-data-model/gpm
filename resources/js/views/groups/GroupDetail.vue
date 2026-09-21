@@ -1,5 +1,7 @@
 <script>
-import { ref, computed, onMounted, watch } from "vue";
+
+import { ref, computed, onMounted, watch, provide } from "vue";
+import { useScopeOfWorkComparison } from '@/composables/scope_of_work_comparison';
 import { useStore } from "vuex";
 
 import { logEntries, fetchEntries } from "@/adapters/log_entry_repository";
@@ -164,6 +166,19 @@ export default {
     });
 
     const scopeOfWorkStatus = ref(null);
+    const scopeOfWorkComparisonState = useScopeOfWorkComparison(() => {
+      const revision = scopeOfWorkStatus.value?.active_revision;
+      const live = ['draft', 'revisions_requested'].includes(revision?.status);
+      return [
+        group.value.uuid,
+        live ? revision.uuid
+          : revision?.status === 'submitted' ? revision.submission?.id : null,
+        live ? 'live' : 'submitted',
+        // A successful save refreshes status even when the revision UUID is unchanged.
+        live ? scopeOfWorkStatus.value : null,
+      ];
+    });
+    provide('scopeOfWorkComparisonState', scopeOfWorkComparisonState);
 
     watch(() => props.uuid, () => getGroup(), {immediate: true})
 
