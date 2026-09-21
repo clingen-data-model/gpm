@@ -3,6 +3,7 @@ import {mapGetters} from 'vuex'
 import ImpersonateControl from '@/components/ImpersonateControl.vue'
 import AnnouncementControl from '@/components/alerts/AnnouncementControl.vue'
 import { useIdp } from '@/idp'
+import { idpEnabled } from '@/idp/config'
 
 export default {
     name: 'UserMenu',
@@ -11,7 +12,7 @@ export default {
         AnnouncementControl
     },
     setup() {
-        return { idp: useIdp() }
+        return { idp: useIdp(), idpEnabled: idpEnabled() }
     },
     data() {
         return {
@@ -70,6 +71,11 @@ export default {
             <li class="menu-item">
               <router-link :to="{name: 'Dashboard'}" @click="showMenu = false">
                 Dashboard
+              </router-link>
+            </li>
+            <li v-if="idpEnabled && !user.is_impersonating" class="menu-item">
+              <router-link :to="{name: 'IdpAccount'}" @click="menuOpen = false">
+                Sign-in methods
               </router-link>
             </li>
             <li class="menu-item">

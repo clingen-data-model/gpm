@@ -35,6 +35,21 @@ Matches on 2 and 3 are persisted so later logins take path 1. A user already
 linked to a *different* identity is never re-pointed. Unknown identities get
 a 403 with a "not linked" message.
 
+### Managing sign-in methods
+
+`/account/sign-in-methods` ("Sign-in methods" in the user menu, shown only when
+an IdP is configured) renders Clerk's `<UserProfile>`, where a user manages the
+connected Google/GitHub accounts, extra email addresses and password on their
+*identity*. GPM stores none of it and `users.idp_id` does not change when a
+social account is linked, so nothing here needs syncing back.
+
+Most users never need the page: Clerk links an OAuth sign-in to an existing
+identity automatically when the provider returns a **verified** email matching
+it, and imported addresses are admin-verified. The page covers what cannot be
+automatic — linking an account whose email differs from the GPM one (add the
+address here first), or removing a connection. Social sign-in also sidesteps
+Device Trust, which only challenges password sign-ins.
+
 ## Schema
 
 - `users.idp_provider` (e.g. `clerk`) + `users.idp_id`, unique as a pair.
