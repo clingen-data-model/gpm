@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Modules\Group\Actions\GenesAdd;
 use App\Modules\Group\Actions\GenesUpdateTier;
 use App\Modules\Group\Actions\MemberAdd;
+use App\Modules\Group\Actions\MemberCandidatesList;
 use App\Modules\Group\Actions\GeneRemove;
 use App\Modules\Group\Actions\GeneUpdate;
 use App\Modules\Group\Actions\DocumentAdd;
@@ -191,6 +192,7 @@ Route::group([
         Route::group(['prefix' => '/members'], function () {
             Route::get('/', [GroupController::class, 'members']);
             Route::post('/', MemberAdd::class);
+            Route::get('/candidates', MemberCandidatesList::class);
 
             Route::group(['prefix' => '/{member_id}'], function () {
                 Route::delete('/', MemberRemove::class);
