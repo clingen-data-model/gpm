@@ -25,6 +25,19 @@ export const redeemInvite = async (invite, email, password, password_confirmatio
 export const redeemInviteForExistingUser = async (invite) => {
     return api.put(`/api/people/existing-user/invites/${invite.code}`);
 }
+
+/**
+ * Redeem the invite with an existing identity-provider (ClinGen) account.
+ * The endpoint lives in the web middleware group and starts the session,
+ * so the CSRF cookie is fetched first. Callers handle their own errors.
+ */
+export const redeemInviteWithIdp = async (invite, token) => {
+    await api.get('/sanctum/csrf-cookie')
+    return api.put(`/api/people/invites/${invite.code}/idp`, {}, {
+        headers: { Authorization: `Bearer ${token}` },
+        skipErrorAlert: true,
+    })
+}
 export default {
     fetchInvite
 }
