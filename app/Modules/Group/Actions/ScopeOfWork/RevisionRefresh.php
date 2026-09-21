@@ -14,6 +14,15 @@ class RevisionRefresh
 
     public function handle(Group $group, ?User $user = null, ?array $currentSnapshot = null): ?ScopeOfWorkVersion
     {
+        return DB::transaction(function () use ($group, $user, $currentSnapshot) {
+            // Serialize change-row replacement with submit, finalize and partial discard.
+            ScopeOfWorkVersion::forGroup($group)->activeRevision()->lockForUpdate()->get();
+            return $this->refresh($group->fresh(), $user, $currentSnapshot);
+        });
+    }
+
+    private function refresh(Group $group, ?User $user, ?array $currentSnapshot): ?ScopeOfWorkVersion
+    {
         $group->loadMissing('expertPanel');
 
         if (!$group->expertPanel) {

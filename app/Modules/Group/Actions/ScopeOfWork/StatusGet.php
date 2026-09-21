@@ -38,7 +38,7 @@ class StatusGet
 
             'has_active_revision' => (bool) $activeRevision,
             'active_revision' => $activeRevision
-                ? $this->revisionPayload($activeRevision)
+                ? $this->revisionPayload($activeRevision, $group)
                 : null,
         ];
     }
@@ -57,7 +57,7 @@ class StatusGet
         ];
     }
 
-    private function revisionPayload(ScopeOfWorkVersion $revision): array
+    private function revisionPayload(ScopeOfWorkVersion $revision, Group $group): array
     {
         $changes = $revision->changes;
 
@@ -101,7 +101,7 @@ class StatusGet
                     ['entity_label', 'asc'],
                 ])
                 ->values()
-                ->map(fn (ScopeOfWorkChange $change) => $this->changePayload($change))
+                ->map(fn (ScopeOfWorkChange $change) => $this->changePayload($change, $group))
                 ->all(),
 
             'created_at' => optional($revision->created_at)->toISOString(),
@@ -120,10 +120,12 @@ class StatusGet
         ];
     }
 
-    private function changePayload(ScopeOfWorkChange $change): array
+    private function changePayload(ScopeOfWorkChange $change, Group $group): array
     {
         return [
             'id' => $change->id,
+            'can_discard' => \App\Modules\Group\Services\ScopeOfWorkChangeRestorer::canDiscard(
+                auth()->user(), $group, $change),
             'rule_key' => $change->rule_key,
             'area' => $change->area,
             'change_type' => $change->change_type,
