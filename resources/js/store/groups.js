@@ -234,6 +234,19 @@ export const actions = {
             });
     },
 
+    /**
+     * Add a member from an existing identity-provider (ClinGen) account.
+     * data: { idp_id, email, person_id?, first_name?, last_name?, role_ids?, is_contact?, notes?, training_level_1?, training_level_2? }
+     */
+    async memberAddFromIdp ({ commit }, {uuid, data}) {
+        const url = `${baseUrl}/${uuid}/members/from-idp`;
+        return await api.post(url, data)
+            .then(response => {
+                commit('addMemberToGroup', response.data.data);
+                return response.data.data;
+            });
+    },
+
     async memberUpdate ( {commit}, {groupUuid, memberId, data}) {
         const url= `${baseUrl}/${groupUuid}/members/${memberId}`;
         return await api.put(url, data)

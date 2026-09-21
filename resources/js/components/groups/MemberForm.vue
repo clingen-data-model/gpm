@@ -55,6 +55,9 @@ export default {
             newMember: new GroupMember(),
             errors: {},
             suggestedPeople: [],
+            idpEnabled: false,
+            idpAvailable: true,
+            idpCandidate: null, // { idp_id, email, person_id } when adding from a ClinGen account
             legendValues: [1,2],
             showProfileForm: false,
             addAnother: false,
@@ -78,6 +81,9 @@ export default {
         },
         roleRequiresNotification () {
             return this.newMember.hasRole('coordinator') || this.newMember.hasRole('grant-liaison');
+        },
+        hasSelectedPerson () {
+            return Boolean(this.newMember.id || this.newMember.person_id || this.idpCandidate);
         }
     },
     watch: {
@@ -93,25 +99,30 @@ export default {
         this.debounceSuggestions = debounce(this.getSuggestedPeople, 500)
     },
     methods: {
+        /**
+         * Candidates are GPM people plus identities at the external identity
+         * provider (ClinGen accounts) that have no GPM login yet; see
+         * MemberCandidatesList for the merge rules.
+         */
         async getSuggestedPeople() {
-            if (!this.newMember.first_name && !this.newMember.last_name && !this.newMember.email) {
+            const person = this.newMember.person || {};
+            if (!person.first_name && !person.last_name && !person.email) {
                 this.suggestedPeople = [];
                 return;
             }
             const params = {
-                page: 1,
-                'sort[field]': 'name',
-                'sort[dir]': 'ASC',
-                'where[first_name]': this.newMember.first_name,
-                'where[last_name]': this.newMember.last_name,
-                'where[email]': this.newMember.email,
-                with: ['memberships']
+                first_name: person.first_name || undefined,
+                last_name: person.last_name || undefined,
+                email: person.email || undefined,
             }
-            this.suggestedPeople = await api.get(`/api/people`, {params})
-                .then(rsp => rsp.data.data.map(p => {
-                    p.alreadyMember = this.isAlreadyMember(p);
-                    return new Person(p);
-                }));
+            const response = await api.get(`/api/groups/${this.uuid}/members/candidates`, {params})
+                .then(rsp => rsp.data);
+            this.idpEnabled = Boolean(response.idp_enabled);
+            this.idpAvailable = response.idp_available !== false;
+            this.suggestedPeople = response.data.map(row => ({
+                ...row,
+                already_member: row.already_member || (row.person_id !== null && this.isAlreadyMember({id: row.person_id})),
+            }));
         },
         initNewMember() {
             this.newMember = new GroupMember();
@@ -130,6 +141,7 @@ export default {
         },
         clearForm () {
             this.initNewMember();
+            this.idpCandidate = null;
         },
         cancel () {
             this.clearForm();
@@ -175,6 +187,11 @@ export default {
         async save () {
             try {
                 if (!this.newMember.isPersisted()) {
+                    if (this.idpCandidate) {
+                        const groupMember = await this.addMemberFromIdp(this.group, this.newMember);
+                        this.$store.commit('pushSuccess', `${groupMember.person.name} added to ${groupMember.group.name} (existing ClinGen account linked)`);
+                        return groupMember;
+                    }
                     if (!this.newMember.person.isPersisted()) {
                         const groupMember = await this.inviteNewMember(this.group, this.newMember);
                         this.$store.commit('pushSuccess', `${groupMember.person.name} invited to join ${groupMember.group.name}`);
@@ -225,6 +242,33 @@ export default {
             }
 
             return response.data;
+        },
+        async addMemberFromIdp(group, member) {
+            const memberData = await this.$store.dispatch('groups/memberAddFromIdp', {
+                uuid: group.uuid,
+                data: {
+                    idp_id: this.idpCandidate.idp_id,
+                    email: this.idpCandidate.email,
+                    person_id: this.idpCandidate.person_id,
+                    first_name: member.person.first_name,
+                    last_name: member.person.last_name,
+                    role_ids: member.roles.map(r => r.id),
+                    is_contact: member.is_contact,
+                    notes: member.notes,
+                    training_level_1: member.training_level_1,
+                    training_level_2: member.training_level_2,
+                }
+            });
+
+            if (member.permissions.length > 0) {
+                await this.$store.dispatch('groups/memberGrantPermission', {
+                    uuid: group.uuid,
+                    memberId: memberData.id,
+                    permissionIds: member.permissions.map(p => p.id)
+                });
+            }
+
+            return memberData;
         },
         async addPersonAsMember(group, member) {
           const alreadyMember = this.group.members.find(m => m.person.id === member.person.id);
@@ -317,9 +361,41 @@ export default {
             // await Promise.all(promises);
         },
 
-        useExistingPerson(person) {
-            this.newMember.person_id = person.id;
-            this.newMember.person = person.clone()
+        /**
+         * A candidate row was picked. Rows backed by a ClinGen account that
+         * has no GPM login (kind 'idp', or a person flagged has_idp_identity)
+         * go through the add-from-IdP flow; other rows add the existing person.
+         */
+        async useExistingPerson(row) {
+            const usesIdpAccount = row.kind === 'idp' || (!row.has_account && row.has_idp_identity);
+            if (usesIdpAccount) {
+                this.idpCandidate = { idp_id: row.idp_id, email: row.email, person_id: row.person_id };
+                this.newMember.person_id = row.person_id;
+                this.newMember.person = this.personFromRow(row);
+                return;
+            }
+
+            this.idpCandidate = null;
+            this.newMember.person_id = row.person_id;
+            this.newMember.person = await this.hydratePerson(row);
+        },
+        personFromRow(row) {
+            return new Person({
+                id: row.person_id,
+                uuid: row.uuid,
+                first_name: row.first_name,
+                last_name: row.last_name,
+                email: row.email,
+                institution: row.institution ? { name: row.institution } : {},
+            });
+        },
+        async hydratePerson(row) {
+            try {
+                const data = await api.get(`/api/people/${row.uuid}`).then(rsp => rsp.data.data);
+                return new Person(data);
+            } catch {
+                return this.personFromRow(row);
+            }
         },
         isAlreadyMember(person) {
             return this.group.members.map(m => m.person.id).includes(person.id)
@@ -345,7 +421,7 @@ export default {
   <div>
     <div class="flex">
       <div class="flex-1">
-        <div v-if="!newMember.id && !newMember.person_id">
+        <div v-if="!hasSelectedPerson">
           <input-row
             label="Name"
             :errors="nameErrors"
@@ -377,7 +453,7 @@ export default {
             @input="debounceSuggestions"
           />
         </div>
-        <div v-if="newMember.id || newMember.person_id">
+        <div v-if="hasSelectedPerson">
           <dictionary-row label="Name">
             {{ newMember.person.name }}
           </dictionary-row>
@@ -393,7 +469,11 @@ export default {
           <dictionary-row label="Expertise">
             <ExpertisesView :person="newMember.person" :legacy-expertise="newMember.legacy_expertise" />
           </dictionary-row>
-          <static-alert v-if="!newMember.id">
+          <static-alert v-if="idpCandidate">
+            Adding {{ newMember.person.name }} using their existing ClinGen account ({{ idpCandidate.email }}).
+            A GPM login linked to that account is created for them; no activation email is needed.
+          </static-alert>
+          <static-alert v-else-if="!newMember.id">
             Adding existing person, {{ newMember.person.name }}, as a group member.
           </static-alert>
           <dictionary-row v-if="newMember.id" label="" class="text-sm">
@@ -478,12 +558,15 @@ export default {
       </div>
       <transition name="slide-fade">
         <div
-          v-if="suggestedPeople.length > 0 && newMember.person_id === null"
+          v-if="(suggestedPeople.length > 0 || (idpEnabled && !idpAvailable)) && !hasSelectedPerson"
           class="pt-2 border-l pl-2  ml-2 flex-1"
         >
           <h5 class="font-bold border-b mb-1 pb-1">
             Matching people
           </h5>
+          <note v-if="idpEnabled && !idpAvailable" class="mb-2">
+            ClinGen account lookup is unavailable right now; only people already in the GPM are shown.
+          </note>
           <MemberSuggestions
             :suggestions="suggestedPeople"
             @selected="useExistingPerson"
