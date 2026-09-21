@@ -15,7 +15,12 @@
 @endif
 </p>
 
-@if ($notifiable->invite && $notifiable->invite->isPending)
+@if (!empty($idpAccountLinked))
+    <p>
+        Your existing ClinGen account ({{ $notifiable->user?->email ?? $notifiable->email }}) now signs you in to the GPM.
+        There is nothing to activate: just <a href="{{ url('/login') }}">sign in</a> with the ClinGen account you already use.
+    </p>
+@elseif ($notifiable->invite && $notifiable->invite->isPending)
     @if($notifiable->invite->hasInviter)
         <p>You were originally invited to join the GPM by the {{$notifiable->invite->inviter->name}} group.</p>
     @endif

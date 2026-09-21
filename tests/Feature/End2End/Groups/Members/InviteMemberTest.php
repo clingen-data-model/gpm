@@ -8,6 +8,8 @@ use App\Modules\User\Models\User;
 use App\Modules\Group\Models\Group as GroupModel;
 use App\Modules\Person\Models\Person;
 use App\Modules\Group\Actions\MemberAdd;
+use App\Modules\Group\Actions\MemberInvite;
+use App\Services\Idp\Fake\FakeIdpClient;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -218,6 +220,39 @@ class InviteMemberTest extends TestCase
         $newPerson = Person::orderBy('id', 'desc')->first();
         Notification::assertSentTo($newPerson, InviteNotification::class);
         Notification::assertNotSentTo($newPerson, AddedToGroupNotification::class);
+    }
+
+    #[Test]
+    public function refuses_to_invite_an_address_that_already_has_an_idp_account()
+    {
+        MemberGrantPermissions::run(
+            $this->userMember,
+            collect([config('permission.models.permission')::factory()->create(['name' => 'members-invite', 'scope' => 'group'])])
+        );
+        app(FakeIdpClient::class)->store()->put(['id' => 'user_fake_zed', 'email' => 'zed@example.com', 'first_name' => 'Zed', 'last_name' => 'Zardoz']);
+
+        Sanctum::actingAs($this->user->fresh());
+        $this->json('POST', $this->url, ['first_name' => 'Zed', 'last_name' => 'Zardoz', 'email' => 'ZED@example.com'])
+            ->assertStatus(422)
+            ->assertJsonFragment(['email' => [MemberInvite::EXISTING_IDP_ACCOUNT_MESSAGE]]);
+
+        $this->assertDatabaseMissing('people', ['email' => 'ZED@example.com']);
+    }
+
+    #[Test]
+    public function still_invites_when_the_idp_cannot_be_reached()
+    {
+        MemberGrantPermissions::run(
+            $this->userMember,
+            collect([config('permission.models.permission')::factory()->create(['name' => 'members-invite', 'scope' => 'group'])])
+        );
+        app(FakeIdpClient::class)->failNext();
+
+        Sanctum::actingAs($this->user->fresh());
+        $this->json('POST', $this->url, ['first_name' => 'Test', 'last_name' => 'Testerson', 'email' => 'test@test.com'])
+            ->assertStatus(201);
+
+        $this->assertDatabaseHas('invites', ['email' => 'test@test.com', 'redeemed_at' => null]);
     }
 
     #[Test]

@@ -18,7 +18,11 @@ class AddedToGroupNotification extends Notification
      *
      * @return void
      */
-    public function __construct(private Group $group)
+    /**
+     * @param  bool  $idpAccountLinked  The person's existing ClinGen (IdP) account was linked
+     *                                  to a new GPM login, so no activation step is needed.
+     */
+    public function __construct(private Group $group, public readonly bool $idpAccountLinked = false)
     {
     }
 
@@ -45,7 +49,8 @@ class AddedToGroupNotification extends Notification
                 ->subject('You have been added to '.$this->group->displayName)
                 ->view('email.added_to_group', [
                     'notifiable' => $notifiable,
-                    'group' => $this->group
+                    'group' => $this->group,
+                    'idpAccountLinked' => $this->idpAccountLinked,
                 ]);
     }
 
@@ -59,7 +64,8 @@ class AddedToGroupNotification extends Notification
     {
         return [
             'message' => 'You have been added to '.$this->group->displayName.'.',
-            'group' => $this->group->toArray()
+            'group' => $this->group->toArray(),
+            'idp_account_linked' => $this->idpAccountLinked,
         ];
     }
 }

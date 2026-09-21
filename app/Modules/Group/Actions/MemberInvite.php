@@ -2,7 +2,11 @@
 
 namespace App\Modules\Group\Actions;
 
+use Throwable;
 use Ramsey\Uuid\Uuid;
+use App\Providers\IdpServiceProvider;
+use App\Services\Idp\Contracts\IdpClient;
+use Illuminate\Validation\ValidationException;
 use App\Modules\Group\Models\Group;
 use App\Modules\Group\Models\Invite;
 use Illuminate\Auth\Access\Response;
@@ -23,11 +27,14 @@ class MemberInvite
     use AsController;
     use AsObject;
 
+    public const EXISTING_IDP_ACCOUNT_MESSAGE = 'This address belongs to an existing ClinGen account. Click \'Add using ClinGen account\' next to it on the right instead of inviting.';
+
     public function __construct(
         private PersonCreate $createPerson,
         private PersonInvite $invitePerson,
         private MemberAdd $addMember,
-        private MemberAssignRole $assignRole
+        private MemberAssignRole $assignRole,
+        private IdpClient $idpClient,
     ) {
     }
 
@@ -70,7 +77,33 @@ class MemberInvite
     public function asController(ActionRequest $request, $groupUuid)
     {
         $group = Group::findByUuidOrFail($groupUuid);
+        $this->guardAgainstExistingIdpAccount($request->email);
+
         return new MemberResource($this->handle($group, $request->all()));
+    }
+
+    /**
+     * An invitee with a ClinGen account must be added through that account
+     * (MemberAddFromIdp) rather than pick a second, unrelated password. An
+     * unreachable IdP does not block the invitation.
+     */
+    private function guardAgainstExistingIdpAccount(?string $email): void
+    {
+        if (! $email || ! IdpServiceProvider::enabled()) {
+            return;
+        }
+
+        try {
+            $identity = $this->idpClient->findUserByEmail($email);
+        } catch (Throwable $e) {
+            report($e);
+
+            return;
+        }
+
+        if ($identity) {
+            throw ValidationException::withMessages(['email' => [self::EXISTING_IDP_ACCOUNT_MESSAGE]]);
+        }
     }
 
     public function authorize(ActionRequest $request): Response
