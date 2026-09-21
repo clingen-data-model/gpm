@@ -1,6 +1,7 @@
 <script setup>
     import {useStore} from 'vuex';
-    import { computed, ref } from 'vue'
+    import { computed, ref, inject, unref } from 'vue'
+    import InlineTextDiff from '@/components/groups/InlineTextDiff.vue'
     import ReviewSection from '@/components/expert_panels/ReviewSection.vue'
     import ReviewMembership from '@/components/expert_panels/ReviewMembership.vue'
     import { formatDate } from '@/date_utils'
@@ -13,6 +14,17 @@
     const expertPanel = computed(() => group.value.expert_panel);
 
     const activeTab = ref('published');
+    const comparisonState = inject('scopeOfWorkComparisonState', null);
+    const comparison = computed(() => unref(comparisonState?.comparison));
+    const scopeDescriptionChange = computed(() => {
+        if (comparison.value?.unavailable_sections?.includes('scope_description')) return null;
+        return comparison.value?.changes?.find(change =>
+            change.section === 'scope_description' && change.before !== change.after
+        ) ?? null;
+    });
+    const comparisonHeading = computed(() => comparison.value?.mode === 'approved_baseline'
+        ? 'Changes since approved baseline'
+        : 'Changes since previous review round');
 
     const members = computed( () => {
         if (!group.value) {
@@ -63,7 +75,22 @@
       </div>
 
       <h3>Description of scope</h3>
-      <blockquote class="markdown-preview" v-html="htmlFromMarkdown(expertPanel.scope_description)"></blockquote>
+      <blockquote v-if="!scopeDescriptionChange" class="markdown-preview" v-html="htmlFromMarkdown(expertPanel.scope_description)"></blockquote>
+      <section
+        v-if="scopeDescriptionChange"
+        class="mt-3 rounded border bg-white p-3 text-sm"
+        :aria-label="comparisonHeading"
+      >
+        <h4 class="font-semibold">{{ comparisonHeading }}</h4>
+        <p class="mb-2 text-xs text-gray-600">
+          Submitted changes only; unsubmitted edits are not included.
+          Added words are highlighted; removed words are struck through.
+        </p>
+        <InlineTextDiff
+          :before="scopeDescriptionChange.before ?? ''"
+          :after="scopeDescriptionChange.after ?? ''"
+        />
+      </section>
     </ReviewSection>
 
     <ReviewSection v-if="group.is_gcep" title="Plans" name="plans">
