@@ -6,6 +6,7 @@
     import ApplicationReview from './ApplicationReview.vue'
     import commentManagerFactory from '@/composables/comment_manager.js'
     import {api} from '@/http';
+    import { useScopeOfWorkComparison } from '@/composables/scope_of_work_comparison';
 
     const props = defineProps({
         uuid: {
@@ -25,6 +26,12 @@
     const applicationView = shallowRef(ApplicationReview);
     const latestSubmission = ref({});
     provide('latestSubmission', latestSubmission);
+    const scopeOfWorkComparisonState = useScopeOfWorkComparison(() => [
+        group.value.uuid,
+        latestSubmission.value?.data?.context === 'scope_of_work_revision'
+            ? latestSubmission.value.id : null,
+    ]);
+    provide('scopeOfWorkComparisonState', scopeOfWorkComparisonState);
 
     const getLatestSubmission = () => {
         api.get(`/api/groups/${group.value.uuid}/application/latest-submission`)

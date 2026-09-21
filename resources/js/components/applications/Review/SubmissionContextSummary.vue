@@ -1,4 +1,5 @@
 <script setup>
+import { scopeOfWorkChangeLabel } from '@/scope_of_work_change_label';
 import { computed, inject, ref } from 'vue';
 import { useStore } from 'vuex';
 import { hasPermission } from '@/auth_utils.js';
@@ -98,8 +99,7 @@ const requestScopeOfWorkRevisionChanges = async () => {
         <strong>Submitted changes:</strong>
         <ul class="mt-1 list-inside list-disc">
           <li v-for="change in changes" :key="change.id || `${change.label}-${change.entity_label}`">
-            {{ change.label }}
-            <template v-if="change.entity_label">— {{ change.entity_label }}</template>
+            {{ scopeOfWorkChangeLabel(change) }}
           </li>
         </ul>
       </div>
