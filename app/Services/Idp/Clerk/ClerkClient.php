@@ -61,6 +61,19 @@ class ClerkClient implements IdpClient
         return array_map(IdpUser::fromClerk(...), (array) $response->json());
     }
 
+    /**
+     * Clerk's `query` filter partially matches id, email addresses, first and
+     * last name (and username/phone, which GPM does not use).
+     */
+    public function searchUsers(string $query, int $limit = 10): array
+    {
+        $url = '/users?'.$this->queryString(['query' => $query, 'limit' => $limit]);
+        $response = $this->send(fn (PendingRequest $http) => $http->get($url));
+        $this->guard($response);
+
+        return array_map(IdpUser::fromClerk(...), (array) $response->json());
+    }
+
     public function createUser(array $attributes): IdpUser
     {
         $response = $this->send(fn (PendingRequest $http) => $http->post('/users', $this->toClerkPayload($attributes)));

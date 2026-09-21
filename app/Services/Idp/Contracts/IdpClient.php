@@ -31,6 +31,16 @@ interface IdpClient
     public function listUsers(int $limit, int $offset): array;
 
     /**
+     * Substring search over names, email addresses and ids, for typeahead
+     * suggestions. Enforcing a minimum query length is the caller's job.
+     *
+     * @return array<int, IdpUser>
+     *
+     * @throws IdpException
+     */
+    public function searchUsers(string $query, int $limit = 10): array;
+
+    /**
      * @throws IdpException
      */
     public function createUser(array $attributes): IdpUser;

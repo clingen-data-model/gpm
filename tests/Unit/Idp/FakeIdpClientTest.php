@@ -64,6 +64,30 @@ class FakeIdpClientTest extends TestCase
     }
 
     #[Test]
+    public function searches_names_addresses_and_ids_by_substring()
+    {
+        $store = $this->client->store();
+        $store->put(['id' => 'user_fake_jane', 'email' => 'jane@example.com', 'emails' => ['jd@other.org'], 'first_name' => 'Jane', 'last_name' => 'Doe']);
+        $store->put(['id' => 'user_fake_john', 'email' => 'john@example.com', 'first_name' => 'John', 'last_name' => 'Roe']);
+        $store->put(['id' => 'user_fake_zed', 'email' => 'zed@example.com', 'first_name' => 'Zed', 'last_name' => 'Zee']);
+
+        $ids = fn (array $users) => array_map(fn ($u) => $u->id, $users);
+
+        $this->assertSame(['user_fake_jane', 'user_fake_john'], $ids($this->client->searchUsers('J')));
+        $this->assertSame(['user_fake_jane'], $ids($this->client->searchUsers('ane do')));
+        $this->assertSame(['user_fake_jane'], $ids($this->client->searchUsers('OTHER.org')));
+        $this->assertSame(['user_fake_zed'], $ids($this->client->searchUsers('fake_zed')));
+        $this->assertSame(['user_fake_jane'], $ids($this->client->searchUsers('example', 1)));
+        $this->assertSame([], $this->client->searchUsers('   '));
+        $calls = $this->client->calls();
+        $this->assertSame('searchUsers', end($calls)['method']);
+
+        $this->client->failNext();
+        $this->expectException(IdpException::class);
+        $this->client->searchUsers('jane');
+    }
+
+    #[Test]
     public function accepts_a_bcrypt_digest_instead_of_a_password()
     {
         $digest = password_hash('imported', PASSWORD_BCRYPT, ['cost' => 4]);

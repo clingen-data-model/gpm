@@ -99,6 +99,18 @@ class ClerkClientTest extends TestCase
     }
 
     #[Test]
+    public function searches_the_directory_with_the_query_filter()
+    {
+        Http::fake([self::API.'/users*' => Http::response([$this->clerkUser()])]);
+
+        $users = $this->client()->searchUsers('jan', 10);
+
+        $this->assertCount(1, $users);
+        $this->assertSame('user_2abc', $users[0]->id);
+        Http::assertSent(fn ($request) => str_ends_with($request->url(), '/users?query=jan&limit=10'));
+    }
+
+    #[Test]
     public function maps_neutral_attributes_to_the_create_user_body()
     {
         Http::fake([self::API.'/users' => Http::response($this->clerkUser())]);

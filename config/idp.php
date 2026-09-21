@@ -33,6 +33,15 @@ return [
     // Create an IdP identity for users created locally (invite redemption, artisan).
     'mirror_new_users' => (bool) env('IDP_MIRROR_USERS', true),
 
+    // Typeahead search of the IdP directory when adding group members. The
+    // query must reach min_query_length before the IdP is asked; results are
+    // cached server-side for cache_ttl seconds to spare the provider's rate limits.
+    'directory_search' => [
+        'min_query_length' => (int) env('IDP_SEARCH_MIN_LENGTH', 3),
+        'limit' => (int) env('IDP_SEARCH_LIMIT', 10),
+        'cache_ttl' => (int) env('IDP_SEARCH_CACHE_TTL', 30),
+    ],
+
     'clerk' => [
         'publishable_key' => env('CLERK_PUBLISHABLE_KEY'),
         'secret_key' => env('CLERK_SECRET_KEY'),

@@ -77,6 +77,35 @@ class FakeIdpClient implements IdpClient
         return array_map($this->toIdpUser(...), $page);
     }
 
+    public function searchUsers(string $query, int $limit = 10): array
+    {
+        $this->record(__FUNCTION__, func_get_args());
+
+        $needle = Str::lower(trim($query));
+        if ($needle === '') {
+            return [];
+        }
+
+        $matches = array_filter($this->store->all(), function (array $record) use ($needle) {
+            $haystacks = [
+                $record['id'] ?? '',
+                $record['first_name'] ?? '',
+                $record['last_name'] ?? '',
+                trim(($record['first_name'] ?? '').' '.($record['last_name'] ?? '')),
+                ...FakeIdpStore::emailsOf($record),
+            ];
+            foreach ($haystacks as $haystack) {
+                if ($haystack !== '' && str_contains(Str::lower($haystack), $needle)) {
+                    return true;
+                }
+            }
+
+            return false;
+        });
+
+        return array_map($this->toIdpUser(...), array_slice(array_values($matches), 0, $limit));
+    }
+
     public function createUser(array $attributes): IdpUser
     {
         $this->record(__FUNCTION__, func_get_args());
