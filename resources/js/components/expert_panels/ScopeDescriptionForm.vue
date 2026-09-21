@@ -5,6 +5,7 @@ import VcepProtocolLink from '../links/VcepProtocolLink.vue';
 import ScvcepProtocolLink from '../links/ScvcepProtocolLink.vue';
 import EditIconButton from '@/components/buttons/EditIconButton.vue'
 import RichTextEditor from '@/components/prosekit/RichTextEditor.vue'
+import InlineTextDiff from '@/components/groups/InlineTextDiff.vue'
 import { htmlFromMarkdown } from '@/markdown-utils';
 
 export default {
@@ -15,6 +16,10 @@ export default {
         ScvcepProtocolLink,
         EditIconButton,
         RichTextEditor,
+        InlineTextDiff,
+    },
+    inject: {
+        scopeOfWorkComparisonState: { default: null },
     },
     props: {
         editing: {
@@ -38,6 +43,26 @@ export default {
         "update"
     ],
     computed: {
+        submittedComparison() {
+            const comparison = this.scopeOfWorkComparisonState?.comparison;
+            return comparison?.value ?? comparison ?? null;
+        },
+        scopeDescriptionChange() {
+            const comparison = this.submittedComparison;
+            if (comparison?.unavailable_sections?.includes('scope_description')) {
+                return null;
+            }
+            return comparison?.changes?.find(change =>
+                change.section === 'scope_description' && change.before !== change.after
+            ) ?? null;
+        },
+        comparisonHeading() {
+            return this.submittedComparison?.mode === 'approved_baseline'
+                ? 'Changes since approved baseline'
+                : this.submittedComparison?.source === 'live'
+                    ? 'Changes since last submission'
+                    : 'Changes since previous review round';
+        },
         group: {
             get() {
                 return this.$store.getters["groups/currentItem"] || new Group();
@@ -96,13 +121,30 @@ export default {
             @update:model-value="$emit('update')"
           />
         </div>
-        <div v-else class="border-2 mt-8 p-2">
+        <div v-else-if="!scopeDescriptionChange" class="border-2 mt-8 p-2">
           <div v-if="group.expert_panel.scope_description" v-html="htmlScopeDescription" />
           <p v-else class="well cursor-pointer" @click="showForm">
             A description of scope has not yet been provided.
           </p>
         </div>
       </transition>
+      <section
+        v-if="scopeDescriptionChange"
+        class="mt-3 rounded border bg-white p-3 text-sm"
+        :aria-label="comparisonHeading"
+      >
+        <h5 class="font-semibold">{{ comparisonHeading }}</h5>
+        <p class="mb-2 text-xs text-gray-600">
+          {{ submittedComparison?.source === 'live'
+            ? 'Current saved draft changes; unsaved edits are not included.'
+            : 'Submitted changes only; unsubmitted edits are not included.' }}
+          Added words are highlighted; removed words are struck through.
+        </p>
+        <InlineTextDiff
+          :before="scopeDescriptionChange.before ?? ''"
+          :after="scopeDescriptionChange.after ?? ''"
+        />
+      </section>
     </div>
   </div>
 </template>

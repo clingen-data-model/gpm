@@ -45,8 +45,7 @@
 
 			<ul class="mt-2 list-inside list-disc text-blue-900">
 				<li v-for="change in status.active_revision.changes" :key="change.id">
-					{{ change.label }}
-					<template v-if="change.entity_label">— {{ change.entity_label }}</template>
+					{{ scopeOfWorkChangeLabel(change) }}
 					<span v-if="change.requires_approval === 'yes'" class="font-semibold">— requires approval</span>
 					<span v-else-if="change.requires_approval === 'conditional'" class="font-semibold">— may require approval</span>
 				</li>
@@ -75,6 +74,7 @@
 </template>
 
 <script setup>
+import { scopeOfWorkChangeLabel } from '@/scope_of_work_change_label';
 import { computed, ref } from 'vue';
 import SubmissionConfirmationModal from '@/components/applications/SubmissionConfirmationModal.vue';
 

@@ -1,4 +1,7 @@
 <script>
+import ScopeOfWorkNameComparison from '@/components/groups/ScopeOfWorkNameComparison.vue'
+
+
 import { mapGetters } from 'vuex'
 import ApplicationLog from '@/components/applications/ApplicationLog.vue'
 import NextActions from '@/components/next_actions/NextActions.vue'
@@ -12,6 +15,7 @@ import SubmissionContextSummary from '@/components/applications/Review/Submissio
 export default {
     name: 'ApplicationDetail',
     components: {
+      ScopeOfWorkNameComparison,
       ApplicationLog,
       NextActions,
       ProgressChart,
@@ -99,12 +103,16 @@ export default {
       <strong>Warning!!</strong> There are currently no contacts connected to this application!
     </static-alert>
     <ScreenTemplate :title="group.displayName" :breadcrumbs="breadcrumbs">
-      <template #header-dev>
-        <note>
-          Group ID: {{ group.id }}
-          |
-          Expert Panel ID: {{ group.expert_panel.id }}
-        </note>
+      <template #header>
+        <div>
+          <h1>{{ group.displayName }}</h1>
+          <ScopeOfWorkNameComparison />
+          <note>
+            Group ID: {{ group.id }}
+            |
+            Expert Panel ID: {{ group.expert_panel.id }}
+          </note>
+        </div>
       </template>
       <template #header-right>
         <div class="flex space-x-2">

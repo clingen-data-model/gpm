@@ -76,6 +76,107 @@ class ScopeOfWorkComparisonTest extends TestCase
         return '/api/groups/'.$this->panel->group->uuid.'/application/submission/'.$submission->id.'/scope-of-work/comparison';
     }
 
+    private function draftUrl(): string
+    {
+        return '/api/groups/'.$this->panel->group->uuid.'/scope-of-work/revisions/'.$this->revision->uuid.'/comparison';
+    }
+
+    private function captureBaseline(): void
+    {
+        $this->baseline->snapshots()->create([
+            'snapshot_schema_version' => '1.0.0',
+            'snapshot' => \App\Modules\Group\Actions\ScopeOfWork\SnapshotBuild::run($this->panel->group->fresh()),
+        ]);
+        $this->revision->update(['status' => 'draft']);
+    }
+
+    #[Test]
+    public function first_draft_compares_approved_baseline_to_saved_name(): void
+    {
+        $this->panel->group->update(['name' => 'FBN1-TEST']);
+        $this->captureBaseline();
+        $this->panel->group->update(['name' => 'FBN1']);
+        $response = $this->getJson($this->draftUrl())->assertOk()
+            ->assertJsonPath('source', 'live')->assertJsonPath('mode', 'approved_baseline')
+            ->assertJsonPath('status', 'complete')
+            ->assertJsonPath('before.scope_of_work_version_id', $this->baseline->id)
+            ->assertJsonPath('after.snapshot_type', 'live');
+        $change = collect($response->json('changes'))->firstWhere('section', 'group.name');
+        $this->assertSame('FBN1-TEST', $change['before']);
+        $this->assertSame('FBN1', $change['after']);
+        $this->assertSame(0, $this->revision->submissions()->count());
+    }
+
+    #[Test]
+    public function minor_draft_scope_change_needs_no_submission_and_reads_repeated_saves(): void
+    {
+        $this->panel->update(['scope_description' => 'Approved scope']);
+        $this->captureBaseline();
+        $this->revision->update(['major_version' => 1, 'minor_version' => 1]);
+        foreach (['First saved scope', 'Second saved scope'] as $scope) {
+            $this->panel->update(['scope_description' => $scope]);
+            $this->getJson($this->draftUrl())->assertOk()
+                ->assertJsonPath('status', 'complete')->assertJsonPath('summary.changed_items', 1)
+                ->assertJsonPath('changes.0.section', 'scope_description')
+                ->assertJsonPath('changes.0.before', 'Approved scope')
+                ->assertJsonPath('changes.0.after', $scope);
+        }
+        $this->assertSame(0, $this->revision->submissions()->count());
+        $this->assertSame(0, $this->revision->snapshots()->count());
+    }
+
+    #[Test]
+    public function revisions_requested_uses_latest_submission_and_keeps_reviewer_results_frozen(): void
+    {
+        $this->captureBaseline();
+        $first = $this->submission();
+        $this->snapshot($first, $this->data('First submitted name'));
+        $second = $this->submission();
+        $latest = $this->snapshot($second, $this->data('Second submitted name'));
+        $second->update(['data' => array_merge($second->data, ['application_snapshot_id' => $latest->id])]);
+        $this->revision->update(['status' => 'revisions_requested', 'submission_id' => $second->id]);
+        $frozenFirst = $this->getJson($this->url($first))->assertOk()->json();
+        $frozenSecond = $this->getJson($this->url($second))->assertOk()->json();
+        $this->panel->group->update(['name' => 'Saved response to reviewer']);
+        $this->panel->update(['scope_description' => 'Saved revised scope']);
+        $response = $this->getJson($this->draftUrl())->assertOk()
+            ->assertJsonPath('mode', 'previous_review_round')
+            ->assertJsonPath('before.submission_id', $second->id)
+            ->assertJsonPath('before.snapshot_id', $latest->id);
+        $changes = collect($response->json('changes'))->keyBy('section');
+        $this->assertSame('Second submitted name', $changes['group.name']['before']);
+        $this->assertSame('Saved response to reviewer', $changes['group.name']['after']);
+        $this->assertSame('Scope', $changes['scope_description']['before']);
+        $this->assertSame('Saved revised scope', $changes['scope_description']['after']);
+        $this->assertSame($frozenFirst, $this->getJson($this->url($first))->assertOk()->json());
+        $this->assertSame($frozenSecond, $this->getJson($this->url($second))->assertOk()->json());
+    }
+
+    #[Test]
+    public function missing_draft_baseline_is_partial_and_missing_round_does_not_fall_back(): void
+    {
+        $this->revision->update(['status' => 'draft']);
+        $this->getJson($this->draftUrl())->assertOk()->assertJsonPath('status', 'partial')
+            ->assertJsonPath('before.snapshot_id', null)->assertJsonCount(4, 'unavailable_sections')
+            ->assertJsonPath('changes', []);
+        $this->captureBaseline();
+        $submission = $this->submission();
+        $this->revision->update(['status' => 'revisions_requested']);
+        $this->getJson($this->draftUrl())->assertOk()->assertJsonPath('status', 'partial')
+            ->assertJsonPath('mode', 'previous_review_round')
+            ->assertJsonPath('before.submission_id', $submission->id)
+            ->assertJsonPath('before.snapshot_id', null)->assertJsonPath('changes', []);
+    }
+
+    #[Test]
+    public function live_endpoint_rejects_submitted_and_cross_group_revisions(): void
+    {
+        $this->revision->update(['status' => 'submitted']);
+        $this->getJson($this->draftUrl())->assertStatus(409);
+        $this->revision->update(['status' => 'draft', 'group_id' => ExpertPanel::factory()->create()->group_id]);
+        $this->getJson($this->draftUrl())->assertNotFound();
+    }
+
     #[Test]
     public function round_two_uses_previous_round_and_stays_independent_of_live_data(): void
     {

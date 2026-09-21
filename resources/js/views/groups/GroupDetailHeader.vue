@@ -1,4 +1,6 @@
 <script>
+import ScopeOfWorkNameComparison from '@/components/groups/ScopeOfWorkNameComparison.vue'
+
 import Group from '@/domain/group'
 import EmitCheckpointsButton from '@/components/groups/EmitCheckpointsButton.vue'
 
@@ -10,7 +12,7 @@ export default {
             required: true,
         }
     },
-    components: { EmitCheckpointsButton },
+    components: { EmitCheckpointsButton, ScopeOfWorkNameComparison },
     emits: [
         'showEdit'
     ],
@@ -37,11 +39,11 @@ export default {
     <group-breadcrumbs />
     <h1 class="flex justify-between items-start">
       <div>
-        {{ group.displayName }} 
-        <badge :color="group.statusColor" class="text-xs">
+        <ScopeOfWorkNameComparison variant="inline-title">{{ group.displayName }}</ScopeOfWorkNameComparison>
+        <badge :color="group.statusColor" class="text-xs ml-2">
           {{ group.status ? group.status.name : 'loading...' }}
         </badge>
-        <badge v-if="group.is_working_group" color="yellow" class="text-xs ml-1">
+        <badge v-if="group.is_working_group" color="yellow" class="text-xs ml-2">
           {{ group.visibility ? group.visibility.name : 'loading...' }}
         </badge>        
         <div class="text-sm text-gray-800 mt-1 font-normal">
