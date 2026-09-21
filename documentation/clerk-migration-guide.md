@@ -8,6 +8,10 @@ mechanics: `documentation/idp-clerk.md`.
 GPM can now sign users in through Clerk **as well as** with local
 email/password. Both paths end in the same Laravel session, so nothing
 downstream (permissions, impersonation, downloads, tests) had to change.
+Coordinators can also add members straight from an existing ClinGen account
+(the member-add typeahead searches the Clerk directory), and invitees may
+redeem an invitation with a ClinGen account instead of creating a password;
+see "Adding members and redeeming invites" in `documentation/idp-clerk.md`.
 
 | Area | Before | After |
 |---|---|---|
@@ -189,4 +193,13 @@ the `PASSPORT_PRIVATE_KEY`/`PASSPORT_PUBLIC_KEY` secrets; local dev runs
   exercised only through the fake driver and unit tests; do a visual pass on
   the dev instance.
 - `external_id` ownership across ClinGen apps sharing the Clerk instance needs
-  an agreement (see §2 edge cases).
+  an agreement (see §2 edge cases). Adding a member from a Clerk account and
+  redeeming an invite with one now also back-fill `external_id` when it is
+  empty (never overwriting a different value, which is logged instead).
+- The member-add typeahead calls Clerk's `GET /users?query=` once per request
+  (3-character minimum, 500 ms debounce in the SPA, `limit=10`, 30 s server
+  cache). If the instance's rate limit is hit, searches degrade to GPM-only
+  results with a note; a feature flag to switch the directory search off is
+  tracked in `future-tasks.md`.
+- Only verified Clerk addresses (and the primary) are offered when adding a
+  member from a Clerk account; an unverified secondary address cannot be picked.

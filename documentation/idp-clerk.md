@@ -62,12 +62,109 @@ Device Trust, which only challenges password sign-ins.
 | Local password change/reset | GPM → IdP | `UserIdpPasswordSync`, called from the Fortify actions and `user:change-password` |
 | Name/email changed in the IdP | IdP → GPM | `UserIdpProfileSync` at each session login |
 | Existing users | GPM → IdP | `php artisan idp:import-users` |
+| Member added from a ClinGen account | IdP → GPM | `MemberAddFromIdp` → `UserCreateFromIdpIdentity` (links, back-fills `external_id`) |
+| Invite redeemed with a ClinGen account | IdP → GPM | `InviteRedeemWithIdp` → `UserCreateFromIdpIdentity` |
 
 IdP failures on the GPM → IdP paths are logged and never block the local
 change; unlinked users are picked up by lazy linking or the import command.
 
 A password changed **inside Clerk** is not pushed back to GPM, so the local
 password form would keep accepting the old password. See future-tasks.
+
+## Adding members and redeeming invites
+
+The Clerk instance is shared with other ClinGen applications, so a person a
+coordinator wants to add may already have a ClinGen account without any GPM
+record. The member-add flow and the invite wizard both know about this.
+
+### The three cases when a coordinator adds a member
+
+| Coordinator picks | What happens | Email sent |
+|---|---|---|
+| A GPM person who can already log in | `MemberAdd` (unchanged) | "added to group" |
+| A ClinGen account not in the GPM, or a GPM person without a login whose address matches a ClinGen account | `MemberAddFromIdp`: find/create the `Person`, `UserCreateFromIdpIdentity` links a `User` to the identity, `MemberAdd` (its own mail cancelled), roles | "added to group" with a note that their existing ClinGen account signs them in (`AddedToGroupNotification(idpAccountLinked: true)`) |
+| A new name and email | `MemberInvite` (unchanged) creates the person and an invite code | invitation |
+
+`MemberInvite` refuses (422 on `email`) an address that already has an IdP
+identity, so an invitee can never end up choosing a second password that does
+not match their existing ClinGen password. An unreachable IdP does not block
+the invitation.
+
+### Candidate search
+
+`GET /api/groups/{uuid}/members/candidates?first_name=&last_name=&email=`
+(`MemberCandidatesList`, requires `inviteMembers` on the group) returns
+`{ data: [...], idp_enabled, idp_available }`. GPM people are matched by
+substring on each supplied column (limit 20). When the IdP is enabled and the
+most specific field (email, then last name, then first name) reaches
+`idp.directory_search.min_query_length`, the directory is searched with
+`IdpClient::searchUsers()` (Clerk's `query` filter, `limit` rows, cached for
+`cache_ttl` seconds), narrowed locally by the other typed fields, then merged:
+
+1. identities already on a `users.idp_id` are dropped;
+2. identities where any address is a `users.email` are dropped;
+3. identities where an address matches `people.email` of a person **without**
+   a `user_id` are folded into that person's row (`has_idp_identity: true`,
+   `idp_id`), adding the person if the GPM filter had not returned them;
+4. what remains becomes one `kind: 'idp'` row per verified address.
+
+An IdP failure is logged and the GPM rows are returned with
+`idp_available: false`; the form shows a small note.
+
+### Endpoints
+
+- `GET  /api/groups/{uuid}/members/candidates` – merged typeahead (above).
+- `POST /api/groups/{uuid}/members/from-idp` – body `idp_id`, `email`
+  (must be a verified address on that identity), optional `person_id`,
+  `first_name`, `last_name`, `role_ids`, `is_contact`, `notes`,
+  `training_level_1/2`. The identity is re-read from the IdP; an `IdpException`
+  returns 503 before anything is written. 404 when `IDP_DRIVER=null`.
+- `PUT  /api/people/invites/{code}/idp` (web group, `throttle:10,1`, name
+  `idp.invite-redeem`) – `Authorization: Bearer <IdP session token>`. Verifies
+  the token, links the invited person to that identity, marks the invite
+  redeemed, starts the session and returns `{ user_id }`. 422 when the invite is
+  already redeemed, the person already has a login, or the identity belongs to
+  another GPM user (no automatic merge; coordinators use `PersonMerge`).
+
+### `UserCreateFromIdpIdentity`
+
+Shared by both new endpoints. Guards (all 422 on `email`): the person has no
+login; the identity is not linked to another user; the chosen address is one
+of the identity's verified addresses; no user owns that address. Then, in one
+transaction, `UserCreate` runs with the identity (so `UserIdpMirror` is
+skipped and no second identity is created), any pending invite for the person
+is redeemed (`InviteRedeemed` resolves FollowActions queued by
+`PermissionAdd`). Afterwards, best effort: if the identity's `external_id` is
+empty it is set to the person's uuid; a different existing value is logged and
+left alone (ownership of `external_id` on the shared instance is still an open
+policy item, see `clerk-migration-guide.md`).
+
+Only Clerk addresses with `verification.status = verified` (plus the primary)
+are considered usable (`IdpUser::$emails`); unverified secondary addresses
+cannot be selected.
+
+### Configuration
+
+```
+IDP_SEARCH_MIN_LENGTH=3   # characters before the directory is searched
+IDP_SEARCH_LIMIT=10       # identities per search
+IDP_SEARCH_CACHE_TTL=30   # seconds a search result is cached server-side
+```
+
+### Trying it with the fake driver
+
+1. Add an identity with two `emails` to `storage/app/fake-idp/users.json`
+   (`{"id": "user_fake_x", "email": "a@x.org", "emails": ["b@x.org"], "first_name": "…", "last_name": "…"}`)
+   and no matching GPM user. In a group's Add Member form type three letters of
+   the name: two rows appear, badged "ClinGen account, not yet in GPM". Pick one
+   address: the member is added, `users.idp_id` is set, `external_id` is written
+   to the JSON file and Mailpit shows the "existing account" email. Log out and
+   pick that identity on the login page: you land on the dashboard.
+2. Invite a brand-new email, open `/invites/{code}` in a private window and
+   choose "I already have a ClinGen account"; pick a fake identity and click
+   Continue.
+3. `app(FakeIdpClient::class)->failNext()` in tinker (or point `IDP_FAKE_STORE`
+   at an unreadable path) shows the degraded search and the 503 on `from-idp`.
 
 ## Configuration
 

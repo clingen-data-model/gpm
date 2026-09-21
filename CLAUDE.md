@@ -100,7 +100,10 @@ a matching event fires later; see README for the pattern.
 bridge**: the SPA signs in with the IdP and posts the token once to `POST /api/idp/session-login`, which
 verifies it and starts a normal session. Contracts and drivers (`clerk`, `fake`, `null`, chosen by
 `IDP_DRIVER`) live in `app/Services/Idp`; the link is `users.idp_provider` + `users.idp_id`. Tests and
-offline dev use the `fake` driver (`/dev/idp/*` endpoints, login-page picker). Machine callers use
+offline dev use the `fake` driver (`/dev/idp/*` endpoints, login-page picker). Because the Clerk instance is
+shared with other ClinGen apps, the member-add typeahead (`MemberCandidatesList`) merges IdP identities with
+GPM people, `MemberAddFromIdp` and `InviteRedeemWithIdp` create logins bound to an existing identity through
+the shared `UserCreateFromIdpIdentity`, and `MemberInvite` refuses addresses that already have one. Machine callers use
 OAuth client credentials (Passport, `POST /oauth/token`, 10-minute scoped tokens); routes open to them carry
 `auth.session-or-client:<scope>`, which also passes a normal session. Never run `passport:install` here
 (see `documentation/m2m-oauth-clients.md`). See `documentation/idp-clerk.md` for the IdP design.

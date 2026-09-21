@@ -17,6 +17,23 @@ Small follow-up items intentionally deferred during other work.
   endpoint (`user.updated`/`user.deleted`, svix-signed) and sync from it. Name/email are already
   refreshed from Clerk at each session login.
 
+* **Email changes made inside Clerk drift from `users.email`** (IdP member invites, 2026-09). Adding a
+  member from a Clerk account or redeeming an invite with one copies the chosen address into
+  `users.email` once; the address is refreshed only at each session login (`UserIdpProfileSync`). A
+  Clerk `user.updated` webhook (svix-signed) would keep it current between logins; this is the same
+  endpoint the password-change item above needs.
+
+* **Feature flag for the IdP directory search** (2026-09). `MemberCandidatesList` asks Clerk for
+  identities on every sufficiently long member-add query. If Clerk's rate limits bite in production, add a
+  `FEATURE_IDP_SEARCH` flag (via `config/system.php` / `appFeatures`) so the typeahead can fall back to
+  GPM-only results without a deploy; today the fallback only triggers on an IdP error.
+
+* **Detect an existing Clerk account in the wizard's password path** (2026-09). `MemberInvite` refuses to
+  invite an address that already has a Clerk identity, but an invitee whose Clerk account uses a
+  different address can still pick "Create a password" in `/invites/{code}`. The wizard could call the
+  IdP for the typed address before creating a local password and steer them to "I already have a ClinGen
+  account".
+
 * **Extend OAuth scopes beyond reports** (2026-09). Only `/api/report/*` carries the
   `auth.session-or-client` middleware. When other systems need machine access (e.g. people or groups read
   endpoints), add the scope to `App\Providers\OAuthServiceProvider::SCOPES` and the middleware to those
