@@ -62,18 +62,19 @@ class RedeemInviteTest extends TestCase
     }
 
 
-    /**
-     */
-    // public function validates_code_is_valid_before_redeeming()
-    // {
-    //     $this->invite->update(['redeemed_at' => '2021-09-15']);
+    #[Test]
+    public function validates_code_is_valid_before_redeeming()
+    {
+        $this->invite->update(['redeemed_at' => '2021-09-15']);
 
-    //     $this->json('PUT', static::URL.'/'.$this->invite->code, $this->validData)
-    //         ->assertStatus(422)
-    //         ->assertJsonFragment([
-    //             'code' => ['This invite has already been redeemed. Please log in to access your account.']
-    //         ]);
-    // }
+        $this->json('PUT', static::URL.'/'.$this->invite->code, $this->validData)
+            ->assertStatus(422)
+            ->assertJsonFragment([
+                'code' => ['This invite has already been redeemed. Please log in to access your account.']
+            ]);
+
+        $this->assertDatabaseMissing('users', ['email' => $this->validData['email']]);
+    }
 
     /**
      */

@@ -10,6 +10,7 @@ use App\Actions\ReportMultipleEpsMake;
 use App\Actions\ReportInstitutionsMake;
 use App\Http\Controllers\ViewController;
 use App\Actions\Auth\IdpSessionLogin;
+use App\Modules\Person\Actions\InviteRedeemWithIdp;
 use App\Actions\ReportVcepApplicationMake;
 use App\Actions\ReportPublicationsMake;
 use App\Actions\ReportScvcepApplicationMake;
@@ -74,5 +75,10 @@ Route::group(['prefix' => '/api/report', 'middleware' => ['auth.session-or-clien
 Route::post('/api/idp/session-login', IdpSessionLogin::class)
     ->middleware('throttle:10,1')
     ->name('idp.session-login');
+
+// Redeem an invitation with an existing IdP account; also starts the session.
+Route::put('/api/people/invites/{code}/idp', InviteRedeemWithIdp::class)
+    ->middleware('throttle:10,1')
+    ->name('idp.invite-redeem');
 
 Route::impersonate();
