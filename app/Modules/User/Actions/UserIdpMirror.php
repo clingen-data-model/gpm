@@ -48,10 +48,7 @@ class UserIdpMirror
             return null;
         }
 
-        $user->forceFill([
-            'idp_provider' => config('idp.provider_name', 'clerk'),
-            'idp_id' => $idpUser->id,
-        ])->save();
+        $user->linkIdp($idpUser->id);
 
         return $idpUser;
     }

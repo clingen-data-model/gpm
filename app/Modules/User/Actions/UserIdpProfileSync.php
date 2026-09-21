@@ -26,7 +26,7 @@ class UserIdpProfileSync
 
         $email = $idpUser->email;
         if ($email !== null && mb_strtolower($email) !== mb_strtolower((string) $user->email)) {
-            $owner = User::whereRaw('LOWER(email) = ?', [mb_strtolower($email)])->where('id', '!=', $user->id)->first();
+            $owner = User::whereEmailInsensitive($email)->where('id', '!=', $user->id)->first();
             if ($owner) {
                 Log::warning('Skipped IdP email sync: address already belongs to another user.', [
                     'user_id' => $user->id,

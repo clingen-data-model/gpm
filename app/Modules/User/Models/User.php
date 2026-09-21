@@ -17,6 +17,7 @@ use Lab404\Impersonate\Models\Impersonate;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Contracts\Auth\CanResetPassword;
 use Lab404\Impersonate\Services\ImpersonateManager;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use App\Models\Traits\HasLogEntries as HasLogEntriesTrait;
@@ -120,6 +121,36 @@ class User extends Authenticatable implements CanResetPassword, HasLogEntries
     public function isLinkedToIdp(): bool
     {
         return $this->idp_provider !== null && $this->idp_id !== null;
+    }
+
+    /**
+     * Bind this login to an identity at the external provider and persist it.
+     * The provider defaults to the configured one (idp.provider_name).
+     */
+    public function linkIdp(string $idpId, ?string $provider = null): static
+    {
+        $this->forceFill([
+            'idp_provider' => $provider ?? config('idp.provider_name', 'clerk'),
+            'idp_id' => $idpId,
+        ])->save();
+
+        return $this;
+    }
+
+    /**
+     * SCOPES
+     */
+
+    public function scopeWhereEmailInsensitive(Builder $query, string $email): Builder
+    {
+        return $query->whereRaw('LOWER(email) = ?', [mb_strtolower(trim($email))]);
+    }
+
+    public function scopeLinkedToIdp(Builder $query, string $idpId, ?string $provider = null): Builder
+    {
+        return $query
+            ->where('idp_provider', $provider ?? config('idp.provider_name', 'clerk'))
+            ->where('idp_id', $idpId);
     }
 
     /**

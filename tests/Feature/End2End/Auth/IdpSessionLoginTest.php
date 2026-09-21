@@ -92,6 +92,18 @@ class IdpSessionLoginTest extends TestCase
     }
 
     #[Test]
+    public function links_an_unlinked_user_by_a_secondary_address_on_the_identity()
+    {
+        $user = User::factory()->create(['email' => 'work@example.org']);
+        $this->idpUser(['id' => 'user_fake_multi', 'email' => 'home@example.com', 'emails' => ['Work@Example.org']]);
+
+        $this->exchange('user_fake_multi')->assertOk();
+
+        $this->assertSame('user_fake_multi', $user->fresh()->idp_id);
+        $this->assertAuthenticatedAs($user);
+    }
+
+    #[Test]
     public function links_by_an_email_claim_when_the_directory_is_unreachable()
     {
         $user = User::factory()->create(['email' => 'jane@example.com']);

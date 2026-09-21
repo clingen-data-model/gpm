@@ -201,7 +201,7 @@ abstract class TestCase extends BaseTestCase
             ]);
         }
         if (! $user->isLinkedToIdp()) {
-            $user->forceFill(['idp_provider' => config('idp.provider_name'), 'idp_id' => $idpId])->save();
+            $user->linkIdp($idpId);
         }
 
         $token = app(\App\Services\Idp\Fake\FakeTokenIssuer::class)->issue($idpId);

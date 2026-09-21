@@ -129,7 +129,7 @@ class IdpImportUsers extends Command
                     $q->orWhereIn('id', $ids);
                 }
                 foreach ($emails as $email) {
-                    $q->orWhereRaw('LOWER(email) = ?', [mb_strtolower($email)]);
+                    $q->orWhere(fn ($match) => $match->whereEmailInsensitive($email));
                 }
             });
         }
@@ -237,10 +237,7 @@ class IdpImportUsers extends Command
 
     private function link(User $user, IdpUser $idpUser): void
     {
-        $user->forceFill([
-            'idp_provider' => config('idp.provider_name', 'clerk'),
-            'idp_id' => $idpUser->id,
-        ])->save();
+        $user->linkIdp($idpUser->id);
     }
 
     /**

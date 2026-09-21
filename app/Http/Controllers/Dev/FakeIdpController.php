@@ -59,7 +59,7 @@ class FakeIdpController extends Controller
         $record = $this->store->findByEmail($email);
 
         if (! $record) {
-            $user = User::query()->whereRaw('LOWER(email) = ?', [$email])->with('person')->first();
+            $user = User::whereEmailInsensitive($email)->with('person')->first();
             if (! $user) {
                 throw ValidationException::withMessages(['email' => 'No fake IdP identity or GPM user has that email.']);
             }

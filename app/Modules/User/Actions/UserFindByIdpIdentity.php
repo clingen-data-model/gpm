@@ -24,14 +24,12 @@ class UserFindByIdpIdentity
 
     public function handle(IdpIdentity $identity, ?IdpUser $idpUser = null): ?User
     {
-        $linked = User::where('idp_provider', $identity->provider)
-            ->where('idp_id', $identity->subject)
-            ->first();
+        $linked = User::linkedToIdp($identity->subject, $identity->provider)->first();
         if ($linked) {
             return $linked;
         }
 
-        $user = $this->matchByExternalId($idpUser) ?? $this->matchByEmail($identity->email() ?? $idpUser?->email);
+        $user = $this->matchByExternalId($idpUser) ?? $this->matchByEmail($identity, $idpUser);
 
         if (! $user) {
             return null;
@@ -48,10 +46,7 @@ class UserFindByIdpIdentity
             return null;
         }
 
-        $user->forceFill([
-            'idp_provider' => $identity->provider,
-            'idp_id' => $identity->subject,
-        ])->save();
+        $user->linkIdp($identity->subject, $identity->provider);
 
         return $user;
     }
@@ -65,12 +60,20 @@ class UserFindByIdpIdentity
         return Person::where('uuid', $idpUser->externalId)->first()?->user;
     }
 
-    private function matchByEmail(?string $email): ?User
+    /**
+     * Try the token's email claim, then every usable address on the IdP
+     * record (primary first).
+     */
+    private function matchByEmail(IdpIdentity $identity, ?IdpUser $idpUser): ?User
     {
-        if (! $email) {
-            return null;
+        $candidates = IdpUser::normalizeEmails($identity->email(), $idpUser?->emails ?? [$idpUser?->email]);
+
+        foreach ($candidates as $email) {
+            if ($user = User::whereEmailInsensitive($email)->first()) {
+                return $user;
+            }
         }
 
-        return User::whereRaw('LOWER(email) = ?', [mb_strtolower($email)])->first();
+        return null;
     }
 }
