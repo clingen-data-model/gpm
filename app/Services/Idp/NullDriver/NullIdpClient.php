@@ -26,6 +26,11 @@ class NullIdpClient implements IdpClient
         return null;
     }
 
+    public function listUsers(int $limit, int $offset): array
+    {
+        return [];
+    }
+
     public function createUser(array $attributes): IdpUser
     {
         throw new IdpException('No identity provider is configured (IDP_DRIVER=null).');

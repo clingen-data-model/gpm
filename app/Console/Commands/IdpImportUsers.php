@@ -20,6 +20,9 @@ use App\Services\Idp\Exceptions\IdpException;
  * create one from the user's bcrypt password digest so they keep their
  * password. Idempotent: linked users are skipped, so the command can be
  * re-run to pick up stragglers.
+ *
+ * A full import indexes the IdP directory once rather than looking each user
+ * up, which is the difference between three calls per user and one.
  */
 class IdpImportUsers extends Command
 {
@@ -28,14 +31,27 @@ class IdpImportUsers extends Command
         {--all : Import every user that is not yet linked}
         {--dry-run : Report what would happen without writing to the IdP or the database}
         {--throttle=150 : Milliseconds to wait between IdP create calls}
+        {--no-prefetch : With --all, look each user up individually instead of indexing the IdP directory first}
         {--no-backfill-external-id : Do not set external_id on existing IdP identities that lack one}';
 
     protected $description = 'Import existing users into the identity provider, preserving their passwords.';
+
+    /** Directory page size; Clerk's list endpoint caps at 500. */
+    private const PAGE_SIZE = 500;
 
     private int $created = 0;
     private int $linked = 0;
     private int $skipped = 0;
     private int $errors = 0;
+    private int $throttleMs = 0;
+
+    /**
+     * Existing identities keyed by lowercased email and by external_id, or
+     * null when looking each user up individually.
+     *
+     * @var array{email: array<string, IdpUser>, external: array<string, IdpUser>}|null
+     */
+    private ?array $index = null;
 
     public function handle(IdpClient $client): int
     {
@@ -56,13 +72,19 @@ class IdpImportUsers extends Command
         }
 
         $dryRun = (bool) $this->option('dry-run');
-        $throttleMs = max(0, (int) $this->option('throttle'));
+        $this->throttleMs = max(0, (int) $this->option('throttle'));
 
         $this->info(($dryRun ? '[dry-run] ' : '')."Importing {$users->count()} user(s) into the ".IdpServiceProvider::driver().' identity provider...');
 
+        // Only worth it in bulk: indexing the directory costs a handful of
+        // calls, which a short explicit list would not repay.
+        if ($this->option('all') && ! $this->option('no-prefetch')) {
+            $this->prefetch($client);
+        }
+
         foreach ($users as $user) {
             try {
-                $this->importUser($client, $user, $dryRun, $throttleMs);
+                $this->importUser($client, $user, $dryRun);
             } catch (Throwable $e) {
                 $this->errors++;
                 $this->error("  #{$user->id} {$user->email}: {$e->getMessage()}");
@@ -115,7 +137,37 @@ class IdpImportUsers extends Command
         return $query->orderBy('id')->get();
     }
 
-    private function importUser(IdpClient $client, User $user, bool $dryRun, int $throttleMs): void
+    /**
+     * Index the whole IdP directory up front. Two lookups per user costs
+     * thousands of calls on a full import; paging the directory costs one
+     * call per 500 identities.
+     */
+    private function prefetch(IdpClient $client): void
+    {
+        $byEmail = [];
+        $byExternalId = [];
+        $total = 0;
+        $offset = 0;
+
+        do {
+            $page = $this->withRetry(fn () => $client->listUsers(self::PAGE_SIZE, $offset));
+            foreach ($page as $idpUser) {
+                if ($idpUser->email) {
+                    $byEmail[mb_strtolower($idpUser->email)] ??= $idpUser;
+                }
+                if ($idpUser->externalId) {
+                    $byExternalId[$idpUser->externalId] ??= $idpUser;
+                }
+            }
+            $total += count($page);
+            $offset += self::PAGE_SIZE;
+        } while (count($page) === self::PAGE_SIZE);
+
+        $this->index = ['email' => $byEmail, 'external' => $byExternalId];
+        $this->line("  indexed {$total} existing identities in ".(int) ceil($offset / self::PAGE_SIZE).' call(s)');
+    }
+
+    private function importUser(IdpClient $client, User $user, bool $dryRun): void
     {
         if ($user->isLinkedToIdp()) {
             $this->line("  #{$user->id} {$user->email}: already linked to {$user->idp_id}, skipping");
@@ -144,23 +196,29 @@ class IdpImportUsers extends Command
             return;
         }
 
-        $idpUser = $this->createWithRetry($client, IdpUserPayload::forUser($user), $throttleMs);
+        $idpUser = $this->withRetry(fn () => $client->createUser(IdpUserPayload::forUser($user)));
         $this->link($user, $idpUser);
         $this->created++;
 
-        if ($throttleMs > 0) {
-            usleep($throttleMs * 1000);
+        if ($this->throttleMs > 0) {
+            usleep($this->throttleMs * 1000);
         }
     }
 
     private function findExisting(IdpClient $client, User $user): ?IdpUser
     {
         $externalId = $user->person?->uuid;
-        if ($externalId && ($found = $client->findUserByExternalId($externalId))) {
+
+        if ($this->index !== null) {
+            return ($externalId ? ($this->index['external'][$externalId] ?? null) : null)
+                ?? ($this->index['email'][mb_strtolower($user->email)] ?? null);
+        }
+
+        if ($externalId && ($found = $this->withRetry(fn () => $client->findUserByExternalId($externalId)))) {
             return $found;
         }
 
-        return $client->findUserByEmail($user->email);
+        return $this->withRetry(fn () => $client->findUserByEmail($user->email));
     }
 
     private function backfillExternalId(IdpClient $client, User $user, IdpUser $existing): void
@@ -171,7 +229,7 @@ class IdpImportUsers extends Command
         }
 
         try {
-            $client->updateUser($existing->id, ['external_id' => $uuid]);
+            $this->withRetry(fn () => $client->updateUser($existing->id, ['external_id' => $uuid]));
         } catch (IdpException $e) {
             $this->warn("    could not set external_id on {$existing->id}: {$e->getMessage()}");
         }
@@ -186,20 +244,23 @@ class IdpImportUsers extends Command
     }
 
     /**
-     * Create with a small exponential backoff when rate limited.
+     * Retry any IdP call that is rate limited, waiting as long as the provider
+     * asked when it sent a Retry-After and backing off exponentially otherwise.
      */
-    private function createWithRetry(IdpClient $client, array $payload, int $throttleMs): IdpUser
+    private function withRetry(callable $call): mixed
     {
         $attempt = 0;
 
         while (true) {
             try {
-                return $client->createUser($payload);
+                return $call();
             } catch (IdpException $e) {
                 if (! $e->isRateLimited() || ++$attempt > 5) {
                     throw $e;
                 }
-                $wait = max($throttleMs, 250) * (2 ** $attempt);
+                $wait = $e->retryAfter !== null
+                    ? $e->retryAfter * 1000
+                    : max($this->throttleMs, 250) * (2 ** $attempt);
                 $this->warn("    rate limited, backing off {$wait}ms (attempt {$attempt})");
                 usleep($wait * 1000);
             }

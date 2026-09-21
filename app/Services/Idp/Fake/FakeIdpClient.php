@@ -68,6 +68,15 @@ class FakeIdpClient implements IdpClient
         return $record ? $this->toIdpUser($record) : null;
     }
 
+    public function listUsers(int $limit, int $offset): array
+    {
+        $this->record(__FUNCTION__, func_get_args());
+
+        $page = array_slice(array_values($this->store->all()), $offset, $limit);
+
+        return array_map($this->toIdpUser(...), $page);
+    }
+
     public function createUser(array $attributes): IdpUser
     {
         $this->record(__FUNCTION__, func_get_args());

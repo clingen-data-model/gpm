@@ -100,12 +100,47 @@ class IdpImportUsersTest extends TestCase
         $second = User::factory()->create(['email' => 'second@example.com']);
         $this->client->failNext(new IdpException('boom', 500));
 
-        $this->artisan('idp:import-users', ['--all' => true, '--throttle' => 0])
+        $this->artisan('idp:import-users', ['--all' => true, '--throttle' => 0, '--no-prefetch' => true])
             ->expectsOutputToContain('Created: 1, Linked: 0, Skipped: 0, Errors: 1')
             ->assertFailed();
 
         $this->assertNull($first->fresh()->idp_id);
         $this->assertNotNull($second->fresh()->idp_id);
+    }
+
+    #[Test]
+    public function a_full_import_indexes_the_directory_instead_of_looking_each_user_up()
+    {
+        $linked = $this->setupUserWithPerson();
+        $created = $this->setupUserWithPerson();
+        $existing = $this->client->createUser(['email' => $linked->email]);
+
+        $this->artisan('idp:import-users', ['--all' => true, '--throttle' => 0])
+            ->expectsOutputToContain('indexed 1 existing identities')
+            ->expectsOutputToContain('Created: 1, Linked: 1, Skipped: 0, Errors: 0')
+            ->assertSuccessful();
+
+        $this->assertSame($existing->id, $linked->fresh()->idp_id);
+        $this->assertNotNull($created->fresh()->idp_id);
+
+        $methods = array_column($this->client->calls(), 'method');
+        $this->assertContains('listUsers', $methods);
+        $this->assertNotContains('findUserByEmail', $methods);
+        $this->assertNotContains('findUserByExternalId', $methods);
+    }
+
+    #[Test]
+    public function retries_a_rate_limited_call_and_honours_retry_after()
+    {
+        $user = User::factory()->create();
+        $this->client->failNext(new IdpException('slow down', 429, [], null, retryAfter: 0));
+
+        $this->artisan('idp:import-users', ['users' => [(string) $user->id], '--throttle' => 0])
+            ->expectsOutputToContain('rate limited, backing off')
+            ->expectsOutputToContain('Created: 1, Linked: 0, Skipped: 0, Errors: 0')
+            ->assertSuccessful();
+
+        $this->assertNotNull($user->fresh()->idp_id);
     }
 
     #[Test]

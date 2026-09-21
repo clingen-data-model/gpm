@@ -14,6 +14,8 @@ class IdpException extends RuntimeException
         public readonly ?int $status = null,
         public readonly array $errors = [],
         ?\Throwable $previous = null,
+        /** Seconds the provider asked us to wait, from a Retry-After header. */
+        public readonly ?int $retryAfter = null,
     ) {
         parent::__construct($message, $status ?? 0, $previous);
     }

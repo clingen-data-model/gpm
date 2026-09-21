@@ -52,6 +52,15 @@ class ClerkClient implements IdpClient
         return $this->first(['external_id' => [$externalId]]);
     }
 
+    public function listUsers(int $limit, int $offset): array
+    {
+        $url = '/users?'.$this->queryString(['limit' => $limit, 'offset' => $offset]);
+        $response = $this->send(fn (PendingRequest $http) => $http->get($url));
+        $this->guard($response);
+
+        return array_map(IdpUser::fromClerk(...), (array) $response->json());
+    }
+
     public function createUser(array $attributes): IdpUser
     {
         $response = $this->send(fn (PendingRequest $http) => $http->post('/users', $this->toClerkPayload($attributes)));
@@ -162,6 +171,13 @@ class ClerkClient implements IdpClient
             ?? $response->json('errors.0.message')
             ?? 'Clerk request failed with HTTP '.$response->status();
 
-        throw new IdpException($message, $response->status(), $errors);
+        $retryAfter = $response->header('Retry-After');
+
+        throw new IdpException(
+            $message,
+            $response->status(),
+            $errors,
+            retryAfter: is_numeric($retryAfter) ? (int) $retryAfter : null,
+        );
     }
 }

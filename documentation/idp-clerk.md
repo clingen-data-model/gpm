@@ -152,6 +152,22 @@ for every lookup — so the import silently links every user to one identity.
 Always read a `--dry-run` before importing for real: repeated "linking to
 existing identity <same id>" lines are the signature of a broken lookup.
 
+### Call budget
+
+Backend API limits are 1000 requests per 10s on production instances and 100
+per 10s on development ones; a 429 carries `Retry-After`, which the command
+waits out (every call is retried, not just creates). There is no bulk
+user-create endpoint — `POST /v1/users` takes one user — so the only batching
+available is on reads. `--all` therefore indexes the directory first, paging
+`GET /v1/users` 500 at a time, and resolves every link from that index:
+one call per 500 identities instead of two lookups per user. Pass
+`--no-prefetch` to go back to per-user lookups. Explicit user arguments always
+look up individually, where paging the directory would not repay itself.
+
+For ~3,800 users that is one list call plus one create per user, well inside
+even a development instance's budget. Raise `--throttle` if creates alone
+start drawing 429s.
+
 ### First sign-in after an import
 
 Imported identities are sound: addresses created through the Backend API come

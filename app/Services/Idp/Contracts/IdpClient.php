@@ -21,6 +21,16 @@ interface IdpClient
     public function findUserByExternalId(string $externalId): ?IdpUser;
 
     /**
+     * One page of the directory, for indexing it in bulk. Fewer than $limit
+     * results means the last page.
+     *
+     * @return array<int, IdpUser>
+     *
+     * @throws IdpException
+     */
+    public function listUsers(int $limit, int $offset): array;
+
+    /**
      * @throws IdpException
      */
     public function createUser(array $attributes): IdpUser;
