@@ -41,6 +41,29 @@ class FakeIdpClientTest extends TestCase
     }
 
     #[Test]
+    public function finds_users_by_a_secondary_address_and_lists_every_address()
+    {
+        $this->client->store()->put([
+            'id' => 'user_fake_multi',
+            'email' => 'Primary@Example.com',
+            'emails' => ['second@example.com', 'primary@example.com'],
+            'first_name' => 'Multi',
+            'last_name' => 'Mail',
+        ]);
+
+        $user = $this->client->findUserByEmail('SECOND@example.com');
+
+        $this->assertSame('user_fake_multi', $user->id);
+        $this->assertSame('Primary@Example.com', $user->email);
+        $this->assertSame(['primary@example.com', 'second@example.com'], $user->emails);
+        $this->assertTrue($user->hasEmail('second@example.com'));
+        $this->assertFalse($user->hasEmail('third@example.com'));
+
+        $this->expectException(IdpException::class);
+        $this->client->createUser(['email' => 'second@example.com']);
+    }
+
+    #[Test]
     public function accepts_a_bcrypt_digest_instead_of_a_password()
     {
         $digest = password_hash('imported', PASSWORD_BCRYPT, ['cost' => 4]);

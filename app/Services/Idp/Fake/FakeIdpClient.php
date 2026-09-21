@@ -85,8 +85,11 @@ class FakeIdpClient implements IdpClient
         if (! $email) {
             throw new IdpException('email is required.', 422, ['email' => 'required']);
         }
-        if ($this->store->findByEmail($email)) {
-            throw new IdpException('That email address is taken. Please try another.', 422, ['email' => 'form_identifier_exists']);
+        $emails = array_values(array_filter((array) ($attributes['emails'] ?? [])));
+        foreach ([$email, ...$emails] as $address) {
+            if ($this->store->findByEmail($address)) {
+                throw new IdpException('That email address is taken. Please try another.', 422, ['email' => 'form_identifier_exists']);
+            }
         }
         $externalId = $attributes['external_id'] ?? null;
         if ($externalId && $this->store->findByExternalId($externalId)) {
@@ -96,6 +99,7 @@ class FakeIdpClient implements IdpClient
         $record = $this->store->put([
             'id' => $this->store->nextId(),
             'email' => $email,
+            'emails' => $emails,
             'first_name' => $attributes['first_name'] ?? null,
             'last_name' => $attributes['last_name'] ?? null,
             'external_id' => $externalId,
@@ -115,7 +119,7 @@ class FakeIdpClient implements IdpClient
             throw new IdpException('Not found.', 404);
         }
 
-        foreach (['email', 'first_name', 'last_name', 'external_id'] as $key) {
+        foreach (['email', 'emails', 'first_name', 'last_name', 'external_id'] as $key) {
             if (array_key_exists($key, $attributes)) {
                 $record[$key] = $attributes[$key];
             }
@@ -164,6 +168,7 @@ class FakeIdpClient implements IdpClient
             lastName: $record['last_name'] ?? null,
             externalId: $record['external_id'] ?? null,
             raw: $record,
+            emails: FakeIdpStore::emailsOf($record),
         );
     }
 

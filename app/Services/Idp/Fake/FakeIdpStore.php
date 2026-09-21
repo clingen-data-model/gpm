@@ -37,16 +37,37 @@ class FakeIdpStore
         return $this->users[$id] ?? null;
     }
 
+    /**
+     * Match the primary address or any address listed under `emails`.
+     */
     public function findByEmail(string $email): ?array
     {
-        $needle = Str::lower($email);
+        $needle = Str::lower(trim($email));
         foreach ($this->all() as $user) {
-            if (Str::lower((string) ($user['email'] ?? '')) === $needle) {
+            if (in_array($needle, self::emailsOf($user), true)) {
                 return $user;
             }
         }
 
         return null;
+    }
+
+    /**
+     * Every address on a record, lower-cased, primary first.
+     *
+     * @return array<int, string>
+     */
+    public static function emailsOf(array $user): array
+    {
+        $emails = [];
+        foreach ([$user['email'] ?? null, ...($user['emails'] ?? [])] as $address) {
+            $address = Str::lower(trim((string) $address));
+            if ($address !== '' && ! in_array($address, $emails, true)) {
+                $emails[] = $address;
+            }
+        }
+
+        return $emails;
     }
 
     public function findByExternalId(string $externalId): ?array

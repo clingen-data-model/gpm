@@ -29,8 +29,10 @@ class ClerkClientTest extends TestCase
             'external_id' => 'person-uuid',
             'primary_email_address_id' => 'idn_2',
             'email_addresses' => [
-                ['id' => 'idn_1', 'email_address' => 'old@example.com'],
-                ['id' => 'idn_2', 'email_address' => 'jane@example.com'],
+                ['id' => 'idn_1', 'email_address' => 'Old@Example.com', 'verification' => ['status' => 'verified']],
+                ['id' => 'idn_2', 'email_address' => 'jane@example.com', 'verification' => ['status' => 'verified']],
+                ['id' => 'idn_3', 'email_address' => 'unverified@example.com', 'verification' => ['status' => 'unverified']],
+                ['id' => 'idn_4', 'email_address' => 'never@example.com', 'verification' => null],
             ],
         ], $overrides);
     }
@@ -46,6 +48,32 @@ class ClerkClientTest extends TestCase
         $this->assertSame('Jane Doe', $user->name());
         $this->assertSame('person-uuid', $user->externalId);
         Http::assertSent(fn ($request) => $request->hasHeader('Authorization', 'Bearer sk_test_secret'));
+    }
+
+    #[Test]
+    public function maps_every_verified_address_with_the_primary_first()
+    {
+        Http::fake([self::API.'/users/user_2abc' => Http::response($this->clerkUser())]);
+
+        $user = $this->client()->getUser('user_2abc');
+
+        $this->assertSame(['jane@example.com', 'old@example.com'], $user->emails);
+        $this->assertTrue($user->hasEmail('OLD@example.com'));
+        $this->assertFalse($user->hasEmail('unverified@example.com'));
+        $this->assertFalse($user->hasEmail('never@example.com'));
+    }
+
+    #[Test]
+    public function an_unverified_primary_address_is_still_usable()
+    {
+        Http::fake([self::API.'/users/user_2abc' => Http::response($this->clerkUser([
+            'primary_email_address_id' => 'idn_3',
+        ]))]);
+
+        $user = $this->client()->getUser('user_2abc');
+
+        $this->assertSame('unverified@example.com', $user->email);
+        $this->assertSame(['unverified@example.com', 'old@example.com', 'jane@example.com'], $user->emails);
     }
 
     #[Test]
