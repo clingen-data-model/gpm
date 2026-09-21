@@ -197,6 +197,7 @@ export default {
   data() {
     return {
       showInfoEdit: false,
+      discardingScopeOfWork: false,
       editingExpertise: false,
       editingDescription: false,
       editingScopeDescription: false,
@@ -210,6 +211,10 @@ export default {
     };
   },
   computed: {
+    scopeOfWorkHasActiveEdits() {
+      return this.showInfoEdit || this.showModal || this.editingExpertise || this.editingDescription
+        || this.editingScopeDescription || this.editingGcepRationale || this.editingGenes;
+    },
     showCreateAnnualUpdateButton () {
       return this.hasPermission('annual-updates-manage')
         && this.group.expert_panel
@@ -467,17 +472,54 @@ export default {
       );
     },
     async discardScopeOfWorkRevision(revision) {
+      if (this.discardingScopeOfWork) return;
+      if (this.scopeOfWorkHasActiveEdits) {
+        this.$store.commit('pushError', 'Save or cancel your active edits before discarding changes.');
+        return;
+      }
       if (!window.confirm('Discard this Scope of Work draft and revert all changes back to the approved version?')) { return; }
-      this.scopeOfWorkStatus = await this.$store.dispatch('groups/discardScopeOfWorkRevision', { groupUuid: this.group.uuid, revisionUuid: revision.uuid });
-      await this.getGroup();
-      this.scopeOfWorkHistory = null;
-      this.$store.commit('pushSuccess', `Scope of Work draft ${revision.version_label} discarded.`);
+      this.discardingScopeOfWork = true;
+      try {
+        this.scopeOfWorkStatus = await this.$store.dispatch('groups/discardScopeOfWorkRevision', { groupUuid: this.group.uuid, revisionUuid: revision.uuid });
+        if (!this.scopeOfWorkHasActiveEdits) await this.getGroup();
+        this.scopeOfWorkHistory = null;
+        this.$store.commit('pushSuccess', `Scope of Work draft ${revision.version_label} discarded.`);
+      } finally {
+        this.discardingScopeOfWork = false;
+      }
+    },
+    async discardScopeOfWorkChange({ revision, changeId }) {
+      if (this.discardingScopeOfWork) return;
+      if (this.scopeOfWorkHasActiveEdits) {
+        this.$store.commit('pushError', 'Save or cancel your active edits before discarding changes.');
+        return;
+      }
+      if (!window.confirm('Discard this change and restore its approved baseline value? Other changes will be kept.')) return;
+      this.discardingScopeOfWork = true;
+      try {
+        this.scopeOfWorkStatus = await this.$store.dispatch('groups/discardScopeOfWorkChange', {
+          groupUuid: this.group.uuid, revisionUuid: revision.uuid, changeId,
+        });
+        this.scopeOfWorkHistory = null;
+        if (!this.scopeOfWorkHasActiveEdits) await this.getGroup();
+        this.$store.commit('pushSuccess', 'Scope of Work change discarded.');
+      } catch (error) {
+        if (error.response?.status === 409) {
+          // GET only: do not replace unsaved form values or recreate change IDs again.
+          this.scopeOfWorkStatus = await this.$store.dispatch('groups/getScopeOfWorkStatus', this.group.uuid);
+          this.$store.commit('pushError', 'The revision changed. Review the refreshed changes and retry.');
+        } else {
+          this.$store.commit('pushError', error.response?.data?.message || 'The change could not be discarded.');
+        }
+      } finally {
+        this.discardingScopeOfWork = false;
+      }
     },
   },
 };
 </script>
 <template>
-  <div>
+  <div :inert="discardingScopeOfWork || undefined">
     <AnnualUpdateAlert
       v-if="
         hasAnyPermission([
@@ -509,12 +551,14 @@ export default {
     <ScopeOfWorkStatusBanner
       v-if="group?.is_ep"
       :status="scopeOfWorkStatus"
+      :discarding="discardingScopeOfWork"
       :can-manage="hasPermission('ep-applications-manage')"
       @finalize="finalizeScopeOfWorkRevision"
       @submit="submitScopeOfWorkRevision"
       @approve="approveScopeOfWorkRevision"
       @request-revisions="requestScopeOfWorkRevisionChanges"
       @discard="discardScopeOfWorkRevision"
+      @discard-change="discardScopeOfWorkChange"
     >
       <static-alert v-if="scopeOfWorkIsUnderReview" variant="info" class="mb-3">
         Scope of Work changes are currently under review. Editing is disabled until the revision is approved or revisions are requested.

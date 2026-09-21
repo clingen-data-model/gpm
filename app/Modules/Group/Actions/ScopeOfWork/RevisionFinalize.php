@@ -19,19 +19,31 @@ class RevisionFinalize
 
     public function handle(Group $group, ScopeOfWorkVersion $revision, ?User $user = null): ScopeOfWorkVersion
     {
+        return DB::transaction(function () use ($group, $revision, $user) {
+            $revision = ScopeOfWorkVersion::whereKey($revision->id)->lockForUpdate()->firstOrFail();
+            return $this->finalize($group, $revision, $user);
+        });
+    }
+
+    private function finalize(Group $group, ScopeOfWorkVersion $revision, ?User $user): ScopeOfWorkVersion
+    {
         $user = $user ?: Auth::user();
 
         if ($revision->group_id !== $group->id) {
             abort(404);
         }
 
-        if ($revision->status !== ScopeOfWorkVersion::STATUS_DRAFT) {
+        if (!in_array($revision->status, [ScopeOfWorkVersion::STATUS_DRAFT, ScopeOfWorkVersion::STATUS_REVISIONS_REQUESTED], true)) {
             throw ValidationException::withMessages([
-                'revision' => 'Only draft Scope of Work revisions can be finalized.',
+                'revision' => 'Only draft or revisions-requested Scope of Work revisions can be finalized.',
             ]);
         }
 
         $revision->load('changes');
+
+        if ($revision->submissions()->pending()->exists()) {
+            throw ValidationException::withMessages(['revision' => 'A Scope of Work revision under review cannot be finalized.']);
+        }
 
         if ($revision->changes->isEmpty()) {
             throw ValidationException::withMessages([

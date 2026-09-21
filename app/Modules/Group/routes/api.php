@@ -221,6 +221,8 @@ Route::group([
 
         // SCOPE OF WORK
         Route::group(['prefix' => '/scope-of-work'], function () {
+            Route::post('/revisions/{scopeOfWorkVersion:uuid}/changes/{changeId}/discard',
+                \App\Modules\Group\Actions\ScopeOfWork\RevisionChangeDiscard::class)->whereNumber('changeId');
             Route::get('/revisions/{scopeOfWorkVersion:uuid}/comparison',
                 \App\Modules\Group\Actions\ScopeOfWork\DraftComparisonGet::class);
             Route::post('/refresh', RevisionRefreshRun::class);
