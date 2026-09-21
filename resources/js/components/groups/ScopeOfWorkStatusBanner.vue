@@ -45,20 +45,23 @@
 
 			<ul class="mt-2 list-inside list-disc text-yellow-900">
 				<li v-for="change in status.active_revision.changes" :key="change.id">
-					{{ scopeOfWorkChangeLabel(change) }}
+					{{ scopeOfWorkChangeLabel(change) }}					
 					<span v-if="change.requires_approval === 'yes'" class="font-semibold">— requires approval</span>
 					<span v-else-if="change.requires_approval === 'conditional'" class="font-semibold">— may require approval</span>
+					<button v-if="editable && change.can_discard && supportedChanges.includes(change.rule_key)"
+						type="button" class="btn btn-xs ml-2 mb-1" :disabled="mutationBusy"
+						@click="emit('discard-change', { revision: activeRevision, changeId: change.id })">Discard</button>
 				</li>
 			</ul>
 
 			<div class="mt-3 flex flex-wrap gap-2">
-				<button v-if="status.active_revision.status === 'draft' && status.active_revision.summary.can_finalize_without_approval" type="button" class="btn btn-xs" @click="$emit('finalize', status.active_revision)">
+				<button v-if="editable && status.active_revision.summary.can_finalize_without_approval" type="button" class="btn btn-xs" :disabled="mutationBusy" @click="$emit('finalize', status.active_revision)">
 					Finalize as version {{ status.active_revision.version_label }}
 				</button>
-				<button v-if="['draft', 'revisions_requested'].includes(status.active_revision.status) && status.active_revision.summary.requires_submission" type="button" class="btn btn-xs" @click="showSubmitRevisionModal = true">
+				<button v-if="editable && status.active_revision.summary.requires_submission" type="button" class="btn btn-xs" :disabled="mutationBusy" @click="showSubmitRevisionModal = true">
 					{{ status.active_revision.status === 'revisions_requested' ? 'Resubmit for approval' : 'Submit for approval' }}
         		</button>				
-				<button v-if="['draft', 'revisions_requested'].includes(status.active_revision.status)" type="button" class="btn btn-xs" @click="$emit('discard', status.active_revision)">Discard changes</button>
+				<button v-if="editable" type="button" class="btn btn-xs" :disabled="mutationBusy" @click="$emit('discard', status.active_revision)">Discard all changes</button>
 			</div>
 		</div>
 	</div>
@@ -69,6 +72,7 @@
     :submission-name="`Scope of Work revision ${activeRevision.version_label}`"
     notes-label="Required notes for reviewers:"
     submit-text="Submit for Approval"
+    :submitting="mutationBusy"
     @submitted="submitRevision"
   />
 </template>
@@ -79,6 +83,7 @@ import { computed, ref } from 'vue';
 import SubmissionConfirmationModal from '@/components/applications/SubmissionConfirmationModal.vue';
 
 const props = defineProps({
+  discarding: { type: Boolean, default: false },
   status: {
     type: Object,
     required: false,
@@ -91,12 +96,15 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(['finalize', 'submit', 'approve', 'request-revisions', 'discard']);
+const emit = defineEmits(['finalize', 'submit', 'approve', 'request-revisions', 'discard', 'discard-change']);
 const showSubmitRevisionModal = ref(false);
 const submittingRevision = ref(false);
 const activeRevision = computed(() => props.status?.active_revision || null);
+const supportedChanges = ['panel_name.rename', 'scope_description.update'];
+const editable = computed(() => ['draft', 'revisions_requested'].includes(activeRevision.value?.status));
+const mutationBusy = computed(() => props.discarding || submittingRevision.value);
 const submitRevision = (notes) => {
-  if (!activeRevision.value || submittingRevision.value) { return; }
+  if (!activeRevision.value || mutationBusy.value) { return; }
   submittingRevision.value = true;
   emit('submit', { revision: activeRevision.value, notes, done: () => {
     submittingRevision.value = false;

@@ -25,7 +25,9 @@ class SnapshotCompare
         $before = data_get($beforeSnapshot, 'scope_of_work.panel_name');
         $after = data_get($afterSnapshot, 'scope_of_work.panel_name');
 
-        if ($before === $after) {
+        if ($before === $after
+            && data_get($beforeSnapshot, 'expert_panel.long_base_name') === data_get($afterSnapshot, 'expert_panel.long_base_name')
+            && data_get($beforeSnapshot, 'expert_panel.short_base_name') === data_get($afterSnapshot, 'expert_panel.short_base_name')) {
             return [];
         }
 
