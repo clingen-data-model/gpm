@@ -48,9 +48,9 @@
 					{{ scopeOfWorkChangeLabel(change) }}					
 					<span v-if="change.requires_approval === 'yes'" class="font-semibold">— requires approval</span>
 					<span v-else-if="change.requires_approval === 'conditional'" class="font-semibold">— may require approval</span>
-					<button v-if="editable && change.can_discard && supportedChanges.includes(change.rule_key)"
+					<button v-if="editable && change.can_discard"
 						type="button" class="btn btn-xs ml-2 mb-1" :disabled="mutationBusy"
-						@click="emit('discard-change', { revision: activeRevision, changeId: change.id })">Discard</button>
+						@click="discardChange(change)">Discard</button>
 				</li>
 			</ul>
 
@@ -100,9 +100,13 @@ const emit = defineEmits(['finalize', 'submit', 'approve', 'request-revisions', 
 const showSubmitRevisionModal = ref(false);
 const submittingRevision = ref(false);
 const activeRevision = computed(() => props.status?.active_revision || null);
-const supportedChanges = ['panel_name.rename', 'scope_description.update'];
 const editable = computed(() => ['draft', 'revisions_requested'].includes(activeRevision.value?.status));
 const mutationBusy = computed(() => props.discarding || submittingRevision.value);
+const discardChange = (change) => {
+  if (!editable.value || mutationBusy.value || !change.can_discard
+    || !activeRevision.value.changes.includes(change)) return;
+  emit('discard-change', { revision: activeRevision.value, changeId: change.id, fromBanner: true });
+};
 const submitRevision = (notes) => {
   if (!activeRevision.value || mutationBusy.value) { return; }
   submittingRevision.value = true;

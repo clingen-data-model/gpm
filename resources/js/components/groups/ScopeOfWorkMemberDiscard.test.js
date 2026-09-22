@@ -55,9 +55,9 @@ describe('member discard controls', () => {
     wrapper.unmount()
   })
 
-  it('does not duplicate contextual actions in the banner', () => {
+  it('also exposes the supported contextual action in the banner', () => {
     const wrapper = mount(ScopeOfWorkStatusBanner, { props: { status: status() }, global: { stubs: { SubmissionConfirmationModal: true } } })
-    expect(wrapper.findAll('li button')).toHaveLength(0)
+    expect(wrapper.findAll('li button')).toHaveLength(1)
     expect(wrapper.text()).toContain('Discard all changes')
   })
 })
