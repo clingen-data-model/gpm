@@ -36,7 +36,7 @@ beforeEach(() => {
   for (const method of Object.values(api)) method.mockResolvedValue({ data: [] })
 })
 
-async function render(Component, comparisonEnabled = true, liveOverride = null) {
+async function render(Component, comparisonEnabled = true, liveOverride = null, discardContext = null) {
   const { live, comparison } = fixture()
   const group = { uuid: 'group', expert_panel: { genes: liveOverride ?? live } }
   const getGenes = vi.fn()
@@ -46,7 +46,7 @@ async function render(Component, comparisonEnabled = true, liveOverride = null) 
   const wrapper = mount(Component, {
     props: { scopeComparison: comparisonEnabled ? comparison : null,
       ...(Component === GeneCurationStatus ? { genes: group.expert_panel.genes, groupID: 'group' } : {}) },
-    global: { plugins: [store], mocks: { hasRole: () => false, hasAnyPermission: () => true },
+    global: { plugins: [store], provide: { scopeOfWorkGeneDiscard: discardContext }, mocks: { hasRole: () => false, hasAnyPermission: () => true },
       stubs: { note: true, 'edit-icon-button': true, 'dropdown-menu': { template: '<div><slot name="label" /><slot /></div>' }, 'dropdown-item': true } },
   })
   await flushPromises()
@@ -99,6 +99,34 @@ describe.each([
   ['SC-VCEP', ScvcepGeneList, 'Current', 'Future'],
   ['GCEP', GeneCurationStatus, 'Primary', 'Secondary'],
 ])('%s contextual cards', (name, Component, oldTier, newTier) => {
+  it('offers revision discard on added, removed and changed cards only while editable', async () => {
+    const revision = { uuid: 'revision', status: 'draft', changes: [
+      { id: 20, rule_key: 'gene.add', after_value: { id: 2 }, can_discard: true },
+      { id: 30, rule_key: 'gene.update_tier', field_name: 'tier', after_value: { id: 3 }, can_discard: true },
+      { id: 40, rule_key: 'gene.remove', before_value: { id: 4 }, can_discard: true },
+    ] }
+    const context = { status: ref({ active_revision: revision }), busy: ref(false), discard: vi.fn() }
+    const { wrapper } = await render(Component, true, null, context)
+    expect(wrapper.get('[data-scope-gene-id="1"]').find('[aria-label^="Discard"]').exists()).toBe(false)
+    for (const id of [2, 3, 4]) expect(wrapper.get(`[data-scope-gene-id="${id}"]`).find('[aria-label^="Discard"]').exists()).toBe(true)
+    const removed = wrapper.get('[data-scope-gene-id="4"]')
+    expect(removed.findAll('button')).toHaveLength(1)
+    expect(removed.find('input, select, dropdown-item-stub').exists()).toBe(false)
+    await removed.get('button').trigger('click')
+    expect(context.discard).toHaveBeenCalledWith({ revision: context.status.value.active_revision, changeId: 40, geneLabel: undefined })
+    context.busy.value = true
+    await flushPromises()
+    expect(wrapper.findAll('[aria-label^="Discard"]').every(button => button.element.disabled)).toBe(true)
+    await removed.get('button').trigger('click')
+    expect(context.discard).toHaveBeenCalledTimes(1)
+    context.status.value.active_revision.status = 'submitted'
+    await flushPromises()
+    expect(wrapper.findAll('[aria-label^="Discard"]')).toHaveLength(0)
+    context.status.value.active_revision.status = 'revisions_requested'
+    await flushPromises()
+    expect(wrapper.findAll('[aria-label^="Discard"]')).toHaveLength(3)
+    wrapper.unmount()
+  })
   it('shows the union in existing cards, badges and backend field changes', async () => {
     const { wrapper } = await render(Component)
     expect(wrapper.findAll('[data-scope-gene-id]')).toHaveLength(4)

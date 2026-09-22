@@ -324,6 +324,7 @@ export default {
         }
 
         return {
+            refreshGenes: getGenes, hasUnsavedEdits: computed(() => !!selectedGene.value || showPasteModal.value || adding.value),
             group, genesAsText, loading, errors, resetErrors, hideForm, cancel,
             geneCheckResults, selectedGene, adding, addGene, onChildChange, selectKey,
             showPasteModal, pasteText, pasteArea, openPasteModal, closePasteModal, onReviewClick, reviewing, bulkCheckResults,

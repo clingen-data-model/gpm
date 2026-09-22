@@ -195,10 +195,18 @@ export default {
       scopeOfWorkComparisonState,
     };
   },
+  provide() {
+    return { scopeOfWorkGeneDiscard: {
+      status: computed(() => this.scopeOfWorkStatus),
+      busy: computed(() => this.discardingScopeOfWork || this.scopeOfWorkMutationBusy),
+      discard: payload => this.discardScopeOfWorkChange(payload),
+    } };
+  },
   data() {
     return {
       showInfoEdit: false,
       discardingScopeOfWork: false,
+      scopeOfWorkMutationBusy: false,
       editingExpertise: false,
       editingDescription: false,
       editingScopeDescription: false,
@@ -214,7 +222,8 @@ export default {
   computed: {
     scopeOfWorkHasActiveEdits() {
       return this.showInfoEdit || this.showModal || this.editingExpertise || this.editingDescription
-        || this.editingScopeDescription || this.editingGcepRationale || this.editingGenes;
+        || this.editingScopeDescription || this.editingGcepRationale
+        || (this.editingGenes && (this.$refs.groupGeneListRef?.hasUnsavedEdits ?? true));
     },
     showCreateAnnualUpdateButton () {
       return this.hasPermission('annual-updates-manage')
@@ -405,22 +414,30 @@ export default {
       this.scopeOfWorkStatus = await this.$store.dispatch('groups/refreshScopeOfWorkStatus', this.group.uuid);
     },
     async finalizeScopeOfWorkRevision(revision) {
-      await this.$store.dispatch('groups/finalizeScopeOfWorkRevision', {
-        groupUuid: this.group.uuid,
-        revisionUuid: revision.uuid,
-      });
+      if (this.discardingScopeOfWork || this.scopeOfWorkMutationBusy) return;
+      this.scopeOfWorkMutationBusy = true;
+      try {
+        await this.$store.dispatch('groups/finalizeScopeOfWorkRevision', {
+          groupUuid: this.group.uuid,
+          revisionUuid: revision.uuid,
+        });
 
-      this.scopeOfWorkStatus = await this.$store.dispatch(
-        'groups/getScopeOfWorkStatus',
-        this.group.uuid
-      );
+        this.scopeOfWorkStatus = await this.$store.dispatch(
+          'groups/getScopeOfWorkStatus',
+          this.group.uuid
+        );
 
-      this.$store.commit(
-        'pushSuccess',
-        `Scope of Work changes finalized as version ${revision.version_label}.`
-      );
+        this.$store.commit(
+          'pushSuccess',
+          `Scope of Work changes finalized as version ${revision.version_label}.`
+        );
+      } finally {
+        this.scopeOfWorkMutationBusy = false;
+      }
     },
     async submitScopeOfWorkRevision(payload) {
+      if (this.discardingScopeOfWork || this.scopeOfWorkMutationBusy) { payload.done?.(); return; }
+      this.scopeOfWorkMutationBusy = true;
       const revision = payload.revision || payload;
       const notes = payload.notes || null;
 
@@ -429,6 +446,7 @@ export default {
         this.$store.commit('pushSuccess', `Scope of Work revision ${revision.version_label} submitted for approval.`);
         await this.getGroup();
       } finally {
+        this.scopeOfWorkMutationBusy = false;
         payload.done?.();
       }
     },
@@ -473,7 +491,7 @@ export default {
       );
     },
     async discardScopeOfWorkRevision(revision) {
-      if (this.discardingScopeOfWork) return;
+      if (this.discardingScopeOfWork || this.scopeOfWorkMutationBusy) return;
       if (this.scopeOfWorkHasActiveEdits) {
         this.$store.commit('pushError', 'Save or cancel your active edits before discarding changes.');
         return;
@@ -482,27 +500,36 @@ export default {
       this.discardingScopeOfWork = true;
       try {
         this.scopeOfWorkStatus = await this.$store.dispatch('groups/discardScopeOfWorkRevision', { groupUuid: this.group.uuid, revisionUuid: revision.uuid });
-        if (!this.scopeOfWorkHasActiveEdits) await this.getGroup();
+        if (!this.scopeOfWorkHasActiveEdits) {
+          await this.getGroup();
+          await this.$refs?.groupGeneListRef?.refreshGenes?.();
+        }
         this.scopeOfWorkHistory = null;
         this.$store.commit('pushSuccess', `Scope of Work draft ${revision.version_label} discarded.`);
       } finally {
         this.discardingScopeOfWork = false;
       }
     },
-    async discardScopeOfWorkChange({ revision, changeId }) {
-      if (this.discardingScopeOfWork) return;
+    async discardScopeOfWorkChange({ revision, changeId, geneLabel }) {
+      if (this.discardingScopeOfWork || this.scopeOfWorkMutationBusy) return;
       if (this.scopeOfWorkHasActiveEdits) {
         this.$store.commit('pushError', 'Save or cancel your active edits before discarding changes.');
         return;
       }
-      if (!window.confirm('Discard this change and restore its approved baseline value? Other changes will be kept.')) return;
+      const message = geneLabel
+        ? `Discard the Scope of Work change for ${geneLabel}? This will restore this change to ${revision.base_version?.version_label ? 'version ' + revision.base_version.version_label : 'the approved baseline'}. Other draft changes will remain.`
+        : 'Discard this change and restore its approved baseline value? Other changes will be kept.';
+      if (!window.confirm(message)) return;
       this.discardingScopeOfWork = true;
       try {
         this.scopeOfWorkStatus = await this.$store.dispatch('groups/discardScopeOfWorkChange', {
           groupUuid: this.group.uuid, revisionUuid: revision.uuid, changeId,
         });
         this.scopeOfWorkHistory = null;
-        if (!this.scopeOfWorkHasActiveEdits) await this.getGroup();
+        if (!this.scopeOfWorkHasActiveEdits) {
+          await this.getGroup();
+          await this.$refs?.groupGeneListRef?.refreshGenes?.();
+        }
         this.$store.commit('pushSuccess', 'Scope of Work change discarded.');
       } catch (error) {
         if (error.response?.status === 409) {
@@ -552,7 +579,7 @@ export default {
     <ScopeOfWorkStatusBanner
       v-if="group?.is_ep"
       :status="scopeOfWorkStatus"
-      :discarding="discardingScopeOfWork"
+      :discarding="discardingScopeOfWork || scopeOfWorkMutationBusy"
       :can-manage="hasPermission('ep-applications-manage')"
       @finalize="finalizeScopeOfWorkRevision"
       @submit="submitScopeOfWorkRevision"
