@@ -191,7 +191,8 @@ export default {
       needsToReviewSustainedCuration,
       getLogEntries,
       getGroup,
-      scopeOfWorkStatus
+      scopeOfWorkStatus,
+      scopeOfWorkComparisonState,
     };
   },
   data() {
@@ -623,6 +624,7 @@ export default {
             >
               <component
                 :is="groupGeneList"
+                :scope-comparison="scopeOfWorkComparisonState.comparison.value"
                 ref="groupGeneListRef"
                 v-model:editing="editingGenes"
                 :readonly="scopeOfWorkIsUnderReview"
