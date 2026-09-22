@@ -153,7 +153,7 @@
               <div>
                 <div class="flex flex-wrap items-center gap-2">
                   <span class="text-base font-semibold" :class="isRemoved(gene) ? 'text-red-700 line-through' : 'text-gray-900'">{{ gene.gene_symbol }}</span>
-                  <ScopeOfWorkGeneChangeLabel :comparison="comparisonFor(gene)" :tier-label="tierLabel" />
+                  <ScopeOfWorkGeneChangeLabel :gene-id="gene.id" :comparison="comparisonFor(gene)" :tier-label="tierLabel" />
                   <span
                     v-if="gene.mondo_id"
                     :class="isRemoved(gene) ? 'text-red-700 line-through' : ''"
@@ -166,7 +166,7 @@
             </div>
 
             <div class="flex items-center gap-2">
-              <ScopeOfWorkGeneChangeLabel :comparison="comparisonFor(gene)" :tier-label="tierLabel" field="tier" />
+              <ScopeOfWorkGeneChangeLabel :gene-id="gene.id" :comparison="comparisonFor(gene)" :tier-label="tierLabel" field="tier" />
               <template v-if="editing && !readonly && canMutate(gene)">
                 <select
                   v-model="gene.tier"
@@ -543,6 +543,7 @@ export default {
 
     return {
       displayGenes, comparisonFor, isRemoved, isSnapshotOnly, canMutate, editableIds, tierLabel,
+      refreshGenes: getGenes, hasUnsavedEdits: computed(() => isFormVisible.value),
       // permissions + props
       group,
       canEdit,

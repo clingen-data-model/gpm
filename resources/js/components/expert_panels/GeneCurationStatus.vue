@@ -516,7 +516,7 @@ watch(
               <div class="min-w-0">
                 <div class="flex flex-wrap items-center gap-2">
                   <span class="text-base font-semibold" :class="isRemoved(gene) ? 'text-red-700 line-through' : 'text-gray-900'">{{ gene.gene_symbol }}</span>
-                  <ScopeOfWorkGeneChangeLabel :comparison="comparisonFor(gene)" :tier-label="tierLabel" />
+                  <ScopeOfWorkGeneChangeLabel :gene-id="gene.id" :comparison="comparisonFor(gene)" :tier-label="tierLabel" />
                   <span v-if="isSnapshotOnly(gene)" :class="isRemoved(gene) ? 'text-red-700 line-through' : ''">{{ gene.mondo_id }} {{ gene.disease_name }} {{ gene.moi }}</span>
                   <span v-if="(gene.statuses || []).length" class="text-xs rounded-full px-2 py-0.5 text-gray-700" :class="(gene.details || []).length ? 'border border-amber-400 bg-amber-50' : 'border border-gray-400 bg-gray-50'">
                     {{ (gene.statuses || []).join(', ') }}
@@ -529,7 +529,7 @@ watch(
             </div>
 
             <div class="flex items-center gap-2">
-              <ScopeOfWorkGeneChangeLabel :comparison="comparisonFor(gene)" :tier-label="tierLabel" field="tier" />
+              <ScopeOfWorkGeneChangeLabel :gene-id="gene.id" :comparison="comparisonFor(gene)" :tier-label="tierLabel" field="tier" />
               <button
                 v-if="(gene.details || []).length"
                 @click="toggleExpanded(gene.id)"

@@ -253,7 +253,7 @@
                         <div>
                             <div class="flex flex-wrap items-center gap-2">
                                 <span class="text-base font-semibold" :class="isRemoved(gene) ? 'text-red-700 line-through' : 'text-gray-900'">{{ gene.gene_symbol }}</span>
-                                <ScopeOfWorkGeneChangeLabel :comparison="comparisonFor(gene)" :tier-label="tierLabel" />
+                                <ScopeOfWorkGeneChangeLabel :gene-id="gene.id" :comparison="comparisonFor(gene)" :tier-label="tierLabel" />
                                 <span v-if="gene.mondo_id" :class="isRemoved(gene) ? 'text-red-700 line-through' : ''" class="rounded-full bg-gray-100 px-2 py-0.5 text-gray-700" :title="`${gene.mondo_id} ${gene.disease_name || ''}`">
                                     <span class="font-semibold">{{ gene.mondo_id }}</span> 
                                     {{ gene.disease_name && gene.disease_name.length > 50 ? gene.disease_name.slice(0, 50) + '…' : gene.disease_name }}
@@ -283,7 +283,7 @@
                     </div>
 
                     <div class="flex items-center gap-2">
-                        <ScopeOfWorkGeneChangeLabel :comparison="comparisonFor(gene)" :tier-label="tierLabel" field="tier" />
+                        <ScopeOfWorkGeneChangeLabel :gene-id="gene.id" :comparison="comparisonFor(gene)" :tier-label="tierLabel" field="tier" />
                         <span v-if="(gene.plan?.is_other === true && !(hasRole('super-admin') || hasRole('super-user'))) || ! editing || !canMutate(gene)" class="text-xs text-gray-700">
                             <template v-if="!isSnapshotOnly(gene) || Object.hasOwn(gene, 'tier')">Tier: {{ tierLabel(gene.tier) }}</template>
                         </span>
@@ -1108,6 +1108,7 @@ export default {
         }
 
         return {
+            refreshGenes: getGenes, hasUnsavedEdits: computed(() => isFormVisible.value),
             group, genes, formGene, curatedGeneKey, isEditing, isFormVisible,
             mois, errors, search, filterMoi, filterClassification, sortKey, sortOrder,
             displayGenes, comparisonFor, isRemoved, isSnapshotOnly, canMutate, editableIds, tierLabel,

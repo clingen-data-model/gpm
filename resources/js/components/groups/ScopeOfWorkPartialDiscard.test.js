@@ -1,4 +1,7 @@
-import { mount } from '@vue/test-utils'
+import { mount, flushPromises } from '@vue/test-utils'
+import { effectScope, ref } from 'vue'
+import { api } from '@/http'
+import { useScopeOfWorkComparison } from '@/composables/scope_of_work_comparison'
 import { describe, it, expect, vi, afterEach } from 'vitest'
 import ScopeOfWorkStatusBanner from './ScopeOfWorkStatusBanner.vue'
 import GroupDetail from '@/views/groups/GroupDetail.vue'
@@ -68,11 +71,34 @@ describe('partial discard banner', () => {
 const context = () => ({
   group: { uuid: 'group' }, discardingScopeOfWork: false, scopeOfWorkHasActiveEdits: false,
   scopeOfWorkHistory: { versions: [] }, getGroup: vi.fn().mockResolvedValue(),
+  $refs: { groupGeneListRef: { refreshGenes: vi.fn().mockResolvedValue() } },
   $store: { dispatch: vi.fn().mockResolvedValue({ has_active_revision: true }), commit: vi.fn() },
 })
 const discard = ctx => GroupDetail.methods.discardScopeOfWorkChange.call(ctx, { revision: { uuid: 'revision' }, changeId: 1 })
 
 describe('Group Detail partial discard', () => {
+  it('reloads contextual comparison through the existing status watcher after success', async () => {
+    vi.spyOn(window, 'confirm').mockReturnValue(true)
+    const get = vi.spyOn(api, 'get')
+      .mockResolvedValueOnce({ data: { rows: { genes: [{ key: '2', operation: 'added' }] } } })
+      .mockResolvedValueOnce({ data: { rows: { genes: [] } } })
+    const revisionStatus = ref(status())
+    const scope = effectScope()
+    const comparison = scope.run(() => useScopeOfWorkComparison(() => [
+      'group', revisionStatus.value.active_revision.uuid, 'live', revisionStatus.value,
+    ]))
+    await flushPromises()
+    expect(comparison.comparison.value.rows.genes).toHaveLength(1)
+    const ctx = context()
+    Object.defineProperty(ctx, 'scopeOfWorkStatus', { get: () => revisionStatus.value,
+      set: value => { revisionStatus.value = value } })
+    ctx.$store.dispatch.mockResolvedValueOnce(status())
+    await discard(ctx)
+    await flushPromises()
+    expect(get).toHaveBeenCalledTimes(2)
+    expect(comparison.comparison.value.rows.genes).toEqual([])
+    scope.stop()
+  })
   it('confirms, posts, reloads and invalidates history', async () => {
     vi.spyOn(window, 'confirm').mockReturnValue(true)
     const ctx = context()
@@ -82,6 +108,7 @@ describe('Group Detail partial discard', () => {
       groupUuid: 'group', revisionUuid: 'revision', changeId: 1,
     })
     expect(ctx.getGroup).toHaveBeenCalledOnce()
+    expect(ctx.$refs.groupGeneListRef.refreshGenes).toHaveBeenCalledOnce()
     expect(ctx.scopeOfWorkHistory).toBeNull()
     expect(ctx.discardingScopeOfWork).toBe(false)
   })
@@ -120,5 +147,24 @@ describe('Group Detail partial discard', () => {
     finish({ has_active_revision: false })
     await request
     expect(ctx.getGroup).not.toHaveBeenCalled()
+  })
+
+  it('confirms the gene and approved version and blocks duplicate/competing mutations', async () => {
+    vi.spyOn(window, 'confirm').mockReturnValue(true)
+    const ctx = context()
+    let finish
+    ctx.$store.dispatch.mockImplementationOnce(() => new Promise(resolve => { finish = resolve }))
+    const request = GroupDetail.methods.discardScopeOfWorkChange.call(ctx, {
+      revision: { uuid: 'revision', base_version: { version_label: '1.0' } }, changeId: 20, geneLabel: 'SCN1B',
+    })
+    expect(window.confirm).toHaveBeenCalledWith(expect.stringMatching(/SCN1B.*version 1.0/))
+    await discard(ctx)
+    await GroupDetail.methods.finalizeScopeOfWorkRevision.call(ctx, { uuid: 'revision' })
+    await GroupDetail.methods.submitScopeOfWorkRevision.call(ctx, { revision: { uuid: 'revision' } })
+    expect(ctx.$store.dispatch).toHaveBeenCalledTimes(1)
+    finish({ has_active_revision: false })
+    await request
+    expect(ctx.scopeOfWorkStatus.has_active_revision).toBe(false)
+    expect(ctx.$refs.groupGeneListRef.refreshGenes).toHaveBeenCalledOnce()
   })
 })
