@@ -4,6 +4,10 @@ import sortAndFilter from '@/composables/router_aware_sort_and_filter'
 import MemberPreview from '@/components/groups/MemberPreview.vue'
 import CoiDetail from '@/components/applications/CoiDetail.vue'
 import configs from '@/configs.json'
+import { useStore } from 'vuex'
+import { useScopeOfWorkMemberRows, memberRetirementTransition } from '@/composables/scope_of_work_member_rows'
+import ScopeOfWorkMemberRoles from './ScopeOfWorkMemberRoles.vue'
+import ScopeOfWorkMemberDiscard from './ScopeOfWorkMemberDiscard.vue'
 // import GroupMembersFilter from '@/components/groups/GroupMembersFilter.vue'
 
 export default {
@@ -11,21 +15,33 @@ export default {
     components: {
         MemberPreview,
         CoiDetail,
+        ScopeOfWorkMemberRoles,
+        ScopeOfWorkMemberDiscard,
         // GroupMembersFilter
     },
     props: {
+      scopeComparison: { type: Object, default: null },
       readonly: {
         type: Boolean,
         default: false
       }
     },
     emits: ['updated'],
-    setup() {
+    setup(props) {
+        const store = useStore();
+        const { rows: memberRows, canUseLiveMember } = useScopeOfWorkMemberRows(
+            () => store.getters['groups/currentItemOrNew']?.members,
+            () => props.scopeComparison,
+            () => store.getters['groups/currentItemOrNew']?.uuid,
+        );
         const {sort, filter} = sortAndFilter({field: 'person.last_name', desc: false});
 
         return {
             sort,
             filter,
+            memberRows,
+            canUseLiveMember,
+            memberRetirementTransition,
         }
     },
     data() {
@@ -71,8 +87,8 @@ export default {
                     label: 'Roles',
                     sortable: true,
                     sortFunction (a,  b) {
-                        const aComp = a.roles.map(r => r.display_name).join(',');
-                        const bComp = b.roles.map(r => r.display_name).join(',');
+                        const aComp = a.roles.map(r => r.display_name ?? r.label).join(',');
+                        const bComp = b.roles.map(r => r.display_name ?? r.label).join(',');
 
                         if (aComp === bComp) {
                             return 0;
@@ -118,20 +134,28 @@ export default {
         },
 
         filteredMembers () {
-            if (!this.group.members) {
-                return [];
-            }
-            return this.group.members
+            return this.memberRows
                     .filter(m => this.matchesFilters(m))
                     .filter(m => {
                         if (this.filters.hideAlumns) {
-                            return m.end_date === null;
+                            return m.snapshotOnly ? !m.isRetired : m.end_date === null;
                         }
                         return m;
                     });
         },
+        operationalMembers () {
+            return this.filteredMembers.filter(row => this.canUseLiveMember(row)).map(row => row.member);
+        },
+        showOperationalLinks () {
+            return this.operationalMembers.length > 0 || !this.memberRows.some(row => row.snapshotOnly);
+        },
+        hiddenRetiredChanges () {
+            if (!this.filters.hideAlumns) return 0;
+            return this.memberRows.filter(row => row.isRetired && this.matchesFilters(row)
+                && row.comparison && row.comparison.operation !== 'unchanged').length;
+        },
         filteredEmails () {
-            return this.filteredMembers.map(m => `${m.person.name} <${m.person.email}>`)
+            return this.operationalMembers.map(m => `${m.person.name} <${m.person.email}>`)
         },
         fieldsForGroupType () {
             const fields = [...this.tableFields];
@@ -146,7 +170,7 @@ export default {
             return cuttoff;
         },
         selectedMemberName () {
-            return this.selectedMember ? this.selectedMember.person.name : null
+            return this.selectedMember?.member?.person?.name ?? this.selectedMember?.member?.label ?? null
         },
         showCoordinatorActions () {
             return this.hasAnyMemberPermission(['groups-manage', ['info-edit', this.group]])
@@ -158,7 +182,7 @@ export default {
             return this.hasAnyPermission([['members-invite', this.group], 'groups-manage', 'ep-applications-manage', 'annual-updates-manage'])
         },
         exportUrl () {
-            const query = `?member_ids=${this.filteredMembers.map(m => m.id).join(',')}`;
+            const query = `?member_ids=${this.operationalMembers.map(m => m.id).join(',')}`;
             return `/api/report/groups/${this.group.uuid}/member-export${query}`;
         },
         features () {
@@ -181,7 +205,24 @@ export default {
         toggleFilter() {
             this.showFilter = !this.showFilter;
         },
-        matchesFilters(member) {
+        canMutate(row) {
+          return !this.readonly && this.canUseLiveMember(row);
+        },
+        matchesFilters(row) {
+          const member = row.member;
+          if (row.snapshotOnly) {
+            if (this.filters.keyword) {
+              const pattern = new RegExp(this.filters.keyword, 'i');
+              if (![member.first_name, member.last_name, member.label, member.email, member.notes]
+                  .some(value => value && pattern.test(value))) return false;
+            }
+            const selectedRole = Object.values(this.roles).find(role => String(role.id) === String(this.filters.roleId));
+            if (this.filters.roleId && !member.roles?.some(role => String(role.id) === String(this.filters.roleId)
+                || (selectedRole && role.name === selectedRole.name))) return false;
+            // Missing historical requirements are unknown, not failed requirements.
+            if (this.filters.needsCoi || this.filters.needsTraining) return false;
+            return true;
+          }
           if (this.filters.keyword && !member.matchesKeyword(this.filters.keyword)) {
             return false;
           }
@@ -202,20 +243,23 @@ export default {
           item.showDetails = !item.showDetails;
         },
         editMember (member) {
-          this.$router.push(this.append(this.$route.path, `members/${member.id}`))
+          if (!this.canMutate(member)) return;
+          this.$router.push(this.append(this.$route.path, `members/${member.member.id}`))
         },
 
         // Retire member
         confirmRetireMember (member) {
+          if (!this.canMutate(member)) return;
           this.showConfirmRetire = true;
           this.selectedMember = member;
         },
         async retireMember () {
+          if (!this.canMutate(this.selectedMember)) return;
           try {
             await this.$store.dispatch('groups/memberRetire', {
               uuid: this.group.uuid,
-              memberId: this.selectedMember.id,
-              startDate: this.selectedMember.start_date,
+              memberId: this.selectedMember.member.id,
+              startDate: this.selectedMember.member.start_date,
               endDate: new Date().toISOString()
             });
             this.cancelRetire();
@@ -236,10 +280,11 @@ export default {
         //     // this.selectedMember = member;
         // },
         async unretireMember () {
+          if (!this.canMutate(this.selectedMember)) return;
           try {
             await this.$store.dispatch('groups/memberUnretire', {
               uuid: this.group.uuid,
-              memberId: this.selectedMember.id,
+              memberId: this.selectedMember.member.id,
             });
             this.cancelUnretire();
             this.$emit('updated');
@@ -255,15 +300,17 @@ export default {
 
         // Remove Member
         confirmRemoveMember (member) {
+          if (!this.canMutate(member)) return;
           this.showConfirmRemove = true;
           this.selectedMember = member;
         },
         async removeMember () {
+          if (!this.canMutate(this.selectedMember)) return;
           try {
             await this.$store.dispatch('groups/memberRemove', {
               uuid: this.group.uuid,
-              memberId: this.selectedMember.id,
-              startDate: this.selectedMember.start_date,
+              memberId: this.selectedMember.member.id,
+              startDate: this.selectedMember.member.start_date,
               endDate: new Date().toISOString()
             });
             this.cancelRemove();
@@ -279,7 +326,8 @@ export default {
 
 
         goToMember (member) {
-            this.$router.push({name: 'PersonDetail', params: {uuid: member.person.uuid}})
+            if (!this.canUseLiveMember(member)) return;
+            this.$router.push({name: 'PersonDetail', params: {uuid: member.member.person.uuid}})
         },
         hasAnyMemberPermission () {
             const hasPerm = this.hasAnyPermission([
@@ -306,6 +354,7 @@ export default {
             window.location = reportUrl;
         },
         confirmUnretire (member) {
+            if (!this.canMutate(member)) return;
             this.showConfirmUnretire = true;
             this.selectedMember = member;
         },
@@ -351,7 +400,9 @@ export default {
           const cocStatus = this.cocStatus(member);
           return cocStatus === 'current' || cocStatus === 'expiring_soon';
         },
-        async adminCompleteCoi (member) {
+        async adminCompleteCoi (row) {
+        if (!this.canMutate(row) || !this.canAdminCompleteCoi) return;
+        const member = row.member;
         try {
           await api.post(`/api/coi/${this.group.coi_code}`, {
             group_member_id: member.id,
@@ -388,7 +439,7 @@ export default {
       <div class="flex space-x-2 items-center">
         <h2>Members</h2>
         <button
-          v-if="group.members.length > 0"
+          v-if="memberRows.length > 0"
           class="px-3 py-2 rounded-t transition-color"
           :class="{'rounded-b': !showFilter, 'bg-blue-200': showFilter}"
           @click="toggleFilter"
@@ -409,7 +460,7 @@ export default {
         </div>
 
         <div v-if="showCoordinatorActions" class="flex space-x-2 items-center">
-          <popper :content="`Email ${filteredMembers.length} listed members`" hover arrow>
+          <popper v-if="showOperationalLinks" :content="`Email ${operationalMembers.length} listed members`" hover arrow>
             <a
               :href="`mailto:${filteredEmails.join(', ')}`"
               class="btn btn-icon"
@@ -433,8 +484,8 @@ export default {
                 (PDF)
               </note>
             </dropdown-item>
-            <dropdown-item v-if="showMemberReportButton" class="text-right">
-              <popper class="text-center text-sm p-1" :content="`Export will include ${filteredMembers.length} members currently listed.`" hover arrow>
+            <dropdown-item v-if="showMemberReportButton && showOperationalLinks" class="text-right">
+              <popper class="text-center text-sm p-1" :content="`Export will include ${operationalMembers.length} members currently listed.`" hover arrow>
                 <a :href="exportUrl">Member Export</a>
                 <note class="inline">
                   (CSV)
@@ -447,6 +498,9 @@ export default {
         </div>
       </div>
     </div>
+    <p v-if="hiddenRetiredChanges" class="text-xs text-gray-600 mt-1">
+      {{ hiddenRetiredChanges }} Scope of Work {{ hiddenRetiredChanges === 1 ? 'change' : 'changes' }} hidden by retired-member filter
+    </p>
     <transition name="slide-fade-down">
       <div v-show="showFilter" class="flex justify-between px-2 space-x-2 bg-blue-200 rounded-lg">
         <div class="flex-1">
@@ -477,12 +531,12 @@ export default {
     </transition>
     <div class="mt-3 py-2 w-full overflow-x-auto">
       <data-table
-        v-if="group.members.length > 0"
+        v-if="memberRows.length > 0"
         v-model:sort="sort"
         :fields="fieldsForGroupType"
         :data="filteredMembers"
         :detail-rows="true"
-        :row-class="(item) => `cursor-pointer${ item.isRetired ? ' retired-member' : ''}`"
+        :row-class="(item) => `${canUseLiveMember(item) ? 'cursor-pointer' : ''}${ item.isRetired ? ' retired-member' : ''}`"
         @row-click="goToMember"
       >
         <template #cell-id="{item}">
@@ -491,13 +545,33 @@ export default {
             <icon-cheveron-down v-if="item.showDetails" class="m-auto cursor-pointer" />
           </button>
         </template>
-        <template #cell-roles="{value}">
-          {{ value.map(i => i.display_name).join(', ') }}
+        <template #cell-person_first_name="{item, value}">
+          <del v-if="item.comparison?.operation === 'removed'" class="text-red-700">{{ value }}</del>
+          <span v-else>{{ value }}</span>
+        </template>
+        <template #cell-person_last_name="{item, value}">
+          <del v-if="item.comparison?.operation === 'removed'" class="text-red-700">{{ value }}</del>
+          <span v-else>{{ value }}</span>
+          <span v-if="item.comparison?.operation === 'added'" class="ml-1 rounded bg-green-50 px-1 text-xs text-green-800">Added</span>
+          <span v-if="item.comparison?.operation === 'removed'" class="ml-1 rounded bg-red-50 px-1 text-xs text-red-700">Removed</span>
+          <ScopeOfWorkMemberDiscard v-if="scopeComparison && ['added', 'removed'].includes(item.comparison?.operation)"
+            :person-id="item.member.person_id" :operation="item.comparison.operation" :member-label="item.comparison.label" />
+          <small v-if="memberRetirementTransition(item.comparison)" class="block text-gray-700">
+            {{ memberRetirementTransition(item.comparison) }}
+            <ScopeOfWorkMemberDiscard v-if="scopeComparison" :person-id="item.member.person_id" kind="retirement"
+              :operation="item.comparison.field_changes.find(change => change.field === 'end_date').before === null ? 'retire' : 'unretire'"
+              :member-label="item.comparison.label" />
+          </small>
+        </template>
+        <template #cell-roles="{item}">
+          <ScopeOfWorkMemberRoles :roles="item.roles" :comparison="item.comparison" :snapshot-only="item.snapshotOnly"
+            :allow-discard="!!scopeComparison" :person-id="item.member.person_id" :member-label="item.comparison?.label" />
         </template>
         <template #cell-coi_last_completed="{item}">
-          <div class="flex space-x-2">
+          <span v-if="item.snapshotOnly">—</span>
+          <div v-else class="flex space-x-2">
             <span v-if="item.coi_last_completed">{{ formatDate(item.coi_last_completed) }}</span>
-            <button v-if="item.latest_coi_id" class="link cursor-pointer" @click.stop="viewCoi(item.latest_coi_id)">
+            <button v-if="item.member.latest_coi_id" class="link cursor-pointer" @click.stop="viewCoi(item.member.latest_coi_id)">
               <icon-view />
             </button>
             <icon-exclamation
@@ -508,10 +582,10 @@ export default {
         </template>
 
         <template #cell-actions="{item}">
-          <button v-if="group.has_coi_requirement && item.needsCoi && canAdminCompleteCoi" class="btn btn-xs" @click.stop="adminCompleteCoi(item)">Complete COI</button>
+          <button v-if="canMutate(item) && group.has_coi_requirement && item.member.needsCoi && canAdminCompleteCoi" class="btn btn-xs" @click.stop="adminCompleteCoi(item)">Complete COI</button>
           <div class="flex space-x-2 items-center">
             <dropdown-menu
-              v-if="hasAnyMemberPermission() && !readonly"
+              v-if="hasAnyMemberPermission() && canMutate(item)"
               :hide-cheveron="true"
               class="relative block"
             >
@@ -549,20 +623,21 @@ export default {
             </dropdown-menu>
             <div>
               <popover hover arrow content="Receives notifications about this group." placement="top">
-                <icon-notification v-if="item.is_contact" :width="12" :height="12" icon-name="Is a group contact" @click.stop="" />
+                <icon-notification v-if="canUseLiveMember(item) && item.member.is_contact" :width="12" :height="12" icon-name="Is a group contact" @click.stop="" />
               </popover>
             </div>
           </div>
         </template>
 
         <template #cell-requirements="{item}">
-          <popover hover arrow placement="top">
-            <icon-checkmark v-if="requirementsMet(item)" :width="12" :height="12" class="text-green-600" />
+          <span v-if="item.snapshotOnly">—</span>
+          <popover v-else hover arrow placement="top">
+            <icon-checkmark v-if="requirementsMet(item.member)" :width="12" :height="12" class="text-green-600" />
             <icon-exclamation v-else :width="12" :height="12" class="text-red-700" />
 
             <template #content>
               <ul>
-                <li v-for="req, k in getRequirements(item)" :key="k">
+                <li v-for="req, k in getRequirements(item.member)" :key="k">
                   <icon-checkmark v-if="req.met" :width="12" :height="12" class="inline-block text-green-600" />
                   <icon-exclamation v-else :width="12" :height="12" class="inline-block text-red-700" />
                   {{ req.label }}
@@ -573,7 +648,7 @@ export default {
         </template>
 
         <template #detail="{item}">
-          <MemberPreview :member="item" :group="group" />
+          <MemberPreview :member="item.member" :group="group" :comparison="item.comparison" :snapshot-only="item.snapshotOnly" />
         </template>
       </data-table>
       <div v-else class="well">

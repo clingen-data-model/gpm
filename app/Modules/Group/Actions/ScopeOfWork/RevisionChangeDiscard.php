@@ -41,6 +41,15 @@ class RevisionChangeDiscard
             app(ScopeOfWorkChangeRestorer::class)->restore($group, $change,
                 $baseline->latestSnapshot->snapshot, $revision->latestSnapshot->snapshot, SnapshotBuild::run($group));
 
+            if (str_starts_with($change->rule_key, 'member.')) {
+                activity('applications')->performedOn($group)->causedBy($user)
+                    ->withProperties([
+                        'revision_id' => $revision->id, 'base_version_id' => $baseline->id,
+                        'change_id' => $change->id, 'rule_key' => $change->rule_key,
+                        'before_value' => $change->before_value, 'after_value' => $change->after_value,
+                    ])->log('Discarded Scope of Work membership change');
+            }
+
             RevisionRefresh::run($group->fresh(), $user);
             return StatusGet::run($group->fresh());
         });

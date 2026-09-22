@@ -33,6 +33,13 @@ class ScopeOfWorkDisplayComparison
                     continue;
                 }
                 $rows[$section] = $this->combinedRows($old, $new, $section);
+                if ($section === 'members') {
+                    foreach ($rows[$section] as $row) {
+                        if ($row['field_changes']) {
+                            $changes[] = $this->change('members', $row['key'], 'modified', $row['before'], $row['after']);
+                        }
+                    }
+                }
                 foreach (array_diff_key($old, $new) as $key => $item) {
                     $changes[] = $this->change($section, (string) $key, 'removed', $item, null);
                 }
@@ -98,6 +105,15 @@ class ScopeOfWorkDisplayComparison
             }
             $fieldChanges = [];
             $unavailableFields = [];
+            if ($section === 'members') {
+                if (($old !== null && !array_key_exists('end_date', $old))
+                    || ($new !== null && !array_key_exists('end_date', $new))) {
+                    $unavailableFields[] = 'end_date';
+                } elseif ($old !== null && $new !== null && $old['end_date'] !== $new['end_date']) {
+                    $fieldChanges[] = ['field' => 'end_date', 'before' => $old['end_date'], 'after' => $new['end_date']];
+                    $operation = 'changed';
+                }
+            }
             if ($section === 'genes') {
                 foreach (self::GENE_FIELDS as $field) {
                     if (($old !== null && !array_key_exists($field, $old))
@@ -117,6 +133,8 @@ class ScopeOfWorkDisplayComparison
                 $row['unavailable_fields'] = $unavailableFields;
             }
             if ($section === 'members') {
+                $row['field_changes'] = $fieldChanges;
+                $row['unavailable_fields'] = $unavailableFields;
                 $row['roles'] = $roles;
                 $row['roles_available'] = $roles !== null;
             }
@@ -181,14 +199,50 @@ class ScopeOfWorkDisplayComparison
                         'person_id' => $item['person_id'] ?? null,
                         'label' => trim(($person['first_name'] ?? '').' '.($person['last_name'] ?? '')),
                     ];
+                    foreach (['id', 'start_date', 'end_date', 'notes', 'is_contact', 'training_level_1', 'training_level_2'] as $field) {
+                        if (array_key_exists($field, $item)) {
+                            $member[$field] = in_array($field, ['start_date', 'end_date'], true)
+                                ? $this->normalizeMemberDate($item[$field]) : $item[$field];
+                        }
+                    }
+                    foreach (['first_name', 'last_name', 'email'] as $field) {
+                        if (array_key_exists($field, $person)) {
+                            $member[$field] = $person[$field];
+                        }
+                    }
+                    $uuidField = $application ? 'uuid' : 'person_uuid';
+                    if (array_key_exists($uuidField, $person)) {
+                        $member['person_uuid'] = $person[$uuidField];
+                    }
+                    // Only explicitly captured presentation data; never enrich from current models.
+                    if (!$application) {
+                        foreach (['institution', 'credentials', 'expertises'] as $field) {
+                            if (array_key_exists($field, $item)) {
+                                $member[$field] = $item[$field];
+                            }
+                        }
+                    } else {
+                        foreach (['credentials', 'expertises'] as $field) {
+                            $path = 'relations.person.relations.'.$field;
+                            if (Arr::has($entry, $path) && is_array(data_get($entry, $path))) {
+                                $member[$field] = array_values(array_filter(array_map(
+                                    fn ($value) => data_get($value, 'attributes.name'), data_get($entry, $path)
+                                ), fn ($value) => is_string($value)));
+                            }
+                        }
+                    }
                     $roles = $application ? data_get($entry, 'relations.roles') : ($item['roles'] ?? null);
                     if (is_array($roles) && array_is_list($roles)) {
                         $member['roles'] = array_map(function ($role) use ($application) {
                             $attributes = $application ? ($role['attributes'] ?? []) : $role;
-                            return [
+                            $normalized = [
                                 'name' => $attributes['name'] ?? null,
                                 'label' => $attributes['display_name'] ?? $attributes['name'] ?? null,
                             ];
+                            if (array_key_exists('id', $attributes)) {
+                                $normalized['id'] = $attributes['id'];
+                            }
+                            return $normalized;
                         }, $roles);
                     }
                     $items[] = $member;
@@ -197,6 +251,18 @@ class ScopeOfWorkDisplayComparison
             $result[$key] = $items;
         }
         return $result;
+    }
+
+    private function normalizeMemberDate(mixed $value): mixed
+    {
+        if ($value === null) {
+            return null;
+        }
+        try {
+            return $value ? \Carbon\Carbon::parse($value)->toISOString() : $value;
+        } catch (\Exception) {
+            return $value;
+        }
     }
 
     private function normalizeGeneValue(string $field, mixed $value): mixed
