@@ -157,7 +157,8 @@ class ScopeOfWorkComparisonTest extends TestCase
     {
         $this->revision->update(['status' => 'draft']);
         $this->getJson($this->draftUrl())->assertOk()->assertJsonPath('status', 'partial')
-            ->assertJsonPath('before.snapshot_id', null)->assertJsonCount(4, 'unavailable_sections')
+            ->assertJsonPath('before.snapshot_id', null)->assertJsonCount(5, 'unavailable_sections')
+            ->assertJsonPath('rows.genes', null)
             ->assertJsonPath('changes', []);
         $this->captureBaseline();
         $submission = $this->submission();
@@ -166,6 +167,34 @@ class ScopeOfWorkComparisonTest extends TestCase
             ->assertJsonPath('mode', 'previous_review_round')
             ->assertJsonPath('before.submission_id', $submission->id)
             ->assertJsonPath('before.snapshot_id', null)->assertJsonPath('changes', []);
+    }
+
+    #[Test]
+    public function live_gene_rows_include_additions_removals_and_tier_changes(): void
+    {
+        $changed = $this->panel->genes()->create(['gene_symbol' => 'SAME', 'hgnc_id' => 10, 'tier' => 1]);
+        $removed = $this->panel->genes()->create(['gene_symbol' => 'SAME', 'hgnc_id' => 10, 'tier' => 1]);
+        $this->captureBaseline();
+        $changed->update(['tier' => 2]);
+        $removed->delete();
+        $added = $this->panel->genes()->create(['gene_symbol' => 'NEW', 'hgnc_id' => 20]);
+        $rows = collect($this->getJson($this->draftUrl())->assertOk()->json('rows.genes'))->keyBy('key');
+        $this->assertCount(3, $rows);
+        $this->assertSame('changed', $rows[$changed->id]['operation']);
+        $this->assertSame([['field' => 'tier', 'before' => '1', 'after' => '2']], $rows[$changed->id]['field_changes']);
+        $this->assertSame('removed', $rows[$removed->id]['operation']);
+        $this->assertSame('SAME', $rows[$removed->id]['before']['gene_symbol']);
+        $this->assertSame('added', $rows[$added->id]['operation']);
+
+        $submission = $this->submission();
+        $data = $this->data();
+        $data['relations']['expertPanel']['relations']['genes'] = [['attributes' => $changed->getAttributes()]];
+        $this->snapshot($submission, $data);
+        $this->revision->update(['status' => 'revisions_requested']);
+        $changed->update(['tier' => 1]);
+        $rows = collect($this->getJson($this->draftUrl())->assertOk()
+            ->assertJsonPath('mode', 'previous_review_round')->json('rows.genes'))->keyBy('key');
+        $this->assertSame([['field' => 'tier', 'before' => '2', 'after' => '1']], $rows[$changed->id]['field_changes']);
     }
 
     #[Test]

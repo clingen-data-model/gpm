@@ -2,15 +2,21 @@
 import { ref, computed, watch } from 'vue'
 import { useStore } from 'vuex'
 import api from '@/http/api'
+import { useScopeOfWorkGeneRows } from '@/composables/scope_of_work_gene_rows'
+import ScopeOfWorkGeneChangeLabel from '@/components/groups/ScopeOfWorkGeneChangeLabel.vue'
 
 const props = defineProps({
+  scopeComparison: { type: Object, default: null },
 	genes: { type: Array, required: true, default: () => [] },
 	groupID: { type: String, required: true },
 	editing: { type: Boolean, default: true },
 	readonly: { type: Boolean, default: false },
 })
 
-const emit = defineEmits(['removed'])
+const emit = defineEmits(['removed', 'saved'])
+const { displayGenes, comparisonFor, isRemoved, isSnapshotOnly, canMutate, editableIds } =
+  useScopeOfWorkGeneRows(() => props.genes, () => props.scopeComparison)
+const tierLabel = value => !value || value === 'null' ? '—' : String(value) === '1' ? 'Primary' : 'Secondary'
 
 const store = useStore()
 
@@ -50,7 +56,7 @@ const removingIds = ref([])
 const removingBulk = ref(false)
 
 const selectedGeneRows = computed(() => {
-  return props.genes.filter(g => selectedGenes.value.includes(g.id))
+  return props.genes.filter(g => canMutate(g) && selectedGenes.value.includes(g.id))
 })
 
 const removalCount = computed(() => genesPendingRemoval.value.length)
@@ -63,7 +69,7 @@ const removalLabel = computed(() => {
 
 const confirmRemove = (geneOrGenes) => {
   const list = Array.isArray(geneOrGenes) ? geneOrGenes : [geneOrGenes]
-  genesPendingRemoval.value = list.filter(Boolean)
+  genesPendingRemoval.value = list.filter(g => canMutate(g) && !props.readonly && props.editing)
   if (!genesPendingRemoval.value.length) return
   showConfirmRemove.value = true
 }
@@ -74,7 +80,9 @@ const cancelRemove = () => {
 }
 const removeGenes = async () => {
   if (!genesPendingRemoval.value.length) return
-  const ids = genesPendingRemoval.value.map(g => g.id)
+  if (props.readonly || !props.editing) return
+  const ids = editableIds(genesPendingRemoval.value.map(g => g.id))
+  if (!ids.length) return
   const names = genesPendingRemoval.value.map(g => g.gene_symbol).filter(Boolean)
   removingIds.value = ids
   removingBulk.value = ids.length > 1
@@ -123,14 +131,14 @@ const statusPriority = {
 
 const allStatuses = computed(() => {
 	const set = new Set()
-	props.genes.forEach(g => g.statuses.forEach(s => set.add(s)))
+	displayGenes.value.forEach(g => (g.statuses || []).forEach(s => set.add(s)))
 	return Array.from(set).sort((a, b) => (statusPriority[a] ?? 0) - (statusPriority[b] ?? 0))
 })
 
 const filteredGenes = computed(() => {
 	const kw = search.value.trim().toLowerCase()
 
-	return props.genes.filter(g => {
+	return displayGenes.value.filter(g => {
 		const details = detailEntries(g)
 
 		const symbolMatch = g.gene_symbol?.toLowerCase().includes(kw)
@@ -138,11 +146,12 @@ const filteredGenes = computed(() => {
 		const diseaseMatch = details.some(d => d?.disease_name?.toLowerCase().includes(kw) || d?.mondo_id?.toLowerCase().includes(kw))
 		const statusSearchMatch = (g.statuses || []).some(s => s?.toLowerCase().includes(kw))
 		const detailSearchMatch = details.some(d => d?.classification?.toLowerCase().includes(kw) || d?.moi_name?.toLowerCase().includes(kw) || d?.curation_type?.toLowerCase().includes(kw) || d?.curation_status?.toLowerCase().includes(kw))
-		const matchesSearch = !kw || symbolMatch || epMatch || diseaseMatch || statusSearchMatch || detailSearchMatch
+		const capturedMatch = isSnapshotOnly(g) && [g.mondo_id, g.disease_name, g.disease_entity, g.moi].some(value => normalize(value).toLowerCase().includes(kw))
+		const matchesSearch = !kw || capturedMatch || symbolMatch || epMatch || diseaseMatch || statusSearchMatch || detailSearchMatch
 		const matchesStatus = selectedStatuses.value.length === 0 || (g.statuses || []).some(s => selectedStatuses.value.includes(s)) || details.some(d => selectedStatuses.value.includes(d?.curation_status))
 		// const matchesTier = !filterTier.value || String(g.tier ?? '') === filterTier.value
     const matchesTier = !filterTier.value ? true : filterTier.value === 'none' ? (g.tier === null || g.tier === undefined || g.tier === '') : String(g.tier) === filterTier.value
-		const matchesMoi = matchesDetailField(g, 'moi_name', filterMoi.value)
+		const matchesMoi = matchesDetailField(g, 'moi_name', filterMoi.value) || (isSnapshotOnly(g) && normalize(g.moi) === filterMoi.value)
 		const matchesClassification = matchesDetailField(g, 'classification', filterClassification.value)
 		const matchesCurationType = matchesDetailField(g, 'curation_type', filterCurationType.value)
 
@@ -188,14 +197,15 @@ const paginatedGenes = computed(() => {
 	return sortedGenes.value.slice(start, start + pageSize.value)
 })
 
-const toggleExpanded = (index) => {
-	if (expanded.value.includes(index)) {
-		expanded.value = expanded.value.filter(i => i !== index)
+const toggleExpanded = (id) => {
+	if (expanded.value.includes(id)) {
+		expanded.value = expanded.value.filter(i => i !== id)
 	} else {
-		expanded.value.push(index)
+		expanded.value.push(id)
 	}
 }
 const toggleSelect = (id) => {
+  if (!editableIds([id]).length) return
 	if (selectedGenes.value.includes(id)) {
 		selectedGenes.value = selectedGenes.value.filter(x => x !== id)
 	} else {
@@ -203,7 +213,7 @@ const toggleSelect = (id) => {
 	}
 }
 const toggleSelectAll = () => {
-	const idsOnPage = paginatedGenes.value.map(g => g.id)
+	const idsOnPage = paginatedGenes.value.filter(canMutate).map(g => g.id)
 	const allSelected = idsOnPage.every(id => selectedGenes.value.includes(id))
 	if (allSelected) {
 		selectedGenes.value = selectedGenes.value.filter(id => !idsOnPage.includes(id))
@@ -211,10 +221,14 @@ const toggleSelectAll = () => {
 		selectedGenes.value = [...new Set([...selectedGenes.value, ...idsOnPage])]
 	}
 }
-const isAllSelected = computed(() => paginatedGenes.value.every(g => selectedGenes.value.includes(g.id)))
+const isAllSelected = computed(() => {
+  const selectable = paginatedGenes.value.filter(canMutate)
+  return selectable.length > 0 && selectable.every(g => selectedGenes.value.includes(g.id))
+})
+watch(displayGenes, () => { selectedGenes.value = editableIds(selectedGenes.value) })
 
 const updateTier = async (gene) => {
-	if (props.readonly || !props.editing) return
+	if (props.readonly || !props.editing || !canMutate(gene)) return
 	savingTierFor.value = gene.id
 	const oldTier = gene.tier
 	try {
@@ -222,6 +236,7 @@ const updateTier = async (gene) => {
 		ids: [gene.id],
 		tier: gene.tier || null,
 		})
+		emit('saved')
 		store.commit('pushSuccess', `Tier updated for ${gene.gene_symbol}`)
 	} catch (err) {
 		gene.tier = oldTier
@@ -233,6 +248,8 @@ const updateTier = async (gene) => {
 }
 
 const applyBulkTier = async () => {
+  if (props.readonly || !props.editing) return
+  selectedGenes.value = editableIds(selectedGenes.value)
 	if (!bulkTier.value || selectedGenes.value.length === 0) return
 	savingBulk.value = true
 	try {
@@ -245,6 +262,7 @@ const applyBulkTier = async () => {
 		props.genes.forEach(g => { if (selectedGenes.value.includes(g.id)) g.tier = bulkTier.value })
 		selectedGenes.value = []
 		bulkTier.value = ''
+    emit('saved')
 	} catch (err) {
 		store.commit('pushError', 'Failed to update tiers in bulk')
 	} finally {
@@ -258,7 +276,8 @@ const clearSelection = () => {
 
 const moiOptions = computed(() => {
 	const set = new Set()
-	props.genes.forEach(g => {
+	displayGenes.value.forEach(g => {
+        if (isSnapshotOnly(g) && g.moi) set.add(g.moi)
 		detailEntries(g).forEach(entry => {
 			if (entry?.moi_name) set.add(entry.moi_name)
 		})
@@ -268,7 +287,7 @@ const moiOptions = computed(() => {
 
 const classificationOptions = computed(() => {
 	const set = new Set()
-	props.genes.forEach(g => {
+	displayGenes.value.forEach(g => {
 		detailEntries(g).forEach(entry => {
 			if (entry?.classification) set.add(entry.classification)
 		})
@@ -278,7 +297,7 @@ const classificationOptions = computed(() => {
 
 const curationTypeOptions = computed(() => {
 	const set = new Set()
-	props.genes.forEach(g => {
+	displayGenes.value.forEach(g => {
 		detailEntries(g).forEach(entry => {
 			if (entry?.curation_type) set.add(entry.curation_type)
 		})
@@ -395,8 +414,8 @@ watch(
               <label class="block text-xs font-medium text-gray-600 mb-1">Tier</label>
               <select v-model="filterTier" class="w-full border rounded px-2 py-2 text-sm bg-white">
                 <option value="">All Tiers</option>
-                <option value="1">Primary</option>
-                <option value="2">Secondary</option>
+                <option value="1">{{ tierLabel(1) }}</option>
+                <option value="2">{{ tierLabel(2) }}</option>
                 <option value="none">No Tier Set</option>
               </select>
             </div>
@@ -458,8 +477,8 @@ watch(
         <span class="mr-2 font-semibold text-sm text-gray-700">Bulk Tier Update:</span>
         <select v-model="bulkTier" class="border rounded px-2 py-1 text-sm bg-white">
           <option value="">Select Tier</option>
-          <option value="1">Primary</option>
-          <option value="2">Secondary</option>
+          <option value="1">{{ tierLabel(1) }}</option>
+          <option value="2">{{ tierLabel(2) }}</option>
         </select>
         <button class="bg-blue-600 text-white px-3 py-1 rounded disabled:opacity-50" @click="applyBulkTier" :disabled="!bulkTier || selectedGenes.length === 0 || savingBulk">
           {{ savingBulk ? 'Applying…' : 'Apply' }}
@@ -481,12 +500,12 @@ watch(
 
     <!-- Card list -->
     <ul v-else class="space-y-2">
-      <li v-for="(gene, index) in paginatedGenes" :key="gene.id">
+      <li v-for="gene in paginatedGenes" :key="gene.id" :data-scope-gene-id="gene.id">
         <div class="rounded-2xl overflow-hidden border border-gray-200 bg-white shadow-sm hover:shadow transition-shadow">
           <!-- Top row -->
           <div class="flex items-start justify-between gap-3 p-3">
             <div class="flex items-start gap-3 flex-1 min-w-0">
-              <div v-if="editing && !readonly" class="mt-1">
+              <div v-if="editing && !readonly && canMutate(gene)" class="mt-1">
                 <input
                   type="checkbox"
                   :checked="selectedGenes.includes(gene.id)"
@@ -496,7 +515,9 @@ watch(
               </div>
               <div class="min-w-0">
                 <div class="flex flex-wrap items-center gap-2">
-                  <span class="text-base font-semibold text-gray-900">{{ gene.gene_symbol }}</span>
+                  <span class="text-base font-semibold" :class="isRemoved(gene) ? 'text-red-700 line-through' : 'text-gray-900'">{{ gene.gene_symbol }}</span>
+                  <ScopeOfWorkGeneChangeLabel :comparison="comparisonFor(gene)" :tier-label="tierLabel" />
+                  <span v-if="isSnapshotOnly(gene)" :class="isRemoved(gene) ? 'text-red-700 line-through' : ''">{{ gene.mondo_id }} {{ gene.disease_name }} {{ gene.moi }}</span>
                   <span v-if="(gene.statuses || []).length" class="text-xs rounded-full px-2 py-0.5 text-gray-700" :class="(gene.details || []).length ? 'border border-amber-400 bg-amber-50' : 'border border-gray-400 bg-gray-50'">
                     {{ (gene.statuses || []).join(', ') }}
                   </span>
@@ -508,18 +529,19 @@ watch(
             </div>
 
             <div class="flex items-center gap-2">
+              <ScopeOfWorkGeneChangeLabel :comparison="comparisonFor(gene)" :tier-label="tierLabel" field="tier" />
               <button
                 v-if="(gene.details || []).length"
-                @click="toggleExpanded(index)"
+                @click="toggleExpanded(gene.id)"
                 class="rounded border px-2 py-1 text-xs bg-white"
-                :aria-expanded="expanded.includes(index)"
+                :aria-expanded="expanded.includes(gene.id)"
                 :aria-controls="`gene-details-${gene.id}`"
                 title="Toggle details"
               >
-                {{ expanded.includes(index) ? 'Hide Details' : 'Show Details' }}
+                {{ expanded.includes(gene.id) ? 'Hide Details' : 'Show Details' }}
               </button>
 
-              <template v-if="editing && !readonly">
+              <template v-if="editing && !readonly && canMutate(gene)">
                 <select
                   v-model="gene.tier"
                   class="border rounded px-2 py-1 text-xs"
@@ -528,8 +550,8 @@ watch(
                   title="Tier"
                 >
                   <option value="">—</option>
-                  <option value="1">Primary</option>
-                  <option value="2">Secondary</option>
+                  <option value="1">{{ tierLabel(1) }}</option>
+                  <option value="2">{{ tierLabel(2) }}</option>
                 </select>
                 <span v-if="savingTierFor === gene.id" class="text-xs text-gray-500">Saving…</span>
                 <button class="rounded px-2 py-1 text-xs border"
@@ -541,14 +563,14 @@ watch(
                   {{ removingIds.includes(gene.id) ? 'Removing…' : 'Remove?' }}
                 </button>
               </template>
-              <span v-else class="text-xs text-gray-700">Tier: {{ ! gene.tier ? '—' : gene.tier == 1 ? 'Primary' : 'Secondary' }}</span>
+              <span v-else-if="!isSnapshotOnly(gene) || Object.hasOwn(gene, 'tier')" class="text-xs text-gray-700">Tier: {{ tierLabel(gene.tier) }}</span>
             </div>
           </div>
 
           <!-- Expanded details -->
           <transition name="fade">
             <div
-              v-if="expanded.includes(index)"
+              v-if="expanded.includes(gene.id)"
               :id="`gene-details-${gene.id}`"
               class="px-3 pb-3 pt-2 text-sm"
             >
