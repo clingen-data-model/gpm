@@ -13,6 +13,7 @@ export default {
         GeneCurationStatus, GeneSearchSelect 
     },
     props: {
+        scopeComparison: { type: Object, default: null },
         editing: {
             type: Boolean,
             required: false,
@@ -390,8 +391,8 @@ export default {
           </div>
         </div>
 
-        <div v-if="geneCheckResults.length">
-          <GeneCurationStatus :genes="geneCheckResults" :groupID="group.uuid" :editing="editing" :readonly="readonly" @removed="onChildChange" />
+        <div v-if="geneCheckResults.length || scopeComparison?.rows?.genes?.length">
+          <GeneCurationStatus :genes="geneCheckResults" :scope-comparison="scopeComparison" @saved="onChildChange" :groupID="group.uuid" :editing="editing" :readonly="readonly" @removed="onChildChange" />
         </div>
     </div>
 

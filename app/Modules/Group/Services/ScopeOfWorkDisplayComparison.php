@@ -7,6 +7,9 @@ use Illuminate\Support\Arr;
 /** Display-only comparison of stored JSON. No models or approval rules are consulted. */
 class ScopeOfWorkDisplayComparison
 {
+    private const GENE_FIELDS = ['gene_symbol', 'hgnc_id', 'mondo_id', 'disease_name',
+        'disease_entity', 'moi', 'tier', 'plan', 'date_approved', 'gt_curation_uuid'];
+
     public function handle(?array $before, ?array $after): array
     {
         $before = $this->normalize($before ?? []);
@@ -90,10 +93,29 @@ class ScopeOfWorkDisplayComparison
                         || collect($roles ?? [])->contains(fn ($role) => $role['operation'] !== 'unchanged'))) {
                     $operation = 'changed';
                 }
-            } elseif ($section !== 'roles' && $old !== null && $new !== null && $old !== $new) {
+            } elseif ($section !== 'roles' && $section !== 'genes' && $old !== null && $new !== null && $old !== $new) {
                 $operation = 'changed';
             }
+            $fieldChanges = [];
+            $unavailableFields = [];
+            if ($section === 'genes') {
+                foreach (self::GENE_FIELDS as $field) {
+                    if (($old !== null && !array_key_exists($field, $old))
+                        || ($new !== null && !array_key_exists($field, $new))) {
+                        $unavailableFields[] = $field;
+                    } elseif ($old !== null && $new !== null && $old[$field] !== $new[$field]) {
+                        $fieldChanges[] = ['field' => $field, 'before' => $old[$field], 'after' => $new[$field]];
+                    }
+                }
+                if ($old !== null && $new !== null && $fieldChanges) {
+                    $operation = 'changed';
+                }
+            }
             $row = $this->change($section, (string) $key, $operation, $old, $new);
+            if ($section === 'genes') {
+                $row['field_changes'] = $fieldChanges;
+                $row['unavailable_fields'] = $unavailableFields;
+            }
             if ($section === 'members') {
                 $row['roles'] = $roles;
                 $row['roles_available'] = $roles !== null;
@@ -143,12 +165,16 @@ class ScopeOfWorkDisplayComparison
                     continue 2;
                 }
                 if ($key === 'genes') {
-                    $items[] = [
+                    $gene = [
                         'id' => $item['id'] ?? null,
                         'label' => implode(' ? ', array_filter([$item['gene_symbol'] ?? null, $item['mondo_id'] ?? null, $item['moi'] ?? null])),
-                        'gene_symbol' => $item['gene_symbol'] ?? null,
-                        'hgnc_id' => $item['hgnc_id'] ?? null,
                     ];
+                    foreach (self::GENE_FIELDS as $field) {
+                        if (array_key_exists($field, $item)) {
+                            $gene[$field] = $this->normalizeGeneValue($field, $item[$field]);
+                        }
+                    }
+                    $items[] = $gene;
                 } else {
                     $person = $application ? data_get($entry, 'relations.person.attributes', []) : $item;
                     $member = [
@@ -171,6 +197,42 @@ class ScopeOfWorkDisplayComparison
             $result[$key] = $items;
         }
         return $result;
+    }
+
+    private function normalizeGeneValue(string $field, mixed $value): mixed
+    {
+        if ($field === 'tier' && ($value === '' || $value === 'null')) {
+            return null;
+        }
+        if ($field === 'plan') {
+            // Application model snapshots contain raw JSON; Scope snapshots contain arrays.
+            if (is_string($value)) {
+                $decoded = json_decode($value, true);
+                if (json_last_error() === JSON_ERROR_NONE) {
+                    $value = $decoded;
+                }
+            }
+            return $this->canonicalArray($value);
+        }
+        if ($field === 'date_approved' && $value) {
+            try {
+                return \Carbon\Carbon::parse($value)->toISOString();
+            } catch (\Exception) {
+                // Keep malformed historical text visible rather than inventing a date.
+            }
+        }
+        return is_scalar($value) ? (string) $value : $value;
+    }
+
+    private function canonicalArray(mixed $value): mixed
+    {
+        if (!is_array($value)) {
+            return $value;
+        }
+        if (!array_is_list($value)) {
+            ksort($value);
+        }
+        return array_map(fn ($item) => $this->canonicalArray($item), $value);
     }
 
     private function index($items, string $key): ?array
