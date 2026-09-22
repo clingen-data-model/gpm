@@ -55,12 +55,13 @@ class DraftComparisonGet
         $comparison = app(ScopeOfWorkDisplayComparison::class)
             ->handle($before?->snapshot, $after);
 
-        // Initially expose only contextual name and scope fields.
+        // Expose contextual name, scope and gene fields; member comparison stays separate.
         $sections = [
             'group.name',
             'expert_panel.long_base_name',
             'expert_panel.short_base_name',
             'scope_description',
+            'genes',
         ];
         $changes = array_values(array_filter($comparison['changes'],
             fn ($change) => in_array($change['section'], $sections, true)));
@@ -88,6 +89,7 @@ class DraftComparisonGet
             'unavailable_sections' => $unavailable,
             'summary' => ['changed_items' => count($changes)],
             'changes' => $changes,
+            'rows' => ['genes' => $comparison['rows']['genes']],
         ];
     }
 

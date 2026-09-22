@@ -47,8 +47,8 @@
             <label class="block text-xs font-medium text-gray-600 mb-1">Tier</label>
             <select v-model="filterTier" class="w-full border p-2 rounded text-sm bg-white">
               <option value="">All Tiers</option>
-              <option value="1">Current</option>
-              <option value="2">Future</option>
+              <option value="1">{{ tierLabel(1) }}</option>
+              <option value="2">{{ tierLabel(2) }}</option>
               <option value="none">No Tier Set</option>
             </select>
           </div>
@@ -188,8 +188,8 @@
         <span class="font-semibold">Bulk Tier Update:</span>
         <select v-model="bulkTier" class="border rounded px-2 py-1 text-sm">
           <option value="">Select Tier</option>
-          <option value="1">Current</option>
-          <option value="2">Future</option>
+          <option value="1">{{ tierLabel(1) }}</option>
+          <option value="2">{{ tierLabel(2) }}</option>
         </select>
         <button class="bg-blue-600 text-white px-3 py-1 rounded disabled:opacity-50" @click="applyBulkTier" :disabled="!bulkTier || selectedGenes.length === 0">Apply</button>
       </div>
@@ -242,23 +242,24 @@
     </div>
 
     <ul v-else class="space-y-2">
-        <li v-for="(gene, index) in paginatedGenes" :key="gene.id">
+        <li v-for="(gene, index) in paginatedGenes" :key="gene.id" :data-scope-gene-id="gene.id">
             <div class="rounded-2xl overflow-hidden border border-gray-200 bg-white shadow-sm hover:shadow transition-shadow">
                 
                 <div class="flex items-start justify-between gap-3 p-3">
                     <div class="flex items-start gap-3">
-                        <div v-if="canEdit && editing" class="mt-1">
+                        <div v-if="canEdit && editing && canMutate(gene)" class="mt-1">
                             <input type="checkbox" :checked="selectedGenes.includes(gene.id)" @change="toggleSelect(gene.id)" :aria-label="`Select ${gene.gene_symbol}`" />
                         </div>
                         <div>
                             <div class="flex flex-wrap items-center gap-2">
-                                <span class="text-base font-semibold text-gray-900">{{ gene.gene_symbol }}</span>
-                                <span v-if="gene.mondo_id" class="rounded-full bg-gray-100 px-2 py-0.5 text-gray-700" :title="`${gene.mondo_id} ${gene.disease_name || ''}`">
+                                <span class="text-base font-semibold" :class="isRemoved(gene) ? 'text-red-700 line-through' : 'text-gray-900'">{{ gene.gene_symbol }}</span>
+                                <ScopeOfWorkGeneChangeLabel :comparison="comparisonFor(gene)" :tier-label="tierLabel" />
+                                <span v-if="gene.mondo_id" :class="isRemoved(gene) ? 'text-red-700 line-through' : ''" class="rounded-full bg-gray-100 px-2 py-0.5 text-gray-700" :title="`${gene.mondo_id} ${gene.disease_name || ''}`">
                                     <span class="font-semibold">{{ gene.mondo_id }}</span> 
                                     {{ gene.disease_name && gene.disease_name.length > 50 ? gene.disease_name.slice(0, 50) + '…' : gene.disease_name }}
                                 </span>
-                                <span v-if="gene.moi" class="rounded-full bg-gray-100 px-2 py-0.5 text-gray-700">{{ gene.moi }}</span>
-                                <template v-if="! gene.gt_curation_uuid">
+                                <span v-if="gene.moi" :class="isRemoved(gene) ? 'text-red-700 line-through' : ''" class="rounded-full bg-gray-100 px-2 py-0.5 text-gray-700">{{ gene.moi }}</span>
+                                <template v-if="!isSnapshotOnly(gene) && ! gene.gt_curation_uuid">
                                     <span class="text-xs rounded-full px-2 py-0.5 text-gray-700 border border-rose-300 bg-rose-50">No Gene Curation</span>
                                 </template>
                                 <span
@@ -282,18 +283,19 @@
                     </div>
 
                     <div class="flex items-center gap-2">
-                        <span v-if="(gene.plan?.is_other === true && !(hasRole('super-admin') || hasRole('super-user'))) || ! editing" class="text-xs text-gray-700">
-                            Tier: {{ ! gene.tier ? '—' : gene.tier == 1 ? 'Current' : 'Future' }}
+                        <ScopeOfWorkGeneChangeLabel :comparison="comparisonFor(gene)" :tier-label="tierLabel" field="tier" />
+                        <span v-if="(gene.plan?.is_other === true && !(hasRole('super-admin') || hasRole('super-user'))) || ! editing || !canMutate(gene)" class="text-xs text-gray-700">
+                            <template v-if="!isSnapshotOnly(gene) || Object.hasOwn(gene, 'tier')">Tier: {{ tierLabel(gene.tier) }}</template>
                         </span>
                         <template v-else>
                             <select v-model="gene.tier" class="border rounded px-2 py-1 text-xs" @change="updateTier(gene)" :disabled="savingTierFor === gene.id || readonly" title="Tier">
                                 <option value="null">—</option>
-                                <option value="1">Current</option>
-                                <option value="2">Future</option>
+                                <option value="1">{{ tierLabel(1) }}</option>
+                                <option value="2">{{ tierLabel(2) }}</option>
                             </select>
                             
 
-                            <button v-if="gene.is_outdated && gene.gt_data" @click="applyGtUpdate(gene)" title="Refresh from latest GT"
+                            <button v-if="canMutate(gene) && gene.is_outdated && gene.gt_data" @click="applyGtUpdate(gene)" title="Refresh from latest GT"
                             class="hidden sm:inline-flex rounded border border-amber-400 bg-amber-50 px-2 py-1 text-xs font-semibold text-amber-900 hover:bg-amber-100">
                                 Apply latest GT changes ⚠
                             </button>
@@ -412,7 +414,7 @@
 
                         <!-- Small-screen actions -->
                         <div class="mt-2 flex flex-wrap items-center gap-2 sm:hidden">
-                            <button v-if="gene.is_outdated && gene.gt_data" type="button" class="rounded bg-amber-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-amber-700" @click="applyGtUpdate(gene)">
+                            <button v-if="canMutate(gene) && gene.is_outdated && gene.gt_data" type="button" class="rounded bg-amber-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-amber-700" @click="applyGtUpdate(gene)">
                                 Refresh from GT
                             </button>
                             <button type="button" class="rounded border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-gray-800 hover:bg-gray-50" @click="toggleExpanded(index)" >
@@ -448,6 +450,8 @@
 </template>
 
 <script>
+import { useScopeOfWorkGeneRows } from '@/composables/scope_of_work_gene_rows'
+import ScopeOfWorkGeneChangeLabel from '@/components/groups/ScopeOfWorkGeneChangeLabel.vue'
 import { api } from '@/http';
 import { ref, nextTick, computed, onMounted, watch } from 'vue';
 import { useStore } from 'vuex';
@@ -461,12 +465,15 @@ import EditIconButton from '@/components/buttons/EditIconButton.vue'
 
 export default {
     name: 'VcepGeneList',
-    components: { GeneSearchSelect, DiseaseSearchSelect, CuratedGeneSearchSelect, RichTextEditor, EditIconButton },
-    props: { readonly: { type: Boolean, required: false, default: false }, editing: { type: Boolean, required: false, default: true } },
+    components: { ScopeOfWorkGeneChangeLabel, GeneSearchSelect, DiseaseSearchSelect, CuratedGeneSearchSelect, RichTextEditor, EditIconButton },
+    props: { scopeComparison: { type: Object, default: null }, readonly: { type: Boolean, required: false, default: false }, editing: { type: Boolean, required: false, default: true } },
     emits: ["update:editing", "saved"],
     setup(props, { emit }) {
         const store = useStore();
         const genes = ref([]);
+        const { displayGenes, comparisonFor, isRemoved, isSnapshotOnly, canMutate, editableIds } =
+            useScopeOfWorkGeneRows(() => genes.value, () => props.scopeComparison)
+        const tierLabel = value => !value || value === 'null' ? '—' : String(value) === '1' ? 'Current' : 'Future'
         const formGene = ref(null);
         const isEditing = ref(false);
         const isFormVisible = ref(false);
@@ -510,10 +517,10 @@ export default {
         const showConfirmRemove = ref(false);
         const genesPendingRemoval = ref([]);
         const removingGenes = ref(false);
-        const selectedGeneRows = computed(() => genes.value.filter(g => selectedGenes.value.includes(g.id)));
+        const selectedGeneRows = computed(() => genes.value.filter(g => canMutate(g) && selectedGenes.value.includes(g.id)));
         const confirmRemove = (geneOrGenes) => {
           const list = Array.isArray(geneOrGenes) ? geneOrGenes : [geneOrGenes];
-          genesPendingRemoval.value = list.filter(Boolean);
+          genesPendingRemoval.value = list.filter(g => canMutate(g) && !props.readonly && props.editing);
           if (!genesPendingRemoval.value.length) return;
           showConfirmRemove.value = true;
         };
@@ -525,7 +532,9 @@ export default {
 
         const removeGenes = async () => {
           if (!genesPendingRemoval.value.length) return;
-          const ids = genesPendingRemoval.value.map(g => g.id);
+          if (props.readonly || !props.editing) return;
+          const ids = editableIds(genesPendingRemoval.value.map(g => g.id));
+          if (!ids.length) return;
           const count = ids.length;
           try {
             removingGenes.value = true;
@@ -536,7 +545,7 @@ export default {
             showConfirmRemove.value = false;
 
             await getGenes();
-            context.emit('saved')
+            emit('saved')
           } catch (error) {
             store.commit('pushError', error.response?.data || 'Failed to remove gene(s)');
           } finally {
@@ -583,6 +592,7 @@ export default {
         const unescapeMarkdown = (s = '') => s.replace(/\\([\\`*_{}\[\]()#+\-.!>~|])/g, '$1');
 
         const startEdit = (gene) => {
+            if (!canMutate(gene) || !canEdit.value || !props.editing) return
             const wasOpen = isFormVisible.value
             isFormVisible.value = true;
             isEditing.value = gene.id;
@@ -752,6 +762,8 @@ export default {
         };
 
         const saveForm = async () => {
+            if (props.readonly || !props.editing) return
+            if (isEditing.value && !editableIds([isEditing.value]).length) return
             try {
                 let payload;
                 if (formGene.value.is_other) {
@@ -809,10 +821,12 @@ export default {
         };
 
         const updateTier = async gene => {
+            if (!canMutate(gene) || props.readonly || !props.editing) return
             savingTierFor.value = gene.id;
             const oldTier = gene.tier;
             try {
                 await api.put(`/api/groups/${group.value.uuid}/expert-panel/genes/update-tier`, { ids: [gene.id], tier: gene.tier || null });
+                emit('saved');
                 store.commit('pushSuccess', `Tier updated for ${gene.gene_symbol}`);
             } catch (error) {
                 gene.tier = oldTier;
@@ -823,18 +837,22 @@ export default {
         };
 
         const applyBulkTier = async () => {
+            if (props.readonly || !props.editing) return
+            selectedGenes.value = editableIds(selectedGenes.value)
             if (!bulkTier.value || selectedGenes.value.length === 0) return;
             try {
                 await api.put(`/api/groups/${group.value.uuid}/expert-panel/genes/update-tier`, { ids: selectedGenes.value, tier: bulkTier.value });
                 store.commit('pushSuccess', `Tier updated for ${selectedGenes.value.length} genes`);
                 selectedGenes.value = [];
                 await getGenes();
-                context.emit('saved')
+                emit('saved')
                 bulkTier.value = '';
             } catch (error) {
                 store.commit('pushError', 'Failed to update tiers in bulk');
             }
         };
+
+        watch(displayGenes, () => { selectedGenes.value = editableIds(selectedGenes.value) })
 
         const clearSelection = () => {
             if (selectedGenes.value.length === 0) return
@@ -842,6 +860,7 @@ export default {
         }
 
         const toggleSelect = id => {
+            if (!editableIds([id]).length) return
             if (selectedGenes.value.includes(id)) {
                 selectedGenes.value = selectedGenes.value.filter(x => x !== id);
             } else {
@@ -850,7 +869,7 @@ export default {
         };
 
         const toggleSelectAll = () => {
-            const idsOnPage = paginatedGenes.value.map(g => g.id);
+            const idsOnPage = paginatedGenes.value.filter(canMutate).map(g => g.id);
             const allSelected = idsOnPage.every(id => selectedGenes.value.includes(id));
             if (allSelected) {
                 selectedGenes.value = selectedGenes.value.filter(id => !idsOnPage.includes(id));
@@ -860,7 +879,7 @@ export default {
         };
 
         const filteredAndSortedGenes = computed(() => {
-            let result = [...genes.value];
+            let result = [...displayGenes.value];
             const keyword = search.value.toLowerCase();
             if (keyword) {
                 result = result.filter(g =>
@@ -918,6 +937,7 @@ export default {
         });
 
         const applyGtUpdate = async (gene) => {
+            if (!canMutate(gene) || props.readonly || !props.editing) return;
             try {
                 const snap = gene.gt_data;
                 if (!snap) return;
@@ -940,21 +960,24 @@ export default {
                 await api.put(`/api/groups/${group.value.uuid}/expert-panel/genes/${gene.id}`, payload);
                 store.commit('pushSuccess', `Updated ${gene.gene_symbol} from GeneTracker`);
                 await getGenes();
-                context.emit('saved')
+                emit('saved')
             } catch (e) {
                 store.commit('pushError', 'Failed to apply update from GeneTracker');
             }
         };
 
 
-        const moiOptions = computed(() => [...new Set(genes.value.map(g => g.moi).filter(Boolean))]);
-        const classificationOptions = computed(() => [...new Set(genes.value.map(g => g.plan?.classification).filter(Boolean))]);
+        const moiOptions = computed(() => [...new Set(displayGenes.value.map(g => g.moi).filter(Boolean))]);
+        const classificationOptions = computed(() => [...new Set(displayGenes.value.map(g => g.plan?.classification).filter(Boolean))]);
         const totalPages = computed(() => Math.ceil(filteredAndSortedGenes.value.length / pageSize.value));
         const paginatedGenes = computed(() => {
             const start = (currentPage.value - 1) * pageSize.value;
             return filteredAndSortedGenes.value.slice(start, start + pageSize.value);
         });
-        const isAllSelected = computed(() => paginatedGenes.value.every(g => selectedGenes.value.includes(g.id)));
+        const isAllSelected = computed(() => {
+            const selectable = paginatedGenes.value.filter(canMutate);
+            return selectable.length > 0 && selectable.every(g => selectedGenes.value.includes(g.id));
+        });
 
 
         // Helper functions for compare diff rows
@@ -1087,6 +1110,7 @@ export default {
         return {
             group, genes, formGene, curatedGeneKey, isEditing, isFormVisible,
             mois, errors, search, filterMoi, filterClassification, sortKey, sortOrder,
+            displayGenes, comparisonFor, isRemoved, isSnapshotOnly, canMutate, editableIds, tierLabel,
             pageSize, currentPage, totalPages, paginatedGenes, filteredAndSortedGenes,
             moiOptions, classificationOptions,
             selectedGenes, bulkTier, savingTierFor, isAllSelected,
