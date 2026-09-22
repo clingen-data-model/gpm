@@ -282,8 +282,12 @@ export const actions = {
                 }
             ));
         }
-        await Promise.all(promises);
-        return dispatch('getMembers', { group, force: true });
+        // Wait for every role write, including partial failure, before callers refresh comparison.
+        const results = await Promise.allSettled(promises);
+        const members = await dispatch('getMembers', { group, force: true });
+        const failure = results.find(result => result.status === 'rejected');
+        if (failure) throw failure.reason;
+        return members;
     },
 
     async memberGrantPermission ({ commit }, {uuid, memberId, permissionIds}) {

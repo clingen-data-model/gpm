@@ -33,6 +33,7 @@ export default {
     },
     emits: [
         'saved',
+        'updated',
         'canceled',
         'closed'
     ],
@@ -59,6 +60,7 @@ export default {
             showProfileForm: false,
             addAnother: false,
             saving: false, // state for saving
+            persistedChange: false,
         }
     },
     computed: {
@@ -138,6 +140,8 @@ export default {
         async saveAndExit () {
             if (this.saving) return;
             this.saving = true;
+            this.persistedChange = false;
+            let emittedSaved = false;
 
             try {
               if (this.roleRequiresNotification) {
@@ -150,17 +154,21 @@ export default {
               this.suggestedPeople = [];
               if (!this.addAnother) {
                   this.$emit('saved');
+                  emittedSaved = true;
               }
               if (this.newMember.id) {
                   this.$router.replace({name: 'AddMember'})
               }
             } finally {
+              if (this.persistedChange && !emittedSaved) this.$emit('updated');
+              this.persistedChange = false;
               this.saving = false;
             }
         },
         async saveAndEditProfile () {
             if (this.saving) return;
             this.saving = true;
+            this.persistedChange = false;
 
             try {
               const groupMember = await this.save();
@@ -169,6 +177,8 @@ export default {
               this.newMember = new GroupMember(groupMember);
               this.showProfileForm = true;
             } finally {
+              if (this.persistedChange) this.$emit('updated');
+              this.persistedChange = false;
               this.saving = false;
             }            
         },
@@ -215,6 +225,7 @@ export default {
                     training_level_2: member.training_level_2,
                 }
             })
+            this.persistedChange = true;
 
             if (member.permissions.length > 0) {
                 await this.$store.dispatch('groups/memberGrantPermission', {
@@ -245,6 +256,7 @@ export default {
                 }
             };
             const memberData = await this.$store.dispatch('groups/memberAdd', data);
+            this.persistedChange = true;
 
             if (member.permissions.length > 0) {
                 await this.$store.dispatch('groups/memberGrantPermission', {
@@ -272,6 +284,7 @@ export default {
                     }
                 }
             ).then(rsp => rsp.data);
+            this.persistedChange = true;
 
             await this.$store.dispatch('groups/memberSyncRoles', {group, member});
             await this.syncPermissions(group, member);
@@ -286,10 +299,10 @@ export default {
             const assignedPermIds = member.permissions.map(p => p.id);
             const newPermIds = assignedPermIds.filter(p => !existingPermIds.includes(p));
             const removedPermIds = existingPermIds.filter(p => !assignedPermIds.includes(p));
-            // const promises = [];
+            const promises = [];
 
             if (newPermIds.length > 0) {
-                // promises.push(
+                promises.push(
                     this.$store.dispatch(
                         'groups/memberGrantPermission',
                         {
@@ -298,11 +311,11 @@ export default {
                             permissionIds: newPermIds
                         }
                     )
-                // );
+                );
             }
 
             removedPermIds.forEach(permId => {
-                // promises.push(
+                promises.push(
                     this.$store.dispatch(
                         'groups/memberRevokePermission',
                         {
@@ -311,10 +324,12 @@ export default {
                             permissionId: permId
                         }
                     )
-                // );
+                );
             });
 
-            // await Promise.all(promises);
+            const results = await Promise.allSettled(promises);
+            const failure = results.find(result => result.status === 'rejected');
+            if (failure) throw failure.reason;
         },
 
         useExistingPerson(person) {
@@ -333,10 +348,14 @@ export default {
             // }, 1)
         },
 
-        handleProfileUpdate (updatedPerson) {
+        async handleProfileUpdate (updatedPerson) {
             this.newMember.person = updatedPerson;
             this.showProfileForm = false;
-            this.$store.dispatch('groups/getMembers', this.group)
+            try {
+                await this.$store.dispatch('groups/getMembers', { group: this.group, force: true });
+            } finally {
+                this.$emit('updated');
+            }
         }
     }
 }

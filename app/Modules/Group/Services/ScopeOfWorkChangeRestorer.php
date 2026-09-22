@@ -3,6 +3,7 @@
 namespace App\Modules\Group\Services;
 
 use App\Modules\Group\Models\Group;
+use App\Modules\Group\Models\GroupMember;
 use App\Modules\ExpertPanel\Models\Gene;
 use App\Modules\Group\Actions\ScopeOfWork\SnapshotBuild;
 use App\Modules\Group\Actions\ScopeOfWork\SnapshotCompare;
@@ -26,12 +27,20 @@ class ScopeOfWorkChangeRestorer
             'gene.remove' => $user?->can('addGene', $group) ?? false,
             'gene.update', 'gene.update_tier' => in_array($change->field_name, self::GENE_FIELDS, true)
                 && ($user?->can('updateGene', $group) ?? false),
+            'member.add' => $user && ($user->hasPermissionTo('groups-manage') || $user->hasGroupPermissionTo('members-remove', $group)),
+            'member.remove' => $user?->can('inviteMembers', $group) ?? false,
+            'member.update_role', 'member.add_chair', 'member.remove_chair' => $user?->can('updateMembers', $group) ?? false,
+            'member.retire', 'member.unretire' => $user?->can('retireMember', $group) ?? false,
             default => false,
         };
     }
 
     public function restore(Group $group, ScopeOfWorkChange $change, array $baseline, array $recorded, array $current): void
     {
+        if (str_starts_with($change->rule_key, 'member.')) {
+            $this->restoreMember($group, $change, $baseline);
+            return;
+        }
         if (str_starts_with($change->rule_key, 'gene.')) {
             $this->restoreGene($group, $change, $baseline);
             return;
@@ -117,6 +126,108 @@ class ScopeOfWorkChangeRestorer
             abort_if($gene->trashed(), 409);
             $gene->update([$field => $before[$field]]);
         }
+    }
+
+    private function restoreMember(Group $group, ScopeOfWorkChange $change, array $baseline): void
+    {
+        $value = $change->after_value ?? $change->before_value;
+        $personId = $value['person_id'] ?? null;
+        $membershipId = $value['membership_id'] ?? $value['id'] ?? null;
+        abort_unless($this->validId($personId) && $this->validId($membershipId), 409,
+            'The membership change has no recorded identity. Refresh and retry.');
+        $members = data_get($baseline, 'scope_of_work.members');
+        abort_unless(is_array($members) && array_is_list($members), 409, 'The approved membership snapshot is unavailable.');
+        abort_unless(collect($members)->every(fn ($member) => is_array($member) && $this->validId($member['person_id'] ?? null)),
+            409, 'The approved membership identities were not captured.');
+        $matches = collect($members)->filter(fn ($member) => (string) ($member['person_id'] ?? '') === (string) $personId);
+        abort_if($matches->count() > 1, 409, 'The approved membership identity is ambiguous.');
+        $before = $matches->first();
+
+        // Lock this person's records in this group, including the exact removed record.
+        $records = GroupMember::withTrashed()->where('group_id', $group->id)->where('person_id', $personId)
+            ->lockForUpdate()->get();
+        $member = $records->firstWhere('id', $membershipId);
+        abort_unless($member, 409, 'The recorded membership no longer exists in this group.');
+        $live = $records->filter(fn ($record) => !$record->trashed());
+        if ($change->rule_key === 'member.remove') {
+            abort_unless($before && (string) ($before['id'] ?? '') === (string) $member->id
+                && $member->trashed() && $live->isEmpty(), 409, 'The removed membership conflicts with current membership.');
+        } else {
+            abort_unless(!$member->trashed() && $live->count() === 1, 409, 'The membership identity changed. Refresh and retry.');
+            if ($change->rule_key !== 'member.add') {
+                abort_unless($before && (string) ($before['id'] ?? '') === (string) $member->id, 409,
+                    'The approved membership identity has been replaced.');
+            } else {
+                abort_if($before !== null, 409, 'This membership already exists in the approved version.');
+            }
+        }
+        $member->setRelation('roles', $member->roles()->lockForUpdate()->get());
+        $currentMembers = $group->members->reject(fn ($item) => (string) $item->person_id === (string) $personId);
+        if (!$member->trashed()) {
+            $currentMembers->push($member);
+        }
+        $group->setRelation('members', $currentMembers);
+        $fresh = collect(SnapshotCompare::run($group, $baseline, SnapshotBuild::run($group)))
+            ->first(function ($item) use ($change, $personId, $value) {
+                $payload = $item['after_value'] ?? $item['before_value'];
+                return $item['rule_key'] === $change->rule_key
+                    && ($item['field_name'] ?? null) === $change->field_name
+                    && (string) ($payload['person_id'] ?? '') === (string) $personId
+                    && ($payload['role'] ?? null) === ($value['role'] ?? null);
+            });
+        abort_unless($fresh && $this->storedValue($fresh['before_value']) === $this->storedValue($change->before_value)
+            && $this->storedValue($fresh['after_value']) === $this->storedValue($change->after_value), 409,
+            'The revision changed. Refresh and retry.');
+
+        if ($change->rule_key === 'member.add') {
+            // Keep the Person, pivots and historical snapshots. No business events.
+            GroupMember::whereKey($member->id)->where('group_id', $group->id)->delete();
+        } elseif ($change->rule_key === 'member.remove') {
+            abort_unless(array_key_exists('end_date', $before) && isset($before['roles']) && is_array($before['roles']) && array_is_list($before['roles']),
+                409, 'The approved membership dates or roles were not captured.');
+            $roleIds = collect($before['roles'])->map(fn ($role) => $this->capturedRoleId($member, $role))->all();
+            abort_unless(count($roleIds) === count(array_unique($roleIds)), 409, 'The approved roles are ambiguous.');
+            $member->forceFill(Arr::only($before, ['start_date', 'end_date', 'notes', 'is_contact', 'training_level_1', 'training_level_2']));
+            $member->deleted_at = null;
+            $member->saveQuietly();
+            // Whole-member removal is the only operation that restores a whole role set.
+            $member->roles()->sync($roleIds);
+        } elseif (in_array($change->rule_key, ['member.retire', 'member.unretire'], true)) {
+            abort_unless(array_key_exists('end_date', $before), 409, 'The approved retirement state was not captured.');
+            $member->forceFill(['end_date' => $before['end_date']])->saveQuietly();
+        } else {
+            abort_unless(isset($before['roles']) && is_array($before['roles']) && array_is_list($before['roles']), 409,
+                'The approved role set was not captured.');
+            $names = array_column($before['roles'], 'name');
+            abort_unless(count($names) === count($before['roles']) && count($names) === count(array_unique($names)), 409,
+                'The approved role identities are ambiguous.');
+            $source = $change->after_value !== null ? $fresh['after_value'] : $fresh['before_value'];
+            $roleId = $this->capturedRoleId($member, ['id' => $source['role_id'] ?? null, 'name' => $source['role']]);
+            if ($change->after_value !== null) {
+                $member->roles()->detach($roleId);
+            } else {
+                $member->roles()->syncWithoutDetaching([$roleId]);
+            }
+        }
+    }
+
+    private function capturedRoleId(GroupMember $member, array $captured): int
+    {
+        abort_unless(is_string($captured['name'] ?? null) && $captured['name'] !== '', 409, 'The captured role identity is unavailable.');
+        $query = config('permission.models.role')::query()->where('scope', 'group')->where('name', $captured['name'])
+            ->where('guard_name', $member->guardName())->lockForUpdate();
+        if (isset($captured['id'])) {
+            abort_unless($this->validId($captured['id']), 409, 'The captured role ID is invalid.');
+            $query->whereKey($captured['id']);
+        }
+        $roles = $query->get();
+        abort_unless($roles->count() === 1, 409, 'The captured role no longer has an unambiguous matching identity.');
+        return $roles->sole()->id;
+    }
+
+    private function validId(mixed $id): bool
+    {
+        return (is_int($id) || (is_string($id) && ctype_digit($id))) && (int) $id > 0;
     }
 
     private function storedValue(mixed $value): mixed

@@ -5,6 +5,8 @@ import ProfilePicture from '@/components/people/ProfilePicture.vue'
 import CredentialsView from '../people/CredentialsView.vue';
 import ExpertisesView from '../people/ExpertisesView.vue'
 import {formatDate} from '@/date_utils'
+import ScopeOfWorkMemberRoles from './ScopeOfWorkMemberRoles.vue'
+import { memberRetirementTransition } from '@/composables/scope_of_work_member_rows'
 
 
 
@@ -13,11 +15,14 @@ export default {
   components: {
     ProfilePicture,
     CredentialsView,
-    ExpertisesView
+    ExpertisesView,
+    ScopeOfWorkMemberRoles
   },
   props: {
+    comparison: { type: Object, default: null },
+    snapshotOnly: Boolean,
     member: {
-      type: GroupMember,
+      type: [GroupMember, Object],
       required: true
     },
     group: {
@@ -30,7 +35,8 @@ export default {
   ],
   setup () {
     return {
-      formatDate
+      formatDate,
+      memberRetirementTransition
     }
   },
   computed: {
@@ -41,7 +47,23 @@ export default {
 }
 </script>
 <template>
-  <div class="px-8 py-4 inset">
+  <div v-if="snapshotOnly" class="px-8 py-4 inset text-sm">
+    <dictionary-row label="Name">{{ member.label }}</dictionary-row>
+    <dictionary-row v-if="Object.hasOwn(member, 'id')" label="Member ID">{{ member.id }}</dictionary-row>
+    <dictionary-row v-if="Object.hasOwn(member, 'email')" label="Email">{{ member.email || '—' }}</dictionary-row>
+    <dictionary-row v-if="Object.hasOwn(member, 'institution')" label="Institution">{{ member.institution || '—' }}</dictionary-row>
+    <dictionary-row v-if="Object.hasOwn(member, 'credentials')" label="Credentials">{{ member.credentials?.join(', ') || '—' }}</dictionary-row>
+    <dictionary-row v-if="Object.hasOwn(member, 'expertises')" label="Expertise">{{ member.expertises?.join(', ') || '—' }}</dictionary-row>
+    <dictionary-row v-if="Object.hasOwn(member, 'start_date')" label="Start">{{ formatDate(member.start_date) || '—' }}</dictionary-row>
+    <dictionary-row v-if="Object.hasOwn(member, 'end_date')" label="End">{{ member.end_date === null ? 'present' : formatDate(member.end_date) }}</dictionary-row>
+    <dictionary-row v-if="memberRetirementTransition(comparison)" label="Retirement">{{ memberRetirementTransition(comparison) }}</dictionary-row>
+    <dictionary-row v-if="Object.hasOwn(member, 'notes')" label="Notes">{{ member.notes || '—' }}</dictionary-row>
+    <dictionary-row label="Roles">
+      <ScopeOfWorkMemberRoles v-if="member.roles" :roles="member.roles" :comparison="comparison" snapshot-only preview />
+      <span v-else>Not captured</span>
+    </dictionary-row>
+  </div>
+  <div v-else class="px-8 py-4 inset">
     <static-alert v-if="member.isRetired" variant="warning" class="mb-3 float-right">
       RETIRED
     </static-alert>
@@ -72,12 +94,13 @@ export default {
           <dictionary-row label="Start - End">
             {{ formatDate(member.start_date) }} - {{ formatDate(member.end_date) || 'present' }}
           </dictionary-row>
+          <dictionary-row v-if="memberRetirementTransition(comparison)" label="Retirement">{{ memberRetirementTransition(comparison) }}</dictionary-row>
         </div>
         <div class="flex-1 mr-4">
           <div class="mt-2">
             <h4>Roles:</h4>
             <div class="ml-2">
-              {{ member.roles.length > 0 ? member.roles.map(i => titleCase(i.name)).join(', ') : '--' }}
+              <ScopeOfWorkMemberRoles :roles="member.roles" :comparison="comparison" preview />
             </div>
           </div>
           <div v-if="member.hasRole('biocurator')">
@@ -109,6 +132,7 @@ export default {
       <div />
     </div>
     <router-link
+      v-if="comparison?.operation !== 'removed'"
       class="link"
       :to="{name: 'PersonDetail', params: {uuid: member.person.uuid}}"
     >
