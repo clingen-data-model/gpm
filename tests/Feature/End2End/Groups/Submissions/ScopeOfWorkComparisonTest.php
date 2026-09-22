@@ -157,7 +157,7 @@ class ScopeOfWorkComparisonTest extends TestCase
     {
         $this->revision->update(['status' => 'draft']);
         $this->getJson($this->draftUrl())->assertOk()->assertJsonPath('status', 'partial')
-            ->assertJsonPath('before.snapshot_id', null)->assertJsonCount(5, 'unavailable_sections')
+            ->assertJsonPath('before.snapshot_id', null)->assertJsonCount(6, 'unavailable_sections')
             ->assertJsonPath('rows.genes', null)
             ->assertJsonPath('changes', []);
         $this->captureBaseline();
@@ -167,6 +167,29 @@ class ScopeOfWorkComparisonTest extends TestCase
             ->assertJsonPath('mode', 'previous_review_round')
             ->assertJsonPath('before.submission_id', $submission->id)
             ->assertJsonPath('before.snapshot_id', null)->assertJsonPath('changes', []);
+    }
+
+    #[Test]
+    public function draft_member_rows_and_role_availability_are_exposed_without_changing_frozen_reviews(): void
+    {
+        $this->captureBaseline();
+        $submission = $this->submission();
+        $data = $this->data();
+        unset($data['relations']['members'][0]['relations']['roles']);
+        $this->snapshot($submission, $data);
+        $this->revision->update(['status' => 'revisions_requested']);
+        $frozen = $this->getJson($this->url($submission))->assertOk()->json();
+        $this->getJson($this->draftUrl())->assertOk()
+            ->assertJsonPath('rows.members.0.key', '20')
+            ->assertJsonPath('rows.members.0.operation', 'removed')
+            ->assertJsonPath('rows.members.0.before.id', 10)
+            ->assertJsonPath('rows.members.0.roles_available', false)
+            ->assertJsonFragment(['member_roles:20']);
+        $person = \App\Modules\Person\Models\Person::factory()->create();
+        $this->panel->group->members()->create(['person_id' => $person->id]);
+        $rows = collect($this->getJson($this->draftUrl())->assertOk()->json('rows.members'))->keyBy('key');
+        $this->assertSame('added', $rows[$person->id]['operation']);
+        $this->assertSame($frozen, $this->getJson($this->url($submission))->assertOk()->json());
     }
 
     #[Test]

@@ -129,13 +129,13 @@ export default {
       await fetchEntries(`/api/groups/${props.uuid}/activity-logs`);
     };
 
-    const getGroup = async () => {
+    const getGroup = async (forceMembers = false) => {
       await store.dispatch("groups/find", props.uuid);
       store.commit("groups/setCurrentItemIndexByUuid", props.uuid);
 
       const promises = [
         store.dispatch("groups/getChildren", group.value),
-        store.dispatch("groups/getMembers", group.value),
+        store.dispatch("groups/getMembers", forceMembers === true ? { group: group.value, force: true } : group.value),
       ];
 
       if (group.value.is_ep) {
@@ -196,11 +196,12 @@ export default {
     };
   },
   provide() {
-    return { scopeOfWorkGeneDiscard: {
+    const discardContext = {
       status: computed(() => this.scopeOfWorkStatus),
       busy: computed(() => this.discardingScopeOfWork || this.scopeOfWorkMutationBusy),
       discard: payload => this.discardScopeOfWorkChange(payload),
-    } };
+    };
+    return { scopeOfWorkGeneDiscard: discardContext, scopeOfWorkMemberDiscard: discardContext };
   },
   data() {
     return {
@@ -510,13 +511,22 @@ export default {
         this.discardingScopeOfWork = false;
       }
     },
-    async discardScopeOfWorkChange({ revision, changeId, geneLabel }) {
+    async discardScopeOfWorkChange({ revision, changeId, geneLabel, memberChange }) {
       if (this.discardingScopeOfWork || this.scopeOfWorkMutationBusy) return;
       if (this.scopeOfWorkHasActiveEdits) {
         this.$store.commit('pushError', 'Save or cancel your active edits before discarding changes.');
         return;
       }
-      const message = geneLabel
+      if (memberChange && (this.scopeOfWorkStatus?.active_revision?.uuid !== revision.uuid
+        || !this.scopeOfWorkStatus.active_revision.changes?.some(change => change.id === changeId && change.can_discard)
+        || !['draft', 'revisions_requested'].includes(this.scopeOfWorkStatus.active_revision.status))) return;
+      const baseLabel = revision.base_version?.version_label ? `version ${revision.base_version.version_label}` : 'the approved baseline';
+      const memberMessage = memberChange?.kind === 'role'
+        ? `Discard the ${memberChange.operation === 'added' ? 'addition' : 'removal'} of ${memberChange.roleLabel} for ${memberChange.label}? This will restore this role to ${baseLabel}. Other draft changes will remain.`
+        : memberChange?.kind === 'retirement'
+          ? `Discard the retirement change for ${memberChange.label}? This will restore this retirement state to ${baseLabel}. Other draft changes will remain.`
+          : `Discard the Scope of Work change for ${memberChange?.label}? This will restore this membership to ${baseLabel}. Other draft changes will remain.`;
+      const message = memberChange ? memberMessage : geneLabel
         ? `Discard the Scope of Work change for ${geneLabel}? This will restore this change to ${revision.base_version?.version_label ? 'version ' + revision.base_version.version_label : 'the approved baseline'}. Other draft changes will remain.`
         : 'Discard this change and restore its approved baseline value? Other changes will be kept.';
       if (!window.confirm(message)) return;
@@ -527,7 +537,7 @@ export default {
         });
         this.scopeOfWorkHistory = null;
         if (!this.scopeOfWorkHasActiveEdits) {
-          await this.getGroup();
+          await this.getGroup(Boolean(memberChange));
           await this.$refs?.groupGeneListRef?.refreshGenes?.();
         }
         this.$store.commit('pushSuccess', 'Scope of Work change discarded.');
@@ -599,7 +609,7 @@ export default {
         <ApplicationSummary v-if="group.isApplying" :group="group" />
         <tabs-container @tab-changed="handleTabChange">
           <tab-item label="Members">
-            <MemberList :group="group" :readonly="scopeOfWorkIsUnderReview" @updated="refreshScopeOfWorkStatus" />
+            <MemberList :group="group" :readonly="scopeOfWorkIsUnderReview || discardingScopeOfWork || scopeOfWorkMutationBusy" :scope-comparison="scopeOfWorkComparisonState.comparison.value" @updated="refreshScopeOfWorkStatus" />
             <submission-wrapper
               v-if="group.is_vcep_or_scvcep"
               :show-controls="editingExpertise"
@@ -896,6 +906,7 @@ export default {
         <router-view
           ref="modalView"
           @saved="handleModalSaved"
+          @updated="refreshScopeOfWorkStatus"
           @canceled="hideModal"
         />
       </modal-dialog>

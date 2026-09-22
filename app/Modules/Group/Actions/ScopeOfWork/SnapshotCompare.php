@@ -130,6 +130,8 @@ class SnapshotCompare
                 'before_value' => null,
                 'after_value' => [
                     'role' => $role,
+                    ...$this->memberIdentity($afterMember),
+                    'role_id' => collect($afterMember['roles'])->firstWhere('name', $role)['id'] ?? null,
                 ],
             ]);
         }
@@ -143,6 +145,8 @@ class SnapshotCompare
                 'field_name' => 'roles',
                 'before_value' => [
                     'role' => $role,
+                    ...$this->memberIdentity($afterMember),
+                    'role_id' => collect($beforeMember['roles'])->firstWhere('name', $role)['id'] ?? null,
                 ],
                 'after_value' => null,
             ]);
@@ -172,8 +176,8 @@ class SnapshotCompare
     {
         return collect($members)
             ->mapWithKeys(function ($member) {
-                $key = $member['person_uuid']
-                    ?? $member['person_id']
+                $key = $member['person_id']
+                    ?? $member['person_uuid']
                     ?? $member['id'];
 
                 return [$key => $member];
@@ -329,8 +333,8 @@ class SnapshotCompare
                     'entity_uuid' => $afterMember['person_uuid'] ?? null,
                     'entity_label' => $this->memberLabel($afterMember),
                     'field_name' => 'end_date',
-                    'before_value' => ['end_date' => $beforeEndDate],
-                    'after_value' => ['end_date' => $afterEndDate],
+                    'before_value' => ['end_date' => $beforeEndDate, ...$this->memberIdentity($afterMember)],
+                    'after_value' => ['end_date' => $afterEndDate, ...$this->memberIdentity($afterMember)],
                 ]),
             ];
         }
@@ -342,13 +346,18 @@ class SnapshotCompare
                     'entity_uuid' => $afterMember['person_uuid'] ?? null,
                     'entity_label' => $this->memberLabel($afterMember),
                     'field_name' => 'end_date',
-                    'before_value' => ['end_date' => $beforeEndDate],
-                    'after_value' => ['end_date' => $afterEndDate],
+                    'before_value' => ['end_date' => $beforeEndDate, ...$this->memberIdentity($afterMember)],
+                    'after_value' => ['end_date' => $afterEndDate, ...$this->memberIdentity($afterMember)],
                 ]),
             ];
         }
 
         return [];
+    }
+
+    private function memberIdentity(array $member): array
+    {
+        return ['person_id' => $member['person_id'] ?? null, 'membership_id' => $member['id'] ?? null];
     }
 
     private function scopeGenesByKey(array $genes): array
