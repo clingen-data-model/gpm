@@ -252,6 +252,10 @@ class SnapshotCompare
 
     private function compareExistingGene(Group $group, array $beforeGene, array $afterGene): array
     {
+        // Compare saved JSON values: live date casts must match their captured
+        // strings, including after restoring an approved approval date.
+        $beforeGene = json_decode(json_encode($beforeGene), true);
+        $afterGene = json_decode(json_encode($afterGene), true);
         $changes = [];
 
         if ($this->normalizeTier($beforeGene['tier'] ?? null) !== $this->normalizeTier($afterGene['tier'] ?? null)) {
@@ -262,9 +266,11 @@ class SnapshotCompare
                 'entity_label' => $this->scopeGeneLabel($afterGene),
                 'field_name' => 'tier',
                 'before_value' => [
+                    'id' => $beforeGene['id'],
                     'tier' => $beforeGene['tier'] ?? null,
                 ],
                 'after_value' => [
+                    'id' => $afterGene['id'],
                     'tier' => $afterGene['tier'] ?? null,
                 ],
             ]);
@@ -294,9 +300,11 @@ class SnapshotCompare
                 'entity_label' => $this->scopeGeneLabel($afterGene),
                 'field_name' => $field,
                 'before_value' => [
+                    'id' => $beforeGene['id'],
                     $field => $beforeGene[$field] ?? null,
                 ],
                 'after_value' => [
+                    'id' => $afterGene['id'],
                     $field => $afterGene[$field] ?? null,
                 ],
             ]);
