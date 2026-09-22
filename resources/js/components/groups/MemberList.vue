@@ -138,6 +138,7 @@ export default {
                     .filter(m => this.matchesFilters(m))
                     .filter(m => {
                         if (this.filters.hideAlumns) {
+                            if (['added', 'removed', 'changed'].includes(m.comparison?.operation)) return true;
                             return m.snapshotOnly ? !m.isRetired : m.end_date === null;
                         }
                         return m;
@@ -148,11 +149,6 @@ export default {
         },
         showOperationalLinks () {
             return this.operationalMembers.length > 0 || !this.memberRows.some(row => row.snapshotOnly);
-        },
-        hiddenRetiredChanges () {
-            if (!this.filters.hideAlumns) return 0;
-            return this.memberRows.filter(row => row.isRetired && this.matchesFilters(row)
-                && row.comparison && row.comparison.operation !== 'unchanged').length;
         },
         filteredEmails () {
             return this.operationalMembers.map(m => `${m.person.name} <${m.person.email}>`)
@@ -498,9 +494,6 @@ export default {
         </div>
       </div>
     </div>
-    <p v-if="hiddenRetiredChanges" class="text-xs text-gray-600 mt-1">
-      {{ hiddenRetiredChanges }} Scope of Work {{ hiddenRetiredChanges === 1 ? 'change' : 'changes' }} hidden by retired-member filter
-    </p>
     <transition name="slide-fade-down">
       <div v-show="showFilter" class="flex justify-between px-2 space-x-2 bg-blue-200 rounded-lg">
         <div class="flex-1">

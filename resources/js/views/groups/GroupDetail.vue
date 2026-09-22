@@ -2,6 +2,7 @@
 
 import { ref, computed, onMounted, watch, provide } from "vue";
 import { useScopeOfWorkComparison } from '@/composables/scope_of_work_comparison';
+import { scopeOfWorkChangeLabel } from '@/scope_of_work_change_label';
 import { useStore } from "vuex";
 
 import { logEntries, fetchEntries } from "@/adapters/log_entry_repository";
@@ -511,13 +512,13 @@ export default {
         this.discardingScopeOfWork = false;
       }
     },
-    async discardScopeOfWorkChange({ revision, changeId, geneLabel, memberChange }) {
+    async discardScopeOfWorkChange({ revision, changeId, geneLabel, memberChange, fromBanner = false }) {
       if (this.discardingScopeOfWork || this.scopeOfWorkMutationBusy) return;
       if (this.scopeOfWorkHasActiveEdits) {
         this.$store.commit('pushError', 'Save or cancel your active edits before discarding changes.');
         return;
       }
-      if (memberChange && (this.scopeOfWorkStatus?.active_revision?.uuid !== revision.uuid
+      if ((memberChange || fromBanner) && (this.scopeOfWorkStatus?.active_revision?.uuid !== revision.uuid
         || !this.scopeOfWorkStatus.active_revision.changes?.some(change => change.id === changeId && change.can_discard)
         || !['draft', 'revisions_requested'].includes(this.scopeOfWorkStatus.active_revision.status))) return;
       const baseLabel = revision.base_version?.version_label ? `version ${revision.base_version.version_label}` : 'the approved baseline';
@@ -526,7 +527,10 @@ export default {
         : memberChange?.kind === 'retirement'
           ? `Discard the retirement change for ${memberChange.label}? This will restore this retirement state to ${baseLabel}. Other draft changes will remain.`
           : `Discard the Scope of Work change for ${memberChange?.label}? This will restore this membership to ${baseLabel}. Other draft changes will remain.`;
-      const message = memberChange ? memberMessage : geneLabel
+      const bannerChange = fromBanner ? this.scopeOfWorkStatus.active_revision.changes.find(change => change.id === changeId) : null;
+      const message = fromBanner
+        ? `Discard this Scope of Work change?\n\n“${scopeOfWorkChangeLabel(bannerChange)}”\n\nThis will restore this change to ${baseLabel}. Other draft changes will remain.`
+        : memberChange ? memberMessage : geneLabel
         ? `Discard the Scope of Work change for ${geneLabel}? This will restore this change to ${revision.base_version?.version_label ? 'version ' + revision.base_version.version_label : 'the approved baseline'}. Other draft changes will remain.`
         : 'Discard this change and restore its approved baseline value? Other changes will be kept.';
       if (!window.confirm(message)) return;
@@ -537,7 +541,7 @@ export default {
         });
         this.scopeOfWorkHistory = null;
         if (!this.scopeOfWorkHasActiveEdits) {
-          await this.getGroup(Boolean(memberChange));
+          await this.getGroup(Boolean(memberChange || fromBanner));
           await this.$refs?.groupGeneListRef?.refreshGenes?.();
         }
         this.$store.commit('pushSuccess', 'Scope of Work change discarded.');
