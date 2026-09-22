@@ -169,17 +169,48 @@ describe('contextual member list', () => {
     wrapper.unmount()
   })
 
-  it('preserves retired filtering, reports hidden changes, and shows both transitions', async () => {
+  it('keeps the current retirement change visible while hiding unrelated retired members', async () => {
     const retirement = { field: 'end_date', before: null, after: '2026-01-01' }
-    const { wrapper } = await render([liveMember(1, { end_date: '2026-01-01' })], comparison([row(1, 'changed', { field_changes: [retirement] })]))
-    expect(wrapper.vm.filteredMembers).toHaveLength(0)
-    expect(wrapper.text()).toContain('1 Scope of Work change hidden by retired-member filter')
-    await wrapper.setData({ filters: { hideAlumns: false } })
-    await flushPromises()
+    const { wrapper } = await render(
+      [1, 2, 3].map(id => liveMember(id, { end_date: '2026-01-01' })),
+      comparison([row(1, 'changed', { field_changes: [retirement] }), row(2, 'unchanged')]),
+    )
+    expect(wrapper.vm.filters.hideAlumns).toBe(true)
+    expect(wrapper.vm.filteredMembers.map(row => row.member.person_id)).toEqual([1])
+    expect(wrapper.text()).not.toContain('hidden by retired-member filter')
     expect(wrapper.find('tbody').text()).toContain('Active → Retired')
     expect(memberRetirementTransition({ field_changes: [{ ...retirement, before: '2026-01-01', after: null }] })).toBe('Retired → Active')
     expect(memberRetirementTransition({ field_changes: [{ ...retirement, before: '2025-01-01' }] })).toBe('')
     expect(memberRetirementTransition({ field_changes: [retirement], unavailable_fields: ['end_date'] })).toBe('')
+    wrapper.unmount()
+  })
+
+  it('keeps changed retired snapshot members visible in frozen comparison', async () => {
+    const retirement = { field: 'end_date', before: null, after: '2026-01-01' }
+    const { wrapper } = await render([], comparison([
+      row(1, 'changed', { after: snapshot(1, { end_date: retirement.after }), field_changes: [retirement] }),
+      row(2, 'unchanged', { after: snapshot(2, { end_date: retirement.after }) }),
+    ]), { readonly: true })
+    expect(wrapper.vm.filteredMembers.map(row => row.member.person_id)).toEqual([1])
+    expect(wrapper.find('tbody').text()).toContain('Active → Retired')
+    await wrapper.setData({ filters: { keyword: 'NotMatching' } })
+    expect(wrapper.vm.filteredMembers).toHaveLength(0)
+    wrapper.unmount()
+  })
+
+  it.each(['added', 'removed', 'changed'])('bypasses retirement filtering for a current %s member', async operation => {
+    const { wrapper } = await render([liveMember(1, { end_date: '2026-01-01' })], comparison([row(1, operation)]))
+    expect(wrapper.vm.filteredMembers).toHaveLength(1)
+    await wrapper.setProps({ scopeComparison: null })
+    expect(wrapper.vm.filteredMembers).toHaveLength(0)
+    wrapper.unmount()
+  })
+
+  it('preserves normal retired filtering without contextual comparison', async () => {
+    const { wrapper } = await render([liveMember(1), liveMember(2, { end_date: '2026-01-01' })])
+    expect(wrapper.vm.filteredMembers.map(row => row.member.person_id)).toEqual([1])
+    await wrapper.setData({ filters: { hideAlumns: false } })
+    expect(wrapper.vm.filteredMembers.map(row => row.member.person_id)).toEqual([1, 2])
     wrapper.unmount()
   })
 
