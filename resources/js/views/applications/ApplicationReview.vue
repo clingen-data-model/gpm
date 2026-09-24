@@ -4,16 +4,19 @@ import ScopeOfWorkNameComparison from '@/components/groups/ScopeOfWorkNameCompar
 
 import { computed, inject } from 'vue'
 import {useStore} from 'vuex';
-import {hasPermission} from '@/auth_utils.js'
+import {hasPermission, hasAnyPermission} from '@/auth_utils.js'
 import ScreenTemplate from '@/components/ScreenTemplate.vue';
 import DefinitionReview from '@/components/expert_panels/DefinitionReview.vue';
 import ChairApproverControls from '@/components/applications/Review/ChairApproverControls.vue';
 import SustainedCurationReview from '@/components/expert_panels/SustainedCurationReview.vue';
 import SubmissionContextSummary from '@/components/applications/Review/SubmissionContextSummary.vue';
+import ApplicationReviewSummary from '@/components/applications/Review/ApplicationReviewSummary.vue'
+import ReviewHistory from '@/components/applications/Review/ReviewHistory.vue';
 
 const emits = defineEmits(['deleted', 'saved']);
 const store = useStore();
 const group = computed(() => store.getters['groups/currentItemOrNew'])
+const commentManager = inject('commentManager')
 const latestSubmission = inject('latestSubmission')
 
 const breadcrumbs = computed(() => {
@@ -67,6 +70,13 @@ const screenTitle = computed(() => {
       @saved="emits('deleted')"
     />
     <SubmissionContextSummary @saved="emits('saved')" />
+    <ApplicationReviewSummary
+      v-if="hasAnyPermission(['ep-applications-manage', 'ep-applications-comment', 'ep-applications-approve']) && commentManager"
+      :summary="commentManager.summary"
+      :loading="commentManager.summaryLoading"
+      :error="commentManager.summaryError"
+    />
+    <ReviewHistory />
     <component :is="stepReviewComponent" v-if="stepReviewComponent" />
   </ScreenTemplate>
 </template>

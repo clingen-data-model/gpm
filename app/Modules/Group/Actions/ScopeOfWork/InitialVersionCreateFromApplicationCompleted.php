@@ -14,7 +14,7 @@ class InitialVersionCreateFromApplicationCompleted
     {
         $expertPanel->loadMissing('group');
 
-        if (!$expertPanel->group) {
+        if (!$expertPanel->group || !\App\Modules\Group\Services\ScopeOfWorkEligibility::applies($expertPanel->group)) {
             return;
         }
 

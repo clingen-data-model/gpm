@@ -36,7 +36,7 @@ class ScopeOfWorkWorkflowTest extends TestCase
         parent::setUp();
         $this->setupForGroupTest();
         $this->seed([NextActionTypesTableSeeder::class, NextActionAssigneesTableSeeder::class, SubmissionTypeAndStatusSeeder::class]);
-        $this->panel = ExpertPanel::factory()->create(['current_step' => 1]);
+        $this->panel = ExpertPanel::factory()->create(['current_step' => 1, 'date_completed' => now()]);
         $user = $this->setupUserWithPerson(null, ['ep-applications-manage']);
         $this->actingAs($user);
         $this->revision = ScopeOfWorkVersion::create([

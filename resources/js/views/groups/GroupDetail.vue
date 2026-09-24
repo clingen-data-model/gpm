@@ -168,7 +168,8 @@ export default {
 
     const scopeOfWorkStatus = ref(null);
     const scopeOfWorkComparisonState = useScopeOfWorkComparison(() => {
-      const revision = scopeOfWorkStatus.value?.active_revision;
+      const revision = scopeOfWorkStatus.value?.versioning_applicable === true
+        ? scopeOfWorkStatus.value.active_revision : null;
       const live = ['draft', 'revisions_requested'].includes(revision?.status);
       return [
         group.value.uuid,
@@ -198,7 +199,7 @@ export default {
   },
   provide() {
     const discardContext = {
-      status: computed(() => this.scopeOfWorkStatus),
+      status: computed(() => this.scopeOfWorkStatus?.versioning_applicable === true ? this.scopeOfWorkStatus : null),
       busy: computed(() => this.discardingScopeOfWork || this.scopeOfWorkMutationBusy),
       discard: payload => this.discardScopeOfWorkChange(payload),
     };
@@ -233,7 +234,7 @@ export default {
         && !this.group.expert_panel.annualUpdate;
     },
     scopeOfWorkIsUnderReview() {
-      return this.scopeOfWorkStatus?.active_revision?.status === 'submitted';
+      return this.scopeOfWorkStatus?.versioning_applicable === true && this.scopeOfWorkStatus?.active_revision?.status === 'submitted';
     },
   },
   watch: {
@@ -413,9 +414,13 @@ export default {
     },
     async refreshScopeOfWorkStatus() {
       if (!this.group?.uuid || !this.group?.is_ep) { return; }
+      // Recheck persisted eligibility with a read-only request before any versioning POST.
+      this.scopeOfWorkStatus = await this.$store.dispatch('groups/getScopeOfWorkStatus', this.group.uuid);
+      if (this.scopeOfWorkStatus?.versioning_applicable !== true) return;
       this.scopeOfWorkStatus = await this.$store.dispatch('groups/refreshScopeOfWorkStatus', this.group.uuid);
     },
     async finalizeScopeOfWorkRevision(revision) {
+      if (this.scopeOfWorkStatus?.versioning_applicable !== true) return;
       if (this.discardingScopeOfWork || this.scopeOfWorkMutationBusy) return;
       this.scopeOfWorkMutationBusy = true;
       try {
@@ -438,6 +443,7 @@ export default {
       }
     },
     async submitScopeOfWorkRevision(payload) {
+      if (this.scopeOfWorkStatus?.versioning_applicable !== true) { payload.done?.(); return; }
       if (this.discardingScopeOfWork || this.scopeOfWorkMutationBusy) { payload.done?.(); return; }
       this.scopeOfWorkMutationBusy = true;
       const revision = payload.revision || payload;
@@ -460,11 +466,13 @@ export default {
       }
     },
     async approveScopeOfWorkRevision(revision) {
+      if (this.scopeOfWorkStatus?.versioning_applicable !== true) return;
       this.scopeOfWorkStatus = await this.$store.dispatch('groups/approveScopeOfWorkRevision', { groupUuid: this.group.uuid, revisionUuid: revision.uuid });
       this.$store.commit('pushSuccess', `Scope of Work revision ${revision.version_label} approved.`);
     },
 
     async requestScopeOfWorkRevisionChanges(revision) {
+      if (this.scopeOfWorkStatus?.versioning_applicable !== true) return;
       const notes = window.prompt('Enter revision request notes:', '');
       if (notes === null) { return; }
       await this.$store.dispatch('groups/requestScopeOfWorkRevisionChanges', { groupUuid: this.group.uuid, submissionId: revision.submission.id, notes } );
@@ -493,6 +501,7 @@ export default {
       );
     },
     async discardScopeOfWorkRevision(revision) {
+      if (this.scopeOfWorkStatus?.versioning_applicable !== true) return;
       if (this.discardingScopeOfWork || this.scopeOfWorkMutationBusy) return;
       if (this.scopeOfWorkHasActiveEdits) {
         this.$store.commit('pushError', 'Save or cancel your active edits before discarding changes.');
@@ -513,6 +522,7 @@ export default {
       }
     },
     async discardScopeOfWorkChange({ revision, changeId, geneLabel, memberChange, fromBanner = false }) {
+      if (this.scopeOfWorkStatus?.versioning_applicable !== true) return;
       if (this.discardingScopeOfWork || this.scopeOfWorkMutationBusy) return;
       if (this.scopeOfWorkHasActiveEdits) {
         this.$store.commit('pushError', 'Save or cancel your active edits before discarding changes.');
@@ -591,7 +601,7 @@ export default {
     />
 
     <ScopeOfWorkStatusBanner
-      v-if="group?.is_ep"
+      v-if="group?.is_ep && scopeOfWorkStatus?.versioning_applicable === true"
       :status="scopeOfWorkStatus"
       :discarding="discardingScopeOfWork || scopeOfWorkMutationBusy"
       :can-manage="hasPermission('ep-applications-manage')"

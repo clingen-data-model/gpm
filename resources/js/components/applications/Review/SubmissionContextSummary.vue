@@ -9,6 +9,9 @@ const emit = defineEmits(['saved']);
 const store = useStore();
 const latestSubmission = inject('latestSubmission');
 const group = inject('group');
+const historyState = inject('applicationReviewHistory', null);
+const reviewRound = computed(() => historyState?.history.value?.cycles
+  .flatMap(cycle => cycle.rounds).find(round => round.submission_id === submission.value.id)?.review_round);
 const showApproveModal = ref(false);
 const showRequestRevisionsModal = ref(false);
 const revisionNotes = ref('');
@@ -107,8 +110,8 @@ const requestScopeOfWorkRevisionChanges = async () => {
 
     <div v-else-if="isApplicationSubmission" class="mt-2">
       <p>
-        This submission is tied to application snapshot
-        <strong>version {{ data.application_snapshot_version || submission.application_snapshot?.version }}</strong>.
+        <template v-if="reviewRound">Initial Application — <strong>Review Round {{ reviewRound }}</strong>.</template>
+        <template v-else>Application submission. Review Round information unavailable.</template>
       </p>
 
       <p v-if="submission.notes" class="mt-2">

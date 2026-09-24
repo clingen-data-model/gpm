@@ -22,7 +22,7 @@ class BackfillScopeOfWorkInitialVersions extends Command
 
         $query = Group::query()
             ->with(['type', 'status', 'expertPanel'])
-            ->whereHas('expertPanel')
+            ->whereHas('expertPanel', fn ($query) => $query->approved())
             ->whereHas('type', function ($q) {
                 $q->whereIn('name', ['gcep', 'vcep', 'scvcep']);
             })

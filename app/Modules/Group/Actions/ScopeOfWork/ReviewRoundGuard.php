@@ -17,6 +17,7 @@ class ReviewRoundGuard
             return null;
         }
 
+        \App\Modules\Group\Services\ScopeOfWorkEligibility::requireCompleted($submission->group);
         $revision = ScopeOfWorkVersion::whereKey($submission->scope_of_work_version_id)
             ->lockForUpdate()->first();
         $current = Submission::whereKey($submission->id)->lockForUpdate()->firstOrFail();

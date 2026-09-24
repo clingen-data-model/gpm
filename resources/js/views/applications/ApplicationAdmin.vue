@@ -11,6 +11,8 @@ import StepOne from '@/components/applications/StepOne.vue'
 import StepFour from '@/components/applications/StepFour.vue'
 import BasicInfoData from '@/components/applications/BasicInfoData.vue'
 import SubmissionContextSummary from '@/components/applications/Review/SubmissionContextSummary.vue'
+import ApplicationReviewSummary from '@/components/applications/Review/ApplicationReviewSummary.vue'
+import ReviewHistory from '@/components/applications/Review/ReviewHistory.vue'
 
 export default {
     name: 'ApplicationDetail',
@@ -23,10 +25,13 @@ export default {
       StepOne,
       StepFour,
       BasicInfoData,
-      SubmissionContextSummary
+      SubmissionContextSummary,
+      ReviewHistory,
+      ApplicationReviewSummary
     },
     inject: {
-      latestSubmission: { default: null }
+      latestSubmission: { default: null },
+      commentManager: { default: null }
     },
     props: {
       loading: {
@@ -135,6 +140,13 @@ export default {
       </div>
 
       <SubmissionContextSummary @saved="$emit('updated')" />
+      <ApplicationReviewSummary
+      v-if="hasAnyPermission(['ep-applications-manage', 'ep-applications-comment', 'ep-applications-approve']) && commentManager"
+      :summary="commentManager.summary"
+      :loading="commentManager.summaryLoading"
+      :error="commentManager.summaryError"
+    />
+    <ReviewHistory />
 
       <ProgressChart
         :application="application"

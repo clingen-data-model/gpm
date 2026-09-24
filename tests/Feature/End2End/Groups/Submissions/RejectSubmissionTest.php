@@ -4,7 +4,6 @@ namespace Tests\Feature\End2End\Groups\Submissions;
 
 use Carbon\Carbon;
 use Tests\TestCase;
-use Laravel\Sanctum\Sanctum;
 use App\Models\NextActionType;
 use App\Mail\UserDefinedMailable;
 use Illuminate\Support\Facades\Mail;
@@ -45,7 +44,7 @@ class RejectSubmissionTest extends TestCase
                                     'submitter_id' => $this->admin->person->id,
                                 ]);
 
-        Sanctum::actingAs($this->admin);
+        $this->actingAs($this->admin);
     }
 
     #[Test]
@@ -70,13 +69,13 @@ class RejectSubmissionTest extends TestCase
 
         $this->assertDatabaseHas('submissions', [
             'id' => $this->submission->id,
-            'submission_status_id' => config('submissions.statuses.revisions-requested'),
+            'submission_status_id' => config('submissions.statuses.revisions-requested.id'),
             'closed_at' => Carbon::now(),
         ]);
     }
 
     #[Test]
-    public function emails_group_contacts_when_specified_and_saves_email_body_to_response_content()
+    public function emails_group_contacts_with_email_body_and_stores_separate_reviewer_note()
     {
         Carbon::setTestNow('2022-07-12');
         Mail::fake();
@@ -105,8 +104,10 @@ class RejectSubmissionTest extends TestCase
             'id' => $this->submission->id,
             'submission_status_id' => config('submissions.statuses.revisions-requested.id'),
             'closed_at' => Carbon::now(),
-            'response_content' => $data['body']
+            'response_content' => $data['response_content']
         ]);
+        $this->getJson('/api/groups/'.$this->expertPanel->group->uuid.'/application/review-history')
+            ->assertOk()->assertJsonPath('cycles.0.rounds.0.revisions_requested_notes', $data['response_content']);
 
     }
 
@@ -134,7 +135,7 @@ class RejectSubmissionTest extends TestCase
 
         $this->assertDatabaseHas('next_actions', [
             'expert_panel_id' => $this->expertPanel->id,
-            'type_id' => config('next_actions.types.make-revisions'),
+            'type_id' => config('next_actions.types.make-revisions.id'),
             'assignee_id' => config('next_actions.assignees.expert-panel.id')
         ]);
     }
@@ -173,8 +174,27 @@ class RejectSubmissionTest extends TestCase
             'notify_contacts' => false,
             'subject' => 'Revise and resubmit your application for '.$this->expertPanel->group->name,
             'notes' => static::NOTE,
+            'response_content' => static::NOTE,
             'body' => static::NOTE
         ], $mergeData);
+    }
+
+    #[Test]
+    public function initial_request_never_falls_back_to_email_and_does_not_rewrite_old_notes(): void
+    {
+        $old = Submission::factory()->create(['group_id' => $this->expertPanel->group_id,
+            'response_content' => '<p>Historical email body</p>']);
+        $this->makeRequest($this->makeDefaultData(['response_content' => null, 'body' => 'Email only']))->assertOk();
+        $this->assertNull($this->submission->fresh()->response_content);
+        $this->assertSame('<p>Historical email body</p>', $old->fresh()->response_content);
+    }
+
+    #[Test]
+    public function initial_step_four_keeps_existing_response_behavior(): void
+    {
+        $this->submission->update(['submission_type_id' => config('submissions.types.application.sustained-curation.id')]);
+        $this->makeRequest($this->makeDefaultData(['response_content' => 'Separate note', 'body' => 'Step four email']))->assertOk();
+        $this->assertSame('Step four email', $this->submission->fresh()->response_content);
     }
 
 
