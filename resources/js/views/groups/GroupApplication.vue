@@ -3,6 +3,7 @@ import ApplicationGcep from '@/components/expert_panels/ApplicationGcep.vue';
 import ApplicationVcep from '@/components/expert_panels/ApplicationVcep.vue';
 import ApplicationScvcep from '@/components/expert_panels/ApplicationScvcep.vue';
 import ApplicationMenu from '@/components/layout/ApplicationMenu.vue';
+import InitialApplicationRevisionNote from '@/components/applications/InitialApplicationRevisionNote.vue';
 import Group from '@/domain/group';
 import { getApplicationForGroup } from "@/composables/use_application.js";
 
@@ -13,6 +14,7 @@ export default {
         ApplicationVcep,
         ApplicationScvcep,
         ApplicationMenu,
+        InitialApplicationRevisionNote,
     },
     beforeRouteLeave() {
         if (this.$refs.application.applicationIsDirty()) {
@@ -162,6 +164,7 @@ export default {
       </ApplicationMenu>
       <div class=" flex-1">
         <section id="body" v-remaining-height class="px-4">
+          <InitialApplicationRevisionNote :application="group.expert_panel" />
           <static-alert
             v-if="group.expert_panel.hasPendingSubmission"
             class="relative mt-4 px-4 z-50"

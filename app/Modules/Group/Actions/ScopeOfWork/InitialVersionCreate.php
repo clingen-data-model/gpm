@@ -14,11 +14,9 @@ class InitialVersionCreate
 
     public function handle(Group $group, ?User $user = null): ScopeOfWorkVersion
     {
-        $group->loadMissing('expertPanel');
-
-        if (!$group->expertPanel) {
-            throw new \InvalidArgumentException('Scope of Work versions can only be created for Expert Panel groups.');
-        }
+        $group = $group->fresh();
+        $panel = \App\Modules\Group\Services\ScopeOfWorkEligibility::requireCompleted($group);
+        $group->setRelation('expertPanel', $panel);
 
         $existingApprovedVersion = ScopeOfWorkVersion::forGroup($group)
             ->approved()
@@ -52,9 +50,6 @@ class InitialVersionCreate
     {
         $expertPanel = $group->expertPanel;
 
-        return $expertPanel->date_completed
-            ?? $expertPanel->step_4_approval_date
-            ?? $expertPanel->step_1_approval_date
-            ?? now();
+        return $expertPanel->date_completed;
     }
 }

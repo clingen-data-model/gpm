@@ -1,5 +1,5 @@
 <script setup>
-    import {computed, onMounted, provide, ref, shallowRef, watch} from 'vue';
+    import {computed, onUnmounted, onMounted, provide, ref, shallowRef, watch} from 'vue';
     import {useStore} from 'vuex';
     import {hasPermission} from '@/auth_utils.js';
     import ApplicationAdmin from './ApplicationAdmin.vue'
@@ -26,6 +26,11 @@
     const applicationView = shallowRef(ApplicationReview);
     const latestSubmission = ref({});
     provide('latestSubmission', latestSubmission);
+    const reviewHistory = ref(null);
+    const reviewHistoryLoading = ref(false);
+    const reviewHistoryError = ref('');
+    provide('applicationReviewHistory', { history: reviewHistory, loading: reviewHistoryLoading, error: reviewHistoryError });
+    let reviewRefresh = 0;
     const scopeOfWorkComparisonState = useScopeOfWorkComparison(() => [
         group.value.uuid,
         latestSubmission.value?.data?.context === 'scope_of_work_revision'
@@ -33,13 +38,23 @@
     ]);
     provide('scopeOfWorkComparisonState', scopeOfWorkComparisonState);
 
-    const getLatestSubmission = () => {
-        api.get(`/api/groups/${group.value.uuid}/application/latest-submission`)
-            .then(rsp => latestSubmission.value = rsp.data)
-            .catch(error => {
-                // eslint-disable-next-line no-console
-                console.log(error)
-            });
+    const getLatestSubmission = async () => {
+        const refresh = ++reviewRefresh;
+        const uuid = group.value.uuid;
+        reviewHistory.value = null;
+        reviewHistoryLoading.value = true;
+        reviewHistoryError.value = '';
+        await Promise.allSettled([
+            api.get(`/api/groups/${uuid}/application/latest-submission`).then(rsp => {
+                if (refresh === reviewRefresh) latestSubmission.value = rsp.data;
+            }),
+            api.get(`/api/groups/${uuid}/application/review-history`).then(rsp => {
+                if (refresh === reviewRefresh) reviewHistory.value = rsp.data;
+            }).catch(() => {
+                if (refresh === reviewRefresh) reviewHistoryError.value = 'Unable to load Review History. Refresh to retry.';
+            }),
+        ]);
+        if (refresh === reviewRefresh) reviewHistoryLoading.value = false;
     }
     const getGroup = async () => {
         loading.value = true;
@@ -57,8 +72,13 @@
         () => props.uuid,
         async (to, from) => {
             if ((to && (!from || to !== from))) {
+                reviewRefresh++;
+                reviewHistory.value = null;
+                latestSubmission.value = {};
                 await getGroup();
-                commentManager.value = commentManagerFactory('App\\Modules\\Group\\Models\\Group', group.value.id)
+                commentManager.value.dispose();
+                commentManager.value = commentManagerFactory('App\\Modules\\Group\\Models\\Group', group.value.id, group.value.uuid, group.value.id)
+                commentManager.value.getSummary();
                 commentManager.value.getComments();
 
             }
@@ -66,6 +86,8 @@
         { immediate: true }
     );
 
+
+    onUnmounted(() => commentManager.value.dispose());
 
     onMounted(async () => {
         if (hasPermission('ep-applications-comment')) {

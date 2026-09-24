@@ -13,6 +13,7 @@ class RevisionGuard
 
     public function ensureNotUnderReview(Group $group): void
     {
+        if (!\App\Modules\Group\Services\ScopeOfWorkEligibility::applies($group)) return;
         $submittedRevisionExists = ScopeOfWorkVersion::forGroup($group)
             ->where('status', ScopeOfWorkVersion::STATUS_SUBMITTED)
             ->exists();

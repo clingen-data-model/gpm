@@ -18,6 +18,7 @@ class RevisionDiscard
 
     public function handle(Group $group, ScopeOfWorkVersion $revision): ScopeOfWorkVersion
     {
+        \App\Modules\Group\Services\ScopeOfWorkEligibility::requireCompleted($group);
         if ($revision->group_id !== $group->id) {
             abort(404);
         }

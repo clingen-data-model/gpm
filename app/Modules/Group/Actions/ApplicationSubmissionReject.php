@@ -50,7 +50,9 @@ class ApplicationSubmissionReject
         DB::beginTransaction();
         try {
             $isScopeOfWorkRevision = data_get($submission->data, 'context') === 'scope_of_work_revision';
-            $responseContent = $isScopeOfWorkRevision ? $request->response_content : $request->body;
+            $usesRevisionNote = $isScopeOfWorkRevision
+                || (int) $submission->submission_type_id === (int) config('submissions.types.application.definition.id');
+            $responseContent = $usesRevisionNote ? $request->response_content : $request->body;
             $submission = $this->handle(
                 group: $group, 
                 submission: $submission,

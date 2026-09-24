@@ -116,6 +116,9 @@ Route::group([
 
         // APPLICATION
         Route::group(['prefix' => '/application'], function () {
+            Route::get('/review-summary', \App\Modules\Group\Actions\ApplicationReviewSummaryGet::class);
+            Route::get('/review-history', \App\Modules\Group\Actions\ApplicationReviewHistoryGet::class);
+            Route::get('/review-history/{submission}', \App\Modules\Group\Actions\ApplicationReviewRoundGet::class);
             Route::put('/', ApplicationSaveChanges::class);
 
             Route::group(['prefix' => '/submission'], function () {

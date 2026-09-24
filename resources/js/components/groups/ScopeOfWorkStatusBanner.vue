@@ -1,5 +1,5 @@
 <template>
-	<div v-if="status" class="mb-4 rounded-md border p-4 text-sm" :class="status.has_active_revision ? 'border-yellow-300 bg-yellow-50' : 'border-blue-200 bg-blue-50'">
+	<div v-if="status?.versioning_applicable === true" class="mb-4 rounded-md border p-4 text-sm" :class="status.has_active_revision ? 'border-yellow-300 bg-yellow-50' : 'border-blue-200 bg-blue-50'">
 		<div v-if="!status.has_approved_version">
 			<div class="font-semibold text-yellow-900">Scope of Work versioning has not been initialized for this group.</div>
 		</div>

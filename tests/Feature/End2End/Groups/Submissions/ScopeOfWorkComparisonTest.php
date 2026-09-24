@@ -22,7 +22,7 @@ class ScopeOfWorkComparisonTest extends TestCase
         $this->setupForGroupTest();
         $this->seed(SubmissionTypeAndStatusSeeder::class);
         $this->actingAs($this->setupUserWithPerson(null, ['ep-applications-manage']));
-        $this->panel = ExpertPanel::factory()->create();
+        $this->panel = ExpertPanel::factory()->create(['date_completed' => now()]);
         $this->baseline = ScopeOfWorkVersion::create([
             'group_id' => $this->panel->group_id, 'major_version' => 1, 'status' => 'approved',
         ]);

@@ -17,6 +17,7 @@ class RevisionChangeDiscard
 
     public function handle(Group $group, ScopeOfWorkVersion $revision, int $changeId, User $user): array
     {
+        \App\Modules\Group\Services\ScopeOfWorkEligibility::requireCompleted($group);
         return DB::transaction(function () use ($group, $revision, $changeId, $user) {
             $revision = ScopeOfWorkVersion::whereKey($revision->id)->lockForUpdate()->firstOrFail();
             abort_unless($revision->group_id === $group->id, 404);

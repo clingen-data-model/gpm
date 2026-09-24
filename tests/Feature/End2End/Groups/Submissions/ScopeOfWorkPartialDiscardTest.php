@@ -23,6 +23,7 @@ class ScopeOfWorkPartialDiscardTest extends TestCase
         $this->seed(SubmissionTypeAndStatusSeeder::class);
         $this->actingAs($this->setupUserWithPerson(null, ['groups-manage', 'ep-applications-manage']));
         $this->panel = ExpertPanel::factory()->create([
+            'date_completed' => now(),
             'long_base_name' => 'Approved long', 'short_base_name' => 'Approved short', 'scope_description' => 'Approved scope',
         ]);
         $this->panel->group->update(['name' => 'Approved name']);

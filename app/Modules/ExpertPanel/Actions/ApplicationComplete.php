@@ -19,11 +19,12 @@ class ApplicationComplete
 
     public function handle(ExpertPanel $expertPanel, Carbon $dateCompleted)
     {
+        $expertPanel->refresh();
         $stepManager = ($this->stepManagerFactory)($expertPanel);
-        if ($stepManager->isLastStep()) {
-            $expertPanel->date_completed = $dateCompleted;
-            $expertPanel->save();
-        }
+        if (!$stepManager->isLastStep()) return;
+        if ($expertPanel->date_completed !== null) return;
+        $expertPanel->date_completed = $dateCompleted;
+        $expertPanel->save();
 
         Event::dispatch(new ApplicationCompleted($expertPanel));
     }

@@ -43,7 +43,7 @@ Working Group Affiliation ID scope include Working Group, CDWG, and SC-CDWG.
     ],
     "expert_panel": {
       "uuid": "c828...0ff2",
-      "affiliation_id": "50998", ------------------------------------> DEPRECATED
+      "affiliation_id": "50998", ------------------------------------> WE STILL KEEP THIS UNTIL RELEASE THE ENXT MAJOR VERSION
       "name": "SCVCEP Long Base Name 1",
       "short_name": "SCVCEP Short1",
       "scope_description": "Curabitur... risus.",
@@ -68,7 +68,7 @@ Working Group Affiliation ID scope include Working Group, CDWG, and SC-CDWG.
         {
           "uuid": "82d1...695f",
           "filename": "DATA 740 Syllabus.pdf",
-          "download_url": "https://gpm...edu/downloads/groups/c828...0ff2/final-specifications/82d1...695f"
+          "download_url": "https://gpm...edu/downloads/groups/c828...0ff2/final-specification/82d1...695f"
         },
         ...
       ]
@@ -128,7 +128,7 @@ Working Group Affiliation ID scope include Working Group, CDWG, and SC-CDWG.
       "coi": "https://gpm...edu/coi-group/c21d...64b2",
       "expert_panel": {
         "uuid": "c21d...64b2",
-        "affiliation_id": "40157", ------------------------------------> DEPRECATED
+        "affiliation_id": "40157", ------------------------------------> WE STILL KEEP THIS UNTIL RELEASE THE ENXT MAJOR VERSION
         "name": "Child...sition",
         "short_name": "CAYA",
         "scope_description": "Technological ...research.",
