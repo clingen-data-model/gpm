@@ -28,6 +28,7 @@ class RevisionSubmit
         Person $submitter,
         ?string $notes = null
     ): ScopeOfWorkVersion {
+        \App\Modules\Group\Services\ScopeOfWorkEligibility::requireCompleted($group);
         if ($revision->group_id !== $group->id) {
             abort(404);
         }

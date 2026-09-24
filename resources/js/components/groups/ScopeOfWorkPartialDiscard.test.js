@@ -16,6 +16,7 @@ vi.mock('@/domain/application_definitions', () => ({
 }))
 
 const status = (state = 'draft') => ({
+  versioning_applicable: true,
   has_approved_version: true, has_active_revision: true,
   active_revision: { uuid: 'revision', version_label: '2.0', status: state,
     summary: { requires_submission: true },
@@ -33,6 +34,12 @@ const banner = props => mount(ScopeOfWorkStatusBanner, { props,
 afterEach(() => vi.restoreAllMocks())
 
 describe('partial discard banner', () => {
+  it('hides premature approved and draft records when versioning is inapplicable', () => {
+    const wrapper = banner({ status: { ...status(), versioning_applicable: false } })
+    expect(wrapper.text()).toBe('')
+    expect(wrapper.findAll('button')).toHaveLength(0)
+    wrapper.unmount()
+  })
   it.each(['draft', 'revisions_requested'])('uses server capability for all change types in %s', state => {
     const payload = status(state)
     const rules = ['panel_name.rename', 'scope_description.update', 'gene.add', 'gene.remove', 'gene.update', 'gene.update_tier',
@@ -82,6 +89,7 @@ describe('partial discard banner', () => {
 })
 
 const context = () => ({
+  scopeOfWorkStatus: status(),
   group: { uuid: 'group' }, discardingScopeOfWork: false, scopeOfWorkHasActiveEdits: false,
   scopeOfWorkHistory: { versions: [] }, getGroup: vi.fn().mockResolvedValue(),
   $refs: { groupGeneListRef: { refreshGenes: vi.fn().mockResolvedValue() } },
@@ -90,6 +98,40 @@ const context = () => ({
 const discard = ctx => GroupDetail.methods.discardScopeOfWorkChange.call(ctx, { revision: { uuid: 'revision' }, changeId: 1 })
 
 describe('Group Detail partial discard', () => {
+  it('uses read-only status and never posts refresh for an incomplete application', async () => {
+    const ctx = context()
+    ctx.group.is_ep = true
+    ctx.$store.dispatch.mockResolvedValue({ ...status(), versioning_applicable: false })
+    await GroupDetail.methods.refreshScopeOfWorkStatus.call(ctx)
+    expect(ctx.$store.dispatch).toHaveBeenCalledExactlyOnceWith('groups/getScopeOfWorkStatus', 'group')
+    expect(GroupDetail.computed.scopeOfWorkIsUnderReview.call(ctx)).toBe(false)
+  })
+
+  it('rechecks backend applicability before refreshing completed applications', async () => {
+    const ctx = context()
+    ctx.group.is_ep = true
+    ctx.$store.dispatch.mockResolvedValue(status())
+    await GroupDetail.methods.refreshScopeOfWorkStatus.call(ctx)
+    expect(ctx.$store.dispatch.mock.calls.map(call => call[0])).toEqual(['groups/getScopeOfWorkStatus', 'groups/refreshScopeOfWorkStatus'])
+  })
+
+  it('suppresses contextual controls and direct UI mutations despite erroneous records', async () => {
+    const ctx = reactive(context())
+    ctx.scopeOfWorkStatus = { ...status(), versioning_applicable: false }
+    const revision = ctx.scopeOfWorkStatus.active_revision
+    const shared = GroupDetail.provide.call(ctx)
+    expect(shared.scopeOfWorkMemberDiscard.status.value).toBeNull()
+    expect(shared.scopeOfWorkGeneDiscard.status.value).toBeNull()
+    const wrapper = mount(ScopeOfWorkMemberDiscard, { props: { personId: 1, operation: 'added' }, global: { provide: shared } })
+    expect(wrapper.find('button').exists()).toBe(false)
+    await discard(ctx)
+    for (const method of ['submitScopeOfWorkRevision', 'finalizeScopeOfWorkRevision', 'discardScopeOfWorkRevision',
+      'approveScopeOfWorkRevision', 'requestScopeOfWorkRevisionChanges']) {
+      await GroupDetail.methods[method].call(ctx, revision)
+    }
+    expect(ctx.$store.dispatch).not.toHaveBeenCalled()
+    wrapper.unmount()
+  })
   it('shares banner/contextual controls, confirmation, busy protection and refresh', async () => {
     vi.spyOn(window, 'confirm').mockReturnValue(true)
     const ctx = reactive(context())

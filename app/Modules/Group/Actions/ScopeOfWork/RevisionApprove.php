@@ -18,6 +18,7 @@ class RevisionApprove
 
     public function handle(Group $group, ScopeOfWorkVersion $revision, ?User $user = null): ScopeOfWorkVersion
     {
+        \App\Modules\Group\Services\ScopeOfWorkEligibility::requireCompleted($group);
         $user = $user ?: Auth::user();
 
         if ($revision->group_id !== $group->id) {

@@ -88,7 +88,7 @@ const save = async () => {
       notify_contacts: notifyContacts.value,
       subject: email.value.subject,
       body: email.value.body,
-      response_content: isScopeOfWorkRevision.value ? responseContent.value : null,
+      response_content: usesRevisionNote.value ? responseContent.value : null,
     }
 
     const url = `/api/groups/${props.group.uuid}/application/submission/${props.submission.id}/rejection`
@@ -112,6 +112,7 @@ const save = async () => {
 const isScopeOfWorkRevision = computed(() => {
   return props.submission?.data?.context === 'scope_of_work_revision'
 })
+const usesRevisionNote = computed(() => isScopeOfWorkRevision.value || Number(props.submission.submission_type_id) === 1)
 const responseContent = ref('')
 const revisionRequestTemplateClass = computed(() => {
   return isScopeOfWorkRevision.value
@@ -128,7 +129,7 @@ defineExpose({
   <form-container>
 
     <input-row
-      v-if="isScopeOfWorkRevision"
+      v-if="usesRevisionNote"
       v-model="responseContent"
       type="large-text"
       label="Revision notes to Expert Panel"

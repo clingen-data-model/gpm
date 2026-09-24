@@ -11,6 +11,9 @@ class CommentFind
 
     public function handle(Comment $comment)
     {
+        app(\App\Services\ApplicationReviewCommentAccess::class)->authorizeSubject(
+            auth()->user(), $comment->subject_type, $comment->subject_id, request('group_id')
+        );
         return $comment;
     }
 }

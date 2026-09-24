@@ -32,7 +32,7 @@ class ScopeOfWorkMemberDiscardTest extends TestCase
         $this->setupRoles(['chair', 'expert', 'core-approval-member'], 'group');
         $this->seed(SubmissionTypeAndStatusSeeder::class);
         $this->actingAs($this->setupUserWithPerson(null, ['groups-manage', 'ep-applications-manage']));
-        $this->panel = ExpertPanel::factory()->vcep()->create(['scope_description' => 'Approved']);
+        $this->panel = ExpertPanel::factory()->vcep()->create(['scope_description' => 'Approved', 'date_completed' => now()]);
         $this->member = $this->createMember();
         $this->similar = $this->createMember();
         $this->member->roles()->sync([$this->role('chair'), $this->role('expert')]);

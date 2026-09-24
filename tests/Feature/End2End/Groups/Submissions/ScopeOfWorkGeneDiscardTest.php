@@ -25,7 +25,7 @@ class ScopeOfWorkGeneDiscardTest extends TestCase
         $this->setupForGroupTest();
         $this->seed(SubmissionTypeAndStatusSeeder::class);
         $this->actingAs($this->setupUserWithPerson(null, ['groups-manage', 'ep-applications-manage']));
-        $this->panel = ExpertPanel::factory()->vcep()->create(['scope_description' => 'Approved']);
+        $this->panel = ExpertPanel::factory()->vcep()->create(['scope_description' => 'Approved', 'date_completed' => now()]);
         $this->gene = $this->panel->genes()->create(['gene_symbol' => 'SAME', 'hgnc_id' => 10,
             'mondo_id' => 'MONDO:1', 'disease_name' => 'Before', 'tier' => 1]);
         $this->duplicate = $this->panel->genes()->create(['gene_symbol' => 'SAME', 'hgnc_id' => 10,

@@ -40,7 +40,9 @@ class CommentUpdate
 
     public function authorize(ActionRequest $request, Comment $comment):bool
     {
-        return $request->user()->id == $request->comment->creator_id
+        return ($request->user()->person
+                && $comment->creator_type === $request->user()->person->getMorphClass()
+                && $comment->creator_id === $request->user()->person->id)
             || $request->user()->hasPermissionTo('comments-manage');
     }
 

@@ -19,6 +19,7 @@ class RevisionFinalize
 
     public function handle(Group $group, ScopeOfWorkVersion $revision, ?User $user = null): ScopeOfWorkVersion
     {
+        \App\Modules\Group\Services\ScopeOfWorkEligibility::requireCompleted($group);
         return DB::transaction(function () use ($group, $revision, $user) {
             $revision = ScopeOfWorkVersion::whereKey($revision->id)->lockForUpdate()->firstOrFail();
             return $this->finalize($group, $revision, $user);
