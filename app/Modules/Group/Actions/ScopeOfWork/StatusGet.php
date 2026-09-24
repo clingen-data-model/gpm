@@ -13,6 +13,10 @@ class StatusGet
 
     public function handle(Group $group): array
     {
+        if (!\App\Modules\Group\Services\ScopeOfWorkEligibility::applies($group)) {
+            return ['versioning_applicable' => false, 'has_approved_version' => false,
+                'approved_version' => null, 'has_active_revision' => false, 'active_revision' => null];
+        }
         $approvedVersion = ScopeOfWorkVersion::forGroup($group)
             ->approved()
             ->with('latestSnapshot')
@@ -31,6 +35,7 @@ class StatusGet
             ->first();
 
         return [
+            'versioning_applicable' => true,
             'has_approved_version' => (bool) $approvedVersion,
             'approved_version' => $approvedVersion
                 ? $this->versionPayload($approvedVersion)

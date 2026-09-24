@@ -47,6 +47,9 @@ const targetVersion = computed(() => {
       </div>
       <div v-if="Number(latestSubmission.submission_status_id) == 2">
         <strong>{{ formatDate(latestSubmission.updated_at) }}</strong> - Revisions Requested.
+        <p v-if="latestSubmission.response_content && (Number(latestSubmission.submission_type_id) === 1 || isScopeOfWorkRevision)" class="mt-2 whitespace-pre-wrap">
+          <strong>Revision request notes:</strong> {{ latestSubmission.response_content }}
+        </p>
       </div>
       <div v-if="featureIsEnabled('chair_review') && (Number(latestSubmission.submission_status_id) == 3)">
         <hr class="my-1">

@@ -14,7 +14,7 @@ vi.mock('@/domain/application_definitions', () => ({
 }))
 afterEach(() => vi.restoreAllMocks())
 
-const status = () => ({ has_approved_version: true, has_active_revision: true, active_revision: {
+const status = () => ({ versioning_applicable: true, has_approved_version: true, has_active_revision: true, active_revision: {
   uuid: 'revision', status: 'draft', base_version: { version_label: '1.0' }, summary: {},
   changes: [{ id: 7, rule_key: 'member.remove_chair', can_discard: true,
     entity_label: 'Alex Smith', before_value: { person_id: 10, membership_id: 20, role: 'chair', role_id: 102 }, after_value: null }],

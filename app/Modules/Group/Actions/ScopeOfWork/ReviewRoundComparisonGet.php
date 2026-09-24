@@ -53,15 +53,8 @@ class ReviewRoundComparisonGet
 
     private function applicationSnapshot(Submission $submission): ?ApplicationSnapshot
     {
-        $query = ApplicationSnapshot::where('group_id', $submission->group_id)
-            ->where('submission_id', $submission->id)->whereNull('deleted_at');
-        $id = data_get($submission->data, 'application_snapshot_id');
-        // An explicit but invalid pointer is unavailable, never another group's snapshot.
-        if ($id !== null) {
-            return $query->whereKey($id)->first();
-        }
-        $snapshots = $query->limit(2)->get();
-        return $snapshots->count() === 1 ? $snapshots->first() : null;
+        return app(\App\Modules\Group\Services\ApplicationSnapshotResolver::class)
+            ->resolve($submission)['snapshot'];
     }
 
     private function metadata($snapshot, string $type, ?int $submissionId): array

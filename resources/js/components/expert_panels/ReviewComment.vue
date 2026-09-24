@@ -24,7 +24,7 @@
     const store = useStore();
 
     const formDef = commentFormFactory();
-    const replyManager = ref(commentManagerFactory('App\\Models\\Comment', props.comment.id))
+    const replyManager = ref(commentManagerFactory('App\\Models\\Comment', props.comment.id, null, props.commentManager.rootGroupId))
 
     const showEditForm = ref(false);
     const showConfirmDelete = ref(false);
@@ -62,14 +62,14 @@
             const updatedCmt = await commentRepository.unresolve(props.comment.id)
             props.commentManager.updateComment(updatedCmt)
             emits('updated');
-            emits('resolved');
+            emits('unresolved');
             return;
         }
 
         const updatedCmt = await commentRepository.resolve(props.comment.id)
         props.commentManager.updateComment(updatedCmt)
         emits('updated');
-        emits('unresolved');
+        emits('resolved');
     }
 
     const showReplyList = ref(false);

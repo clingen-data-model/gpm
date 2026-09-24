@@ -31,6 +31,13 @@
         })
     })
 
+    const categories = computed(() => ['required revision', 'internal comment', 'suggestion'].map(name => {
+        const comments = sectionComments.value.filter(comment => comment.type?.name === name);
+        return { key: name.replaceAll(' ', '_'), label: name === 'required revision' ? 'Required Revisions' : name === 'internal comment' ? 'Internal Comments' : 'Suggestions',
+            outstanding: comments.filter(comment => !comment.is_resolved),
+            resolved: comments.filter(comment => comment.is_resolved) };
+    }).filter(category => category.outstanding.length || category.resolved.length));
+
     const countColor = computed(() => {
         if (!commentManager) {
             return null;
@@ -76,11 +83,22 @@
           Comments
         </h3>
       </div>
-      <ul>
-        <li v-for="comment in sectionComments" :key="comment.id" class="bg-white p-2">
-          <ReviewComment :comment="comment" :comment-manager="commentManager" />
-        </li>
-      </ul>
+      <section v-for="category in categories" :key="category.key" :data-comment-category="category.key" class="mt-3">
+        <h4>{{ category.label }}</h4>
+        <ul>
+          <li v-for="comment in category.outstanding" :key="comment.id" class="bg-white p-2">
+            <ReviewComment :comment="comment" :comment-manager="commentManager" />
+          </li>
+        </ul>
+        <details v-if="category.resolved.length" class="mt-2">
+          <summary class="cursor-pointer">Resolved comments ({{ category.resolved.length }})</summary>
+          <ul>
+            <li v-for="comment in category.resolved" :key="comment.id" class="bg-white p-2">
+              <ReviewComment :comment="comment" :comment-manager="commentManager" />
+            </li>
+          </ul>
+        </details>
+      </section>
       <div class="bg-white mt-2 p-2">
         <ReviewCommentForm
           v-if="showCommentForm"
