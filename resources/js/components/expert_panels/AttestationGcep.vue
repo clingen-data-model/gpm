@@ -169,7 +169,7 @@ export default {
         <input-row :errors="errors.biocurator_mailing_list" :hide-label="true">
           <checkbox v-model="group.expert_panel.biocurator_mailing_list" :disabled="disabled" @update:model-value="emitUpdate(), checkCompleteness()">
             Biocurators have joined the Biocurator WG mailing list and/or there is a plan in place to have them join mailing list.
-            <br>The calls occur on the 2nd and 4th Thursdays from 12-1pm.
+            <br>The calls occur on the 2nd Wednesday at 4pm ET and 4th Thursday at 12pm ET.
           </checkbox>
         </input-row>
       </li>
