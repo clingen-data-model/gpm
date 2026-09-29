@@ -3,19 +3,27 @@
     <!-- Header controls -->
     <div class="flex justify-between items-center mb-4">
       <div v-if="canEdit && editing" class="flex items-center gap-2">
-        <button class="btn blue" @click="startAdd" :disabled="isFormVisible">
-          + Add Gene
-        </button>
+        <button class="btn blue" @click="startAdd" :disabled="isFormVisible">+ Add Gene</button>
       </div>
+      <EditIconButton v-else-if="canEdit && !editing" @click="$emit('update:editing', true)"/>
 
-      <div class="flex items-center gap-4">
-        <!-- Search -->
+      <div class="flex items-center gap-3">
         <input
           v-model="search"
           type="text"
-          placeholder="Search genes, diseases..."
-          class="border rounded px-2 py-1 text-sm"
+          placeholder="Search genes or diseases..."
+          class="border rounded px-2 py-1 text-sm min-w-[260px]"
         />
+
+        <select
+          v-model="filterTier"
+          class="border rounded px-2 py-1 text-sm bg-white ml-auto"
+        >
+          <option value="">All Tiers</option>
+          <option value="1">Current</option>
+          <option value="2">Future</option>
+          <option value="none">No Tier Set</option>
+        </select>
       </div>
     </div>
 
@@ -178,7 +186,7 @@
                 </dropdown-menu>
               </template>
 
-              <span v-else class="text-xs text-gray-700">Tier: {{ gene.tier || '—' }}</span>
+              <span v-else class="text-xs text-gray-700">Tier: {{ !gene.tier ? '—' : gene.tier == 1 ? 'Current' : 'Future' }}</span>
             </div>
           </div>
         </div>
@@ -215,15 +223,16 @@ import { useStore } from 'vuex'
 import GeneSearchSelect from '@/components/forms/GeneSearchSelect.vue'
 import DiseaseSearchSelect from '@/components/forms/DiseaseSearchSelect.vue'
 import { hasAnyPermission } from '@/auth_utils'
+import EditIconButton from '@/components/buttons/EditIconButton.vue'
 
 export default {
   name: 'ScvcepGeneList',
-  components: { GeneSearchSelect, DiseaseSearchSelect },
+  components: { GeneSearchSelect, DiseaseSearchSelect, EditIconButton },
   props: {
     readonly: { type: Boolean, required: false, default: false },
     editing: { type: Boolean, required: false, default: true },
   },
-  emits: ['saved'],
+  emits: ['saved', 'update:editing'],
   setup(props, { emit }) {
     const store = useStore()
 
@@ -234,6 +243,7 @@ export default {
     const isEditingId = ref(null)
     const formGene = ref({ gene: null, disease: null })
     const errors = ref({})
+    const filterTier = ref('')
 
     // scroll-to-form
     const formEl = ref(null)
@@ -424,7 +434,6 @@ export default {
         : [...new Set([...selectedGenes.value, ...idsOnPage])]
     }
 
-    // filtering + sorting (gene/disease/tier only)
     const filteredAndSortedGenes = computed(() => {
       let result = [...genes.value]
       const keyword = search.value.trim().toLowerCase()
@@ -435,6 +444,12 @@ export default {
           (g.mondo_id || '').toLowerCase().includes(keyword) ||
           (g.disease_name || '').toLowerCase().includes(keyword)
         )
+      }
+
+      if (filterTier.value === 'none') {
+        result = result.filter((g) => g.tier === null || g.tier === undefined || g.tier === '')
+      } else if (filterTier.value) {
+        result = result.filter((g) => String(g.tier) === filterTier.value)
       }
 
       result.sort((a, b) => {
@@ -473,7 +488,7 @@ export default {
     })
 
     // keep paging sane
-    watch([search, pageSize], () => {
+    watch([search, filterTier, pageSize], () => {
       currentPage.value = 1
     })
 
@@ -512,6 +527,7 @@ export default {
       // data
       genes,
       search,
+      filterTier,
       sortKey,
       sortOrder,
       currentPage,
