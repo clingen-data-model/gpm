@@ -47,6 +47,12 @@ const canMakeJudgement = computed(() => {
 <template>
   <div class="flex flex-col space-y-2 screen-block">
     <div class="xl:w-3/4 flex flex-col space-y-2 border-between-children">
+      <div v-if="latestSubmission?.notes">
+        <h3>Comments from the Expert Panel</h3>
+        <p class="mb-2 whitespace-pre-wrap">
+          {{ latestSubmission.notes }}
+        </p>
+      </div>
       <div>
         <h3>Comments for the Expert Panel</h3>
         <div class="mb-2">

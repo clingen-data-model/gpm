@@ -53,8 +53,15 @@
     <teleport to="body">
       <modal-dialog v-model="showModal" title="Send to CDWG OC co-chairs for approval">
         <p>
-          Sending the application to the chairs for approval will send a message to the <em>cdwgoc_approvals</em> with a PDF of the application and the Core Group comments shown below.
+          Sending the application to the chairs for approval will send a message to the <em>cdwgoc_approvals</em> with a PDF of the application and the comments shown below.
         </p>
+
+        <div v-if="submission.notes" class="mb-4">
+          <h3>Comments from the Expert Panel</h3>
+          <div class="rounded border bg-gray-50 p-3 whitespace-pre-wrap">
+            {{ submission.notes }}
+          </div>
+        </div>
 
         <h3>Comments from the Core Group</h3>
         <CommentSummary :comments="commentManager.openComments" />
