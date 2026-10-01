@@ -46,6 +46,7 @@ class CommentActivityNotification extends Notification implements DigestibleNoti
         $this->comment->load('creator');
         $this->group->display_name = $this->group->getDisplayNameAttribute();
         return [
+            'message' => $this->getMessage(),
             'group' => $this->group,
             'comment' => $this->comment,
             'event' => $this->event
@@ -85,5 +86,20 @@ class CommentActivityNotification extends Notification implements DigestibleNoti
     static public function getDigestTemplate(): string
     {
         return 'email.digest.comment_activity';
+    }
+
+    private function getMessage(): string
+    {
+        $creator = $this->comment->creator?->name ?? 'A reviewer';
+
+        $action = match (strtolower($this->event)) {
+            'created' => 'added a comment to',
+            'updated' => 'updated a comment on',
+            'resolved' => 'resolved a comment on',
+            'deleted' => 'deleted a comment from',
+            default => 'updated a comment on',
+        };
+
+        return "{$creator} {$action} {$this->group->display_name}.";
     }
 }

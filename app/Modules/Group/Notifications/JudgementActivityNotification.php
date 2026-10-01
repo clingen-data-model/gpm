@@ -51,6 +51,7 @@ class JudgementActivityNotification extends Notification implements DigestibleNo
         $this->judgement->load('person');
         $this->group->display_name = $this->group->getDisplayNameAttribute();
         return [
+            'message' => $this->getMessage(),
             'group' => $this->group,
             'judgement' => $this->judgement,
             'event' => $this->event
@@ -85,5 +86,19 @@ class JudgementActivityNotification extends Notification implements DigestibleNo
     static public function getDigestTemplate(): string
     {
         return 'email.digest.judgement_activity';
+    }
+
+    private function getMessage(): string
+    {
+        $person = $this->judgement->person?->name ?? 'A reviewer';
+
+        $action = match (strtolower($this->event)) {
+            'created' => 'added a chair judgement for',
+            'updated' => 'updated a chair judgement for',
+            'deleted' => 'deleted a chair judgement for',
+            default => 'updated a chair judgement for',
+        };
+
+        return "{$person} {$action} {$this->group->display_name}.";
     }
 }
