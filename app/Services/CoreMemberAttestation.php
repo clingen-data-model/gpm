@@ -18,7 +18,7 @@ class CoreMemberAttestation
         $assignedCore = collect($roles)->contains( fn($role) => (int)($role->id ?? 0) === (int) $targetID || (($role->name ?? null) === $targetName) );
 
         if (! $assignedCore || ! $member->person) { return; }
-        if (! ($member->group?->is_vcep)) { return; }
+        if (! ($member->group?->is_vcep || $member->group?->is_scvcep)) { return; }
 
         DB::transaction(function () use ($member) {
             $person = $member->person;
