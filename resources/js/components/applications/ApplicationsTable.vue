@@ -166,43 +166,18 @@ export default {
         filteredData() {
             let applications = this.applications
                 .filter(item => !this.epTypeId || Number.parseInt(item.expert_panel_type_id) === Number.parseInt(this.epTypeId))
-                .filter(item => {
-                    if (!this.showCompleted) {
-                        return item.date_completed == null;
-                    }
-                    return true;
-                })
 
             if (this.waitingOn) {
-                applications = applications.filter(app => app.pendingActionsByAssignee[this.waitingOn].length > 0);
+                applications = applications.filter(
+                    app => app.pendingActionsByAssignee[this.waitingOn].length > 0
+                );
             }
 
             if (!this.showDeleted) {
                 applications = applications.filter(app => app.deleted_at === null);
             }
 
-            return applications
-
-        },
-        showCompleted: {
-            set(value) {
-                const currentQuery = this.$route.query;
-                const currentPath = this.$route.path;
-
-                let updatedQuery = {...currentQuery};
-
-                if (!value) {
-                    delete updatedQuery['show-completed'];
-                } else {
-                    updatedQuery = {...currentQuery, ...{'show-completed': 1} };
-                }
-
-                this.$router.replace({path: currentPath, query: updatedQuery})
-            },
-            get() {
-                return Boolean(Number.parseInt(this.$route.query['show-completed']))
-            },
-            immediate: true
+            return applications;
         },
         selectedFields() {
             if (+this.showAllInfo === 1) {
@@ -298,14 +273,6 @@ export default {
             </option>
           </select>
         </label>
-        <checkbox
-          v-model="showCompleted"
-          label="Show completed"
-        />
-        <!-- <checkbox
-                    v-model="showDeleted"
-                    label="Show Deleted"
-                /> -->
       </div>
       <div>
         <button class="btn btn-xs" :class="{blue: showAllInfo == 0}" @click="showAllInfo = 0">

@@ -30,7 +30,7 @@ return [
         'biocurator-export' => [
             'id' => 2,
             'name' => 'biocurator-expert',
-            'full_name' => 'Paired biocurator/expert review followed by expidated EP approval',
+            'full_name' => 'Paired biocurator/expert review followed by expedited EP approval',
         ],
         'paired-biocurator' => [
             'id' => 3,

@@ -142,7 +142,7 @@ export default {
       v-model="showSubmissionConfirmation"
       title="Submit your application"
       :submission-name="`${submissionName} application`"
-      notes-label="Required notes for reviewers:"
+      notes-label="Provide rationale for new or updated Scope of Work:"
       submit-text="Submit"
       :submitting="submitting"
       @submitted="confirmSubmission"

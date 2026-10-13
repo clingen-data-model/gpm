@@ -16,7 +16,7 @@ const props = defineProps({
   },
   notesLabel: {
     type: String,
-    default: 'Required notes for reviewers:',
+    default: 'Provide rationale for new or updated Scope of Work:',
   },
   submitText: {
     type: String,
