@@ -1,5 +1,6 @@
 <script setup>
 import { computed } from 'vue'
+import { latestInitialSubmissionForStep } from '@/domain/review_submission'
 import { useStore } from 'vuex'
 import SubmissionInfo from './SubmissionInfo.vue'
 import StepApproveControl from './StepApproveControl.vue'
@@ -65,7 +66,7 @@ const latestSubmission = computed(() => {
   if (activeScopeOfWorkSubmission.value) {
     return isScopeOfWorkStep.value ? activeScopeOfWorkSubmission.value : null
   }
-  return expertPanel.value?.latestPendingSubmissionForStep(props.step) ?? null
+  return latestInitialSubmissionForStep(expertPanel.value?.submissions, props.step)
 
 })
 

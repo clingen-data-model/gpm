@@ -7,6 +7,16 @@ export function useScopeOfWorkGeneRows(getLiveGenes, getComparison) {
     const comparison = unref(getComparison())
     const captured = comparison?.status === 'unavailable' || comparison?.unavailable_sections?.includes('genes')
       ? [] : comparison?.rows?.genes ?? []
+    // Review pages display only captured genes, even if the live panel changes later.
+    if (comparison?.source !== 'live' && ['submitted_state', 'approved_baseline', 'previous_review_round'].includes(comparison?.mode)
+      && Array.isArray(comparison?.rows?.genes) && !comparison?.unavailable_sections?.includes('genes')) {
+      return captured.map(row => ({
+        key: String(row.key),
+        gene: JSON.parse(JSON.stringify(row.after ?? row.before)),
+        comparison: row,
+        snapshotOnly: true,
+      }))
+    }
     const byId = new Map(captured.map(row => [String(row.key), row]))
     const seen = new Set()
     const result = live.map(gene => {

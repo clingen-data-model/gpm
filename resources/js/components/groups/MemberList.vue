@@ -7,7 +7,6 @@ import configs from '@/configs.json'
 import { useStore } from 'vuex'
 import { useScopeOfWorkMemberRows, memberRetirementTransition } from '@/composables/scope_of_work_member_rows'
 import ScopeOfWorkMemberRoles from './ScopeOfWorkMemberRoles.vue'
-import ScopeOfWorkMemberDiscard from './ScopeOfWorkMemberDiscard.vue'
 // import GroupMembersFilter from '@/components/groups/GroupMembersFilter.vue'
 
 export default {
@@ -16,7 +15,6 @@ export default {
         MemberPreview,
         CoiDetail,
         ScopeOfWorkMemberRoles,
-        ScopeOfWorkMemberDiscard,
         // GroupMembersFilter
     },
     props: {
@@ -547,13 +545,10 @@ export default {
           <span v-else>{{ value }}</span>
           <span v-if="item.comparison?.operation === 'added'" class="ml-1 rounded bg-green-50 px-1 text-xs text-green-800">Added</span>
           <span v-if="item.comparison?.operation === 'removed'" class="ml-1 rounded bg-red-50 px-1 text-xs text-red-700">Removed</span>
-          <ScopeOfWorkMemberDiscard v-if="scopeComparison && ['added', 'removed'].includes(item.comparison?.operation)"
-            :person-id="item.member.person_id" :operation="item.comparison.operation" :member-label="item.comparison.label" />
+
           <small v-if="memberRetirementTransition(item.comparison)" class="block text-gray-700">
             {{ memberRetirementTransition(item.comparison) }}
-            <ScopeOfWorkMemberDiscard v-if="scopeComparison" :person-id="item.member.person_id" kind="retirement"
-              :operation="item.comparison.field_changes.find(change => change.field === 'end_date').before === null ? 'retire' : 'unretire'"
-              :member-label="item.comparison.label" />
+
           </small>
         </template>
         <template #cell-roles="{item}">

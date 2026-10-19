@@ -1,5 +1,6 @@
 import Entity from './entity'
 import configs from '@/configs'
+import { latestInitialSubmissionForStep } from './review_submission'
 
 const stepNumberToName = {1: 'Definition', 2: 'Draft', 3: 'Pilot', 4: 'Sustained Curation'}
 const {submissions} = configs;
@@ -252,14 +253,8 @@ class ExpertPanel extends Entity
     }
 
     latestPendingSubmissionForStep(step) {
-        const stepName = (typeof step == 'number') ? stepNumberToName[step] : step;
-        const stepSubmissions = this.submissions.filter(s => s.type.name = stepName);
-
-        if (stepSubmissions.length === 0) {
-            return null;
-        }
-
-        return stepSubmissions[stepSubmissions.length - 1];
+        const stepNumber = Number(step) || ({ Definition: 1, 'Sustained Curation': 4 })[step];
+        return latestInitialSubmissionForStep(this.submissions, stepNumber);
     }
 
     stepHasBeenSubmitted(step) {

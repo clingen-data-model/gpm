@@ -9,7 +9,6 @@
   const group = computed(() => store.getters['groups/currentItemOrNew'])
   const expertPanel = computed(() => group.value.expert_panel)
   const expandedAttestationResponses = ref({})
-
   const toggleAttestationResponses = (memberId) => {
     expandedAttestationResponses.value[memberId] = !expandedAttestationResponses.value[memberId]
   }

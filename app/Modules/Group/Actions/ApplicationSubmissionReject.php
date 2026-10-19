@@ -71,7 +71,9 @@ class ApplicationSubmissionReject
                     subject: $request->subject,
                     body: $request->body,
                     attachments: $attachments ?? [],
-                    ccAddresses: $request->cc_addresses ?? []
+                    ccAddresses: $request->cc_addresses ?? [],
+                    step: data_get($submission->data, 'approval_step', $group->expertPanel->current_step),
+                    recordEmail: $usesRevisionNote,
                 );
             }
 

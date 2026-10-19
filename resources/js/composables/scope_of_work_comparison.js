@@ -21,9 +21,13 @@ export function useScopeOfWorkComparison(getIdentifiers) {
       const base = `/api/groups/${encodeURIComponent(groupUuid)}`
       const url = source === 'live'
         ? `${base}/scope-of-work/revisions/${encodeURIComponent(id)}/comparison`
-        : `${base}/application/submission/${encodeURIComponent(id)}/scope-of-work/comparison`
+        : source === 'initial'
+          ? `${base}/application/review-history/${encodeURIComponent(id)}`
+          : `${base}/application/submission/${encodeURIComponent(id)}/scope-of-work/comparison`
       const response = await api.get(url)
-      if (current) comparison.value = response.data
+      if (current) comparison.value = source === 'initial'
+        ? { ...response.data.comparison, source: 'submitted', mode: response.data.mode, review_detail: response.data }
+        : response.data
     } catch {
       if (current) error.value = source === 'live'
         ? 'The draft comparison could not be loaded.'

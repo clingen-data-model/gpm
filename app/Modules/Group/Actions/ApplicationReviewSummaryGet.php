@@ -14,15 +14,23 @@ class ApplicationReviewSummaryGet
     public function asController(ActionRequest $request, Group $group): array
     {
         app(ApplicationReviewCommentAccess::class)->authorize($request->user(), $group);
-        $counts = $group->comments()->selectRaw('comment_type_id, SUM(CASE WHEN resolved_at IS NULL THEN 1 ELSE 0 END) AS outstanding, SUM(CASE WHEN resolved_at IS NOT NULL THEN 1 ELSE 0 END) AS resolved')
-            ->groupBy('comment_type_id')->get()->keyBy('comment_type_id');
-
-        $summary = [];
+        $context = app(\App\Services\ApplicationReviewCommentContext::class);
+        $submissions = $context->submissions($group);
+        $empty = [];
         foreach (config('comments.types') as $key => $type) {
-            $count = $counts->get($type['id']);
-            $outstanding = (int) ($count?->outstanding ?? 0);
-            $resolved = (int) ($count?->resolved ?? 0);
-            $summary[str_replace('-', '_', $key)] = compact('outstanding', 'resolved') + ['total' => $outstanding + $resolved];
+            $empty[str_replace('-', '_', $key)] = ['outstanding' => 0, 'resolved' => 0, 'total' => 0];
+        }
+        $summary = ['step1Summary' => $empty, 'step4Summary' => in_array($group->group_type_id,
+            [config('groups.types.vcep.id'), config('groups.types.scvcep.id')]) ? $empty : null];
+        $keys = [];
+        foreach (config('comments.types') as $key => $type) $keys[$type['id']] = str_replace('-', '_', $key);
+        foreach ($group->comments()->without(['creator', 'type'])->get() as $comment) {
+            $step = $context->forComment($comment, $submissions)['review_step'];
+            $bucket = 'step'.$step.'Summary';
+            $category = $keys[$comment->comment_type_id] ?? null;
+            if (!isset($summary[$bucket]) || !$category) continue;
+            $summary[$bucket][$category][$comment->resolved_at ? 'resolved' : 'outstanding']++;
+            $summary[$bucket][$category]['total']++;
         }
         return $summary;
     }

@@ -1,7 +1,9 @@
 <script setup>
 import { computed } from 'vue'
+import { geneTierLabel, genePlanText, visibleGeneField } from './historical_gene_fields'
 
 const props = defineProps({
+  groupType: { type: String, default: null },
   genes: {
     type: Array,
     default: () => [],
@@ -36,11 +38,11 @@ const compact = value => {
 }
 const geneSymbol = gene => compact(field(gene, 'gene_symbol') ?? field(gene, 'symbol') ?? field(gene, 'label'))
 const hgncId = gene => compact(field(gene, 'hgnc_id'))
-const diseaseName = gene => compact(field(gene, 'disease_name') ?? field(gene, 'disease_entity'))
+const diseaseName = gene => compact(field(gene, 'disease_name'))
 const mondoId = gene => compact(field(gene, 'mondo_id'))
 const moi = gene => compact(field(gene, 'moi'))
-const tier = gene => compact(field(gene, 'tier'))
-const plan = gene => compact(field(gene, 'plan'))
+const tier = gene => geneTierLabel(field(gene, 'tier'), props.groupType)
+const plan = gene => genePlanText(field(gene, 'plan'))
 </script>
 
 <template>
@@ -55,9 +57,9 @@ const plan = gene => compact(field(gene, 'plan'))
           <tr class="border-b border-gray-300 text-gray-700">
             <th class="px-2 py-2 font-semibold">Gene</th>
             <th class="px-2 py-2 font-semibold">Disease / MONDO</th>
-            <th class="px-2 py-2 font-semibold">MOI</th>
+            <th v-if="visibleGeneField('moi', groupType)" class="px-2 py-2 font-semibold">MOI</th>
             <th class="px-2 py-2 font-semibold">Tier</th>
-            <th class="px-2 py-2 font-semibold">Plan</th>
+            <th v-if="visibleGeneField('plan', groupType)" class="px-2 py-2 font-semibold">Plan</th>
           </tr>
         </thead>
         <tbody>
@@ -70,9 +72,9 @@ const plan = gene => compact(field(gene, 'plan'))
               <div>{{ diseaseName(gene) }}</div>
               <div v-if="mondoId(gene) !== '—'" class="text-xs text-gray-500">{{ mondoId(gene) }}</div>
             </td>
-            <td class="px-2 py-2 whitespace-nowrap">{{ moi(gene) }}</td>
+            <td v-if="visibleGeneField('moi', groupType)" class="px-2 py-2 whitespace-nowrap">{{ moi(gene) }}</td>
             <td class="px-2 py-2 whitespace-nowrap">{{ tier(gene) }}</td>
-            <td class="px-2 py-2">{{ plan(gene) }}</td>
+            <td v-if="visibleGeneField('plan', groupType)" class="px-2 py-2">{{ plan(gene) }}</td>
           </tr>
         </tbody>
       </table>

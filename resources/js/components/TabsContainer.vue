@@ -48,6 +48,7 @@ export default {
     },
     methods: {
         activateTab (idx) {
+            if (!this.tabs[idx]) return;
             this.tabs.forEach(t => t.active = false)
             this.tabs[idx].active = true
             this.$emit('update:modelValue', idx);
@@ -60,7 +61,7 @@ export default {
             const idx = this.tabs
                 .map(t => t.label.toLowerCase())
                 .findIndex(label => label === normalized);
-            if (idx > 0) {
+            if (idx >= 0) {
                 this.activateTab(idx);
             }
         },
@@ -80,6 +81,7 @@ export default {
         },
 
         updateRouteQuery(label) {
+            if (this.$route.query.tab === label.toLowerCase()) return;
             const newQuery = {...this.$route.query, ...{tab: label.toLowerCase()}};
             this.$router.replace({path: this.$route.path, query: newQuery})
         },

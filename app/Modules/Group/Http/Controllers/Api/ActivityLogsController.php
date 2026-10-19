@@ -65,6 +65,10 @@ class ActivityLogsController extends Controller
             return $entry->activity_type !== null;
         })
         ->unique(function ($i) {
+            // Separate review rounds and sent emails must survive same-minute activity.
+            if (in_array($i->activity_type, ['application-step-submitted', 'application-email-sent', 'scope-of-work-review-completed', 'application-revisions-requested'])) {
+                return 'entry-'.$i->id;
+            }
             return $i->activity_type.'-'.$i->created_at->format('Y-m-d_H:i');
         });
 

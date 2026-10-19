@@ -13,6 +13,12 @@ class CommentUpdate
 
     public function handle(Comment $comment, array $data)
     {
+        if (array_key_exists('metadata', $data)) {
+            $metadata = $data['metadata'] ?? [];
+            unset($metadata['review_submission_id'], $metadata['review_step']);
+            $data['metadata'] = array_merge($metadata, \Illuminate\Support\Arr::only(
+                $comment->metadata ?? [], ['review_submission_id', 'review_step']));
+        }
         $comment->update($data);
 
         event(new CommentUpdated($comment));

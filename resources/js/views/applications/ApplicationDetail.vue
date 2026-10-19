@@ -6,6 +6,7 @@
     import ApplicationReview from './ApplicationReview.vue'
     import commentManagerFactory from '@/composables/comment_manager.js'
     import {api} from '@/http';
+    import { latestInitialSubmissionForStep } from '@/domain/review_submission';
     import { useScopeOfWorkComparison } from '@/composables/scope_of_work_comparison';
 
     const props = defineProps({
@@ -26,6 +27,22 @@
     const applicationView = shallowRef(ApplicationReview);
     const latestSubmission = ref({});
     provide('latestSubmission', latestSubmission);
+    const selectedReviewStep = ref(1);
+    provide('selectReviewStep', step => { selectedReviewStep.value = Number(step); });
+    watch(() => group.value?.expert_panel?.current_step, step => {
+        selectedReviewStep.value = group.value?.is_gcep ? 1 : Number(step) || 1;
+    }, { immediate: true });
+    const reviewSubmission = computed(() => {
+        if (latestSubmission.value?.data?.context === 'scope_of_work_revision') return latestSubmission.value;
+        const submissions = [...(group.value?.expert_panel?.submissions ?? [])];
+        if (latestSubmission.value?.id) {
+            const index = submissions.findIndex(item => item.id === latestSubmission.value.id);
+            if (index >= 0) submissions[index] = latestSubmission.value;
+            else submissions.push(latestSubmission.value);
+        }
+        return latestInitialSubmissionForStep(submissions, selectedReviewStep.value);
+    });
+    provide('reviewSubmission', reviewSubmission);
     const reviewHistory = ref(null);
     const reviewHistoryLoading = ref(false);
     const reviewHistoryError = ref('');

@@ -1,5 +1,6 @@
 import { mount, flushPromises } from '@vue/test-utils'
-import { ref } from 'vue'
+import { ref, markRaw } from 'vue'
+import SubmissionWrapper from '@/components/groups/SubmissionWrapper.vue'
 import { createStore } from 'vuex'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { useScopeOfWorkGeneRows } from '@/composables/scope_of_work_gene_rows'
@@ -36,8 +37,9 @@ beforeEach(() => {
   for (const method of Object.values(api)) method.mockResolvedValue({ data: [] })
 })
 
-async function render(Component, comparisonEnabled = true, liveOverride = null, discardContext = null) {
+async function render(Component, comparisonEnabled = true, liveOverride = null, discardContext = null, mode = null) {
   const { live, comparison } = fixture()
+  if (mode) Object.assign(comparison, { mode, source: 'submitted' })
   const group = { uuid: 'group', expert_panel: { genes: liveOverride ?? live } }
   const getGenes = vi.fn()
   const store = createStore({ modules: { groups: { namespaced: true,
@@ -54,8 +56,33 @@ async function render(Component, comparisonEnabled = true, liveOverride = null, 
 }
 
 describe('gene comparison display adapter', () => {
-  it('preserves live references and keeps duplicate symbols distinct by ID', () => {
+  it.each([VcepGeneList, ScvcepGeneList, GeneCurationStatus, GcepGeneList])('renders frozen added, removed and changed rows without mutation controls', async Component => {
+    const { wrapper } = await render(Component, true, [gene(99)], null, 'approved_baseline')
+    expect(wrapper.text()).toContain('Added')
+    expect(wrapper.text()).toContain('Removed')
+    expect(wrapper.text()).toContain(Component === GeneCurationStatus || Component === GcepGeneList ? 'Primary' : 'Current')
+    expect(wrapper.text()).toContain(Component === GeneCurationStatus || Component === GcepGeneList ? 'Secondary' : 'Future')
+    expect(wrapper.findAll('input[type="checkbox"]').filter(input => !input.element.disabled && input.element.value === '4')).toHaveLength(0)
+    wrapper.unmount()
+  })
+  it.each(['approved_baseline', 'previous_review_round'])('uses exclusively frozen rows for %s', mode => {
+    const { comparison } = fixture()
+    comparison.mode = mode
+    comparison.source = 'submitted'
+    const live = [gene(1, '2'), { ...gene(3), disease_name: 'Later live edit' }, gene(99)]
+    const rows = useScopeOfWorkGeneRows(() => live, () => comparison)
+    expect(rows.displayGenes.value.map(g => g.id)).toEqual([1, 2, 3, 4])
+    expect(rows.displayGenes.value[0].tier).toBe('1')
+    expect(rows.displayGenes.value[2].tier).toBe('2')
+    expect(rows.displayGenes.value[2].disease_name).toBe('Disease')
+    expect(rows.comparisonFor(rows.displayGenes.value[3]).operation).toBe('removed')
+    expect(rows.rows.value.every(row => row.snapshotOnly)).toBe(true)
+    expect(rows.editableIds([1, 2, 3, 4])).toEqual([])
+    expect(rows.displayGenes.value.every(g => !rows.canMutate(g))).toBe(true)
+  })
+  it.each(['approved_baseline', 'previous_review_round'])('preserves live references and mutation for draft mode %s', mode => {
     const { live, comparison } = fixture()
+    comparison.mode = mode
     const rows = useScopeOfWorkGeneRows(() => live, () => comparison)
     expect(rows.rows.value.map(row => row.key)).toEqual(['1', '2', '3', '4'])
     expect(rows.rows.value[0].gene).toBe(live[0])
@@ -99,32 +126,19 @@ describe.each([
   ['SC-VCEP', ScvcepGeneList, 'Current', 'Future'],
   ['GCEP', GeneCurationStatus, 'Primary', 'Secondary'],
 ])('%s contextual cards', (name, Component, oldTier, newTier) => {
-  it('offers revision discard on added, removed and changed cards only while editable', async () => {
-    const revision = { uuid: 'revision', status: 'draft', changes: [
-      { id: 20, rule_key: 'gene.add', after_value: { id: 2 }, can_discard: true },
-      { id: 30, rule_key: 'gene.update_tier', field_name: 'tier', after_value: { id: 3 }, can_discard: true },
-      { id: 40, rule_key: 'gene.remove', before_value: { id: 4 }, can_discard: true },
-    ] }
-    const context = { status: ref({ active_revision: revision }), busy: ref(false), discard: vi.fn() }
+  it('keeps contextual cards display-only with accessible added and removed styling', async () => {
+    const context = { status: ref({ active_revision: { status: 'draft', changes: [] } }), busy: ref(false), discard: vi.fn() }
     const { wrapper } = await render(Component, true, null, context)
-    expect(wrapper.get('[data-scope-gene-id="1"]').find('[aria-label^="Discard"]').exists()).toBe(false)
-    for (const id of [2, 3, 4]) expect(wrapper.get(`[data-scope-gene-id="${id}"]`).find('[aria-label^="Discard"]').exists()).toBe(true)
-    const removed = wrapper.get('[data-scope-gene-id="4"]')
-    expect(removed.findAll('button')).toHaveLength(1)
-    expect(removed.find('input, select, dropdown-item-stub').exists()).toBe(false)
-    await removed.get('button').trigger('click')
-    expect(context.discard).toHaveBeenCalledWith({ revision: context.status.value.active_revision, changeId: 40, geneLabel: undefined })
-    context.busy.value = true
-    await flushPromises()
-    expect(wrapper.findAll('[aria-label^="Discard"]').every(button => button.element.disabled)).toBe(true)
-    await removed.get('button').trigger('click')
-    expect(context.discard).toHaveBeenCalledTimes(1)
-    context.status.value.active_revision.status = 'submitted'
-    await flushPromises()
     expect(wrapper.findAll('[aria-label^="Discard"]')).toHaveLength(0)
-    context.status.value.active_revision.status = 'revisions_requested'
-    await flushPromises()
-    expect(wrapper.findAll('[aria-label^="Discard"]')).toHaveLength(3)
+    const added = wrapper.get('[data-scope-gene-id="2"]')
+    const removed = wrapper.get('[data-scope-gene-id="4"]')
+    expect(added.text()).toContain('Added')
+    expect(added.classes()).toContain('bg-blue-50')
+    expect(added.classes()).toContain('border-l-4')
+    expect(removed.text()).toContain('Removed')
+    expect(removed.classes()).toContain('bg-orange-50')
+    expect(removed.findAll('button')).toHaveLength(0)
+    expect(removed.find('input, select, dropdown-item-stub').exists()).toBe(false)
     wrapper.unmount()
   })
   it('shows the union in existing cards, badges and backend field changes', async () => {
@@ -242,4 +256,82 @@ it('GCEP retains snapshot-only cards with no live genes and forwards saved refre
   expect(getGenes).toHaveBeenCalledTimes(2)
   expect(wrapper.emitted('saved')).toHaveLength(1)
   wrapper.unmount()
+})
+
+
+describe.each([['GCEP', GcepGeneList], ['VCEP', VcepGeneList], ['SC-VCEP', ScvcepGeneList]])('%s public form contract', (name, Component) => {
+  async function parentForm() {
+    const group = { uuid: 'group', expert_panel: { genes: [] } }
+    const getGenes = vi.fn()
+    const store = createStore({ modules: { groups: { namespaced: true,
+      getters: { currentItemOrNew: () => group }, actions: { getGenes },
+    } }, mutations: { pushSuccess: vi.fn(), pushError: vi.fn() } })
+    const parent = mount({
+      components: { SubmissionWrapper },
+      data: () => ({ editing: false, List: markRaw(Component) }),
+      template: `<SubmissionWrapper :show-controls="editing" @submitted="$refs.list.save()" @canceled="$refs.list.cancel()">
+        <component :is="List" ref="list" v-model:editing="editing" />
+      </SubmissionWrapper>`,
+    }, { global: { plugins: [store], mocks: { hasAnyPermission: () => true, hasRole: () => false },
+      stubs: { note: true, 'edit-icon-button': { emits: ['click'], template: '<button class="edit" @click="$emit(\'click\')">Edit</button>' },
+        'button-row': { emits: ['submitted', 'canceled'], template: '<div class="controls"><button class="submit" @click="$emit(\'submitted\')">Save</button><button class="cancel" @click="$emit(\'canceled\')">Cancel</button></div>' },
+        'dropdown-menu': true, 'dropdown-item': true },
+    } })
+    await flushPromises()
+    expect(parent.find('.controls').isVisible()).toBe(false)
+    await parent.find('.edit').trigger('click')
+    await flushPromises()
+    expect(parent.vm.editing, 'parent editing').toBe(true)
+    expect(parent.findComponent(SubmissionWrapper).props('showControls'), 'controls enabled').toBe(true)
+    const child = parent.findComponent(Component)
+    expect(child.vm.hasUnsavedEdits).toBe(false)
+    for (const method of ['save', 'cancel', 'refreshGenes']) expect(typeof child.vm[method]).toBe('function')
+    return { parent, child, getGenes }
+  }
+  async function fill(child) {
+    if (Component === GcepGeneList) child.vm.selectedGene = { hgnc_id: 1, gene_symbol: 'TEST' }
+    else {
+      child.vm.startAdd()
+      child.vm.formGene = Component === ScvcepGeneList
+        ? { gene: { hgnc_id: 1, gene_symbol: 'TEST' }, disease: { mondo_id: 'MONDO:1', name: 'Disease' } }
+        : { hgnc_id: 1, gene_symbol: 'TEST', disease_name: 'Disease', mondo_id: 'MONDO:1', moi: 'AD', is_other: false }
+    }
+    await flushPromises()
+    expect(child.vm.hasUnsavedEdits).toBe(true)
+  }
+  it('submits through the parent ref and refreshes after discard', async () => {
+    const { parent, child, getGenes } = await parentForm()
+    await fill(child)
+    await parent.find('.submit').trigger('click')
+    await flushPromises()
+    expect(api.post).toHaveBeenCalledWith('/api/groups/group/expert-panel/genes', expect.objectContaining({ genes: [expect.objectContaining({ gene_symbol: 'TEST' })] }))
+    expect(parent.vm.editing).toBe(false)
+    expect(child.vm.hasUnsavedEdits).toBe(false)
+    getGenes.mockClear()
+    await parent.vm.$refs.list.refreshGenes()
+    expect(getGenes).toHaveBeenCalledOnce()
+    parent.unmount()
+  })
+  it('cancels through the parent ref and clears pending edits', async () => {
+    const { parent, child } = await parentForm()
+    await fill(child)
+    api.post.mockClear()
+    await parent.find('.cancel').trigger('click')
+    await flushPromises()
+    expect(parent.vm.editing).toBe(false)
+    expect(child.vm.hasUnsavedEdits).toBe(false)
+    expect(api.post).not.toHaveBeenCalled()
+    parent.unmount()
+  })
+  it('keeps failed saves open with unsaved edits', async () => {
+    const { parent, child } = await parentForm()
+    await fill(child)
+    api.post.mockRejectedValueOnce(new Error('Save failed'))
+    await parent.find('.submit').trigger('click')
+    await flushPromises()
+    expect(parent.vm.editing, 'parent editing').toBe(true)
+    expect(child.vm.hasUnsavedEdits).toBe(true)
+    expect(child.emitted('saved')).toBeUndefined()
+    parent.unmount()
+  })
 })

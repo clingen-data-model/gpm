@@ -1,10 +1,19 @@
 <script setup>
-import { inject, ref, watch } from 'vue'
+import { computed, inject, ref, watch } from 'vue'
 import { api } from '@/http'
 import ReviewRoundDetail from './ReviewRoundDetail.vue'
 
 const historyState = inject('applicationReviewHistory', { history: ref(null), loading: ref(false), error: ref('') })
 const history = historyState.history
+const lifecycles = computed(() => {
+  const groups = new Map()
+  for (const cycle of history.value?.cycles ?? []) {
+    const key = cycle.lifecycle_key ?? (cycle.kind === 'scope_of_work' ? cycle.key : 'initial_application')
+    if (!groups.has(key)) groups.set(key, { key, title: cycle.kind === 'scope_of_work' ? cycle.title : 'Initial Application', steps: [] })
+    groups.get(key).steps.push({ ...cycle, step: cycle.step ?? (cycle.kind === 'sustained_curation' ? 4 : 1) })
+  }
+  return [...groups.values()].map(group => ({ ...group, steps: group.steps.sort((a, b) => a.step - b.step) }))
+})
 const details = ref({})
 const errors = ref({})
 const busy = ref({})
@@ -40,9 +49,11 @@ async function loadDetail(round) {
         <template v-if="history.initial_version_relationship !== 'explicit'">Its relationship to an initial Step 1 Review Round is not recorded.</template>
       </p>
       <p v-if="history.initial_step_1_approval?.approved_at">Recorded Step 1 approval: {{ date(history.initial_step_1_approval.approved_at) }}.</p>
-      <p v-if="!history.cycles.length">No identifiable Step 1 Review Rounds are recorded.</p>
-      <details v-for="cycle in history.cycles" :key="cycle.key" class="my-3 rounded border p-3">
-        <summary class="cursor-pointer font-semibold">{{ cycle.title }} — {{ cycle.rounds.length }} Review {{ cycle.rounds.length === 1 ? 'Round' : 'Rounds' }}</summary>
+      <p v-if="!history.cycles.length">No identifiable Review Rounds are recorded.</p>
+      <details v-for="lifecycle in lifecycles" :key="lifecycle.key" class="my-3 rounded border p-3">
+        <summary class="cursor-pointer font-semibold">{{ lifecycle.title }}</summary>
+        <details v-for="cycle in lifecycle.steps" :key="cycle.key" class="my-3 rounded border p-3">
+        <summary class="cursor-pointer font-semibold">Step {{ cycle.step }} — {{ cycle.step_name ?? (cycle.step === 4 ? 'Sustained Curation' : 'Scope and Membership') }} — {{ cycle.rounds.length }} Review {{ cycle.rounds.length === 1 ? 'Round' : 'Rounds' }}</summary>
         <p v-if="cycle.base_version">Based on Scope of Work Version {{ cycle.base_version.label }}</p>
         <p v-if="cycle.scope_of_work_version?.approved_at">Approved {{ date(cycle.scope_of_work_version.approved_at) }}</p>
         <p v-if="cycle.approval.relationship === 'unavailable'">Approval relationship unavailable.</p>
@@ -66,6 +77,7 @@ async function loadDetail(round) {
           <p v-if="errors[round.submission_id]" role="alert">{{ errors[round.submission_id] }}</p>
           <ReviewRoundDetail v-if="details[round.submission_id]" :detail="details[round.submission_id]" />
         </article>
+        </details>
       </details>
       <p v-for="item in history.ambiguous_submissions" :key="item.submission_id">Submission {{ item.submission_id }}: {{ item.reason }}</p>
     </template>

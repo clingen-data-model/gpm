@@ -394,7 +394,7 @@ export const actions = {
         return api.put(`${getApplicationUrl(uuid)}/curation-review-protocols`, expertPanel.attributes)
     },
 
-    getSpecifications({ commit }, group) {
+    getSpecifications({ getters }, group) {
         if (!group.is_vcep_or_scvcep) {
             throw new Error(
                 "Can not retreive specfications. Only VCEPS or SC-VCEPs have specifications."
@@ -403,8 +403,10 @@ export const actions = {
 
         return api.get(`${baseUrl}/${group.uuid}/specifications`)
             .then(rsp => {
-                group.expert_panel.specifications = rsp.data
-                commit('addItem', group);
+                // An approval refresh may have replaced the request's group instance.
+                // Update only the specifications on the current stored instance.
+                const item = getters.getItemByUuid(group.uuid);
+                if (item) item.expert_panel.specifications = rsp.data;
             })
     },
 
@@ -719,7 +721,7 @@ export const actions = {
                 formData,
             )
             .then(() => {
-                dispatch('findAndSetCurrent', group.uuid);
+                return dispatch('findAndSetCurrent', group.uuid);
             });
     },
 

@@ -29,8 +29,7 @@ class ScopeOfWorkRevisionRequestTemplate extends AbstractUserDefinedMailTemplate
         $context['submission'] = $submission;
         $context['targetVersion'] = data_get($submission?->data, 'target_version');
         $context['baseVersionId'] = data_get($submission?->data, 'base_version_id');
-        $context['requiredRevisions'] = $this->group->comments()->pending()->requiredRevision()->get();
-        $context['suggestions'] = $this->group->comments()->pending()->suggestion()->get();
+        $context = array_merge($context, app(\App\Services\ApplicationReviewFeedback::class)->comments($this->group));
         $context['judgementNotes'] = $submission ? $submission->judgements->filter(fn ($j) => ! empty($j->notes))->map(fn ($j) => $j->notes) : collect();
         return $context;
     }

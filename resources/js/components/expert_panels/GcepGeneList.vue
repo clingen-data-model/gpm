@@ -123,19 +123,20 @@ export default {
                 await getGenes()
                 context.emit('saved')
                 store.commit('pushSuccess', `Added ${payloadItem.gene_symbol}`)
+                selectedGene.value = null
+                resetSelectedGeneCurationState()
+                await nextTick()
+                selectKey.value++
+                return true
             } catch (error) {
                 const res = error?.response
                 if (res?.status === 422 && res.data?.errors) {
                     const all = Object.values(res.data.errors).flat()
                     store.commit('pushError', all.join('\n'))
                 } else {
-                    store.commit('pushError', res?.data?.message || `Failed to add ${payloadItem.gene_symbol}`)
+                    store.commit('pushError', res?.data?.message || 'Failed to add gene')
                 }
             } finally {
-                selectedGene.value = null
-                resetSelectedGeneCurationState()
-                await nextTick()
-                selectKey.value++
                 adding.value = false
             }
         }
@@ -175,6 +176,9 @@ export default {
             errors.value = {};
         }
         const cancel = () => {
+            selectedGene.value = null;
+            resetSelectedGeneCurationState();
+            closePasteModal();
             resetErrors();
             getGenes();
             hideForm();
@@ -323,8 +327,21 @@ export default {
             context.emit('update')
         }
 
+        const save = async () => {
+            if (props.readonly || !props.editing || adding.value || submittingBulk.value) return;
+            if (showPasteModal.value) {
+                await submitBulkFromReviewUI();
+                if (showPasteModal.value) return;
+            } else if (selectedGene.value) {
+                if (!await addGene()) return;
+            } else {
+                context.emit('saved');
+            }
+            hideForm();
+        };
+
         return {
-            refreshGenes: getGenes, hasUnsavedEdits: computed(() => !!selectedGene.value || showPasteModal.value || adding.value),
+            save, refreshGenes: getGenes, hasUnsavedEdits: computed(() => !!selectedGene.value || showPasteModal.value || adding.value),
             group, genesAsText, loading, errors, resetErrors, hideForm, cancel,
             geneCheckResults, selectedGene, adding, addGene, onChildChange, selectKey,
             showPasteModal, pasteText, pasteArea, openPasteModal, closePasteModal, onReviewClick, reviewing, bulkCheckResults,

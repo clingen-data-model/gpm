@@ -31,6 +31,23 @@ function render(data = payload()) {
 }
 
 describe('reviewer Review History', () => {
+  it('groups initial steps beneath one lifecycle and retains the actual SoW step', () => {
+    const data = payload()
+    data.cycles[0].step = 4
+    data.cycles[0].step_name = 'Sustained Curation'
+    data.cycles.push({ ...data.cycles[1], key: 'sustained_curation', kind: 'sustained_curation', step: 4,
+      lifecycle_key: 'initial_application', step_name: 'Sustained Curation', rounds: [round(4, 1)] })
+    const { wrapper } = render(data)
+    const root = wrapper.get('[data-testid="review-history"]')
+    const lifecycles = root.findAll(':scope > details')
+    expect(lifecycles).toHaveLength(2)
+    expect(lifecycles[1].findAll(':scope > details > summary').map(node => node.text())).toEqual([
+      'Step 1 — Scope and Membership — 2 Review Rounds', 'Step 4 — Sustained Curation — 1 Review Round',
+    ])
+    expect(lifecycles[0].text()).toContain('Step 4 — Sustained Curation')
+    wrapper.unmount()
+  })
+
   it('starts collapsed and displays server cycles, round numbers and metadata', () => {
     const { wrapper } = render()
     expect(wrapper.get('[data-testid="review-history"]').attributes('open')).toBeUndefined()
@@ -126,9 +143,9 @@ describe('reviewer Review History', () => {
     wrapper.unmount()
   })
 
-  it.each(['ApplicationReview', 'ApplicationAdmin'])('%s mounts shared history directly below context', view => {
+  it.each(['ApplicationReview', 'ApplicationAdmin'])('%s mounts shared history below context and review summary', view => {
     const source = readFileSync(`resources/js/views/applications/${view}.vue`, 'utf8')
-    expect(source).toMatch(/<SubmissionContextSummary[^>]*\/>\s*<ReviewHistory\s*\/>/)
+    expect(source).toMatch(/<SubmissionContextSummary[^>]*\/>\s*<ApplicationReviewSummary[\s\S]*?\/>\s*<ReviewHistory\s*\/>/)
   })
 
   it('uses server Review Round numbering rather than application snapshot version', () => {

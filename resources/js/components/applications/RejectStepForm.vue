@@ -31,6 +31,7 @@ const emptyEmail = () => ({
   files: [],
 })
 const email = ref(emptyEmail())
+const noteInitialized = ref(false)
 const submissionText = computed(() => {
   if (saving.value) { return 'Requesting Revisions...'; }
   return `Request Revisions${notifyContacts.value ? ' and notify' : ''}`
@@ -42,6 +43,7 @@ const clearForm = () => {
   errors.value = {}
   saving.value = false
   responseContent.value = ''
+  noteInitialized.value = false
 }
 
 const cancel = () => {
@@ -66,6 +68,10 @@ const getEmailTemplate = async () => {
   email.value = {
     ...response.data,
     files: [],
+  }
+  if (!noteInitialized.value && usesRevisionNote.value) {
+    responseContent.value = response.data.reviewer_note ?? ''
+    noteInitialized.value = true
   }
 }
 
@@ -112,7 +118,7 @@ const save = async () => {
 const isScopeOfWorkRevision = computed(() => {
   return props.submission?.data?.context === 'scope_of_work_revision'
 })
-const usesRevisionNote = computed(() => isScopeOfWorkRevision.value || Number(props.submission.submission_type_id) === 1)
+const usesRevisionNote = computed(() => isScopeOfWorkRevision.value || [1, 2].includes(Number(props.submission.submission_type_id)))
 const responseContent = ref('')
 const revisionRequestTemplateClass = computed(() => {
   return isScopeOfWorkRevision.value
@@ -135,6 +141,7 @@ defineExpose({
       label="Revision notes to Expert Panel"
       :errors="errors.response_content"
       vertical
+      @update:model-value="noteInitialized = true"
     />
     <dictionary-row label="">
       <div>
