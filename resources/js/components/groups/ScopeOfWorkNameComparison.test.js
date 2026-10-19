@@ -18,7 +18,7 @@ describe('Scope of Work name comparison', () => {
   })
   it('shows captured old and new names in the blue banner, including drafts', () => {
     const wrapper = mount(ScopeOfWorkStatusBanner, { props: { status: {
-      has_approved_version: true, has_active_revision: true,
+      versioning_applicable: true, has_approved_version: true, has_active_revision: true,
       active_revision: { status: 'draft', version_label: '2.0', summary: {}, changes: [{ id: 1, rule_key: 'panel_name.rename', label: 'Rename Expert Panel', entity_label: 'FBN1', before_value: { value: 'FBN1-TEST' }, after_value: { value: 'FBN1' }, requires_approval: 'yes' }] },
     } }, global: { stubs: { SubmissionConfirmationModal: true } } })
     expect(wrapper.text()).toContain('FBN1-TEST to FBN1')

@@ -1,7 +1,6 @@
 <script setup>
 import { computed } from 'vue'
 import { titleCase } from '@/string_utils'
-import ScopeOfWorkMemberDiscard from './ScopeOfWorkMemberDiscard.vue'
 
 const props = defineProps({
   roles: { type: Array, default: () => [] },
@@ -28,9 +27,7 @@ const ordinaryLabels = computed(() => props.roles.map(role => props.snapshotOnly
       <span v-else>{{ role.after?.label ?? role.before?.label }}</span>
       <span v-if="role.operation === 'added'" class="ml-1 text-xs text-green-800">Added</span>
       <span v-if="role.operation === 'removed'" class="ml-1 text-xs text-red-700">Removed</span>
-      <ScopeOfWorkMemberDiscard v-if="allowDiscard && ['added', 'removed'].includes(role.operation)"
-        :person-id="personId" kind="role" :operation="role.operation" :role-name="role.key"
-        :role-label="role.after?.label ?? role.before?.label" :member-label="memberLabel" />
+
     </span>
   </span>
 </template>

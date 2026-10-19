@@ -8,7 +8,8 @@ import {judgementColor} from '@/composables/judgement_utils.js'
 
 const emits = defineEmits(['deleted', 'saved'])
 const commentManager = inject('commentManager');
-const latestSubmission = inject('latestSubmission')
+const reviewSubmission = inject('reviewSubmission', inject('latestSubmission', ref(null)))
+const latestSubmission = computed(() => reviewSubmission.value ?? {})
 
 const store = useStore();
 // const group = computed(() => store.getters['groups/currentItemOrNew'])

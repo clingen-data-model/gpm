@@ -18,6 +18,16 @@ function harness(getIdentifiers) {
 describe('comparison sources', () => {
   beforeEach(() => api.get.mockReset())
 
+  it.each(['submitted_state', 'previous_review_round'])('loads initial %s through frozen history detail', async mode => {
+    const detail = { step: 1, mode, availability: 'available', comparison: { rows: { genes: [] }, changes: [] } }
+    api.get.mockResolvedValue({ data: detail })
+    const { wrapper, state } = harness(() => ['group', 42, 'initial'])
+    await flushPromises()
+    expect(api.get).toHaveBeenCalledWith('/api/groups/group/application/review-history/42')
+    expect(state.comparison.value).toMatchObject({ source: 'submitted', mode, review_detail: detail })
+    wrapper.unmount()
+  })
+
   it('reloads saved drafts with the same UUID when status refreshes', async () => {
     const status = ref({ active_revision: { uuid: 'revision' } })
     api.get.mockResolvedValueOnce({ data: { source: 'live', changes: ['first save'] } })

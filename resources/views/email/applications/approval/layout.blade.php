@@ -5,6 +5,10 @@
 
     @yield('approval')
 
+    @isset($approvalFeedback)
+        @include('email.applications.approval.feedback', $approvalFeedback)
+    @endisset
+
     <p>
         Thanks,
     </p>

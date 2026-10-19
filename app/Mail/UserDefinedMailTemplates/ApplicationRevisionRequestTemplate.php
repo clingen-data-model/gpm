@@ -26,8 +26,7 @@ class ApplicationRevisionRequestTemplate extends AbstractUserDefinedMailTemplate
     protected function getContext(): array
     {
         $context = parent::getContext();
-        $context['requiredRevisions'] = $this->group->comments()->pending()->requiredRevision()->get();
-        $context['suggestions'] = $this->group->comments()->pending()->suggestion()->get();
+        $context = array_merge($context, app(\App\Services\ApplicationReviewFeedback::class)->comments($this->group));
         $context['judgementNotes'] = $this->group
                                         ->latestSubmission
                                         ->judgements

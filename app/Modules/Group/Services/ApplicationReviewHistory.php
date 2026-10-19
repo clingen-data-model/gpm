@@ -14,6 +14,10 @@ class ApplicationReviewHistory
     public function classification(Submission $submission): string
     {
         $data = $submission->data ?? [];
+        if ((int) $submission->submission_type_id === (int) config('submissions.types.application.sustained-curation.id')) {
+            return $submission->scope_of_work_version_id || ($data['context'] ?? null) === 'scope_of_work_revision'
+                ? 'excluded' : 'sustained_curation';
+        }
         if ((int) $submission->submission_type_id !== (int) config('submissions.types.application.definition.id')
             || (isset($data['approval_step']) && (int) $data['approval_step'] === 4)
             || (isset($data['step']) && (int) $data['step'] === 4)) {
@@ -50,7 +54,7 @@ class ApplicationReviewHistory
                     'reason' => 'Submission review cycle metadata is ambiguous.'];
                 continue;
             }
-            $key = $kind === 'initial_application' ? $kind : 'scope_of_work:'.$submission->scope_of_work_version_id;
+            $key = $kind !== 'scope_of_work' ? $kind : 'scope_of_work:'.$submission->scope_of_work_version_id;
             $cycles[$key] ??= ['kind' => $kind, 'submissions' => []];
             $cycles[$key]['submissions'][] = $submission;
         }
@@ -60,12 +64,13 @@ class ApplicationReviewHistory
         $initialLink = false;
         foreach ($cycles as $key => $cycle) {
             $items = collect($cycle['submissions']);
-            $initial = $cycle['kind'] === 'initial_application';
+            $initial = $cycle['kind'] !== 'scope_of_work';
+            $step4 = $cycle['kind'] === 'sustained_curation';
             $version = $initial ? null : ScopeOfWorkVersion::withTrashed()->find($items->first()->scope_of_work_version_id);
             $approved = $items->where('submission_status_id', config('submissions.statuses.approved.id'));
             $linked = $version && $version->status === 'approved'
                 ? $approved->firstWhere('id', $version->submission_id) : null;
-            $initialLinked = $initial && $initialVersion?->submission_id
+            $initialLinked = $initial && !$step4 && $initialVersion?->submission_id
                 ? $approved->firstWhere('id', $initialVersion->submission_id) : null;
             $initialLink = $initialLink || (bool) $initialLinked;
             $rounds = [];
@@ -94,7 +99,7 @@ class ApplicationReviewHistory
             }
             $result[] = [
                 'key' => $key, 'kind' => $cycle['kind'],
-                'title' => $initial ? 'Initial Application' : 'Scope of Work Version '.$version->version_label,
+                'title' => $step4 ? 'Step 4 Review' : ($initial ? 'Initial Application' : 'Scope of Work Version '.$version->version_label),
                 'scope_of_work_version' => $this->version($initialLinked ? $initialVersion : $version),
                 'base_version' => $version && $version->baseVersion?->group_id === $group->id ? $this->version($version->baseVersion) : null,
                 'approval' => ['submission_id' => $initial ? ($initialLinked?->id ?? ($approved->count() === 1 ? $approved->first()->id : null)) : $linked?->id,

@@ -46,12 +46,12 @@ export default {
         }
     },
     watch: {
-        group (to) {
-            this.$store.dispatch('groups/getSpecifications', to)
+        'group.uuid': {
+            immediate: true,
+            handler (uuid) {
+                if (uuid) this.$store.dispatch('groups/getSpecifications', this.group)
+            }
         }
-    },
-    mounted() {
-        this.$store.dispatch('groups/getSpecifications', this.group)
     },
     methods: {
         goToCspec () {

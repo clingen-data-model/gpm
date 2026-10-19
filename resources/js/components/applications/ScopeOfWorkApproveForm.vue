@@ -2,6 +2,7 @@
 import { computed, ref } from 'vue'
 import { api } from '@/http'
 import isValidationError from '@/http/is_validation_error'
+import ApprovalNotificationFields from './ApprovalNotificationFields.vue'
 
 const props = defineProps({
   group: {
@@ -22,6 +23,9 @@ const emit = defineEmits([
 const dateApproved = ref(null)
 const errors = ref({})
 const saving = ref(false)
+const notifyContacts = ref(false)
+const emailPending = ref(false)
+const email = ref({ subject: '', body: '', files: [], cc: [], to: [] })
 
 const targetVersion = computed(() => {
   return props.submission.data?.target_version ?? ''
@@ -31,6 +35,8 @@ const clearForm = () => {
   dateApproved.value = null
   errors.value = {}
   saving.value = false
+  notifyContacts.value = false
+  email.value = { subject: '', body: '', files: [], cc: [], to: [] }
 }
 
 const cancel = () => {
@@ -43,7 +49,7 @@ const cancel = () => {
 }
 
 const save = async () => {
-  if (saving.value) {
+  if (saving.value || emailPending.value) {
     return
   }
 
@@ -56,9 +62,15 @@ const save = async () => {
       `/application/submission/${props.submission.id}` +
       '/scope-of-work/approve'
 
-    await api.post(url, {
-      date_approved: dateApproved.value,
-    })
+    const data = new FormData()
+    data.append('date_approved', dateApproved.value ?? '')
+    data.append('notify_contacts', notifyContacts.value ? '1' : '0')
+    if (notifyContacts.value) {
+      data.append('subject', email.value.subject)
+      data.append('body', email.value.body)
+      for (const file of email.value.files ?? []) data.append('attachments[]', file)
+    }
+    await api.post(url, data)
 
     clearForm()
     emit('saved')
@@ -95,6 +107,15 @@ defineExpose({
       :errors="errors.date_approved"
     />
 
+    <ApprovalNotificationFields
+      v-model:notify-contacts="notifyContacts"
+      v-model:email="email"
+      v-model:pending="emailPending"
+      :group="group"
+      :step="Number(submission.data?.approval_step ?? 1)"
+      :disabled="saving"
+    />
+
     <static-alert
       v-if="errors.submission"
       variant="danger"
@@ -113,7 +134,7 @@ defineExpose({
 
       <button
         class="btn blue"
-        :disabled="saving"
+        :disabled="saving || emailPending"
         @click="save"
       >
         {{ saving ? 'Approving...' : 'Approve Scope of Work Revision' }}

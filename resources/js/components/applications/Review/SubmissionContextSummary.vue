@@ -1,4 +1,5 @@
 <script setup>
+import { submissionReviewStep, reviewStepLabel } from '@/domain/review_submission';
 import { scopeOfWorkChangeLabel } from '@/scope_of_work_change_label';
 import { computed, inject, ref } from 'vue';
 import { useStore } from 'vuex';
@@ -7,7 +8,7 @@ import { hasPermission } from '@/auth_utils.js';
 const emit = defineEmits(['saved']);
 
 const store = useStore();
-const latestSubmission = inject('latestSubmission');
+const latestSubmission = inject('reviewSubmission', inject('latestSubmission', ref(null)));
 const group = inject('group');
 const historyState = inject('applicationReviewHistory', null);
 const reviewRound = computed(() => historyState?.history.value?.cycles
@@ -19,10 +20,11 @@ const reviewErrors = ref({});
 const submittingReviewAction = ref(false);
 
 const submission = computed(() => latestSubmission?.value || {});
+const stepLabel = computed(() => reviewStepLabel(submissionReviewStep(submission.value)));
 const data = computed(() => submission.value?.data || {});
 
 const isScopeOfWorkRevision = computed(() => data.value.context === 'scope_of_work_revision');
-const isApplicationSubmission = computed(() => data.value.context === 'application_submission');
+const isApplicationSubmission = computed(() => data.value.context === 'application_submission' || (!isScopeOfWorkRevision.value && !!stepLabel.value));
 
 const changes = computed(() => data.value.changes || []);
 
@@ -110,8 +112,8 @@ const requestScopeOfWorkRevisionChanges = async () => {
 
     <div v-else-if="isApplicationSubmission" class="mt-2">
       <p>
-        <template v-if="reviewRound">Initial Application — <strong>Review Round {{ reviewRound }}</strong>.</template>
-        <template v-else>Application submission. Review Round information unavailable.</template>
+        <template v-if="reviewRound">Initial Application — <template v-if="stepLabel">{{ stepLabel }} — </template><strong>Review Round {{ reviewRound }}</strong>.</template>
+        <template v-else>Initial Application<template v-if="stepLabel"> — {{ stepLabel }}</template>. Review Round information unavailable.</template>
       </p>
 
       <p v-if="submission.notes" class="mt-2">
