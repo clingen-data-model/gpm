@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\View;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Mail\UserDefinedMailTemplates\UserDefinedTemplate;
 use App\Mail\UserDefinedMailTemplates\AbstractUserDefinedMailTemplate;
-class InitialApprovalMailTemplate extends AbstractUserDefinedMailTemplate
+class InitialApprovalMailTemplate extends ApprovalMailTemplate
 {
 
     public function getTemplate(): string

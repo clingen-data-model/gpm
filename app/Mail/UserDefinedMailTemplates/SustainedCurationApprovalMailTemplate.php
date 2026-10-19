@@ -4,7 +4,7 @@ namespace App\Mail\UserDefinedMailTemplates;
 
 use App\Mail\UserDefinedMailTemplates\AbstractUserDefinedMailTemplate;
 
-class SustainedCurationApprovalMailTemplate extends AbstractUserDefinedMailTemplate
+class SustainedCurationApprovalMailTemplate extends ApprovalMailTemplate
 {
 
     public function getTemplate(): string

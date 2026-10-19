@@ -1,19 +1,11 @@
 <script>
 import {mapGetters} from 'vuex'
-import api from '@/http/api';
 import isValidationError from '@/http/is_validation_error';
-import UserDefinedMailForm from '@/components/forms/UserDefinedMailForm.vue'
-
-const templateForStep = {
-    1: 'App\\Mail\\UserDefinedMailTemplates\\InitialApprovalMailTemplate',
-    2: 'App\\Mail\\UserDefinedMailTemplates\\SpecificationDraftMailTemplate',
-    3: 'App\\Mail\\UserDefinedMailTemplates\\SpecificationPilotMailTemplate',
-    4: 'App\\Mail\\UserDefinedMailTemplates\\SustainedCurationApprovalMailTemplate',
-}
+import ApprovalNotificationFields from './ApprovalNotificationFields.vue'
 
 export default {
     components: {
-        UserDefinedMailForm
+        ApprovalNotificationFields
     },
     emits: [
         'canceled',
@@ -23,6 +15,7 @@ export default {
         return {
             dateApproved: null,
             notifyContacts: false,
+            emailPending: false,
             email: {
                 subject: '',
                 body: '',
@@ -41,36 +34,20 @@ export default {
             return this.group.expert_panel;
         },
     },
-    watch: {
-        notifyContacts (to) {
-            if (to) {
-                api.get(
-                        `/api/email-drafts/groups/${this.group.uuid}`,
-                        {
-                            params: {
-                                templateClass: templateForStep[this.group.expert_panel.current_step]
-                            }
-                        }
-                    )
-                    .then(response => {
-                        this.email = response.data;
-                        this.email.files = [];
-                    })
-            }
-        }
-    },
     mounted() {
     },
     methods: {
         clearForm() {
             this.dateApproved = null;
             this.notifyContacts = false;
+            this.email = { subject: '', body: '', cc: [], to: [], files: [] };
         },
         cancel () {
             this.clearForm();
             this.$emit('canceled');
         },
         async save () {
+            if (this.emailPending) return;
             const data = {
                 group: this.group, 
                 dateApproved: this.dateApproved,
@@ -100,14 +77,13 @@ export default {
 
     <input-row v-model="dateApproved" type="date" :errors="errors.date_approved" label="Date Approved" />
 
-    <dictionary-row label="">
-      <div>
-        <label class="text-sm">
-          <input v-model="notifyContacts" type="checkbox" :value="true"> 
-          <div>Send notification email to contacts</div>
-        </label>
-      </div>
-    </dictionary-row>
+    <ApprovalNotificationFields
+      v-model:notify-contacts="notifyContacts"
+      v-model:email="email"
+      v-model:pending="emailPending"
+      :group="group"
+      :step="Number(application.current_step)"
+    />
     <static-alert
       v-if="!application.hasPendingSubmissionForCurrentStep"
       variant="warning"
@@ -117,15 +93,11 @@ export default {
       You can approve this application but be aware that it is not part of the "normal" application workflow.
     </static-alert>
         
-    <transition name="slide-fade-down">
-      <UserDefinedMailForm v-show="notifyContacts" v-model="email" />
-    </transition>
-
     <button-row>
       <button class="btn" @click="cancel">
         Cancel
       </button>
-      <button class="btn blue" @click="save">
+      <button class="btn blue" :disabled="emailPending" @click="save">
         Approve step {{ application.current_step }}
         <span v-if="notifyContacts">
           and notify

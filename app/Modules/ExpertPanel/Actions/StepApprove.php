@@ -165,7 +165,8 @@ class StepApprove
             subject: $subject ?? $defaultMail->renderSubject(),
             body: $body ?? $defaultMail->renderBody(),
             attachments: $attachments,
-            ccAddresses: $defaultMail->getCc()
+            ccAddresses: $defaultMail->getCc(),
+            step: $approvedStep,
         );
 
         Notification::send(

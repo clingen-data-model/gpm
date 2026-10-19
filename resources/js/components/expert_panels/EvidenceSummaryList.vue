@@ -49,7 +49,7 @@ export default {
         }
     },
     watch: {
-        group: {
+        'group.uuid': {
             immediate: true,
             handler () {
                 if (this.group && this.group.id) {

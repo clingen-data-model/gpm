@@ -19,6 +19,10 @@ class ApplicationStepSubmitted extends GroupEvent
     public function getLogEntry(): string
     {
         $submitterName = $this->submission->submitter ? $this->submission->submitter->name : 'system';
+        if (data_get($this->submission->data, 'context') === 'scope_of_work_revision') {
+            return 'Scope of Work revision '.data_get($this->submission->data, 'target_version')
+                .' submitted for review by '.$submitterName.'.';
+        }
         return $this->submission->type->name.' application submitted for approval by '.$submitterName.'.';
     }
 
@@ -27,7 +31,9 @@ class ApplicationStepSubmitted extends GroupEvent
         return [
             'submission' => $this->submission->toArray(),
             'date_submitted' => $this->submission->created_at,
-            'step' => $this->submission->group->expertPanel->current_step
+            'submission_id' => $this->submission->id,
+            'scope_of_work_version_id' => $this->submission->scope_of_work_version_id,
+            'step' => data_get($this->submission->data, 'approval_step', $this->submission->group->expertPanel->current_step)
         ];
     }
 

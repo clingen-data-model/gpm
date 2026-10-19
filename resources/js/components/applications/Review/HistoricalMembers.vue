@@ -8,6 +8,12 @@ const props = defineProps({
   },
 })
 
+const profileFields = computed(() => ['credentials', 'expertise', 'institution'].filter(key => props.members.some(member => Object.hasOwn(member, key))))
+const profileValue = (member, key) => {
+  const value = member[key]
+  if (value === undefined || value === 'Unavailable') return 'Historical '+key+' unavailable'
+  return Array.isArray(value) ? value.join(', ') || 'None' : value || 'Not recorded'
+}
 const rows = computed(() => Array.isArray(props.members) ? props.members : [])
 const own = (object, key) => Object.prototype.hasOwnProperty.call(object ?? {}, key)
 const field = (record, key) => {
@@ -44,6 +50,7 @@ const roleLabel = role => {
 }
 const roles = member => {
   const value = field(member, 'roles') ?? member?.relations?.roles ?? []
+  if (value === 'Unavailable') return 'Historical roles unavailable'
   if (!Array.isArray(value) || !value.length) return '—'
 
   const labels = value
@@ -73,6 +80,7 @@ const retirement = member => {
             <th class="px-2 py-2 font-semibold">Email</th>
             <th class="px-2 py-2 font-semibold">Roles</th>
             <th class="px-2 py-2 font-semibold">Status</th>
+            <th v-for="key in profileFields" :key="key" class="px-2 py-2 font-semibold capitalize">{{ key }}</th>
           </tr>
         </thead>
         <tbody>
@@ -81,6 +89,7 @@ const retirement = member => {
             <td class="px-2 py-2">{{ email(member) }}</td>
             <td class="px-2 py-2">{{ roles(member) }}</td>
             <td class="px-2 py-2 whitespace-nowrap">{{ retirement(member) }}</td>
+            <td v-for="key in profileFields" :key="key" class="px-2 py-2">{{ profileValue(member, key) }}</td>
           </tr>
         </tbody>
       </table>

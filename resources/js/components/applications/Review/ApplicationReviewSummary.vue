@@ -1,15 +1,10 @@
 <script setup>
+import ReviewSummaryTable from './ReviewSummaryTable.vue'
 defineProps({
   summary: { type: Object, default: null },
   loading: Boolean,
   error: { type: String, default: '' },
 })
-const categories = [
-  { key: 'required_revision', label: 'Required Revision' },
-  { key: 'internal_comment', label: 'Internal Comment' },
-  { key: 'suggestion', label: 'Suggestion' },
-]
-const states = [{ key: 'outstanding', label: 'Outstanding' }, { key: 'resolved', label: 'Resolved' }]
 </script>
 
 <template>
@@ -18,17 +13,9 @@ const states = [{ key: 'outstanding', label: 'Outstanding' }, { key: 'resolved',
     <p class="mb-3 text-sm text-gray-600">Current application-review comments for this group across Review Rounds.</p>
     <p v-if="loading" role="status">Loading comment counts…</p>
     <p v-else-if="error" role="alert">{{ error }}</p>
-    <div v-else-if="summary" class="overflow-x-auto">
-      <table class="w-full text-sm">
-        <caption class="sr-only">Outstanding and resolved application review comments by category</caption>
-        <thead><tr><th scope="col"><span class="sr-only">State</span></th><th v-for="category in categories" :key="category.key" scope="col" class="p-2 text-right">{{ category.label }}</th></tr></thead>
-        <tbody>
-          <tr v-for="state in states" :key="state.key" class="border-t">
-            <th scope="row" class="p-2 text-left">{{ state.label }}</th>
-            <td v-for="category in categories" :key="category.key" class="p-2 text-right">{{ summary[category.key][state.key] }}</td>
-          </tr>
-        </tbody>
-      </table>
+    <div v-else-if="summary" class="grid grid-cols-1 gap-6" :class="{ 'lg:grid-cols-2': summary.step4Summary }">
+      <ReviewSummaryTable :summary="summary.step1Summary" :step="1" />
+      <ReviewSummaryTable v-if="summary.step4Summary" :summary="summary.step4Summary" :step="4" />
     </div>
     <p v-else role="status">Comment counts are not available yet.</p>
   </section>

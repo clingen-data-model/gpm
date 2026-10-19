@@ -39,6 +39,7 @@ import ClinvarForm from '@/components/expert_panels/ClinvarForm.vue';
 import GroupPublications from "./GroupPublications.vue";
 import FundingAwardsTab from '@/components/expert_panels/FundingAwardsTab.vue'
 import ScopeOfWorkStatusBanner from '@/components/groups/ScopeOfWorkStatusBanner.vue';
+import InitialApplicationRevisionNote from '@/components/applications/InitialApplicationRevisionNote.vue';
 import ScopeOfWorkHistory from '@/components/groups/ScopeOfWorkHistory.vue';
 import ScopeOfWorkComparison from '@/components/groups/ScopeOfWorkComparison.vue';
 
@@ -80,6 +81,7 @@ export default {
     FundingAwardsTab,
     ScopeOfWorkStatusBanner,
     ScopeOfWorkHistory,
+    InitialApplicationRevisionNote,
     ScopeOfWorkComparison,
   },
   props: {
@@ -143,6 +145,7 @@ export default {
         promises.push(
           store.dispatch("groups/getGenes", group.value),
           store.dispatch("groups/getDocuments", group.value),
+          store.dispatch("groups/getSubmissions", group.value),
           store.dispatch("groups/getPendingTasks", group.value),
           store.dispatch("groups/getAnnualUpdate", group.value),
         );
@@ -600,7 +603,8 @@ export default {
       @show-edit="showEdit"
     />
 
-    <ScopeOfWorkStatusBanner
+    <InitialApplicationRevisionNote v-if="group.is_ep" :application="group.expert_panel" />
+      <ScopeOfWorkStatusBanner
       v-if="group?.is_ep && scopeOfWorkStatus?.versioning_applicable === true"
       :status="scopeOfWorkStatus"
       :discarding="discardingScopeOfWork || scopeOfWorkMutationBusy"

@@ -17,6 +17,7 @@ class CommentCreate
         $data['creator_type'] = get_class(Auth::user()->person);
         $data['creator_id'] = Auth::user()->person->id;
 
+        $data = app(\App\Services\ApplicationReviewCommentContext::class)->capture($data);
         $comment = Comment::create($data);
 
         event(new CommentCreated($comment));

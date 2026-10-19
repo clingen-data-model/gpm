@@ -20,7 +20,9 @@ class NotifyContacts
         string $subject,
         string $body,
         array $attachments,
-        array $ccAddresses
+        array $ccAddresses,
+        ?int $step = null,
+        bool $recordEmail = true,
     ) {
         $contacts = $expertPanel
                         ->contacts()
@@ -36,5 +38,10 @@ class NotifyContacts
             ccAddresses: $ccAddresses,
             to: $contacts->pluck('email')
         );
+        if ($recordEmail) {
+            event(new \App\Modules\Group\Events\ApplicationEmailSent(
+                $expertPanel->group, $subject, $body, $step ?? $expertPanel->current_step
+            ));
+        }
     }
 }

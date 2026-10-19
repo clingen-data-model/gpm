@@ -6,8 +6,7 @@
     import ReviewMembership from '@/components/expert_panels/ReviewMembership.vue'
     import { formatDate } from '@/date_utils'
     import { htmlFromMarkdown } from '@/markdown-utils';
-    import GeneCurationStatus from '@/components/expert_panels/GeneCurationStatus.vue'
-    import VcepGeneList from '@/components/expert_panels/VcepGeneList.vue';
+    import ReviewGenes from './ReviewGenes.vue'
 
     const store = useStore();
     const group = computed(() => store.getters['groups/currentItemOrNew'])
@@ -66,13 +65,7 @@
 
     <ReviewSection title="Scope" name="scope">
       <h3>Genes</h3>
-      <div class="mb-6">
-        <p v-if="group.is_gcep">
-          {{ expertPanel.genes.map(g => g.gene_symbol).join(', ') }}
-        </p>
-        <GeneCurationStatus v-if="group.is_gcep" :genes="expertPanel.genes" :readonly="true" :editing="false" />
-        <VcepGeneList v-if="group.is_vcep_or_scvcep" :group="group" :editing="false" />
-      </div>
+      <ReviewGenes />
 
       <h3>Description of scope</h3>
       <blockquote v-if="!scopeDescriptionChange" class="markdown-preview" v-html="htmlFromMarkdown(expertPanel.scope_description)"></blockquote>

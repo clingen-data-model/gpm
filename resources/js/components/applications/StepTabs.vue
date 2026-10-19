@@ -1,4 +1,5 @@
 <script>
+import { inject } from 'vue'
 import { mapGetters } from 'vuex'
 import StepOne from '@/components/applications/StepOne.vue'
 import StepTwo from '@/components/applications/StepTwo.vue'
@@ -13,6 +14,7 @@ export default {
         StepFour,
     },
     emits: ['approved', 'updated'],
+    setup() { return { selectReviewStep: inject('selectReviewStep', () => {}) } },
     data() {
         return {
             activeStep: 1
@@ -28,12 +30,19 @@ export default {
         activeIndex: {
             deep: true,
             get() {
-                return (this.application && this.application.current_step) ? this.application.current_step - 1 : 0
+                return this.activeStep - 1
             },
             set(value) {
                 this.activeStep = value+1
             }
 
+        }
+    },
+    watch: {
+        activeStep: { immediate: true, handler(step) { this.selectReviewStep(step); } },
+        'application.current_step': {
+            immediate: true,
+            handler (step) { this.activeStep = Number(step) || 1; }
         }
     },
     methods: {

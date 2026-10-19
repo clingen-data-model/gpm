@@ -137,8 +137,8 @@
     </div>
 
     <ul v-else class="space-y-2">
-      <li v-for="gene in paginatedGenes" :key="gene.id" :data-scope-gene-id="gene.id">
-        <div class="rounded-2xl overflow-hidden border border-gray-200 bg-white shadow-sm hover:shadow transition-shadow">
+      <li v-for="gene in paginatedGenes" :key="gene.id" :data-scope-gene-id="gene.id" :class="comparisonFor(gene)?.operation === 'added' ? 'bg-blue-50 border-l-4 border-blue-600' : isRemoved(gene) ? 'bg-orange-50 border-l-4 border-orange-600' : ''">
+        <div class="rounded-2xl overflow-hidden border border-gray-200 shadow-sm hover:shadow transition-shadow" :class="comparisonFor(gene)?.operation === 'added' ? 'bg-blue-50' : isRemoved(gene) ? 'bg-orange-50' : 'bg-white'">
           <div class="flex items-start justify-between gap-3 p-3">
             <div class="flex items-start gap-3">
               <div v-if="canEdit && editing && canMutate(gene)" class="mt-1">
@@ -152,11 +152,11 @@
 
               <div>
                 <div class="flex flex-wrap items-center gap-2">
-                  <span class="text-base font-semibold" :class="isRemoved(gene) ? 'text-red-700 line-through' : 'text-gray-900'">{{ gene.gene_symbol }}</span>
+                  <span class="text-base font-semibold" :class="isRemoved(gene) ? 'text-orange-900 line-through' : 'text-gray-900'">{{ gene.gene_symbol }}</span>
                   <ScopeOfWorkGeneChangeLabel :gene-id="gene.id" :comparison="comparisonFor(gene)" :tier-label="tierLabel" />
                   <span
                     v-if="gene.mondo_id"
-                    :class="isRemoved(gene) ? 'text-red-700 line-through' : ''"
+                    :class="isRemoved(gene) ? 'text-orange-900 line-through' : ''"
                     class="text-xs rounded-full bg-gray-100 px-2 py-0.5 text-gray-700"
                   >
                     {{ gene.mondo_id }} {{ gene.disease_name || '—' }}
@@ -541,9 +541,27 @@ export default {
       getGenes()
     })
 
+    const save = async () => {
+      if (props.readonly || !props.editing) return
+      if (isFormVisible.value) {
+        if (!isFormValid.value) return
+        await saveForm()
+        if (isFormVisible.value) return
+      } else {
+        emit('saved')
+      }
+      clearSelection()
+      emit('update:editing', false)
+    }
+    const cancel = () => {
+      cancelForm()
+      clearSelection()
+      emit('update:editing', false)
+    }
+
     return {
       displayGenes, comparisonFor, isRemoved, isSnapshotOnly, canMutate, editableIds, tierLabel,
-      refreshGenes: getGenes, hasUnsavedEdits: computed(() => isFormVisible.value),
+      save, cancel, refreshGenes: getGenes, hasUnsavedEdits: computed(() => isFormVisible.value),
       // permissions + props
       group,
       canEdit,

@@ -52,26 +52,25 @@ async function render(members = [liveMember()], scopeComparison = null, props = 
 }
 
 describe('contextual member list', () => {
-  it('offers only membership discard for whole additions/removals while history stays non-operational', async () => {
+  it('does not offer contextual membership discard and keeps history non-operational', async () => {
     const context = { status: ref({ active_revision: { uuid: 'revision', status: 'draft', changes: [
       { id: 1, rule_key: 'member.add', can_discard: true, after_value: { person_id: 1 } },
       { id: 2, rule_key: 'member.remove', can_discard: true, before_value: { person_id: 2 } },
     ] } }), busy: ref(false), discard: vi.fn() }
     const { wrapper } = await render([liveMember()], comparison([row(1, 'added'), row(2, 'removed')]), {}, context)
     const bodies = wrapper.findAll('tbody')
-    expect(bodies[0].findAll('button[aria-label="Discard member change"]')).toHaveLength(1)
-    expect(bodies[1].findAll('button[aria-label="Discard member change"]')).toHaveLength(1)
+    expect(bodies[0].findAll('button[aria-label="Discard member change"]')).toHaveLength(0)
+    expect(bodies[1].findAll('button[aria-label="Discard member change"]')).toHaveLength(0)
     expect(bodies[1].text()).not.toMatch(/Update membership|Remove from group|Complete COI/)
     expect(wrapper.vm.operationalMembers).toHaveLength(1)
-    await bodies[1].get('button[aria-label="Discard member change"]').trigger('click')
-    expect(context.discard).toHaveBeenCalledWith(expect.objectContaining({ changeId: 2 }))
+    expect(context.discard).not.toHaveBeenCalled()
     context.status.value.active_revision.status = 'submitted'
     await flushPromises()
     expect(wrapper.findAll('button[aria-label^="Discard"]')).toHaveLength(0)
     wrapper.unmount()
   })
 
-  it('places discard beside changed roles and retirement, with no generic member discard', async () => {
+  it('does not offer discard beside changed roles or retirement', async () => {
     const context = { status: ref({ active_revision: { status: 'draft', changes: [
       { id: 1, rule_key: 'member.remove_chair', can_discard: true, before_value: { person_id: 1, role: 'chair' } },
       { id: 2, rule_key: 'member.update_role', can_discard: true, after_value: { person_id: 1, role: 'coordinator' } },
@@ -84,10 +83,10 @@ describe('contextual member list', () => {
     ]
     const { wrapper } = await render([liveMember()], comparison([row(1, 'changed', { roles,
       field_changes: [{ field: 'end_date', before: null, after: '2026-01-01' }] })]), {}, context)
-    expect(wrapper.findAll('button[aria-label^="Discard"]')).toHaveLength(3)
+    expect(wrapper.findAll('button[aria-label^="Discard"]')).toHaveLength(0)
     expect(wrapper.find('button[aria-label="Discard member change"]').exists()).toBe(false)
     expect(wrapper.find('button[aria-label="Discard Expert change"]').exists()).toBe(false)
-    expect(wrapper.find('button[aria-label="Discard retirement change"]').exists()).toBe(true)
+    expect(wrapper.find('button[aria-label="Discard retirement change"]').exists()).toBe(false)
     wrapper.unmount()
   })
   it('preserves normal rendering and original objects without opt-in or with unavailable comparison', async () => {

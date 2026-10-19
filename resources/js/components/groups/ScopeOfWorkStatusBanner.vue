@@ -70,7 +70,7 @@
     v-model="showSubmitRevisionModal"
     title="Submit Scope of Work revision"
     :submission-name="`Scope of Work revision ${activeRevision.version_label}`"
-    notes-label="Required notes for reviewers:"
+    notes-label="Provide rationale for new or updated Scope of Work"
     submit-text="Submit for Approval"
     :submitting="mutationBusy"
     @submitted="submitRevision"

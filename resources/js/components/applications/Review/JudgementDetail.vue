@@ -8,7 +8,8 @@
 
     const emits = defineEmits(['deleted']);
     const store = useStore();
-    const latestSubmission = inject('latestSubmission')
+    const reviewSubmission = inject('reviewSubmission', inject('latestSubmission', ref(null)))
+    const latestSubmission = computed(() => reviewSubmission.value ?? {})
     const group = computed(() => store.getters['groups/currentItemOrNew']);
     const user = computed(() => store.getters.currentUser);
     const userJudgement = computed({

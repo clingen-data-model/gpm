@@ -1,5 +1,6 @@
 <script setup>
-defineProps({ value: { default: null } })
+import { historicalBoolean, isHistoricalBooleanField } from './historical_fields'
+defineProps({ value: { default: null }, boolean: { type: Boolean, default: false } })
 const label = key => key.replaceAll('_', ' ')
 </script>
 
@@ -12,8 +13,8 @@ const label = key => key.replaceAll('_', ' ')
   <dl v-else-if="typeof value === 'object'" class="ml-2">
     <template v-for="(item, key) in value" :key="key">
       <dt class="font-semibold capitalize">{{ label(key) }}</dt>
-      <dd><HistoricalValue :value="item" /></dd>
+      <dd><HistoricalValue :value="item" :boolean="isHistoricalBooleanField(key)" /></dd>
     </template>
   </dl>
-  <span v-else class="whitespace-pre-wrap">{{ value }}</span>
+  <span v-else class="whitespace-pre-wrap">{{ boolean ? historicalBoolean(value) : value }}</span>
 </template>

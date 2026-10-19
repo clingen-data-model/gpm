@@ -31,13 +31,21 @@ export default {
         }
     },
     watch: {
-        otherCheckbox (to) {
-            if (!to) {
-                this.group.expert_panel.reanalysis_other = null;
-            }
-        }
+        'group.uuid': {
+            immediate: true,
+            handler () { this.otherCheckbox = Boolean(this.group.expert_panel.reanalysis_other); }
+        },
+        'group.expert_panel.reanalysis_other' (value) {
+            if (value) this.otherCheckbox = true;
+        },
     },
     methods: {
+        setOther (checked) {
+            this.otherCheckbox = checked;
+            if (!checked) this.group.expert_panel.reanalysis_other = null;
+            this.checkCompleteness();
+            this.$emit('update');
+        },
         async save () {
             try {
                 this.errors = {};
@@ -56,13 +64,12 @@ export default {
 
 			const hasOtherExplanation =
 				this.otherCheckbox &&				
-				this.group.expert_panel.reanalysis_other.trim().length >= 5;
+				(this.group.expert_panel.reanalysis_other ?? '').trim().length >= 5;
 
 			if (
-				(checkedStandard || hasOtherExplanation) &&
-				this.group.expert_panel.gcep_attestation_date === null
+				(checkedStandard || hasOtherExplanation)
 			) {
-				this.group.expert_panel.reanalysis_attestation_date = new Date();
+				this.group.expert_panel.reanalysis_attestation_date ||= new Date();
 				return;
 			}
 
@@ -100,7 +107,7 @@ export default {
 			</li>
 			<li>
 				<input-row :errors="errors.reanalysis_other" :hide-label="true">
-					<checkbox v-model="otherCheckbox" :disabled="disabled" @update:model-value="$emit('update'), checkCompleteness()">
+					<checkbox :model-value="otherCheckbox" :disabled="disabled" @update:model-value="setOther">
 						Plans differ from the expectations above.
 					</checkbox>
 					<transition name="slide-fade-down">
@@ -111,7 +118,7 @@ export default {
 							v-model="group.expert_panel.reanalysis_other"
 							class="w-full"
 							:disabled="disabled"
-							@update:model-value="$emit('update'), checkCompleteness()"
+							@input="checkCompleteness(), $emit('update')"
 						></textarea>
 						</div>
 					</transition>

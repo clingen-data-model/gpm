@@ -23,6 +23,7 @@ describe('revision request note and email', () => {
   it.each([
     { id: 1, submission_type_id: 1, data: { context: 'application_submission' } },
     { id: 2, submission_type_id: 1, data: null },
+    { id: 4, submission_type_id: 2, data: null },
     { id: 3, submission_type_id: 1, data: { context: 'scope_of_work_revision' } },
   ])('sends an independent reviewer note and editable email for submission $id', async submission => {
     api.post.mockResolvedValue({})
@@ -50,9 +51,9 @@ describe('revision request note and email', () => {
     wrapper.unmount()
   })
 
-  it('keeps the initial Step 4 form unchanged', () => {
+  it('provides the same reviewer note for initial Step 4', () => {
     const wrapper = render({ id: 1, submission_type_id: 2 })
-    expect(wrapper.find('textarea').exists()).toBe(false)
+    expect(wrapper.find('textarea').exists()).toBe(true)
     wrapper.unmount()
   })
 

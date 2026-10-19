@@ -69,7 +69,7 @@ describe('historical comparison differences only', () => {
 
   it('retains the full captured initial Round 1 submitted-state view', () => {
     const wrapper = mount(ReviewRoundDetail, { props: { detail: { mode: 'submitted_state', availability: 'available',
-      submitted_state: [{ label: 'Genes', available: true, value: ['CapturedGene'] },
+      submitted_state: [{ label: 'Genes', available: true, value: [{ gene_symbol: 'CapturedGene' }] },
         { label: 'Members', available: true, value: [{ name: 'Captured member', roles: ['Chair', 'Member'] }] }] } } })
     expect(wrapper.text()).toContain('CapturedGene')
     expect(wrapper.text()).toContain('Captured member')
