@@ -31,9 +31,7 @@ class AttestationReanalysisStore
             throw ValidationException::withMessages(['group' => 'Only expert panels have Reanalysis & Discrepancy Resolution attestations.']);
         }
 
-        if (!is_null($group->expertPanel->reanalysis_attestation_date)) {
-            return $group;
-        }
+        $previousDate = $group->expertPanel->reanalysis_attestation_date;
 
         $group->expertPanel->reanalysis_conflicting = $reanalysis_conflicting;
         $group->expertPanel->reanalysis_review_lp = $reanalysis_review_lp;
@@ -42,13 +40,15 @@ class AttestationReanalysisStore
 
         $attestationDate = Carbon::now();
         if ($this->attestationCompleted($group)) {
-            $group->expertPanel->reanalysis_attestation_date = $attestationDate;
+            $group->expertPanel->reanalysis_attestation_date = $previousDate ?? $attestationDate;
+        } else {
+            $group->expertPanel->reanalysis_attestation_date = null;
         }
 
         $group->expertPanel->save();
         $group->touch();
         
-        if ($this->attestationCompleted($group)) {
+        if ($this->attestationCompleted($group) && $previousDate === null) {
             $event = new AttestationSigned($group, 'Reanalysis', $attestationDate);
             Event::dispatch($event);
         }
