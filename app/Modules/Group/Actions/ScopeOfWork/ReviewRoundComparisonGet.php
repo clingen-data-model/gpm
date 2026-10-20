@@ -24,6 +24,7 @@ class ReviewRoundComparisonGet
 
         $previous = Submission::withTrashed()->where('group_id', $group->id)
             ->where('scope_of_work_version_id', $submission->scope_of_work_version_id)
+            ->where('submission_type_id', $submission->submission_type_id)
             ->where('id', '<', $submission->id)->orderByDesc('id')->first();
         $after = $this->applicationSnapshot($submission);
         if ($previous) {
@@ -40,6 +41,7 @@ class ReviewRoundComparisonGet
 
         $comparison = app(ScopeOfWorkDisplayComparison::class)->handle($before?->snapshot, $after?->snapshot);
         return array_merge([
+            'group_type' => $after ? app(\App\Modules\Group\Services\ApplicationReviewPresentation::class)->type($after->snapshot) : null,
             'mode' => $previous ? 'previous_review_round' : 'approved_baseline',
             'before' => $beforeMetadata,
             'after' => $this->metadata($after, 'application', $submission->id),

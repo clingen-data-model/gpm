@@ -71,7 +71,7 @@ class MailDraftController extends Controller
             'body' => $tpl->renderBody(),
             'reviewer_note' => ($tpl instanceof \App\Mail\UserDefinedMailTemplates\ApplicationRevisionRequestTemplate
                 || $tpl instanceof \App\Mail\UserDefinedMailTemplates\ScopeOfWorkRevisionRequestTemplate)
-                ? app(\App\Services\ApplicationReviewFeedback::class)->text($group) : null,
+                ? $tpl->reviewerNote() : null,
         ];
     }
 }

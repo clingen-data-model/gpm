@@ -51,7 +51,7 @@ class ApplicationSubmissionReject
         try {
             $isScopeOfWorkRevision = data_get($submission->data, 'context') === 'scope_of_work_revision';
             $usesRevisionNote = $isScopeOfWorkRevision
-                || (int) $submission->submission_type_id === (int) config('submissions.types.application.definition.id');
+                || in_array((int) $submission->submission_type_id, [(int) config('submissions.types.application.definition.id'), (int) config('submissions.types.application.sustained-curation.id')], true);
             $responseContent = $usesRevisionNote ? $request->response_content : $request->body;
             $submission = $this->handle(
                 group: $group, 
