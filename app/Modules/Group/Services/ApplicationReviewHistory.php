@@ -14,18 +14,12 @@ class ApplicationReviewHistory
     public function classification(Submission $submission): string
     {
         $data = $submission->data ?? [];
-        if ((int) $submission->submission_type_id === (int) config('submissions.types.application.sustained-curation.id')) {
-            return $submission->scope_of_work_version_id || ($data['context'] ?? null) === 'scope_of_work_revision'
-                ? 'excluded' : 'sustained_curation';
-        }
-        if ((int) $submission->submission_type_id !== (int) config('submissions.types.application.definition.id')
-            || (isset($data['approval_step']) && (int) $data['approval_step'] === 4)
-            || (isset($data['step']) && (int) $data['step'] === 4)) {
-            return 'excluded';
-        }
-        foreach (['approval_step', 'step'] as $field) {
-            if (isset($data[$field]) && (string) $data[$field] !== '1') return 'ambiguous';
-        }
+        $step = app(ApplicationReviewPresentation::class)->step($submission);
+        $typeStep = (int) $submission->submission_type_id === (int) config('submissions.types.application.sustained-curation.id') ? 4
+            : ((int) $submission->submission_type_id === (int) config('submissions.types.application.definition.id') ? 1 : null);
+        if ($typeStep === null) return 'excluded';
+        if ($step !== $typeStep || (isset($data['step']) && (int) $data['step'] !== $typeStep)) return 'ambiguous';
+        if ($step === 4 && $submission->group->isGcep) return 'excluded';
         $context = $data['context'] ?? null;
         if ($submission->scope_of_work_version_id || $context === 'scope_of_work_revision'
             || isset($data['scope_of_work_version_id'])) {
@@ -37,7 +31,7 @@ class ApplicationReviewHistory
             }
             return 'scope_of_work';
         }
-        return in_array($context, [null, 'application_submission'], true) ? 'initial_application' : 'ambiguous';
+        return in_array($context, [null, 'application_submission'], true) ? ($step === 4 ? 'sustained_curation' : 'initial_application') : 'ambiguous';
     }
 
     public function handle(Group $group): array
@@ -54,7 +48,7 @@ class ApplicationReviewHistory
                     'reason' => 'Submission review cycle metadata is ambiguous.'];
                 continue;
             }
-            $key = $kind !== 'scope_of_work' ? $kind : 'scope_of_work:'.$submission->scope_of_work_version_id;
+            $key = $kind !== 'scope_of_work' ? $kind : 'scope_of_work:'.$submission->scope_of_work_version_id.':step:'.app(ApplicationReviewPresentation::class)->step($submission);
             $cycles[$key] ??= ['kind' => $kind, 'submissions' => []];
             $cycles[$key]['submissions'][] = $submission;
         }
@@ -65,7 +59,8 @@ class ApplicationReviewHistory
         foreach ($cycles as $key => $cycle) {
             $items = collect($cycle['submissions']);
             $initial = $cycle['kind'] !== 'scope_of_work';
-            $step4 = $cycle['kind'] === 'sustained_curation';
+            $step = app(ApplicationReviewPresentation::class)->step($items->first());
+            $step4 = $step === 4;
             $version = $initial ? null : ScopeOfWorkVersion::withTrashed()->find($items->first()->scope_of_work_version_id);
             $approved = $items->where('submission_status_id', config('submissions.statuses.approved.id'));
             $linked = $version && $version->status === 'approved'
@@ -99,7 +94,9 @@ class ApplicationReviewHistory
             }
             $result[] = [
                 'key' => $key, 'kind' => $cycle['kind'],
-                'title' => $step4 ? 'Step 4 Review' : ($initial ? 'Initial Application' : 'Scope of Work Version '.$version->version_label),
+                'title' => $initial ? 'Initial Application' : 'Scope of Work Version '.$version->version_label,
+                'lifecycle_key' => $initial ? 'initial_application' : 'scope_of_work:'.$version->id,
+                'step' => $step, 'step_name' => app(ApplicationReviewPresentation::class)->stepName($step),
                 'scope_of_work_version' => $this->version($initialLinked ? $initialVersion : $version),
                 'base_version' => $version && $version->baseVersion?->group_id === $group->id ? $this->version($version->baseVersion) : null,
                 'approval' => ['submission_id' => $initial ? ($initialLinked?->id ?? ($approved->count() === 1 ? $approved->first()->id : null)) : $linked?->id,
@@ -140,54 +137,23 @@ class ApplicationReviewHistory
             foreach ($cycle['rounds'] as $round) {
                 if ($round['submission_id'] !== $submission->id) continue;
                 if ($cycle['kind'] === 'scope_of_work') {
-                    return array_merge($round['detail'], ['comparison' => $round['detail']['availability'] === 'available'
-                        ? app(ReviewRoundComparisonGet::class)->handle($group, $submission) : null]);
+                    $comparison = $round['detail']['availability'] === 'available'
+                        ? app(ReviewRoundComparisonGet::class)->handle($group, $submission) : null;
+                    return array_merge($round['detail'], ['comparison' => $comparison, 'group_type' => $comparison['group_type'] ?? null]);
                 }
                 $after = $this->snapshots->resolve($submission)['snapshot'];
                 if ($round['detail']['mode'] === 'submitted_state') {
-                    return array_merge($round['detail'], ['submitted_state' => $after ? $this->projection($after->snapshot) : null]);
+                    return array_merge($round['detail'], ['initial_application' => true, 'step' => $cycle['step'], 'group_type' => $after ? app(ApplicationReviewPresentation::class)->type($after->snapshot) : null,
+                        'submitted_state' => $after ? app(ApplicationReviewPresentation::class)->sections($after->snapshot, $cycle['step']) : null,
+                        'comparison' => $after ? app(ApplicationReviewPresentation::class)->comparison($after->snapshot, $after->snapshot, $cycle['step']) : null]);
                 }
                 $previous = Submission::withTrashed()->where('group_id', $group->id)->findOrFail($round['detail']['previous_submission_id']);
                 $before = $this->snapshots->resolve($previous)['snapshot'];
-                return array_merge($round['detail'], ['comparison' => app(ScopeOfWorkDisplayComparison::class)->handle($before?->snapshot, $after?->snapshot)]);
+                return array_merge($round['detail'], ['initial_application' => true, 'step' => $cycle['step'], 'group_type' => $after ? app(ApplicationReviewPresentation::class)->type($after->snapshot) : null,
+                    'comparison' => app(ApplicationReviewPresentation::class)->comparison($before?->snapshot, $after?->snapshot, $cycle['step'])]);
             }
         }
         abort(404);
-    }
-
-    private function projection(array $snapshot): array
-    {
-        // Whitelist captured values only. Never hydrate live models or load missing relations.
-        $paths = ['Panel name' => 'attributes.name', 'Website description' => 'attributes.description',
-            'Long name' => 'relations.expertPanel.attributes.long_base_name',
-            'Short name' => 'relations.expertPanel.attributes.short_base_name',
-            'Description of scope' => 'relations.expertPanel.attributes.scope_description',
-            'Membership description' => 'relations.expertPanel.attributes.membership_description'];
-        $sections = [];
-        foreach ($paths as $label => $path) {
-            $sections[] = ['label' => $label, 'available' => \Illuminate\Support\Arr::has($snapshot, $path), 'value' => data_get($snapshot, $path)];
-        }
-        foreach (['Genes' => 'relations.expertPanel.relations.genes', 'Members' => 'relations.members'] as $label => $path) {
-            $values = data_get($snapshot, $path);
-            $sections[] = ['label' => $label, 'available' => is_array($values), 'value' => is_array($values)
-                ? array_map(function ($item) use ($label) {
-                    if ($label === 'Genes') return \Illuminate\Support\Arr::only($item['attributes'] ?? [],
-                        ['gene_symbol', 'hgnc_id', 'mondo_id', 'disease_name', 'moi', 'tier', 'plan']);
-                    $person = \Illuminate\Support\Arr::only(data_get($item, 'relations.person.attributes', []), ['first_name', 'last_name', 'email']);
-                    $person['roles'] = isset($item['relations']['roles']) ? array_map(fn ($role) => $role['attributes']['display_name']
-                        ?? $role['attributes']['name'] ?? null, $item['relations']['roles']) : 'Unavailable';
-                    $person['retirement'] = array_key_exists('end_date', $item['attributes'] ?? [])
-                        ? ($item['attributes']['end_date'] === null ? 'Active' : 'Retired') : 'Unavailable';
-                    return $person;
-                }, $values) : null];
-        }
-        foreach (['Curation review protocol' => 'curation_review_protocol_id', 'Other protocol details' => 'curation_review_protocol_other',
-            'GCEP attestation signed' => 'gcep_attestation_date', 'GCI training date' => 'gci_training_date',
-            'NHGRI attestation signed' => 'nhgri_attestation_date', 'Reanalysis attestation signed' => 'reanalysis_attestation_date'] as $label => $field) {
-            $path = 'relations.expertPanel.attributes.'.$field;
-            $sections[] = ['label' => $label, 'available' => \Illuminate\Support\Arr::has($snapshot, $path), 'value' => data_get($snapshot, $path)];
-        }
-        return $sections;
     }
 
     private function person($person): ?array

@@ -23,15 +23,15 @@ class ApplicationRevisionRequestTemplate extends AbstractUserDefinedMailTemplate
         ];
     }
 
+    public function reviewerNote(): string
+    {
+        return app(\App\Services\ApplicationReviewFeedback::class)->text($this->group, $this->group->latestSubmission);
+    }
+
     protected function getContext(): array
     {
         $context = parent::getContext();
-        $context = array_merge($context, app(\App\Services\ApplicationReviewFeedback::class)->comments($this->group));
-        $context['judgementNotes'] = $this->group
-                                        ->latestSubmission
-                                        ->judgements
-                                        ->filter(fn ($j) => $j->notes !== null)
-                                        ->map(fn ($j) => $j->notes);
+        $context = array_merge($context, app(\App\Services\ApplicationReviewFeedback::class)->revision($this->group, $this->group->latestSubmission));
 
         return $context;
     }
