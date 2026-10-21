@@ -31,7 +31,15 @@ class ExpertPanelNameUpdated extends GroupEvent implements PublishableApplicatio
 
     public function getLogEntry(): string
     {
-        return 'EP name updated.';
+        $changes = [];
+        if ($this->oldLong != $this->longName) {
+            $changes[] = 'EP name updated from "' . ($this->oldLong ?? 'NULL') . '" to "' . ($this->longName ?? 'NULL') . '"';
+        }
+        if ($this->oldShort != $this->shortName) {
+            $changes[] = 'EP short name updated from "' . ($this->oldShort ?? 'NULL') . '" to "' . ($this->shortName ?? 'NULL') . '"';
+        }
+
+        return implode('; ', $changes) . '.';
     }
 
     public function getProperties(): ?array

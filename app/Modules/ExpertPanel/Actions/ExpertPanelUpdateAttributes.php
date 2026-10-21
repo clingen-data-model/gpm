@@ -52,6 +52,10 @@ class ExpertPanelUpdateAttributes
     public function asController(string $uuid, UpdateExpertPanelAttributesRequest $request)
     {
         $data = $request->only('long_base_name', 'short_base_name', 'affiliation_id', 'cdwg_id');
+        if (!$request->canEditAffiliationId()) {
+            unset($data['affiliation_id']);
+        }
+
         return $this->handle($uuid, $data);
     }
 }

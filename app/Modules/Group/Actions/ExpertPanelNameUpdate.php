@@ -17,13 +17,13 @@ class ExpertPanelNameUpdate
     public function handle(Group $group, ?string $longName, ?string $shortName)
     {
         if ($longName != $group->expertPanel->long_base_name || $shortName != $group->expertPanel->short_base_name) {
+            $oldLong = $group->expertPanel->long_base_name;
+            $oldShort = $group->expertPanel->short_base_name;
+
             $group->expertPanel->update([
                 'long_base_name' => $longName,
                 'short_base_name' => $shortName
             ]);
-
-            $oldLong = $group->expertPanel->long_base_name;
-            $oldShort = $group->expertPanel->short_base_name;
 
             if ($longName) {
                 $group->update([

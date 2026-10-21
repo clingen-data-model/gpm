@@ -5,6 +5,7 @@ namespace App\Modules\Group\Actions;
 use Illuminate\Validation\Rule;
 use App\Modules\Group\Models\Group;
 use Illuminate\Support\Facades\Auth;
+use App\Modules\User\Models\User;
 use Illuminate\Validation\ValidationException;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsController;
@@ -23,11 +24,15 @@ class GroupAffiliationIdUpdate
     public function handle(Group $group, ?string $affiliationId): Group
     {
         if ($affiliationId !== $group->affiliation_id) {
+            $user = Auth::user();
+            if (!$user || !$this->canEditAffiliationId($user)) {
+                abort(403, 'Only super-users and super-admins can edit Affiliation IDs.');
+            }
+            $oldAffiliationId = $group->affiliation_id;
 
             if($group->isWorkingGroupType) {
-                $user = Auth::user();
-                if(! $user || ! $user->hasRole('super-user')) {
-                    throw ValidationException::withMessages(['affiliation_id' => 'Only super-admins can edit Affiliation IDs for Working Groups, CDWGs, and SC-CDWGs.']);
+                if (!$user->hasAnyRole('super-user', 'super-admin')) {
+                    throw ValidationException::withMessages(['affiliation_id' => 'Only super-users and super-admins can edit Affiliation IDs for Working Groups, CDWGs, and SC-CDWGs.']);
                 }
                 // JUST IN CASE to anticipate somehow a user who is other than super-user and they are trying to set the affiliation_id to null, we will generate a new one for them.
                 if ($affiliationId === null) {
@@ -36,7 +41,7 @@ class GroupAffiliationIdUpdate
             } 
             
             $group->update(['affiliation_id' => $affiliationId]);
-            event(new GroupAffiliationIdUpdated($group, $affiliationId));
+            event(new GroupAffiliationIdUpdated($group, $affiliationId, $oldAffiliationId));
         }
         return $group;
     }
@@ -48,7 +53,15 @@ class GroupAffiliationIdUpdate
 
     public function authorize(ActionRequest $request): bool
     {
-        return Auth::user()->can('groups-manage');
+        $user = Auth::user();
+        $group = $request->route('group');
+
+        return $user && ($this->canEditAffiliationId($user) || $user->can('update', $group));
+    }
+
+    private function canEditAffiliationId(User $user): bool
+    {
+        return $user->can('groups-manage') || $user->hasAnyRole('super-user', 'super-admin');
     }
 
     public function rules(ActionRequest $request): array

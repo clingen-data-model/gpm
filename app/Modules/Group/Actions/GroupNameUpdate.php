@@ -47,6 +47,6 @@ class GroupNameUpdate
     
     public function authorize(ActionRequest $request): bool
     {
-        return Auth::user() && Auth::user()->hasPermissionTo('groups-manage');
+        return Auth::user()?->can('update', $request->route('group')) ?? false;
     }
 }

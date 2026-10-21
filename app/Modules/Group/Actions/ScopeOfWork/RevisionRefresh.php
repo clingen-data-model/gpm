@@ -5,6 +5,7 @@ namespace App\Modules\Group\Actions\ScopeOfWork;
 use App\Modules\User\Models\User;
 use App\Modules\Group\Models\Group;
 use App\Modules\Group\Models\ScopeOfWorkVersion;
+use App\Modules\Group\Services\ScopeOfWorkLifecycleActivity;
 use Illuminate\Support\Facades\DB;
 use Lorisleiva\Actions\Concerns\AsObject;
 
@@ -67,6 +68,7 @@ class RevisionRefresh
                     $draftVersion->update([
                         'status' => ScopeOfWorkVersion::STATUS_DISCARDED,
                     ]);
+                    ScopeOfWorkLifecycleActivity::discarded($group, $draftVersion->fresh(), $approvedVersion, $user);
                 }
 
                 return null;
@@ -84,6 +86,7 @@ class RevisionRefresh
                     'base_version_id' => $approvedVersion->id,
                     'created_by' => $user?->id,
                 ]);
+                ScopeOfWorkLifecycleActivity::created($group, $draftVersion, $approvedVersion, $user);
             } else {
                 $draftVersion->update([
                     'major_version' => $majorVersion,

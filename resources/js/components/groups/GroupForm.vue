@@ -61,6 +61,9 @@ export default {
     canSetType() {
       return this.hasPermission('groups-manage') && !this.group.id
     },
+    canEditAffiliationId() {
+      return this.hasPermission('groups-manage') || hasRole('super-user') || hasRole('super-admin')
+    },
     affiliationIdPlaceholder () {
       const typeId = Number(this.group.group_type_id);
       if (typeId === Number(this.groupTypes.gcep.id)) { return '4XXXX';}
@@ -194,7 +197,7 @@ export default {
       if (this.group.isDirty('website_url')) {
         promises.push(this.saveWebsiteUrl());
       }
-      if (this.affiliationIdDirty) {
+      if (this.canEditAffiliationId && this.affiliationIdDirty) {
         promises.push(this.saveAffiliationId());
       }
 
@@ -367,6 +370,7 @@ export default {
     <!-- Affiliation ID  -->
     <div v-if="[Number(groupTypes.gcep.id), Number(groupTypes.vcep.id), Number(groupTypes.scvcep.id)].includes(Number(group.group_type_id))">
       <input-row
+        v-if="canEditAffiliationId"
         v-model="group.affiliation_id"
         label="Affiliation ID"
         :placeholder="affiliationIdPlaceholder"
@@ -379,6 +383,10 @@ export default {
           <note>admin-only</note>
         </template>
       </input-row>
+      <dictionary-row v-else label="Affiliation ID">
+        <span v-if="group.affiliation_id">{{ group.affiliation_id }}</span>
+        <span v-else class="text-gray-400">Not yet assigned</span>
+      </dictionary-row>
     </div>
     <dictionary-row v-else label="Affiliation ID">
       <span v-if="group.affiliation_id">{{ group.affiliation_id }}</span>
