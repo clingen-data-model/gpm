@@ -608,7 +608,7 @@ export default {
       v-if="group?.is_ep && scopeOfWorkStatus?.versioning_applicable === true"
       :status="scopeOfWorkStatus"
       :discarding="discardingScopeOfWork || scopeOfWorkMutationBusy"
-      :can-manage="hasPermission('ep-applications-manage')"
+      :can-manage="hasRole('coordinator', group) || hasRole('super-user') || hasRole('super-admin')"
       @finalize="finalizeScopeOfWorkRevision"
       @submit="submitScopeOfWorkRevision"
       @approve="approveScopeOfWorkRevision"

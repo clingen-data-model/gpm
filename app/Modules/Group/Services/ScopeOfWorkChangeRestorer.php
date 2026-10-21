@@ -21,7 +21,7 @@ class ScopeOfWorkChangeRestorer
     public static function canDiscard(?User $user, Group $group, ScopeOfWorkChange $change): bool
     {
         return match ($change->rule_key) {
-            'panel_name.rename' => $user?->hasPermissionTo('groups-manage') ?? false,
+            'panel_name.rename' => $user?->can('update', $group) ?? false,
             'scope_description.update' => $user?->can('updateApplicationAttribute', $group) ?? false,
             'gene.add' => $user?->can('removeGene', $group) ?? false,
             'gene.remove' => $user?->can('addGene', $group) ?? false,

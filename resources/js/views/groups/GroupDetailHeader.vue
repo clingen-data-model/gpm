@@ -64,7 +64,7 @@ export default {
       </div>
       <div class="flex items-center gap-2">
       <button 
-        v-if="hasRole('super-user') || hasRole('super-admin')" 
+        v-if="hasRole('coordinator', group) || hasRole('super-user') || hasRole('super-admin')" 
         class="btn btn-xs"
         @click="$emit('showEdit')" 
       >

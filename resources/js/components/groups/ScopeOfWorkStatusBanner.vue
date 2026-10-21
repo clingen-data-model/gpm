@@ -100,15 +100,14 @@ const emit = defineEmits(['finalize', 'submit', 'approve', 'request-revisions', 
 const showSubmitRevisionModal = ref(false);
 const submittingRevision = ref(false);
 const activeRevision = computed(() => props.status?.active_revision || null);
-const editable = computed(() => ['draft', 'revisions_requested'].includes(activeRevision.value?.status));
+const editable = computed(() => props.canManage && ['draft', 'revisions_requested'].includes(activeRevision.value?.status));
 const mutationBusy = computed(() => props.discarding || submittingRevision.value);
 const discardChange = (change) => {
-  if (!editable.value || mutationBusy.value || !change.can_discard
-    || !activeRevision.value.changes.includes(change)) return;
+  if (!editable.value || mutationBusy.value || !change.can_discard || !activeRevision.value.changes.includes(change)) return;
   emit('discard-change', { revision: activeRevision.value, changeId: change.id, fromBanner: true });
 };
 const submitRevision = (notes) => {
-  if (!activeRevision.value || mutationBusy.value) { return; }
+  if (!editable.value || !activeRevision.value || mutationBusy.value) { return; }
   submittingRevision.value = true;
   emit('submit', { revision: activeRevision.value, notes, done: () => {
     submittingRevision.value = false;

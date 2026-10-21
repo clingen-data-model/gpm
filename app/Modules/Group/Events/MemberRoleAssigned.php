@@ -21,7 +21,7 @@ class MemberRoleAssigned extends GroupMemberEvent
 
     public function getLogEntry(): string
     {
-        return $this->groupMember->name . ' given roles ' . $this->roles->pluck('name')->join(',', ', and ');
+        return $this->groupMember->person->name . ' given roles ' . $this->roles->pluck('name')->join(',', ', and ');
     }
 
     public function getProperties(): ?array

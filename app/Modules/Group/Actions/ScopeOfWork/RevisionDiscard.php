@@ -5,6 +5,9 @@ namespace App\Modules\Group\Actions\ScopeOfWork;
 use App\Modules\ExpertPanel\Models\Gene;
 use App\Modules\Group\Models\Group;
 use App\Modules\Group\Models\ScopeOfWorkVersion;
+use App\Modules\Group\Services\ScopeOfWorkLifecycleActivity;
+use App\Modules\User\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use Lorisleiva\Actions\Concerns\AsController;
@@ -16,7 +19,7 @@ class RevisionDiscard
     use AsObject;
     use AsController;
 
-    public function handle(Group $group, ScopeOfWorkVersion $revision): ScopeOfWorkVersion
+    public function handle(Group $group, ScopeOfWorkVersion $revision, ?User $user = null): ScopeOfWorkVersion
     {
         \App\Modules\Group\Services\ScopeOfWorkEligibility::requireCompleted($group);
         if ($revision->group_id !== $group->id) {
@@ -42,7 +45,7 @@ class RevisionDiscard
 
         $snapshot = $revision->baseVersion->latestSnapshot->snapshot;
 
-        return DB::transaction(function () use ($group, $revision, $snapshot) {
+        return DB::transaction(function () use ($group, $revision, $snapshot, $user) {
             $this->restoreGroupAndExpertPanel($group, $snapshot);
             $this->restoreScopeGenes($group, $snapshot);
             $this->restoreMembers($group, $snapshot);
@@ -54,13 +57,16 @@ class RevisionDiscard
             $revision->changes()->delete();
             $revision->snapshots()->delete();
 
-            return $revision->fresh();
+            $revision = $revision->fresh();
+            ScopeOfWorkLifecycleActivity::discarded($group, $revision, $revision->baseVersion, $user);
+
+            return $revision;
         });
     }
 
     public function asController(Group $group, ScopeOfWorkVersion $scopeOfWorkVersion)
     {
-        $this->handle($group, $scopeOfWorkVersion);
+        $this->handle($group, $scopeOfWorkVersion, Auth::user());
 
         return StatusGet::run($group->fresh());
     }

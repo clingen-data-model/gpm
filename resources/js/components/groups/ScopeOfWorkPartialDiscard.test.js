@@ -28,7 +28,7 @@ const status = (state = 'draft') => ({
     ],
   },
 })
-const banner = props => mount(ScopeOfWorkStatusBanner, { props,
+const banner = props => mount(ScopeOfWorkStatusBanner, { props: { canManage: true, ...props },
   global: { stubs: { SubmissionConfirmationModal: true } } })
 
 afterEach(() => vi.restoreAllMocks())
@@ -69,6 +69,8 @@ describe('partial discard banner', () => {
     payload.active_revision.changes.forEach(change => { change.can_discard = false })
     await wrapper.setProps({ status: payload })
     expect(wrapper.findAll('li button')).toHaveLength(0)
+    await wrapper.setProps({ canManage: false })
+    expect(wrapper.findAll('button')).toHaveLength(0)
     wrapper.unmount()
   })
 
@@ -97,7 +99,7 @@ const context = () => ({
 })
 const discard = ctx => GroupDetail.methods.discardScopeOfWorkChange.call(ctx, { revision: { uuid: 'revision' }, changeId: 1 })
 
-describe('Group Detail partial discard', () => {
+describe('group detail partial discard', () => {
   it('uses read-only status and never posts refresh for an incomplete application', async () => {
     const ctx = context()
     ctx.group.is_ep = true
@@ -146,7 +148,7 @@ describe('Group Detail partial discard', () => {
     const wrapper = mount({ components: { ScopeOfWorkStatusBanner, ScopeOfWorkGeneDiscard, ScopeOfWorkMemberDiscard },
       setup: () => ({ ctx, shared }),
       provide: () => ({ scopeOfWorkGeneDiscard: shared, scopeOfWorkMemberDiscard: shared }),
-      template: `<div><ScopeOfWorkStatusBanner :status="ctx.scopeOfWorkStatus" :discarding="ctx.discardingScopeOfWork" @discard-change="shared.discard" />
+      template: `<div><ScopeOfWorkStatusBanner :status="ctx.scopeOfWorkStatus" :discarding="ctx.discardingScopeOfWork" :can-manage="true" @discard-change="shared.discard" />
         <ScopeOfWorkGeneDiscard :gene-id="30" /><ScopeOfWorkMemberDiscard :person-id="40" operation="removed" /></div>`,
     }, { global: { stubs: { SubmissionConfirmationModal: true } } })
     expect(wrapper.findAll('li button')).toHaveLength(2)
