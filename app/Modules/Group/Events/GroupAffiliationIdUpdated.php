@@ -16,13 +16,15 @@ class GroupAffiliationIdUpdated extends GroupEvent implements PublishableApplica
     public function __construct(
         public Group $group,
         public $affiliationId,
+        public ?string $oldAffiliationId = null,
     ) {
         parent::__construct($group);
     }
 
     public function getLogEntry(): string
     {
-        return 'Group Affiliation ID set to ' . $this->affiliationId . '.';
+        return 'Group Affiliation ID updated from "' . ($this->oldAffiliationId ?? 'NULL')
+            . '" to "' . ($this->affiliationId ?? 'NULL') . '".';
     }
 
     public function getProperties(): ?array

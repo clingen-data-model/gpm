@@ -39,8 +39,24 @@ class UpdateExpertPanelAttributesRequest extends FormRequest
                                             ->where('expert_panel_type_id', $expertPanel->expert_panel_type_id);
                                     })
                                 ],
-            'affiliation_id' => 'nullable|digits:5',
+            'affiliation_id' => [
+                'nullable',
+                'digits:5',
+                function ($attribute, $value, $fail) use ($expertPanel) {
+                    if (!$this->canEditAffiliationId() && $value !== $expertPanel->group->affiliation_id) {
+                        $fail('Only super-users and super-admins can edit Affiliation IDs.');
+                    }
+                },
+            ],
         ];
+    }
+
+    public function canEditAffiliationId(): bool
+    {
+        $user = $this->user();
+
+        return $user
+            && ($user->can('groups-manage') || $user->hasAnyRole('super-user', 'super-admin'));
     }
 
     public function prepareForValidation()
