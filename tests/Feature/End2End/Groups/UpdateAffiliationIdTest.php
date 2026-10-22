@@ -11,6 +11,8 @@ use PHPUnit\Framework\Attributes\Test;
 use App\Modules\Group\Models\Group;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\PermissionRegistrar;
+use App\Models\Permission;
+use App\Modules\Group\Models\GroupMember;
 
 class UpdateAffiliationIdTest extends TestCase
 {
@@ -99,10 +101,59 @@ class UpdateAffiliationIdTest extends TestCase
 
         $this->assertLoggedActivity(
             subject: $this->expertPanel->group,
-            description: 'Group Affiliation ID set to 49999.',
+            description: 'Group Affiliation ID updated from "NULL" to "49999".',
             properties: ['affiliation_id' => '49999'],
             logName: 'groups'
         );
+    }
+
+    #[Test]
+    public function coordinator_can_update_group_name_but_cannot_change_affiliation_id(): void
+    {
+        $group = $this->expertPanel->group;
+        $group->update(['affiliation_id' => '40123']);
+        $coordinator = $this->setupUserWithPerson();
+        $permission = Permission::factory()->create(['name' => 'info-edit', 'scope' => 'group']);
+        $coordinatorRole = Role::where('name', 'coordinator')->firstOrFail();
+        $coordinatorRole->givePermissionTo($permission);
+        $member = GroupMember::factory()->create([
+            'group_id' => $group->id,
+            'person_id' => $coordinator->person->id,
+        ]);
+        $member->roles()->attach($coordinatorRole->id);
+        Sanctum::actingAs($coordinator);
+
+        $this->json('PUT', '/api/groups/'.$group->uuid.'/name', ['name' => 'Coordinator edited name'])
+            ->assertOk();
+        $this->makeRequestForGroup($group, '40123')->assertOk();
+        $this->makeRequestForGroup($group, '40124')->assertForbidden();
+
+        $this->assertSame('Coordinator edited name', $group->fresh()->name);
+        $this->assertSame('40123', $group->fresh()->affiliation_id);
+    }
+
+    #[Test]
+    public function super_user_can_change_affiliation_id(): void
+    {
+        $user = $this->setupUser();
+        Role::findOrCreate('super-user', 'web');
+        $user->assignRole('super-user');
+        Sanctum::actingAs($user);
+
+        $this->makeRequest('40124')->assertOk();
+        $this->assertSame('40124', $this->expertPanel->group->fresh()->affiliation_id);
+    }
+
+    #[Test]
+    public function super_admin_can_change_affiliation_id(): void
+    {
+        $user = $this->setupUser();
+        Role::findOrCreate('super-admin', 'web');
+        $user->assignRole('super-admin');
+        Sanctum::actingAs($user);
+
+        $this->makeRequest('40125')->assertOk();
+        $this->assertSame('40125', $this->expertPanel->group->fresh()->affiliation_id);
     }
 
     private function makeRequest($affiliationId = null)

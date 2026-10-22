@@ -190,11 +190,11 @@ class RejectSubmissionTest extends TestCase
     }
 
     #[Test]
-    public function initial_step_four_keeps_existing_response_behavior(): void
+    public function initial_step_four_persists_reviewer_note_independently_from_email(): void
     {
         $this->submission->update(['submission_type_id' => config('submissions.types.application.sustained-curation.id')]);
         $this->makeRequest($this->makeDefaultData(['response_content' => 'Separate note', 'body' => 'Step four email']))->assertOk();
-        $this->assertSame('Step four email', $this->submission->fresh()->response_content);
+        $this->assertSame('Separate note', $this->submission->fresh()->response_content);
     }
 
 

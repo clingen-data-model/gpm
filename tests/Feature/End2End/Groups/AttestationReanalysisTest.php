@@ -111,6 +111,26 @@ class AttestationReanalysisTest extends TestCase
     
     
 
+    public function test_scvcep_explanation_survives_reload_and_edits_after_attestation(): void
+    {
+        $this->expertPanel->update(['expert_panel_type_id' => config('expert_panels.types.scvcep.id')]);
+        $this->expertPanel->group->update(['group_type_id' => config('groups.types.scvcep.id')]);
+        $data = ['reanalysis_conflicting' => false, 'reanalysis_review_lp' => false,
+            'reanalysis_review_lb' => false, 'reanalysis_other' => 'Alternate schedule'];
+        $this->submitRequest($data)->assertOk()->assertJsonPath('data.expert_panel.reanalysis_other', 'Alternate schedule');
+        $date = $this->expertPanel->fresh()->reanalysis_attestation_date;
+        $this->getJson('/api/groups/'.$this->expertPanel->group->uuid)->assertOk()
+            ->assertJsonPath('data.expert_panel.reanalysis_other', 'Alternate schedule');
+        $data['reanalysis_other'] = 'Edited schedule';
+        $this->submitRequest($data)->assertOk()->assertJsonPath('data.expert_panel.reanalysis_other', 'Edited schedule');
+        $this->assertEquals($date, $this->expertPanel->fresh()->reanalysis_attestation_date);
+        $this->submitRequest(['reanalysis_conflicting' => true, 'reanalysis_review_lp' => true,
+            'reanalysis_review_lb' => true, 'reanalysis_other' => null])->assertOk();
+        $this->assertNull($this->expertPanel->fresh()->reanalysis_other);
+        $this->assertEquals($date, $this->expertPanel->fresh()->reanalysis_attestation_date);
+        $this->assertSame(1, $this->expertPanel->group->logEntries()->where('activity_type', 'reanalysis-attestation-submitted')->count());
+    }
+
     private function submitRequest($data = null)
     {
         $data = $data ?? [

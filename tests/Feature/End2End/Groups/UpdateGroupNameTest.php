@@ -6,6 +6,10 @@ use Tests\TestCase;
 use Laravel\Sanctum\Sanctum;
 use App\Modules\User\Models\User;
 use App\Modules\Group\Models\Group;
+use App\Models\Permission;
+use App\Models\Role;
+use App\Modules\Group\Models\GroupMember;
+use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\Test;
@@ -74,6 +78,47 @@ class UpdateGroupNameTest extends TestCase
             subject: $this->group,
             logName: 'groups',
             description: 'Name changed from "'.$oldName.'" to "New name"',
+        );
+    }
+
+    #[Test]
+    public function coordinator_can_update_group_name()
+    {
+        $coordinator = $this->setupUserWithPerson();
+        $permission = Permission::factory()->create(['name' => 'info-edit', 'scope' => 'group']);
+        $role = Role::where('name', 'coordinator')->firstOrFail();
+        $role->givePermissionTo($permission);
+        $member = GroupMember::factory()->create([
+            'group_id' => $this->group->id,
+            'person_id' => $coordinator->person->id,
+        ]);
+        $member->roles()->attach($role->id);
+        $this->actingAs($coordinator);
+
+        $this->makeRequest(['name' => 'Coordinator name'])
+            ->assertOk()
+            ->assertJsonFragment(['name' => 'Coordinator name']);
+
+        $this->assertSame('Coordinator name', $this->group->fresh()->name);
+    }
+
+    #[Test]
+    public function expert_panel_name_activity_contains_the_previous_and_new_name()
+    {
+        $panel = ExpertPanel::factory()->gcep()->create([
+            'long_base_name' => 'Old EP Name',
+            'short_base_name' => 'EP',
+        ]);
+
+        $this->json('PUT', '/api/groups/'.$panel->group->uuid.'/expert-panel/name', [
+            'long_base_name' => 'New EP Name',
+            'short_base_name' => 'EP',
+        ])->assertOk();
+
+        $this->assertLoggedActivity(
+            subject: $panel->group,
+            logName: 'groups',
+            description: 'EP name updated from "Old EP Name" to "New EP Name".',
         );
     }
     
