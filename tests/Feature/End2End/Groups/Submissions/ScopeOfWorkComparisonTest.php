@@ -38,6 +38,7 @@ class ScopeOfWorkComparisonTest extends TestCase
             'group_id' => $this->panel->group_id,
             'scope_of_work_version_id' => $this->revision->id,
             'submission_status_id' => config('submissions.statuses.approved.id'),
+            'submission_type_id' => config('submissions.types.application.definition.id'),
             'data' => ['context' => 'scope_of_work_revision', 'base_version_id' => $this->baseline->id],
         ]);
     }
@@ -88,6 +89,19 @@ class ScopeOfWorkComparisonTest extends TestCase
             'snapshot' => \App\Modules\Group\Actions\ScopeOfWork\SnapshotBuild::run($this->panel->group->fresh()),
         ]);
         $this->revision->update(['status' => 'draft']);
+    }
+
+    #[Test]
+    public function historical_comparison_uses_captured_group_type(): void
+    {
+        foreach (['gcep', 'vcep', 'scvcep'] as $type) {
+            $submission = $this->submission();
+            $data = $this->data();
+            $data['attributes']['group_type_id'] = config("groups.types.$type.id");
+            $this->snapshot($submission, $data);
+            $this->panel->group->update(['group_type_id' => config('groups.types.vcep.id')]);
+            $this->getJson($this->url($submission))->assertOk()->assertJsonPath('group_type', $type);
+        }
     }
 
     #[Test]

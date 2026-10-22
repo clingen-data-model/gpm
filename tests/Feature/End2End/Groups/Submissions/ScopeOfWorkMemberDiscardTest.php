@@ -163,6 +163,8 @@ class ScopeOfWorkMemberDiscardTest extends TestCase
         $this->postJson($this->url($revision, 'member.remove_chair'))->assertOk()
             ->assertJsonPath('active_revision.version_label', '1.1')
             ->assertJsonPath('active_revision.summary.can_finalize_without_approval', true);
+        $this->assertLoggedActivity($this->panel->group,
+            'Scope of Work draft 2.0: member role change for Alex Smith discarded.', logName: 'groups');
         $this->postJson('/api/groups/'.$this->panel->group->uuid.'/scope-of-work/revisions/'.$revision->uuid.'/finalize')->assertOk();
     }
 
