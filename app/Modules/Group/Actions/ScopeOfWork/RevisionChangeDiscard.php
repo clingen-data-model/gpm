@@ -5,6 +5,7 @@ namespace App\Modules\Group\Actions\ScopeOfWork;
 use App\Modules\Group\Models\Group;
 use App\Modules\Group\Models\ScopeOfWorkVersion;
 use App\Modules\Group\Services\ScopeOfWorkChangeRestorer;
+use App\Modules\Group\Services\ScopeOfWorkLifecycleActivity;
 use App\Modules\User\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
@@ -52,6 +53,8 @@ class RevisionChangeDiscard
             }
 
             RevisionRefresh::run($group->fresh(), $user);
+            // Keep the selected draft's label even if refresh reclassifies its version.
+            ScopeOfWorkLifecycleActivity::changeDiscarded($group, $revision, $change, $user);
             return StatusGet::run($group->fresh());
         });
     }
