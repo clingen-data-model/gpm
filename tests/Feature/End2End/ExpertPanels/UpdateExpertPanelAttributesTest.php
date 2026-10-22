@@ -6,8 +6,10 @@ use Carbon\Carbon;
 use Tests\TestCase;
 use Ramsey\Uuid\Uuid;
 use Laravel\Sanctum\Sanctum;
-use App\Modules\User\Models\User;
 use App\Modules\Group\Models\Group;
+use App\Modules\Group\Models\GroupMember;
+use App\Models\Permission;
+use App\Models\Role;
 use Illuminate\Testing\TestResponse;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -24,7 +26,7 @@ class UpdateExpertPanelAttributesTest extends TestCase
         parent::setup();
         $this->setupForGroupTest();
 
-        $this->user = User::factory()->create();
+        $this->user = $this->setupUser(permissions: ['groups-manage']);
         Sanctum::actingAs($this->user);
 
         $this->cdwg = Group::factory()->cdwg()->create();
@@ -99,6 +101,40 @@ class UpdateExpertPanelAttributesTest extends TestCase
                 'short_base_name' => ['The short base name may not be greater than 15 characters.'],
                 'affiliation_id' => ['The affiliation id must be 5 digits.'],
             ]);
+    }
+
+    #[Test]
+    public function coordinator_cannot_change_affiliation_id_and_an_unchanged_value_does_not_block_name_updates(): void
+    {
+        $expertPanel = ExpertPanel::factory()->gcep()->create();
+        $expertPanel->group->update(['affiliation_id' => '40123']);
+        $coordinator = $this->setupUserWithPerson();
+        $permission = Permission::factory()->create(['name' => 'info-edit', 'scope' => 'group']);
+        $role = Role::where('name', 'coordinator')->firstOrFail();
+        $role->givePermissionTo($permission);
+        $member = GroupMember::factory()->create([
+            'group_id' => $expertPanel->group_id,
+            'person_id' => $coordinator->person->id,
+        ]);
+        $member->roles()->attach($role->id);
+        Sanctum::actingAs($coordinator);
+
+        $this->makeRequest($expertPanel, [
+            'long_base_name' => 'Coordinator updated name',
+            'affiliation_id' => '40123',
+        ])->assertOk();
+
+        $this->assertSame('Coordinator updated name', $expertPanel->fresh()->long_base_name);
+        $this->assertSame('40123', $expertPanel->group->fresh()->affiliation_id);
+        $this->assertNull($expertPanel->fresh()->affiliation_id);
+
+        $this->makeRequest($expertPanel, [
+            'long_base_name' => 'Unauthorized name',
+            'affiliation_id' => '40124',
+        ])->assertUnprocessable();
+
+        $this->assertSame('Coordinator updated name', $expertPanel->fresh()->long_base_name);
+        $this->assertSame('40123', $expertPanel->group->fresh()->affiliation_id);
     }
 
     #[Test]

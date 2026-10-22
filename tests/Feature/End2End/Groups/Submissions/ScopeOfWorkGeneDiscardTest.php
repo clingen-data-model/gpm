@@ -93,6 +93,9 @@ class ScopeOfWorkGeneDiscardTest extends TestCase
         $this->assertSame(1, $this->gene->fresh()->tier);
         $this->assertSame('Latest saved edit', $this->gene->fresh()->disease_name);
         $this->assertSame(1, $this->duplicate->fresh()->tier);
+        $this->assertLoggedActivity($this->panel->group,
+            "Scope of Work draft {$revision->version_label}: gene change for SAME - MONDO:1 discarded.",
+            logName: 'groups');
     }
 
     public function test_field_discard_restores_only_selected_field_and_preserves_explicit_null(): void

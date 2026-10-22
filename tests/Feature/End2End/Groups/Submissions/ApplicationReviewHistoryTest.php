@@ -33,7 +33,7 @@ class ApplicationReviewHistoryTest extends TestCase
     private function snapshot(Submission $submission, string $name = 'Frozen'): ApplicationSnapshot
     {
         return ApplicationSnapshot::create(['group_id' => $submission->group_id, 'submission_id' => $submission->id,
-            'version' => 99, 'snapshot' => ['attributes' => ['name' => $name], 'relations' => []]]);
+            'version' => 99, 'snapshot' => ['attributes' => ['name' => $name], 'relations' => ['expertPanel' => ['attributes' => ['curation_review_process_notes' => $name]]]]]);
     }
 
     public function test_initial_round_has_snapshot_only_submitted_state(): void
@@ -103,17 +103,32 @@ class ApplicationReviewHistoryTest extends TestCase
             ->assertJsonPath('availability', 'unavailable')->assertJsonPath('comparison.changes', []);
     }
 
-    public function test_step_four_excluded_and_contradictory_context_reported(): void
+    public function test_step_four_has_separate_history_and_contradictory_context_is_excluded(): void
     {
+        $this->group->update(['group_type_id' => config('groups.types.vcep.id')]);
         $this->submission();
         $step4 = $this->submission(['submission_type_id' => 2]);
         $metadata4 = $this->submission(['data' => ['approval_step' => 4]]);
         $this->submission(['data' => ['step' => 4]]);
         $this->submission(['data' => ['context' => 'scope_of_work_revision']]);
-        $this->getJson($this->url)->assertOk()->assertJsonCount(1, 'cycles')->assertJsonCount(1, 'cycles.0.rounds')
-            ->assertJsonCount(1, 'ambiguous_submissions');
-        $this->getJson($this->url.'/'.$step4->id)->assertNotFound();
+        $this->getJson($this->url)->assertOk()->assertJsonCount(2, 'cycles')->assertJsonCount(1, 'cycles.0.rounds')
+            ->assertJsonCount(3, 'ambiguous_submissions');
+        $this->getJson($this->url.'/'.$step4->id)->assertOk();
         $this->getJson($this->url.'/'.$metadata4->id)->assertNotFound();
+    }
+
+    public function test_step_four_rounds_compare_only_step_four_predecessors(): void
+    {
+        $this->group->update(['group_type_id' => config('groups.types.vcep.id')]);
+        $first = $this->submission(['submission_type_id' => 2]);
+        $this->snapshot($first, 'Step four before');
+        $initial = $this->submission();
+        $this->snapshot($initial, 'Step one');
+        $second = $this->submission(['submission_type_id' => 2]);
+        $this->snapshot($second, 'Step four after');
+        $this->getJson($this->url.'/'.$second->id)->assertOk()
+            ->assertJsonPath('previous_submission_id', $first->id)
+            ->assertJsonPath('comparison.changes.0.before', 'Step four before');
     }
 
     public function test_scope_of_work_cycles_reuse_frozen_comparison_and_explicit_approval(): void
@@ -127,7 +142,7 @@ class ApplicationReviewHistoryTest extends TestCase
         $this->snapshot($first, 'First');
         $this->snapshot($second, 'Second');
         $version->update(['submission_id' => $second->id]);
-        $this->getJson($this->url)->assertOk()->assertJsonPath('cycles.0.key', 'scope_of_work:'.$version->id)
+        $this->getJson($this->url)->assertOk()->assertJsonPath('cycles.0.key', 'scope_of_work:'.$version->id.':step:1')
             ->assertJsonPath('cycles.0.approval.relationship', 'explicit')->assertJsonPath('cycles.0.approval.submission_id', $second->id)
             ->assertJsonPath('cycles.0.rounds.1.review_round', 2);
         $this->getJson($this->url.'/'.$first->id)->assertOk()->assertJsonPath('comparison.mode', 'approved_baseline')
