@@ -754,6 +754,7 @@ export default {
               </header>
               <EvidenceSummaries
                 :group="group"
+                :scope-of-work-status="scopeOfWorkStatus"
                 :readonly="!group.expert_panel.pilotSpecificationsIsApproved"
                 class="pb-2 mb-4 border-b"
               />

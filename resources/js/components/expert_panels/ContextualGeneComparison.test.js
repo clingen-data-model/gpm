@@ -246,6 +246,18 @@ it('SC-VCEP removal emits the existing saved refresh event', async () => {
   wrapper.unmount()
 })
 
+it.each([VcepGeneList, ScvcepGeneList])('warns about attached evidence without blocking removal', async Component => {
+  const { wrapper } = await render(Component, false, [{ ...gene(1), evidence_summaries_count: 2 }])
+  wrapper.vm.confirmRemove(wrapper.vm.displayGenes[0])
+  await flushPromises()
+  expect(wrapper.text()).toContain('This gene-disease has 2 Evidence Summaries.')
+  expect(wrapper.get('button.btn.red').element.disabled).toBe(false)
+  await wrapper.get('button.btn.red').trigger('click')
+  await flushPromises()
+  expect(api.delete).toHaveBeenCalledWith('/api/groups/group/expert-panel/genes', { data: { ids: [1] } })
+  wrapper.unmount()
+})
+
 it.each([VcepGeneList, ScvcepGeneList, GeneCurationStatus])('uses the shared red variant for removal without changing Cancel', async Component => {
   const { wrapper } = await render(Component)
   wrapper.vm.confirmRemove(wrapper.vm.displayGenes[0])

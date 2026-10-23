@@ -20,6 +20,11 @@ class EvidenceSummaryUpdate
 
     public function handle(Group $group, EvidenceSummary $summary, array $data): EvidenceSummary
     {
+        // Preserve the original association, even if removed; new associations must be active.
+        if (array_key_exists('gene_id', $data) && (int) $data['gene_id'] !== $summary->gene_id
+            && !$group->expertPanel->genes()->whereKey($data['gene_id'])->exists()) {
+            throw ValidationException::withMessages(['gene_id' => ['The gene was not found in your scope.']]);
+        }
         $summary->update($data);
         
         event(new EvidenceSummaryUpdated($group, $summary));

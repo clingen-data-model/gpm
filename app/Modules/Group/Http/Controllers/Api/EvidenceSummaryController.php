@@ -13,7 +13,18 @@ class EvidenceSummaryController extends Controller
     {
         $group = Group::where('uuid', $groupUuid)->sole();
         $group->expertPanel->load('evidenceSummaries.gene');
-        // $group->expertPanel->evidenceSummaries->pluck('gene')->filter()->each->append('gt_gene');
+        if ($group->isVcepOrScvcep) {
+            $pendingRemovalIds = \App\Modules\Group\Models\ScopeOfWorkChange::query()
+                ->whereHas('version', fn ($version) => $version->forGroup($group)->activeRevision())
+                ->where('rule_key', 'gene.remove')->get()
+                ->map(fn ($change) => (int) ($change->before_value['id'] ?? 0));
+            foreach ($group->expertPanel->evidenceSummaries as $summary) {
+                // Live presentation only: do not append this state to historical snapshots.
+                $summary->setAttribute('gene_scope_status', $summary->gene?->trashed()
+                    ? ($pendingRemovalIds->contains($summary->gene_id) ? 'pending_removal' : 'removed')
+                    : null);
+            }
+        }
         
         return ['data' => $group->expertPanel->evidenceSummaries];
     }

@@ -1,9 +1,10 @@
 <script>
 import api from '@/http/api';
 import EvidenceSummaryForm from '@/components/expert_panels/EvidenceSummaryForm.vue';
+import EvidenceSummaryScopeStatus from './EvidenceSummaryScopeStatus.vue';
 export default {
     name: 'EvidenceSummary',
-  components: { EvidenceSummaryForm },
+  components: { EvidenceSummaryForm, EvidenceSummaryScopeStatus },
     props: {
         summary: {
             required: true,
@@ -97,6 +98,7 @@ export default {
             </dropdown-item>
           </dropdown-menu>
         </header>
+        <EvidenceSummaryScopeStatus :summary="summary" :group="group" />
         <p>{{ summary.summary }}</p>
         <a v-if="summary.vci_url" class="link" :href="summary.vci_url" target="_blank">
           {{ group.is_vcep ? 'View in the VCI' : 'View in CIVic' }}
