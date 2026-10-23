@@ -23,6 +23,9 @@ class EvidenceSummaryAdd
             throw ValidationException::withMessages(['group' => ['You can not add an evidence summary to this group. Only VCEPs have evidence summaries.']]);
         }
 
+        if (!$group->expertPanel->genes()->whereKey($data['gene_id'] ?? null)->exists()) {
+            throw ValidationException::withMessages(['gene_id' => ['The gene was not found in your scope.']]);
+        }
         $evidenceSummary = $group->expertPanel->evidenceSummaries()->save(new EvidenceSummary($data));
         event(new EvidenceSummaryAdded($group, $evidenceSummary));
 

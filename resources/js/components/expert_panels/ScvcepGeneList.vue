@@ -210,6 +210,7 @@
         <p class="mb-6">
           Are you sure you want to remove <strong>{{ geneToRemove?.gene_symbol }}</strong>?
         </p>
+        <GeneEvidenceRemovalWarning v-if="geneToRemove" :gene="geneToRemove" />
         <div class="flex justify-end gap-2">
           <button class="btn btn-gray" @click="cancelRemove">Cancel</button>
           <button class="btn red" @click="removeGene">Remove</button>
@@ -222,6 +223,7 @@
 <script>
 import { useScopeOfWorkGeneRows } from '@/composables/scope_of_work_gene_rows'
 import ScopeOfWorkGeneChangeLabel from '@/components/groups/ScopeOfWorkGeneChangeLabel.vue'
+import GeneEvidenceRemovalWarning from './GeneEvidenceRemovalWarning.vue'
 import { api } from '@/http'
 import { ref, nextTick, computed, onMounted, watch } from 'vue'
 import { useStore } from 'vuex'
@@ -232,7 +234,7 @@ import EditIconButton from '@/components/buttons/EditIconButton.vue'
 
 export default {
   name: 'ScvcepGeneList',
-  components: { ScopeOfWorkGeneChangeLabel, GeneSearchSelect, DiseaseSearchSelect, EditIconButton },
+  components: { GeneEvidenceRemovalWarning, ScopeOfWorkGeneChangeLabel, GeneSearchSelect, DiseaseSearchSelect, EditIconButton },
   props: { 
     scopeComparison: { type: Object, default: null },
     readonly: { type: Boolean, required: false, default: false },
