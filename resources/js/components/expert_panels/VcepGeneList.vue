@@ -440,6 +440,7 @@
         <h3 class="text-lg font-semibold mb-4">Confirm Removal</h3>
         <p v-if="genesPendingRemoval.length === 1" class="mb-6">Are you sure you want to remove <strong>{{ genesPendingRemoval[0]?.gene_symbol }}</strong>?</p>
         <p v-else class="mb-6">Are you sure you want to remove <strong>{{ genesPendingRemoval.length }}</strong> selected genes?</p>
+        <GeneEvidenceRemovalWarning v-for="gene in genesPendingRemoval" :key="gene.id" :gene="gene" />
         <div class="flex justify-end gap-2">
           <button class="btn btn-gray" @click="cancelRemove">Cancel</button>
           <button class="btn red" :disabled="removingGenes" @click="removeGenes">{{ removingGenes ? 'Removing…' : 'Remove' }}</button>
@@ -452,6 +453,7 @@
 <script>
 import { useScopeOfWorkGeneRows } from '@/composables/scope_of_work_gene_rows'
 import ScopeOfWorkGeneChangeLabel from '@/components/groups/ScopeOfWorkGeneChangeLabel.vue'
+import GeneEvidenceRemovalWarning from './GeneEvidenceRemovalWarning.vue'
 import { api } from '@/http';
 import { ref, nextTick, computed, onMounted, watch } from 'vue';
 import { useStore } from 'vuex';
@@ -465,7 +467,7 @@ import EditIconButton from '@/components/buttons/EditIconButton.vue'
 
 export default {
     name: 'VcepGeneList',
-    components: { ScopeOfWorkGeneChangeLabel, GeneSearchSelect, DiseaseSearchSelect, CuratedGeneSearchSelect, RichTextEditor, EditIconButton },
+    components: { GeneEvidenceRemovalWarning, ScopeOfWorkGeneChangeLabel, GeneSearchSelect, DiseaseSearchSelect, CuratedGeneSearchSelect, RichTextEditor, EditIconButton },
     props: { scopeComparison: { type: Object, default: null }, readonly: { type: Boolean, required: false, default: false }, editing: { type: Boolean, required: false, default: true } },
     emits: ["update:editing", "saved"],
     setup(props, { emit }) {

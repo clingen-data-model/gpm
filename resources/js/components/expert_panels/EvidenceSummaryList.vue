@@ -9,6 +9,7 @@ export default {
         EvidenceSummaryForm
     },
     props: {
+        scopeOfWorkStatus: { type: Object, default: null },
         readonly: {
             type: Boolean,
             required: false,
@@ -49,6 +50,9 @@ export default {
         }
     },
     watch: {
+        scopeOfWorkStatus() {
+            if (this.group?.id) this.getEvidenceSummaries();
+        },
         'group.uuid': {
             immediate: true,
             handler () {
@@ -114,7 +118,7 @@ export default {
   <div>
     <ul v-if="summaries.length > 0">
       <transition-group name="slide-fade-down">
-        <li v-for="(summary, idx) in group.expert_panel.evidence_summaries" :key="idx" class="my-4 flex">
+        <li v-for="(summary, idx) in summaries" :key="summary.id" class="my-4 flex">
           <div class="text-lg pr-4">
             {{ idx + 1 }}
           </div>

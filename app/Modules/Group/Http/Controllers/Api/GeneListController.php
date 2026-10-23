@@ -21,6 +21,9 @@ class GeneListController extends Controller
 
         $query  = $group->expertPanel->genes()
                     ->select('id', 'gt_curation_uuid', 'hgnc_id', 'gene_symbol', 'mondo_id', 'disease_name', 'moi', 'tier', 'plan', 'date_approved');
+        if ($group->isVcepOrScvcep) {
+            $query->withCount('evidenceSummaries');
+        }
 
         // When the VCEP status is other than applying, we want to include the latest GT snapshot for each gene from the snapshot.
         if ($group->is_vcep && !$isApplying) {

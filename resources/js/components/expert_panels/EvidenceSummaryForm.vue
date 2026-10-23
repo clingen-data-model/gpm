@@ -1,10 +1,12 @@
 <script>
 import api from '@/http/api'
 import is_validation_error from '@/http/is_validation_error';
+import EvidenceSummaryScopeStatus from './EvidenceSummaryScopeStatus.vue';
 
 
 export default {
     name: 'EvidenceSummaryForm',
+    components: { EvidenceSummaryScopeStatus },
     props: {
         group: {
             required: true,
@@ -27,7 +29,16 @@ export default {
         }
     },
     computed: {
-
+        selectableGenes() {
+            const active = this.groupGenes.filter(gene => !gene.deleted_at);
+            const original = this.summary.gene;
+            if (this.summary.id && (this.group.is_vcep || this.group.is_scvcep)
+                && original && Number(original.id) === Number(this.summary.gene_id)
+                && !active.some(gene => Number(gene.id) === Number(original.id))) {
+                return [original, ...active];
+            }
+            return active;
+        }
     },
     watch: {
         group: {
@@ -85,6 +96,7 @@ export default {
 </script>
 <template>
   <div>
+    <EvidenceSummaryScopeStatus :summary="summary" :group="group" />
     <div class="flex space-x-2">
       <input-row class="mt-0 mb-0" :vertical="true" label="Gene" :errors="errors.gene_id">
         <select v-model="summaryClone.gene_id">
@@ -92,7 +104,7 @@ export default {
             Select...
           </option>
           <option
-            v-for="gene in groupGenes"
+            v-for="gene in selectableGenes"
             :key="gene.id"
             :value="gene.id"
           >
