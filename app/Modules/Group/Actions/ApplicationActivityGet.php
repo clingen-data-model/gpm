@@ -17,11 +17,15 @@ class ApplicationActivityGet
         $user = $request->user();
 
         $query = Group::query()
-                    ->whereHas('latestSubmission', function ($q) use ($user) {
-                        $q->withStatus($this->getSubmissionStatusesForUser($user));
-                    })
-                    ->whereHas('expertPanel', function ($q) {
-                        $q->applying();
+                    ->where(function ($q) use ($user) {
+                        $statuses = $this->getSubmissionStatusesForUser($user);
+                        $q->where(function ($initial) use ($statuses) {
+                            $initial->whereHas('expertPanel', fn ($panel) => $panel->applying())
+                                ->whereHas('latestSubmission', fn ($submission) => $submission->withStatus($statuses));
+                        })->orWhere(function ($revision) use ($statuses) {
+                            $revision->whereHas('expertPanel', fn ($panel) => $panel->approved())
+                                ->whereHas('activeScopeOfWorkSubmission', fn ($submission) => $submission->withStatus($statuses));
+                        });
                     })
                     ->with([
                         'type',
@@ -30,6 +34,7 @@ class ApplicationActivityGet
                         'latestSubmission.judgements.person' => function ($q) {
                             $q->select('first_name', 'last_name', 'email', 'id');
                         },
+                        'activeScopeOfWorkSubmission.judgements.person:id,first_name,last_name,email',
                         'expertPanel' => function ($q) {
                             $q->select(['id', 'uuid', 'long_base_name', 'short_base_name', 'group_id', 'current_step']);
                         }

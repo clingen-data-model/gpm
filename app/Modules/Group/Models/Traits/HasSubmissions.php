@@ -21,6 +21,13 @@ trait HasSubmissions
         return $this->hasOne(Submission::class)
             ->ofMany(['created_at' => 'max']);
     }
+
+    public function activeScopeOfWorkSubmission(): HasOne
+    {
+        return $this->hasOne(Submission::class)->ofMany(['created_at' => 'max'], function ($query) {
+            $query->activeScopeOfWorkReview();
+        });
+    }
     
     public function latestPendingSubmission():HasOne
     {

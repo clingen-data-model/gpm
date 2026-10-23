@@ -246,6 +246,25 @@ it('SC-VCEP removal emits the existing saved refresh event', async () => {
   wrapper.unmount()
 })
 
+it.each([VcepGeneList, ScvcepGeneList, GeneCurationStatus])('uses the shared red variant for removal without changing Cancel', async Component => {
+  const { wrapper } = await render(Component)
+  wrapper.vm.confirmRemove(wrapper.vm.displayGenes[0])
+  await flushPromises()
+  const remove = wrapper.get('button.btn.red')
+  expect(remove.text()).toBe('Remove')
+  expect(remove.element.disabled).toBe(false)
+  expect(wrapper.findAll('button.btn-gray').some(button => button.text() === 'Cancel')).toBe(true)
+  if (Component !== ScvcepGeneList) {
+    let finish
+    api.delete.mockImplementationOnce(() => new Promise(resolve => { finish = resolve }))
+    await remove.trigger('click')
+    expect(remove.element.disabled).toBe(true)
+    finish({ data: [] })
+    await flushPromises()
+  }
+  wrapper.unmount()
+})
+
 it('GCEP retains snapshot-only cards with no live genes and forwards saved refresh', async () => {
   const { wrapper, getGenes } = await render(GcepGeneList, true, [])
   const child = wrapper.getComponent(GeneCurationStatus)
