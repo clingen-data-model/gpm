@@ -37,6 +37,19 @@ class Application extends Entity {
         return false;
     }
 
+    get activeScopeOfWorkSubmission() {
+        return this.group?.active_scope_of_work_submission ?? null;
+    }
+
+    get reviewSubmission() {
+        return this.activeScopeOfWorkSubmission ?? this.group?.latest_submission;
+    }
+
+    get displayCurrentStep() {
+        return this.activeScopeOfWorkSubmission ? 'Scope of Work Revision'
+            : this.isCompleted ? 'Completed' : this.current_step;
+    }
+
     get steps() {
         if (this.is_gcep === 1) {
             return [1];

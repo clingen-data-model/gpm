@@ -442,7 +442,7 @@
         <p v-else class="mb-6">Are you sure you want to remove <strong>{{ genesPendingRemoval.length }}</strong> selected genes?</p>
         <div class="flex justify-end gap-2">
           <button class="btn btn-gray" @click="cancelRemove">Cancel</button>
-          <button class="btn btn-red" @click="removeGenes">{{ removingGenes ? 'Removing…' : 'Remove' }}</button>
+          <button class="btn red" :disabled="removingGenes" @click="removeGenes">{{ removingGenes ? 'Removing…' : 'Remove' }}</button>
         </div>
       </div>
     </div>

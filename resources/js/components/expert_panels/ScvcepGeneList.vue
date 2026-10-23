@@ -212,7 +212,7 @@
         </p>
         <div class="flex justify-end gap-2">
           <button class="btn btn-gray" @click="cancelRemove">Cancel</button>
-          <button class="btn btn-red" @click="removeGene">Remove</button>
+          <button class="btn red" @click="removeGene">Remove</button>
         </div>
       </div>
     </div>
@@ -653,13 +653,6 @@ export default {
 }
 .btn-gray:hover {
   background-color: #e5e7eb;
-}
-.btn-red {
-  background-color: #dc2626;
-  color: white;
-}
-.btn-red:hover {
-  background-color: #b91c1c;
 }
 
 input[type='text'],

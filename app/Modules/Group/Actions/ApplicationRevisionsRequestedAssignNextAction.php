@@ -4,6 +4,7 @@ namespace App\Modules\Group\Actions;
 
 use Carbon\Carbon;
 use App\Modules\Group\Models\Group;
+use App\Modules\Group\Models\Submission;
 use Lorisleiva\Actions\Concerns\AsListener;
 use Lorisleiva\Actions\Concerns\AsController;
 use App\Modules\ExpertPanel\Models\NextAction;
@@ -19,13 +20,15 @@ class ApplicationRevisionsRequestedAssignNextAction
     }
     
 
-    public function handle(Group $group): NextAction
+    public function handle(Group $group, ?Submission $submission = null): NextAction
     {
         $typeData = config('next_actions.types.make-revisions');
 
         return $this->createNextAction->handle(
             expertPanel: $group->expertPanel,
-            entry: $typeData['default_entry'],
+            entry: $submission?->scope_of_work_version_id
+                ? 'Update Scope of Work revision and resubmit for approval.' : $typeData['default_entry'],
+            step: $submission?->scope_of_work_version_id ? data_get($submission->data, 'approval_step') : null,
             typeId: $typeData['id'],
             assignedTo: config('next_actions.assignees.expert-panel.id'),
             dateCreated: Carbon::now()

@@ -46,5 +46,9 @@ class NextActionScopeOfWorkReviewComplete
         ScopeOfWorkReviewCompleted $event
     ): void {
         $this->handle($event->submission);
+        if ($event->outcome === 'revisions_requested') {
+            app(ApplicationRevisionsRequestedAssignNextAction::class)
+                ->handle($event->submission->group, $event->submission);
+        }
     }
 }

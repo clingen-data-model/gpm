@@ -14,14 +14,18 @@ class ApplicationActivityResource extends JsonResource
      */
     public function toArray($request)
     {
+        $submission = $this->activeScopeOfWorkSubmission ?? $this->latestSubmission;
         return [
             'id' => $this->id,
             'name' => $this->display_name,
             'uuid' => $this->uuid,
             'current_step' => $this->expertPanel->current_step,
             'type' => $this->type,
-            'last_submission_date' => $this->latestSubmission->created_at,
-            'submission' => $this->latestSubmission,
+            'last_submission_date' => $submission->created_at,
+            'submitted_step' => $this->activeScopeOfWorkSubmission
+                ? 'Scope of Work Revision — '.$submission->type->name
+                : $submission->type->name,
+            'submission' => $submission,
         ];
     }
 }

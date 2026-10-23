@@ -113,6 +113,24 @@ class Submission extends Model
 
     # SCOPES
 
+    public function scopeActiveScopeOfWorkReview($query)
+    {
+        return $query->whereIn('submission_status_id', [
+            config('submissions.statuses.pending.id'),
+            config('submissions.statuses.revisions-requested.id'),
+            config('submissions.statuses.under-chair-review.id'),
+        ])->where(function ($round) {
+            // Requested revisions close the submitted round but remain active work.
+            $round->whereNull('closed_at')->orWhere('submission_status_id', config('submissions.statuses.revisions-requested.id'));
+        })->whereHas('scopeOfWorkVersion', function ($version) {
+            $version->whereIn('status', [
+                ScopeOfWorkVersion::STATUS_SUBMITTED,
+                ScopeOfWorkVersion::STATUS_REVISIONS_REQUESTED,
+            ])->whereColumn('scope_of_work_versions.submission_id', 'submissions.id')
+                ->whereColumn('scope_of_work_versions.group_id', 'submissions.group_id');
+        });
+    }
+
     public function scopeWithStatus($query, $status)
     {
         if (is_array($status)) {
