@@ -39,10 +39,10 @@ export default {
                     type: Number,
                     sortable: true,
                     resolveValue (item) {
-                        return item.isCompleted ? 'Completed' : item.current_step
+                        return item.displayCurrentStep
                     },
                     resolveSort (item) {
-                        return item.isCompleted ? 5 : item.current_step
+                        return item.activeScopeOfWorkSubmission ? 6 : item.isCompleted ? 5 : item.current_step
                     }
                 },
                 {
@@ -114,7 +114,7 @@ export default {
                 .filter(item => !this.expert_panel_type_id || Number.parseInt(item.expert_panel_type_id) === Number.parseInt(this.expert_panel_type_id))
                 .filter(item => {
                     if (!this.showCompleted) {
-                        return item.date_completed == null;
+                        return item.date_completed == null || item.activeScopeOfWorkSubmission;
                     }
                     return true;
                 })

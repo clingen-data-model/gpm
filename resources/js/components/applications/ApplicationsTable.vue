@@ -43,10 +43,10 @@ export default {
                     type: Number,
                     sortable: true,
                     resolveValue (item) {
-                        return item.isCompleted ? 'Completed' : item.current_step
+                        return item.displayCurrentStep
                     },
                     resolveSort (item) {
-                        return item.isCompleted ? 5 : item.current_step
+                        return item.activeScopeOfWorkSubmission ? 6 : item.isCompleted ? 5 : item.current_step
                     }
                 },
                 {
@@ -55,8 +55,8 @@ export default {
                     type: Date,
                     sortable: true,
                     resolveValue (item) {
-                        return item.group.latest_submission
-                            ? formatDate(item.group.latest_submission.created_at)
+                        return item.reviewSubmission
+                            ? formatDate(item.reviewSubmission.created_at)
                             : null
                     }
                 },
@@ -66,8 +66,8 @@ export default {
                     type: String,
                     sortable: true,
                     resolveValue (item) {
-                        return item.group.latest_submission
-                            ? item.group.latest_submission.status.name
+                        return item.reviewSubmission
+                            ? item.reviewSubmission.status.name
                             : null
                     },
                     // resolveSort(item) {

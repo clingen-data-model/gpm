@@ -69,7 +69,8 @@ class ApplicationController extends Controller
                 'group.latestLogEntry' => function ($q) {
                     $q->select('created_at', 'description', 'subject_id', 'subject_type');
                 },
-                'group.latestSubmission'
+                'group.latestSubmission',
+                'group.activeScopeOfWorkSubmission',
             ],
             whereFunction: function ($query, $where) {
                 foreach ($where as $key => $val) {
