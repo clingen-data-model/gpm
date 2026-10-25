@@ -5,6 +5,7 @@ import { h } from 'vue';
 export default {
     name: 'TabsContainer',
     props: {
+        syncRoute: { type: Boolean, default: true },
         tabLocation: {
             required: false,
             type: String,
@@ -31,6 +32,9 @@ export default {
         }
     },
     watch: {
+        syncRoute(value) {
+            if (!value) this.activateTab(this.modelValue);
+        },
         modelValue (newValue) {
             this.activateTab(newValue)
         },
@@ -67,6 +71,7 @@ export default {
         },
 
         activateTabFromRoute () {
+            if (!this.syncRoute || typeof this.$route.query.tab !== 'string') return;
 
             const activeTabLabel = this.activeTab.label
                                     ? this.activeTab.label.toLowerCase()
@@ -81,6 +86,7 @@ export default {
         },
 
         updateRouteQuery(label) {
+            if (!this.syncRoute) return;
             if (this.$route.query.tab === label.toLowerCase()) return;
             const newQuery = {...this.$route.query, ...{tab: label.toLowerCase()}};
             this.$router.replace({path: this.$route.path, query: newQuery})
@@ -88,7 +94,7 @@ export default {
 
         setActiveIndex () {
             if (this.tabs.length > 0 && !this.modelValue) {
-                this.tabs[0].active = true
+                this.tabs.forEach((tab, index) => { tab.active = index === 0; })
             }
             if (this.modelValue && this.tabs.length > this.modelValue) {
                 this.activateTab(this.modelValue);

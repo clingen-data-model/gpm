@@ -4,6 +4,7 @@ import { useStore } from 'vuex'
 import api from '@/http/api'
 import { useScopeOfWorkGeneRows } from '@/composables/scope_of_work_gene_rows'
 import ScopeOfWorkGeneChangeLabel from '@/components/groups/ScopeOfWorkGeneChangeLabel.vue'
+import ScopeGeneCardAccent from '@/components/groups/ScopeGeneCardAccent.vue'
 
 const props = defineProps({
   scopeComparison: { type: Object, default: null },
@@ -500,8 +501,9 @@ watch(
 
     <!-- Card list -->
     <ul v-else class="space-y-2">
-      <li v-for="gene in paginatedGenes" :key="gene.id" :data-scope-gene-id="gene.id" :class="comparisonFor(gene)?.operation === 'added' ? 'bg-blue-50 border-l-4 border-blue-600' : isRemoved(gene) ? 'bg-orange-50 border-l-4 border-orange-600' : ''">
-        <div class="rounded-2xl overflow-hidden border border-gray-200 shadow-sm hover:shadow transition-shadow" :class="comparisonFor(gene)?.operation === 'added' ? 'bg-blue-50' : isRemoved(gene) ? 'bg-orange-50' : 'bg-white'">
+      <li v-for="gene in paginatedGenes" :key="gene.id" :data-scope-gene-id="gene.id">
+        <div class="rounded-2xl overflow-hidden border border-gray-200 shadow-sm hover:shadow transition-shadow" :class="comparisonFor(gene)?.operation === 'added' ? 'relative bg-blue-50' : isRemoved(gene) ? 'relative bg-orange-50' : 'bg-white'">
+          <ScopeGeneCardAccent :operation="comparisonFor(gene)?.operation" />
           <!-- Top row -->
           <div class="flex items-start justify-between gap-3 p-3">
             <div class="flex items-start gap-3 flex-1 min-w-0">
