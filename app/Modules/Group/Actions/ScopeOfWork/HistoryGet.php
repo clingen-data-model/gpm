@@ -16,7 +16,7 @@ class HistoryGet
         $versions = ScopeOfWorkVersion::forGroup($group)
             ->with([
                 'changes',
-                'baseVersion',
+                'baseVersion.latestSnapshot',
                 'submission',
                 'submission.status',
                 'submission.type',
@@ -93,7 +93,11 @@ class HistoryGet
                     'area' => $change->area,
                     'change_type' => $change->change_type,
                     'entity_type' => $change->entity_type,
+                    'entity_uuid' => $change->entity_uuid,
                     'entity_label' => $change->entity_label,
+                    'before_value' => $change->before_value,
+                    'after_value' => $change->after_value,
+                    'display_gene' => \App\Modules\Group\Services\ScopeOfWorkChangeDisplay::geneContext($change, $version),
                     'field_name' => $change->field_name,
                     'impact' => $change->impact,
                     'requires_approval' => $change->requires_approval,

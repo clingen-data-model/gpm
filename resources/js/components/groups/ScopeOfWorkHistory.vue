@@ -44,9 +44,8 @@
         </div>
 
         <ul v-if="version.changes.length" class="mt-3 list-inside list-disc text-sm">
-          <li v-for="change in version.changes" :key="change.id">
-            {{ change.label }}
-            <template v-if="change.entity_label">— {{ change.entity_label }}</template>
+          <li v-for="change in scopeOfWorkRevisionRows(version.changes, panelType)" :key="change.key">
+            {{ change.description }}
             <span v-if="change.requires_approval === 'yes'" class="font-semibold text-red-700"> — required approval</span>
             <span v-else-if="change.requires_approval === 'conditional'" class="font-semibold text-yellow-700"> — conditional approval</span>
           </li>
@@ -57,7 +56,9 @@
 </template>
 
 <script setup>
+import { scopeOfWorkRevisionRows } from '@/scope_of_work_revision_rows';
 defineProps({
+  panelType: { type: String, default: undefined },
   history: {
     type: Object,
     required: false,

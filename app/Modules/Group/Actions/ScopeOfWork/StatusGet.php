@@ -30,7 +30,7 @@ class StatusGet
                 ScopeOfWorkVersion::STATUS_SUBMITTED,
                 ScopeOfWorkVersion::STATUS_REVISIONS_REQUESTED,
             ])
-            ->with(['changes', 'latestSnapshot', 'baseVersion', 'submission', 'submission.status', 'submission.type'])
+            ->with(['changes', 'latestSnapshot', 'baseVersion.latestSnapshot', 'submission', 'submission.status', 'submission.type'])
             ->latest()
             ->first();
 
@@ -106,7 +106,10 @@ class StatusGet
                     ['entity_label', 'asc'],
                 ])
                 ->values()
-                ->map(fn (ScopeOfWorkChange $change) => $this->changePayload($change, $group))
+                ->map(fn (ScopeOfWorkChange $change) => [
+                    ...$this->changePayload($change, $group),
+                    'display_gene' => \App\Modules\Group\Services\ScopeOfWorkChangeDisplay::geneContext($change, $revision),
+                ])
                 ->all(),
 
             'created_at' => optional($revision->created_at)->toISOString(),

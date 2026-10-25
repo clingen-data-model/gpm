@@ -607,6 +607,7 @@ export default {
       <ScopeOfWorkStatusBanner
       v-if="group?.is_ep && scopeOfWorkStatus?.versioning_applicable === true"
       :status="scopeOfWorkStatus"
+      :panel-type="group.is_gcep ? 'gcep' : group.is_scvcep ? 'scvcep' : 'vcep'"
       :discarding="discardingScopeOfWork || scopeOfWorkMutationBusy"
       :can-manage="hasRole('coordinator', group) || hasRole('super-user') || hasRole('super-admin')"
       @finalize="finalizeScopeOfWorkRevision"
@@ -842,6 +843,7 @@ export default {
             />
 
             <ScopeOfWorkHistory
+              :panel-type="group.is_gcep ? 'gcep' : group.is_scvcep ? 'scvcep' : 'vcep'"
               :history="scopeOfWorkHistory"
               @compare="compareScopeOfWorkVersions"
             />
