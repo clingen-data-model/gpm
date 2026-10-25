@@ -1,5 +1,6 @@
 <script>
-import { inject } from 'vue'
+import { inject, ref } from 'vue'
+import { activeScopeOfWorkReviewSubmission, initialReviewStep } from '@/domain/review_submission'
 import { mapGetters } from 'vuex'
 import StepOne from '@/components/applications/StepOne.vue'
 import StepTwo from '@/components/applications/StepTwo.vue'
@@ -14,7 +15,7 @@ export default {
         StepFour,
     },
     emits: ['approved', 'updated'],
-    setup() { return { selectReviewStep: inject('selectReviewStep', () => {}) } },
+    setup() { return { selectReviewStep: inject('selectReviewStep', () => {}), latestSubmission: inject('latestSubmission', ref(null)) } },
     data() {
         return {
             activeStep: 1
@@ -27,6 +28,9 @@ export default {
         application () {
             return this.group.expert_panel;
         },
+        revisionSubmission() { return activeScopeOfWorkReviewSubmission(this.group, this.latestSubmission); },
+        initialStep() { return initialReviewStep(this.group, this.latestSubmission); },
+        initializationKey() { return `${this.group.uuid}:${this.revisionSubmission?.id ?? 'initial'}:${this.initialStep}`; },
         activeIndex: {
             deep: true,
             get() {
@@ -40,9 +44,9 @@ export default {
     },
     watch: {
         activeStep: { immediate: true, handler(step) { this.selectReviewStep(step); } },
-        'application.current_step': {
+        initializationKey: {
             immediate: true,
-            handler (step) { this.activeStep = Number(step) || 1; }
+            handler () { this.activeStep = this.initialStep; }
         }
     },
     methods: {
@@ -64,6 +68,7 @@ export default {
     <tabs-container
       v-if="application.expert_panel_type_id == 2 || application.expert_panel_type_id == 3"
       v-model="activeIndex"
+      :sync-route="!revisionSubmission"
       tab-location="right"
     >
       <tab-item label="Group Definition">
@@ -72,7 +77,7 @@ export default {
       <tab-item label="Draft Specifications">
         <StepTwo @step-approved="handleApproved" @updated="handleUpdated" />
       </tab-item>
-      <tab-item label="Pilot Specfications">
+      <tab-item label="Pilot Specifications">
         <StepThree @step-approved="handleApproved" @updated="handleUpdated" />
       </tab-item>
       <tab-item label="Sustained Curation">

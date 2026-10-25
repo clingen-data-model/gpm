@@ -30,7 +30,7 @@ describe('approval refresh settles', () => {
     api.get.mockResolvedValue({ data: [] })
     const { wrapper } = await setup(type)
     expect(wrapper.findAll('li.tab').map(tab => tab.text())).toEqual([
-      'Group Definition', 'Draft Specifications', 'Pilot Specfications', 'Sustained Curation',
+      'Group Definition', 'Draft Specifications', 'Pilot Specifications', 'Sustained Curation',
     ])
     await wrapper.findAll('li.tab')[3].trigger('click')
     await flushPromises()

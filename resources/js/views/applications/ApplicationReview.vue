@@ -12,12 +12,15 @@ import SustainedCurationReview from '@/components/expert_panels/SustainedCuratio
 import SubmissionContextSummary from '@/components/applications/Review/SubmissionContextSummary.vue';
 import ApplicationReviewSummary from '@/components/applications/Review/ApplicationReviewSummary.vue'
 import ReviewHistory from '@/components/applications/Review/ReviewHistory.vue';
+import StepTabs from '@/components/applications/StepTabs.vue';
+import { activeScopeOfWorkReviewSubmission, initialReviewStep } from '@/domain/review_submission';
 
 const emits = defineEmits(['deleted', 'saved']);
 const store = useStore();
 const group = computed(() => store.getters['groups/currentItemOrNew'])
 const commentManager = inject('commentManager')
 const latestSubmission = inject('latestSubmission')
+const scopeOfWorkSubmission = computed(() => activeScopeOfWorkReviewSubmission(group.value, latestSubmission.value))
 
 const breadcrumbs = computed(() => {
   if (!group.value.uuid) {
@@ -27,11 +30,10 @@ const breadcrumbs = computed(() => {
 });
 
 const reviewStep = computed(() => {
-  const submission = latestSubmission.value
   // SoW revisions are handled in the same step as the initial SoW review, so we need to check for that context and use the approval_step value if present. 
   // Otherwise, we just use the current_step value from the expert panel.
-  if (submission?.data?.context === 'scope_of_work_revision') {
-    return Number.parseInt(submission.data?.approval_step ?? 1)
+  if (scopeOfWorkSubmission.value) {
+    return initialReviewStep(group.value, latestSubmission.value)
   }
   return Number.parseInt(group.value?.expert_panel?.current_step)
 })
@@ -77,6 +79,7 @@ const screenTitle = computed(() => {
       :error="commentManager.summaryError"
     />
     <ReviewHistory />
-    <component :is="stepReviewComponent" v-if="stepReviewComponent" />
+    <StepTabs v-if="scopeOfWorkSubmission && !group.is_gcep" @updated="emits('saved')" />
+    <component :is="stepReviewComponent" v-else-if="stepReviewComponent" />
   </ScreenTemplate>
 </template>

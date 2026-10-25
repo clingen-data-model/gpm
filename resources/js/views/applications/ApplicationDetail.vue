@@ -6,7 +6,7 @@
     import ApplicationReview from './ApplicationReview.vue'
     import commentManagerFactory from '@/composables/comment_manager.js'
     import {api} from '@/http';
-    import { latestInitialSubmissionForStep } from '@/domain/review_submission';
+    import { latestInitialSubmissionForStep, initialReviewStep, activeScopeOfWorkReviewSubmission } from '@/domain/review_submission';
     import { useScopeOfWorkComparison } from '@/composables/scope_of_work_comparison';
 
     const props = defineProps({
@@ -29,8 +29,8 @@
     provide('latestSubmission', latestSubmission);
     const selectedReviewStep = ref(1);
     provide('selectReviewStep', step => { selectedReviewStep.value = Number(step); });
-    watch(() => group.value?.expert_panel?.current_step, step => {
-        selectedReviewStep.value = group.value?.is_gcep ? 1 : Number(step) || 1;
+    watch(() => `${group.value?.uuid}:${activeScopeOfWorkReviewSubmission(group.value, latestSubmission.value)?.id ?? 'initial'}:${initialReviewStep(group.value, latestSubmission.value)}`, () => {
+        selectedReviewStep.value = initialReviewStep(group.value, latestSubmission.value);
     }, { immediate: true });
     const reviewSubmission = computed(() => {
         if (latestSubmission.value?.data?.context === 'scope_of_work_revision') return latestSubmission.value;
