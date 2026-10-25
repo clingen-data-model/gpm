@@ -44,13 +44,15 @@
 			</div>
 
 			<ul class="mt-2 list-inside list-disc text-yellow-900">
-				<li v-for="change in status.active_revision.changes" :key="change.id">
-					{{ scopeOfWorkChangeLabel(change) }}					
-					<span v-if="change.requires_approval === 'yes'" class="font-semibold">— requires approval</span>
-					<span v-else-if="change.requires_approval === 'conditional'" class="font-semibold">— may require approval</span>
+				<li v-for="row in revisionRows" :key="row.key">
+					{{ row.description }}
+					<span v-if="row.requires_approval === 'yes'" class="font-semibold">— requires approval</span>
+					<span v-else-if="row.requires_approval === 'conditional'" class="font-semibold">— may require approval</span>
+					<template v-for="change in row.changes" :key="change.id">
 					<button v-if="editable && change.can_discard"
 						type="button" class="btn btn-xs ml-2 mb-1" :disabled="mutationBusy"
-						@click="discardChange(change)">Discard</button>
+						@click="discardChange(change)">{{ row.changes.length > 1 ? `Discard ${revisionFieldLabel(change.field_name)}` : 'Discard' }}</button>
+					</template>
 				</li>
 			</ul>
 
@@ -78,11 +80,12 @@
 </template>
 
 <script setup>
-import { scopeOfWorkChangeLabel } from '@/scope_of_work_change_label';
+import { scopeOfWorkRevisionRows, revisionFieldLabel } from '@/scope_of_work_revision_rows';
 import { computed, ref } from 'vue';
 import SubmissionConfirmationModal from '@/components/applications/SubmissionConfirmationModal.vue';
 
 const props = defineProps({
+  panelType: { type: String, default: undefined },
   discarding: { type: Boolean, default: false },
   status: {
     type: Object,
@@ -100,6 +103,7 @@ const emit = defineEmits(['finalize', 'submit', 'approve', 'request-revisions', 
 const showSubmitRevisionModal = ref(false);
 const submittingRevision = ref(false);
 const activeRevision = computed(() => props.status?.active_revision || null);
+const revisionRows = computed(() => scopeOfWorkRevisionRows(activeRevision.value?.changes, props.panelType));
 const editable = computed(() => props.canManage && ['draft', 'revisions_requested'].includes(activeRevision.value?.status));
 const mutationBusy = computed(() => props.discarding || submittingRevision.value);
 const discardChange = (change) => {
