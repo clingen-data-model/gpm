@@ -72,6 +72,7 @@ export default {
       <div
         v-if="!editing"
         class="p-2 border rounded"
+        :class="{ 'border-red-500': (group.is_vcep || group.is_scvcep) && summary.gene?.deleted_at }"
       >
         <header class="flex justify-between">
           <div class="flex flex-wrap items-center gap-2 text-sm text-gray-700">
@@ -83,6 +84,7 @@ export default {
             <span v-if="summary.gene.moi" class="rounded-full bg-gray-100 px-2 py-0.5 text-gray-700">{{ summary.gene.moi }}</span>
             <span class="rounded-full bg-blue-50 px-2 py-0.5 text-blue-800">Variant: {{ summary.variant }}</span>
             <span v-if="group.is_scvcep" class="rounded-full bg-blue-50 px-2 py-0.5 text-blue-800">Assertion ID: {{ summary.assertion_id ?? 'N/A' }}</span>
+            <EvidenceSummaryScopeStatus :summary="summary" :group="group" />
           </div>
           <dropdown-menu v-if="canEdit" :hide-cheveron="true" class="relative">
             <template #label>
@@ -98,7 +100,6 @@ export default {
             </dropdown-item>
           </dropdown-menu>
         </header>
-        <EvidenceSummaryScopeStatus :summary="summary" :group="group" />
         <p>{{ summary.summary }}</p>
         <a v-if="summary.vci_url" class="link" :href="summary.vci_url" target="_blank">
           {{ group.is_vcep ? 'View in the VCI' : 'View in CIVic' }}
