@@ -24,21 +24,25 @@ export default {
     data() {
         return {
             groupGenes: [],
+            replacementGeneId: null,
             summaryClone: {gene: {}},
             errors: {}
         }
     },
     computed: {
         selectableGenes() {
-            const active = this.groupGenes.filter(gene => !gene.deleted_at);
-            const original = this.summary.gene;
-            if (this.summary.id && (this.group.is_vcep || this.group.is_scvcep)
-                && original && Number(original.id) === Number(this.summary.gene_id)
-                && !active.some(gene => Number(gene.id) === Number(original.id))) {
-                return [original, ...active];
-            }
-            return active;
-        }
+            return this.groupGenes.filter(gene => !gene.deleted_at);
+        },
+        hasRemovedAssociation() {
+            return !!(this.summary.id && (this.group.is_vcep || this.group.is_scvcep) && this.summary.gene?.deleted_at);
+        },
+        selectedGeneId: {
+            get() { return this.hasRemovedAssociation ? this.replacementGeneId : this.summaryClone.gene_id; },
+            set(value) {
+                if (this.hasRemovedAssociation) this.replacementGeneId = value;
+                else this.summaryClone.gene_id = value;
+            },
+        },
     },
     watch: {
         group: {
@@ -53,6 +57,7 @@ export default {
             immediate: true,
             handler () {
                 this.summaryClone = {...this.summary}
+                this.replacementGeneId = null;
             }
         }
     },
@@ -65,7 +70,12 @@ export default {
                     url += `/${this.summaryClone.id}`
                     method = 'put';
                 }
-                const newSummary = await api({method, url, data: this.summaryClone})
+                const data = { ...this.summaryClone };
+                if (this.hasRemovedAssociation) {
+                    delete data.gene_id;
+                    if (this.replacementGeneId != null) data.gene_id = this.replacementGeneId;
+                }
+                const newSummary = await api({method, url, data})
                                             .then (response => response.data.data);
 
                 this.$emit('saved', newSummary);
@@ -96,12 +106,16 @@ export default {
 </script>
 <template>
   <div>
-    <EvidenceSummaryScopeStatus :summary="summary" :group="group" />
+    <div v-if="hasRemovedAssociation" class="mb-3 text-sm" data-testid="current-association">
+      <div class="font-semibold">Current association:</div>
+      <div>{{ summary.gene.gene_symbol }} — {{ summary.gene.mondo_id }} {{ summary.gene.disease_name }}</div>
+      <EvidenceSummaryScopeStatus :summary="summary" :group="group" />
+    </div>
     <div class="flex space-x-2">
-      <input-row class="mt-0 mb-0" :vertical="true" label="Gene" :errors="errors.gene_id">
-        <select v-model="summaryClone.gene_id">
+      <input-row class="mt-0 mb-0" :vertical="true" :label="hasRemovedAssociation ? 'Change gene-disease' : 'Gene'" :errors="errors.gene_id">
+        <select v-model="selectedGeneId">
           <option :value="null">
-            Select...
+            {{ hasRemovedAssociation ? 'Select a current gene-disease...' : 'Select...' }}
           </option>
           <option
             v-for="gene in selectableGenes"

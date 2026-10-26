@@ -4,6 +4,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import EvidenceSummaryList from './EvidenceSummaryList.vue'
 import EvidenceSummaryForm from './EvidenceSummaryForm.vue'
 import EvidenceSummaryScopeStatus from './EvidenceSummaryScopeStatus.vue'
+import EvidenceSummary from './EvidenceSummary.vue'
 import GeneEvidenceRemovalWarning from './GeneEvidenceRemovalWarning.vue'
 
 const api = vi.hoisted(() => Object.assign(vi.fn(), { get: vi.fn() }))
@@ -27,30 +28,58 @@ describe.each(['vcep', 'scvcep'])('%s evidence for removed scope genes', type =>
     expect(wrapper.text()).toContain('NTRK3')
     expect(wrapper.text()).toContain('Disease A')
     expect(wrapper.text()).toContain('Pending removal from Scope of Work')
+    expect(wrapper.find('.border-red-500').exists()).toBe(true)
+    expect(wrapper.findAll('header [role="status"]')).toHaveLength(1)
+    expect(wrapper.find('header [role="status"]').element.tagName).toBe('SPAN')
+    expect(wrapper.find('.bg-amber-50').exists()).toBe(false)
     result = { ...evidence(), gene: { ...gene, deleted_at: null }, gene_scope_status: null }
     await wrapper.setProps({ scopeOfWorkStatus: { active_revision: null } })
     await flushPromises()
     expect(wrapper.find('[role="status"]').exists()).toBe(false)
+    expect(wrapper.find('.border-red-500').exists()).toBe(false)
     expect(wrapper.text()).toContain('Preserved evidence')
     result = { ...evidence(), gene_scope_status: 'removed' }
     await wrapper.setProps({ scopeOfWorkStatus: { approved_version: { id: 2 } } })
     await flushPromises()
-    expect(wrapper.text()).toContain('Removed from current Scope of Work')
+    expect(wrapper.text()).toContain('Removed from Scope of Work')
+    expect(wrapper.findAll('[role="status"]')).toHaveLength(1)
+    expect(wrapper.find('.border-red-500').exists()).toBe(true)
     wrapper.unmount()
   })
-  it('retains the existing removed selection and submits the original gene ID when editing content', async () => {
+  it('shows the removed association separately and omits gene ID when editing content without replacement', async () => {
     const summary = evidence()
     const wrapper = mount(EvidenceSummaryForm, { props: { group: panel(type), summary },
       global: { plugins: [createStore({ mutations: { pushSuccess: vi.fn() } })], stubs } })
     await flushPromises()
-    expect(wrapper.get('select').element.value).toBe('10')
-    expect(wrapper.get('select').text()).toContain('NTRK3')
+    expect(wrapper.get('select').element.selectedIndex).toBe(0)
+    expect(wrapper.get('select').text()).not.toContain('NTRK3')
+    expect(wrapper.get('select').text()).toContain('ACTIVE')
+    expect(wrapper.get('[data-testid="current-association"]').text()).toContain('NTRK3 — MONDO:1 Disease A')
     expect(wrapper.text()).toContain('Pending removal from Scope of Work')
     await wrapper.get('textarea').setValue('Edited evidence')
+    wrapper.vm.summaryClone.variant = 'Edited variant'
+    wrapper.vm.summaryClone.assertion_id = 'Edited assertion'
+    wrapper.vm.summaryClone.vci_url = 'https://example.org/evidence'
     await wrapper.vm.save()
-    expect(api).toHaveBeenCalledWith(expect.objectContaining({ method: 'put', data: expect.objectContaining({ gene_id: 10, summary: 'Edited evidence' }) }))
+    expect(api).toHaveBeenCalledWith(expect.objectContaining({ method: 'put', data: expect.objectContaining({ summary: 'Edited evidence', variant: 'Edited variant', assertion_id: 'Edited assertion', vci_url: 'https://example.org/evidence' }) }))
+    expect(api.mock.calls[0][0].data).not.toHaveProperty('gene_id')
     expect(summary.gene_id).toBe(10)
     expect(summary.summary).toBe('Preserved evidence')
+    wrapper.unmount()
+  })
+  it('sends an explicit active replacement, and clearing the optional selector preserves the original', async () => {
+    const wrapper = mount(EvidenceSummaryForm, { props: { group: panel(type), summary: evidence() },
+      global: { plugins: [createStore({ mutations: { pushSuccess: vi.fn() } })], stubs } })
+    await flushPromises()
+    await wrapper.get('select').setValue('20')
+    await wrapper.vm.save()
+    expect(api.mock.calls[0][0].data.gene_id).toBe(20)
+    await wrapper.get('select').setValue(wrapper.find('option').element.value)
+    await wrapper.vm.save()
+    expect(api.mock.calls[1][0].data).not.toHaveProperty('gene_id')
+    await wrapper.setProps({ summary: { ...evidence(), id: 2, gene_id: 20, gene: { id: 20, gene_symbol: 'ACTIVE' } } })
+    expect(wrapper.get('select').element.value).toBe('20')
+    expect(wrapper.find('[data-testid="current-association"]').exists()).toBe(false)
     wrapper.unmount()
   })
   it('offers only active genes for new summaries, even if a removed row is supplied', async () => {
@@ -65,6 +94,11 @@ describe.each(['vcep', 'scvcep'])('%s evidence for removed scope genes', type =>
 it('does not introduce removal status into GCEP', () => {
   const wrapper = mount(EvidenceSummaryScopeStatus, { props: { group: panel('gcep'), summary: evidence() } })
   expect(wrapper.text()).toBe('')
+  const card = mount(EvidenceSummary, { props: { group: panel('gcep'), summary: evidence() },
+    global: { stubs, mocks: { hasAnyPermission: () => false } } })
+  expect(card.find('.border-red-500').exists()).toBe(false)
+  expect(card.find('[role="status"]').exists()).toBe(false)
+  card.unmount()
 })
 it.each([0, 1, 2])('shows an informational warning for %i evidence summaries', count => {
   const wrapper = mount(GeneEvidenceRemovalWarning, { props: { gene: { ...gene, evidence_summaries_count: count } } })

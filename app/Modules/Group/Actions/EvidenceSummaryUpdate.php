@@ -51,7 +51,7 @@ class EvidenceSummaryUpdate
     public function rules()
     {
         return [
-            'gene_id' => 'required|exists:scope_genes,id',
+            'gene_id' => 'sometimes|required|exists:scope_genes,id',
             'variant' => 'required|max:255',
             'summary' => 'required|max:66535',
             'vci_url' => 'nullable|url'
