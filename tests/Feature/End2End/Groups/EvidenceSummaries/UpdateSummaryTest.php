@@ -49,10 +49,10 @@ class UpdateSummaryTest extends TestCase
         $this->makeRequest([])
             ->assertStatus(422)
             ->assertJsonFragment([
-                'gene_id' => ['This field is required.'],
                 'summary' => ['This field is required.'],
                 'variant' => ['This field is required.'],
-            ]);
+            ])
+            ->assertJsonMissingValidationErrors('gene_id');
     }
 
     #[Test]
