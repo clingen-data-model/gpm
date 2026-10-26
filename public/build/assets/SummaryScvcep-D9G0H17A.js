@@ -1,2 +1,0 @@
-import{A as o}from"./ApplicationsSummaryTable-BCwnljSl.js";import{_ as a,r as t,a as c,c as n,e as p}from"./app-DBF56DJ2.js";import"./router_aware_sort_and_filter-Bca73XMW.js";const r={name:"ScvcepsSummary",components:{ApplicationsSummaryTable:o}};function s(m,i,l,_,u,d){const e=t("ApplicationsSummaryTable");return c(),n("div",null,[p(e,{"ep-type-id":3})])}const v=a(r,[["render",s]]);export{v as default};
-//# sourceMappingURL=SummaryScvcep-D9G0H17A.js.map
