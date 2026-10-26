@@ -126,6 +126,9 @@ class ApplicationSendToChairsTest extends TestCase
 
         Notification::fake();
 
+        $this->seed(SubmissionTypeAndStatusSeeder::class);
+        app(ApplicationSubmitStep::class)->handle($this->group, Person::factory()->create());
+
         $this->makeRequest()->assertStatus(200);
 
         Notification::assertSentTo(
