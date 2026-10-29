@@ -23,7 +23,7 @@ services:
         user: ${DOCKER_USER:-501:20}
 
     app:
-        image: ${DOCKER_IMAGE:-ghcr.io/clingen-data-model/cgwi-php-13.2-8.5:v1.1.11}
+        image: ${DOCKER_IMAGE:-ghcr.io/clingen-data-model/cgwi-php-13.7-8.5:v2.0.0}
         container_name: ${DOCKER_NAME:-gpm}-app
         init: true
         entrypoint:
@@ -49,21 +49,17 @@ services:
             XDEBUG_CONFIG: ${XDEBUG_SESSION:-client_host=host.docker.internal}
         user: ${DOCKER_USER:-501:20}
 
-    nginx:
-        container_name: ${DOCKER_NAME:-gpm}-nginx
-        image: ${DOCKER_IMAGE:-ghcr.io/clingen-data-model/cgwi-php-13.2-8.5:v1.1.11}
+    caddy:
+        container_name: ${DOCKER_NAME:-gpm}-caddy
+        image: caddy:2.10-alpine
         depends_on:
             - app
         ports:
             - "${APP_PORT:-8013}:8080"
         volumes:
-            - .:/srv/app
-        user: ${DOCKER_USER:-501:20}
-        init: true
-        entrypoint:
-            - /usr/sbin/nginx
-            - -g
-            - "daemon off;"
+            - ./public:/srv/app/public:ro
+            - ./storage/app/public:/srv/app/storage/app/public:ro
+            - ./.docker/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
 
     redis:
         container_name: ${DOCKER_NAME:-gpm}-redis
@@ -87,7 +83,7 @@ services:
             - '${FORWARD_MAILPIT_DASHBOARD_PORT:-8038}:8025'
 
     scheduler:
-        image: ${DOCKER_IMAGE:-ghcr.io/clingen-data-model/cgwi-php-13.2-8.5:v1.1.11}
+        image: ${DOCKER_IMAGE:-ghcr.io/clingen-data-model/cgwi-php-13.7-8.5:v2.0.0}
         container_name: ${DOCKER_NAME:-gpm}-scheduler
         depends_on:
             - app
@@ -112,7 +108,7 @@ services:
         user: ${DOCKER_USER:-501:20}
 
     queue:
-        image: ${DOCKER_IMAGE:-ghcr.io/clingen-data-model/cgwi-php-13.2-8.5:v1.1.11}
+        image: ${DOCKER_IMAGE:-ghcr.io/clingen-data-model/cgwi-php-13.7-8.5:v2.0.0}
         container_name: ${DOCKER_NAME:-gpm}-queue
         depends_on:
             - app
