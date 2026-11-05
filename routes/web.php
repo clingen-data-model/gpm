@@ -20,6 +20,8 @@ use App\Modules\Group\Actions\SubgroupMembersMakeExcel;
 use App\Modules\Group\Models\Group;
 use App\Modules\Funding\Http\Controllers\Api\FundingSourceController;
 use App\Actions\ReportForeignComponentsMake;
+use App\Actions\Auth\CILogonRedirect;
+use App\Actions\Auth\CILogonCallback;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -32,6 +34,9 @@ use App\Actions\ReportForeignComponentsMake;
 */
 Route::get('/coi-group/{group:uuid}', function (Group $group) { return app(CoiReportMakePdf::class)->handle($group); })->whereUuid('group')->name('coi.pdf');
 Route::get('/funding-sources/logo/{logo_path}', [FundingSourceController::class, 'logo'])->where('logo_path', '^[A-Za-z0-9_-]+\.(png|jpg|jpeg|gif)$')->name('funding.logo');
+
+Route::get('/auth/cilogon/redirect', CILogonRedirect::class)->name('cilogon.redirect');
+Route::get('/auth/cilogon/callback', CILogonCallback::class)->name('cilogon.callback');
 
 Route::get('/{any}', [ViewController::class, 'app'])
     ->where('any', '^(?!(api|sanctum|impersonate|dev|documents|downloads|clockwork|profile-photos|storage)).*$');

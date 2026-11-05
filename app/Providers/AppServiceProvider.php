@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use GuzzleHttp\Client;
+use App\Auth\CILogon\CILogonProvider;
+use Laravel\Socialite\Facades\Socialite;
 use App\Services\HgncLookup;
 use App\Services\DiseaseLookup;
 use GuzzleHttp\ClientInterface;
@@ -46,6 +48,10 @@ class AppServiceProvider extends ServiceProvider
 
         $this->app->bind(ClientInterface::class, function () {
             return new Client();
+        });
+
+        Socialite::extend('cilogon', function ($app) {
+            return Socialite::buildProvider(CILogonProvider::class, $app['config']['services.cilogon']);
         });
     }
 }

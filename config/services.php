@@ -41,6 +41,15 @@ return [
         'base_url'      => env('GT_CLIENT_BASE_URL') . env('GT_CLIENT_API'),
     ],
 
+    'cilogon' => [
+        'client_id' => env('CILOGON_CLIENT_ID'),
+        'client_secret' => env('CILOGON_CLIENT_SECRET'),
+        'redirect' => env('CILOGON_REDIRECT_URI', '/auth/cilogon/callback'),
+        'base_url' => env('CILOGON_BASE_URL', 'https://cilogon.org'),
+        // IdP entityIDs (the `idp` claim) whose asserted email may link an existing account.
+        'email_trusted_idps' => array_filter(explode(',', env('CILOGON_EMAIL_TRUSTED_IDPS', ''))),
+    ],
+
     'affiliation_api' => [
         'base_url' => env('AFFILIATION_API_BASE_URL'),
         'client_secret' => env('AFFILIATION_API_CLIENT_SECRET'),

@@ -254,6 +254,11 @@ class Person extends Model implements HasLogEntries
     }
 
 
+    public function identities(): HasMany
+    {
+        return $this->hasMany(PersonIdentity::class);
+    }
+
     /**
      * Get the invite associated with the Person
      *
