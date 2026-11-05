@@ -55,7 +55,12 @@ export default {
 
         onMounted(() => syncEmail());
 
+        const cilogonEnabled = import.meta.env.VITE_CILOGON_ENABLED === 'true'
+        const cilogonUrl = `/auth/cilogon/redirect?invite=${encodeURIComponent(props.invite.code)}`
+
         return {
+            cilogonEnabled,
+            cilogonUrl,
             errors,
             email,
             password,
@@ -73,12 +78,20 @@ export default {
       <static-alert>
         It looks like you've already activated you account.  Please login to continue.
       </static-alert>
-      <LoginForm @authenticated="redeemForExistingUser" />
+      <LoginForm :invite-code="invite.code" @authenticated="redeemForExistingUser" />
     </div>
     <div v-else>
       <p class="text-lg">
         Create your account
       </p>
+      <div v-if="cilogonEnabled" class="my-4">
+        <a class="btn blue w-auto px-4" :href="cilogonUrl">
+          Continue with CILogon
+        </a>
+        <p class="text-sm text-gray-600 mt-1">
+          Use your institution, ORCID, Google, or Microsoft account. Or create a password below.
+        </p>
+      </div>
       <input-row
         v-model="email" 
         label="Email" 
