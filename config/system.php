@@ -128,7 +128,7 @@ return [
         'funding-sources-manage' => [
             'id' => 60,
             'name' => 'funding-sources-manage',
-            'display_name' => 'Manage Funding Sources',
+            'display_name' => 'Manage Funding',
             'description' => 'Can edit and delete funding sources.',
             'scope' => 'system',
             'guard_name' => 'web',

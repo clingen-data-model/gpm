@@ -37,6 +37,7 @@ function emptyRepContact() {
     email: '',
     phone: '',
     publish: false,
+    funding_sources: [],
   }
 }
 
@@ -122,6 +123,7 @@ function startEdit(item) {
         email: contact?.email ?? '',
         phone: contact?.phone ?? '',
         publish: Boolean(contact?.publish),
+        funding_sources: (contact?.funding_sources || []).map(source => ({ uuid: source.uuid, name: source.name })),
       }))
     : [emptyRepContact()]
   form.notes = item.notes ?? ''
@@ -217,9 +219,12 @@ async function save() {
         email: contact.email || null,
         phone: contact.phone || null,
         publish: Boolean(contact.publish),
+        funding_sources: form.funding_sources
+          .filter(source => (contact.funding_sources || []).some(selected => selected.uuid === source.uuid))
+          .map(source => ({ uuid: source.uuid, name: source.name })),
       }))
       .filter(contact =>
-        Object.values(contact).some(value => value !== null && String(value).trim() !== '')
+        ['role', 'name', 'email', 'phone'].some(field => contact[field]?.trim())
       ),
     notes: sanitizeNotes(form.notes) || null,
     contact_pi_person_ids: selectedPis.value.map(person => Number(person.id)).filter(Boolean),
@@ -337,6 +342,15 @@ async function searchPis(keyword) {
 }
 
 watch(
+  () => form.funding_sources.map(source => source.uuid),
+  (uuids) => {
+    form.rep_contacts.forEach(contact => {
+      contact.funding_sources = (contact.funding_sources || []).filter(source => uuids.includes(source.uuid))
+    })
+  }
+)
+
+watch(
   selectedPis,
   (pis) => {
     const ids = (pis || []).map(p => Number(p.id)).filter(Boolean)
@@ -377,8 +391,8 @@ watch(
         Add Award
       </button>
     </div>
-    <div v-if="!canManage" class="text-sm text-gray-600 mb-3">
-      If your group has funding awards that should be added or updated in GPM, please contact<a class="link" href="mailto:gpm_support@clinicalgenome.org">gpm_support@clinicalgenome.org</a> for assistance.
+    <div v-if="!canManage" role="note" class="text-sm text-blue-800 bg-blue-50 border border-blue-200 rounded p-3 mb-3">
+      If your group has funding awards that should be added or updated in GPM, please contact <a class="link" href="mailto:gpm_support@clinicalgenome.org">gpm_support@clinicalgenome.org</a> for assistance.
     </div>
 
     <div v-if="loading" class="text-center w-full">Loading...</div>
@@ -388,6 +402,7 @@ watch(
         <template #cell-fundingSources="{ item }">
           <div v-for="source in (item.funding_sources || [])" :key="source.id" class="mb-1 last:mb-0">
             <div class="font-medium">{{ source.name }}</div>
+            <div v-if="source.city || source.country" class="text-xs text-gray-600">{{ [source.city, source.country?.name].filter(Boolean).join(', ') }}</div>
             <div v-if="source.funding_type?.name" class="text-xs text-gray-600">
               Funding Type: {{ source.funding_type?.name }}
             </div>
@@ -602,6 +617,24 @@ watch(
                 >
                   Remove
                 </button>
+              </div>
+
+              <div class="mb-3">
+                <label class="block text-sm">Funding Sources</label>
+                <SearchSelect
+                  :key="form.funding_sources.map(source => source.uuid).join(',')"
+                  v-model="contact.funding_sources"
+                  :options="form.funding_sources"
+                  key-options-by="uuid"
+                  multiple
+                  show-options-on-focus
+                  show-options-when-empty
+                  :search-function="searchFundingSources"
+                  placeholder="Select award funding sources (optional)"
+                />
+                <div v-if="firstRepContactError(index, 'funding_sources')" class="text-sm text-red-600 mt-1">
+                  {{ firstRepContactError(index, 'funding_sources') }}
+                </div>
               </div>
 
               <div class="grid grid-cols-2 gap-2">

@@ -7,6 +7,8 @@ use App\Modules\ExpertPanel\Events\FundingAwardUpdated;
 use App\Modules\ExpertPanel\Models\ExpertPanel;
 use App\Modules\ExpertPanel\Models\FundingAward;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Collection;
+use App\Modules\Funding\Models\FundingSource;
 use Illuminate\Validation\Rule;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsController;
@@ -24,7 +26,14 @@ class FundingAwardUpsert
             abort_unless((int) $fundingAward->expert_panel_id === (int) $expertPanel->id, 404);
         }
         $originalData = $data;
-        $data = $this->normalizeData($data);
+        // Normalize against the effective source selection, including partial updates.
+        $sources = array_key_exists('funding_source_ids', $data)
+            ? FundingSource::whereIn('id', $data['funding_source_ids'])->get()
+            : ($fundingAward?->fundingSources ?? collect());
+        if ($fundingAward && !array_key_exists('rep_contacts', $data)) {
+            $data['rep_contacts'] = $fundingAward->rep_contacts ?? [];
+        }
+        $data = $this->normalizeData($data, $sources);
 
         if ($isCreate) {
             $data['uuid'] = Uuid::uuid4()->toString();
@@ -66,7 +75,10 @@ class FundingAwardUpsert
             'award_url'                 => ['nullable', 'string', 'max:255', 'url'],
             'funding_source_division'   => ['nullable', 'string', 'max:255'],
 
-            'rep_contacts'              => ['nullable', 'array'],
+            'rep_contacts'              => ['nullable', 'array', 'max:3'],
+            'rep_contacts.*.funding_sources' => ['sometimes', 'array'],
+            'rep_contacts.*.funding_sources.*.uuid' => ['required', 'uuid'],
+            'rep_contacts.*.funding_sources.*.name' => ['required', 'string', 'max:255'],
             'rep_contacts.*.role'       => ['nullable', 'string', 'max:100'],
             'rep_contacts.*.name'       => ['nullable', 'string', 'max:250'],
             'rep_contacts.*.email'      => ['nullable', 'string', 'max:255', 'email'],
@@ -85,28 +97,32 @@ class FundingAwardUpsert
         return [];
     }
 
-    private function normalizeData(array $data): array
+    private function normalizeData(array $data, Collection $sources): array
     {
         if (array_key_exists('notes', $data)) {
             $data['notes'] = trim(strip_tags($data['notes'] ?? ''));
         }
 
         if (array_key_exists('rep_contacts', $data)) {
-            $data['rep_contacts'] = $this->normalizeRepContacts($data['rep_contacts'] ?? []);
+            $data['rep_contacts'] = $this->normalizeRepContacts($data['rep_contacts'] ?? [], $sources);
         }
         unset($data['funding_source_ids'], $data['contact_pi_person_ids'], $data['primary_contact_pi_id']);
         return $data;
     }
 
-    private function normalizeRepContacts(array $contacts): array
+    private function normalizeRepContacts(array $contacts, Collection $sources): array
     {
-        return collect($contacts)->map(function ($contact) {
+        return collect($contacts)->map(function ($contact) use ($sources) {
             return [
                 'role'  => $this->normalizeString($contact['role'] ?? null),
                 'name'  => $this->normalizeString($contact['name'] ?? null),
                 'email' => $this->normalizeString($contact['email'] ?? null),
                 'phone' => $this->normalizeString($contact['phone'] ?? null),
-                'publish' => $this->normalizeString($contact['publish'] ?? false),
+                'publish' => (bool) ($contact['publish'] ?? false),
+                'funding_sources' => $sources
+                    ->whereIn('uuid', collect($contact['funding_sources'] ?? [])->pluck('uuid'))
+                    ->map(fn ($source) => ['uuid' => (string) $source->uuid, 'name' => $source->name])
+                    ->values()->all(),
             ];
         })->filter(function ($contact) {
             return filled($contact['role']) || filled($contact['name']) || filled($contact['email']) || filled($contact['phone']);

@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Traits\HasUuid;
+use App\Modules\Person\Models\Country;
+use App\Modules\ExpertPanel\Models\FundingAward;
 use Illuminate\Support\Str;
 use App\Modules\Funding\Support\FundingSourceSchema;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -18,11 +20,20 @@ class FundingSource extends Model
 
     protected $fillable = [
         'name',
+        'city',
+        'country_id',
         'funding_type_id',
         'caption',
         'website_url',
         'logo_path',
     ];
+
+    protected $casts = ['country_id' => 'integer'];
+
+    public function country()
+    {
+        return $this->belongsTo(Country::class);
+    }
 
     protected $appends = ['logo_url', 'logo_url_raw'];
 

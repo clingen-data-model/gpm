@@ -8,11 +8,13 @@ final class FundingSourceSchema
 {
     public static function forMessage(FundingSource $source): array
     {
-        $source->loadMissing('fundingType');
+        $source->loadMissing(['fundingType', 'country']);
 
         return [
             'uuid'        => (string) $source->uuid,
             'name'        => $source->name,
+            'city'        => $source->city,
+            'country'     => $source->country?->name,
             'funding_type'=> $source->fundingType?->name,
             'caption'     => $source->caption,
             'website_url' => $source->website_url,

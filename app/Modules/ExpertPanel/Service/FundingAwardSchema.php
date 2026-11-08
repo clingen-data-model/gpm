@@ -8,7 +8,7 @@ final class FundingAwardSchema
 {
     public static function forMessage(FundingAward $award): array
     {
-        $award->loadMissing(['fundingSources.fundingType', 'contactPis']);
+        $award->loadMissing(['fundingSources.fundingType', 'fundingSources.country', 'contactPis']);
         return [
             'uuid' => (string) $award->uuid,
             'funding_sources' => $award->fundingSources ? $award->fundingSources->map->toExchangePayload()->values()->all() : null,
@@ -18,12 +18,16 @@ final class FundingAwardSchema
             'award_url'    => $award->award_url,
             'funding_source_division' => $award->funding_source_division,
             'rep_contacts' => collect($award->rep_contacts ?? [])->map(fn ($contact) => [
-                                    'role' => $contact['role'] ?? null,
-                                    'name' => $contact['name'] ?? null,
-                                    'email' => $contact['email'] ?? null,
-                                    'phone' => $contact['phone'] ?? null,
-                                    'publish' => (bool) ($contact['publish'] ?? false),
-                                ])->values()->all(),
+                'role' => $contact['role'] ?? null,
+                'name' => $contact['name'] ?? null,
+                'email' => $contact['email'] ?? null,
+                'phone' => $contact['phone'] ?? null,
+                'publish' => (bool) ($contact['publish'] ?? false),
+                'funding_sources' => collect($contact['funding_sources'] ?? [])->map(fn ($source) => [
+                    'uuid' => $source['uuid'],
+                    'name' => $source['name'],
+                ])->values()->all(),
+            ])->values()->all(),
             'notes'        => $award->notes,
             'contact_pis'  => $award->contactPis->map(fn ($p) => [
                 'uuid'       => (string) $p->uuid,

@@ -7,6 +7,7 @@ import { hasPermission } from '@/auth_utils.js'
 
 const store = useStore()
 const errors = ref({})
+const countries = computed(() => store.getters['countries/items'])
 
 function firstError(field) {
   const e = errors.value?.[field]
@@ -26,6 +27,8 @@ const editing = ref(null)
 
 const form = reactive({
   name: '',
+  city: '',
+  country_id: '',
   funding_type_id: '',
   caption: '',
   website_url: '',
@@ -44,6 +47,7 @@ const fields = [
   { name: 'logo', label: '', sortable: false },
   { name: 'id', label: 'ID', sortable: true },
   { name: 'name', label: 'Name', sortable: true },
+  { name: 'location', label: 'Location', sortable: false },
   { name: 'type', label: 'Type', sortable: true },
   { name: 'caption', label: 'Caption', sortable: false },
   { name: 'website_url', label: 'Website', sortable: false },
@@ -75,6 +79,8 @@ function getTypeName(item) {
 function resetForm() {
   errors.value = {}
   form.name = ''
+  form.city = ''
+  form.country_id = ''
   form.funding_type_id = ''
   form.caption = ''
   form.website_url = ''
@@ -129,6 +135,8 @@ function startCreate() {
 function startEdit(item) {
   editing.value = item
   form.name = item.name ?? ''
+  form.city = item.city ?? ''
+  form.country_id = item.country_id ?? ''
   form.funding_type_id = item.funding_type_id ?? item.funding_type?.id ?? ''
   form.caption = item.caption ?? ''
   form.website_url = item.website_url ?? ''
@@ -236,6 +244,8 @@ async function save() {
 
   const fd = new FormData()
   fd.append('name', form.name ?? '')
+  fd.append('city', form.city ?? '')
+  fd.append('country_id', String(form.country_id ?? ''))
   fd.append('funding_type_id', String(form.funding_type_id ?? ''))
   fd.append('caption', form.caption ?? '')
   fd.append('website_url', form.website_url ?? '')
@@ -276,6 +286,7 @@ async function destroy(item) {
 }
 
 onMounted(async () => {
+  await store.dispatch('countries/getItems')
   await fetchFundingTypes()
   await fetchItems()
 })
@@ -335,6 +346,9 @@ onMounted(async () => {
         </button>
       </template>
 
+      <template #cell-location="{ item }">
+        {{ [item.city, item.country?.name].filter(Boolean).join(', ') }}
+      </template>
       <template #cell-actions="{item}">
         <dropdown-menu v-if="hasPermission('funding-sources-manage')" hide-cheveron>
           <template #label>
@@ -356,6 +370,19 @@ onMounted(async () => {
             <input v-model="form.name" class="w-full" type="text">
           </div>
 
+          <div>
+            <label class="block text-sm">City</label>
+            <input v-model="form.city" class="w-full" type="text" maxlength="255">
+            <div v-if="firstError('city')" class="text-sm text-red-600">{{ firstError('city') }}</div>
+          </div>
+          <div>
+            <label class="block text-sm">Country</label>
+            <select v-model="form.country_id" class="w-full">
+              <option value="">Select a country (optional)</option>
+              <option v-for="country in countries" :key="country.id" :value="country.id">{{ country.name }}</option>
+            </select>
+            <div v-if="firstError('country_id')" class="text-sm text-red-600">{{ firstError('country_id') }}</div>
+          </div>
           <div>
             <label class="block text-sm">Funding Type</label>
             <select v-model="form.funding_type_id" class="w-full">

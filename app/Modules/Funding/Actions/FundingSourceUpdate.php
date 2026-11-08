@@ -16,6 +16,8 @@ class FundingSourceUpdate
         $validated = $request->validate([
             'name'        => ['sometimes', 'required', 'string', 'max:255'],
             'funding_type_id' => ['sometimes', 'required', 'integer', 'exists:funding_types,id'],
+            'city' => ['nullable', 'string', 'max:255'],
+            'country_id' => ['nullable', 'integer', 'exists:countries,id'],
             'caption'     => ['nullable', 'string', 'max:500'],
             'website_url' => ['nullable', 'string', 'max:250'],
             'logo'        => ['nullable', 'image', 'mimes:png,jpg,jpeg,gif', 'max:3072', 'dimensions:max_width=600,max_height=600'],
@@ -66,6 +68,6 @@ class FundingSourceUpdate
 
         event(new FundingSourceUpdated($fundingSource));
 
-        return $fundingSource->fresh();
+        return $fundingSource->fresh(['fundingType', 'country']);
     }
 }

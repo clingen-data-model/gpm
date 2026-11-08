@@ -1,4 +1,6 @@
 # CGSP-771 — Funding Sources & Funding Awards (GPM)  
+
+> Historical design: the final many-to-many schema, representative contacts, location fields, and permission behavior are documented in [Funding updates](Funding_updates_2026-11-06.md). The single-source column described below is no longer part of the final schema.
 Last updated: 2026-05-06
 
 ---

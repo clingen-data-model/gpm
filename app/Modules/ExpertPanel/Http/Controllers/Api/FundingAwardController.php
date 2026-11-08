@@ -15,7 +15,7 @@ class FundingAwardController extends Controller
     {
         return FundingAward::query()
             ->where('expert_panel_id', $expertPanel->id)
-            ->with(['fundingSources.fundingType', 'contactPis'])
+            ->with(['fundingSources.fundingType', 'fundingSources.country', 'contactPis'])
             ->orderByRaw('start_date IS NULL')
             ->orderByDesc('start_date')
             ->orderByDesc('id')
@@ -28,6 +28,9 @@ class FundingAwardController extends Controller
                         'email' => $contact['email'] ?? null,
                         'phone' => $contact['phone'] ?? null,
                         'publish' => (bool) ($contact['publish'] ?? false),
+                        'funding_sources' => collect($contact['funding_sources'] ?? [])->map(fn ($source) => [
+                            'uuid' => $source['uuid'], 'name' => $source['name'],
+                        ])->values()->all(),
                     ])
                     ->values()
                     ->all();

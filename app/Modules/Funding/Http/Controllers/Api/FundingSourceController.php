@@ -13,13 +13,13 @@ class FundingSourceController extends Controller
     public function index(Request $request)
     {
         $this->authorize('viewAny', FundingSource::class);
-        return FundingSource::with('fundingType')->orderBy('name')->get();
+        return FundingSource::with(['fundingType', 'country'])->orderBy('name')->get();
     }
 
     public function show(FundingSource $fundingSource)
     {
         $this->authorize('view', $fundingSource);
-        return $fundingSource;
+        return $fundingSource->loadMissing(['fundingType', 'country']);
     }
 
     public function logo(Request $request, string $logo_path)
