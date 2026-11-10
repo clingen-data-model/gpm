@@ -43,6 +43,8 @@ use App\Modules\Person\Http\Controllers\Api\PersonNotificationController;
 use App\Modules\Person\Actions\PersonRetireAll;
 use App\Modules\Person\Http\Controllers\Api\CocController;
 use App\Modules\Person\Actions\CocAttest;
+use App\Modules\Person\Actions\PersonIdentityList;
+use App\Modules\Person\Actions\PersonIdentityDelete;
 
 Route::group(['prefix' => 'api/people', 'middleware' => ['api'] ], function () {
     Route::get('/institutions', [InstitutionController::class, 'index']);
@@ -85,6 +87,9 @@ Route::group(['prefix' => 'api/people', 'middleware' => ['api'] ], function () {
 
             Route::get('/attestation', AttestationShow::class);
             Route::put('/attestation', AttestationUpdate::class);
+
+            Route::get('/identities', PersonIdentityList::class);
+            Route::delete('/identities/{identity}', PersonIdentityDelete::class)->scopeBindings();
         });
     });
 
