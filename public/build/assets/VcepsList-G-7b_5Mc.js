@@ -1,2 +1,0 @@
-import{A as o}from"./ApplicationsTable-CUqL29_Y.js";import{_ as t,a as s,c as n,e as p,r as a}from"./app-6EHa998R.js";import"./router_aware_sort_and_filter-9IlQuxBw.js";const c={components:{ApplicationsTable:o}};function r(i,l,_,m,d,f){const e=a("ApplicationsTable");return s(),n("div",null,[p(e,{"ep-type-id":2})])}const b=t(c,[["render",r]]);export{b as default};
-//# sourceMappingURL=VcepsList-G-7b_5Mc.js.map
