@@ -1,8 +1,13 @@
 <script>
 import is_validation_error from '@/http/is_validation_error'
 import isAuthError from '@/http/is_auth_error'
+import CILogonProviderPicker from '@/components/auth/CILogonProviderPicker.vue'
+import { cilogonEnabled } from '@/domain/cilogon'
 
 export default {
+    components: {
+        CILogonProviderPicker
+    },
     props: {
         inviteCode: {
             type: String,
@@ -21,14 +26,7 @@ export default {
         }
     },
     computed: {
-        cilogonEnabled() {
-            return import.meta.env.VITE_CILOGON_ENABLED === 'true'
-        },
-        cilogonUrl() {
-            return this.inviteCode
-                ? `/auth/cilogon/redirect?invite=${encodeURIComponent(this.inviteCode)}`
-                : '/auth/cilogon/redirect'
-        }
+        cilogonEnabled: () => cilogonEnabled
     },
     methods: {
         async authenticate() {
@@ -93,12 +91,10 @@ export default {
     </button-row>
 
     <div v-if="cilogonEnabled" class="mt-4 border-t pt-4">
-      <a class="btn w-auto px-4" :href="cilogonUrl">
-        Sign in with CILogon
-      </a>
-      <p class="text-sm text-gray-600 mt-1">
-        Use your institution, ORCID, Google, or Microsoft account.
+      <p class="mb-2">
+        Or sign in with:
       </p>
+      <CILogonProviderPicker :invite-code="inviteCode" />
     </div>
   </form-container>
 </template>

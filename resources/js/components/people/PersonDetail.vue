@@ -12,6 +12,7 @@ import ActivityLog from "@/components/log_entries/ActivityLog.vue";
 import PersonMailLog from "@/components/people/PersonMailLog.vue";
 import ProfilePicture from "@/components/people/ProfilePicture.vue";
 import DemographicsForm from '@/components/people/DemographicsForm.vue';
+import SignInMethods from '@/components/people/SignInMethods.vue';
 
 
 export default {
@@ -26,6 +27,7 @@ export default {
         ActivityLog,
         PersonMailLog,
         ProfilePicture,
+        SignInMethods,
     },
     props: {
         uuid: {
@@ -186,6 +188,10 @@ export default {
 
       <tab-item label="Demographics" :visible="(hasRole('super-admin') || userIsPerson(person))">
         <DemographicsForm :person="person" />
+      </tab-item>
+
+      <tab-item label="Sign-in Methods" :visible="userIsPerson(person) || hasPermission('people-manage')">
+        <SignInMethods :person="person" />
       </tab-item>
 
       <tab-item label="Conflict of Interest">

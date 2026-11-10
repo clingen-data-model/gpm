@@ -4,11 +4,14 @@ import {redeemInvite, redeemInviteForExistingUser} from '@/domain/onboarding_ser
 import isValidationError from '@/http/is_validation_error'
 import { useStore } from 'vuex'
 import LoginForm from '@/components/LoginForm.vue'
+import CILogonProviderPicker from '@/components/auth/CILogonProviderPicker.vue'
+import { cilogonEnabled } from '@/domain/cilogon'
 
 export default {
     name: 'AccountCreationForm',
     components: {
-        LoginForm
+        LoginForm,
+        CILogonProviderPicker
     },
     props: {
         invite: {
@@ -55,12 +58,8 @@ export default {
 
         onMounted(() => syncEmail());
 
-        const cilogonEnabled = import.meta.env.VITE_CILOGON_ENABLED === 'true'
-        const cilogonUrl = `/auth/cilogon/redirect?invite=${encodeURIComponent(props.invite.code)}`
-
         return {
             cilogonEnabled,
-            cilogonUrl,
             errors,
             email,
             password,
@@ -85,11 +84,12 @@ export default {
         Create your account
       </p>
       <div v-if="cilogonEnabled" class="my-4">
-        <a class="btn blue w-auto px-4" :href="cilogonUrl">
-          Continue with CILogon
-        </a>
-        <p class="text-sm text-gray-600 mt-1">
-          Use your institution, ORCID, Google, or Microsoft account. Or create a password below.
+        <p class="mb-2">
+          Continue with your ORCID, Google, Microsoft, GitHub, or institution account:
+        </p>
+        <CILogonProviderPicker :invite-code="invite.code" />
+        <p class="text-sm text-gray-600 mt-2">
+          Or create a password below.
         </p>
       </div>
       <input-row
