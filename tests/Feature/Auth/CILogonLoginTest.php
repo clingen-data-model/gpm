@@ -7,6 +7,7 @@ use App\Modules\Person\Models\Invite;
 use App\Modules\Person\Models\Person;
 use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Event;
 use Laravel\Socialite\Facades\Socialite;
 use Laravel\Socialite\Two\User as SocialiteUser;
@@ -31,15 +32,20 @@ class CILogonLoginTest extends TestCase
         ]);
     }
 
-    private function fakeIdentity(array $claims): void
+    private function identity(array $claims): SocialiteUser
     {
         $claims += ['sub' => 'http://cilogon.org/serverA/users/1', 'idp' => 'urn:mace:incommon:example.edu'];
-        $user = (new SocialiteUser)->setRaw($claims)->map([
+
+        return (new SocialiteUser)->setRaw($claims)->map([
             'id' => $claims['sub'],
             'name' => $claims['name'] ?? null,
             'email' => $claims['email'] ?? null,
         ]);
-        Socialite::shouldReceive('driver->user')->andReturn($user);
+    }
+
+    private function fakeIdentity(array $claims): void
+    {
+        Socialite::shouldReceive('driver->user')->andReturn($this->identity($claims));
     }
 
     private function hitCallback(array $session = [])
@@ -243,9 +249,32 @@ class CILogonLoginTest extends TestCase
 
         $this->actingAs($person->user, 'web')
             ->hitCallback(['cilogon.link' => true])
-            ->assertRedirect('/');
+            ->assertRedirect('/people/'.$person->uuid.'?tab=sign-in%20methods&cilogon_linked=1');
 
         $this->assertDatabaseHas('person_identities', ['person_id' => $person->id]);
+    }
+
+    #[Test]
+    public function identities_from_several_providers_all_log_in_the_same_user()
+    {
+        $person = $this->personWithUser();
+        $person->identities()->create(['issuer' => self::ISSUER, 'sub' => 'http://cilogon.org/serverA/users/1', 'idp' => self::GOOGLE_IDP]);
+        $google = $this->identity(['sub' => 'http://cilogon.org/serverA/users/1', 'idp' => self::GOOGLE_IDP]);
+        $orcid = $this->identity(['sub' => 'http://cilogon.org/serverA/users/2', 'idp' => self::ORCID_IDP]);
+        Socialite::shouldReceive('driver->user')->andReturn($orcid, $google, $orcid);
+
+        $this->actingAs($person->user, 'web')->hitCallback(['cilogon.link' => true]);
+        Auth::guard('web')->logout();
+
+        $this->hitCallback()->assertRedirect('/');
+        $this->assertAuthenticatedAs($person->user, 'web');
+        Auth::guard('web')->logout();
+        $this->hitCallback()->assertRedirect('/');
+        $this->assertAuthenticatedAs($person->user, 'web');
+
+        $identities = $person->identities()->get();
+        $this->assertEqualsCanonicalizing([self::GOOGLE_IDP, self::ORCID_IDP], $identities->pluck('idp')->all());
+        $this->assertTrue($identities->every(fn ($i) => $i->last_login_at !== null));
     }
 
     #[Test]
@@ -258,7 +287,7 @@ class CILogonLoginTest extends TestCase
 
         $this->actingAs($me->user, 'web')
             ->hitCallback(['cilogon.link' => true])
-            ->assertRedirect('/login?cilogon_error=already_linked');
+            ->assertRedirect('/people/'.$me->uuid.'?tab=sign-in%20methods&cilogon_error=already_linked');
     }
 
     #[Test]
