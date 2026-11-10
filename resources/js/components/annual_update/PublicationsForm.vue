@@ -34,6 +34,7 @@ const includedCount = computed(() => pubs.value.filter(p => !!p.included).length
 const publicationKey = (p) => p?.publication_id ?? null
 const sourceLabel = (p) => String(p?.source_type).toUpperCase()
 const sourceValue = (p) => p?.source_id ?? null
+const inPeriod = (p) => publishedOf(p) >= publicationPeriodStart.value && publishedOf(p) <= publicationPeriodEnd.value
 const publishedOf = (p) => formatDateParam(p?.published_at)
 
 // Need to double check the date range we want to use to fetch the publications for the Annual Update.
@@ -65,8 +66,6 @@ const preloadPublications = async () => {
   if (!year.value || !groupUuid.value) return
   loading.value = true
   const params = {
-    start: publicationPeriodStart.value,
-    end: publicationPeriodEnd.value,
     shape_exchange: props.shapeExchange ?? 'false',
   }
 
@@ -268,14 +267,14 @@ const groupPublicationsUrl = computed(() =>
                 <span class="font-medium">Journal:</span> {{ p.journal ?? 'n.a' }}
               </div>
             </td>
-            <td class="px-3 py-2">
+            <td class="px-3 py-2" :class="inPeriod(p) ? 'text-blue-700' : 'text-gray-500'">
               {{ formatDate(publishedOf(p)) || 'n.a' }}
             </td>
           </tr>
         </tbody>
       </table>
       <div class="text-gray-500">
-        Only publications with a publication date within this Annual Update period {{ formatDate(publicationPeriodStart) }} to {{ formatDate(publicationPeriodEnd) }} are shown.
+        All publication dates are selectable. Blue dates fall within this Annual Update period {{ formatDate(publicationPeriodStart) }} to {{ formatDate(publicationPeriodEnd) }}; grey dates fall outside it.
       </div>
     </div>
 

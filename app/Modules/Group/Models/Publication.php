@@ -42,6 +42,32 @@ class Publication extends Model
         return $this->belongsTo(Group::class);
     }
 
+    public function getMetaAttribute($value)
+    {
+        return \App\Support\PublicationTitle::metadata($this->fromJson($value));
+    }
+
+    public function publishedPublication()
+    {
+        return $this->belongsTo(self::class, 'published_publication_id');
+    }
+
+    public function preprint()
+    {
+        return $this->hasOne(self::class, 'published_publication_id');
+    }
+
+    public function linkedPublicationReportFields(): array
+    {
+        $linked = $this->publishedPublication ?? $this->preprint;
+        return [
+            'publication_relationship' => $linked ? ($this->publishedPublication ? 'Published version' : 'Linked preprint') : null,
+            'linked_publication_title' => $linked?->meta['title'] ?? null,
+            'linked_publication_pmcid' => $linked?->meta['pmcid']['id'] ?? ($linked?->source === 'pmcid' ? $linked->identifier : null),
+            'linked_publication_gpm_url' => $linked?->group ? url('/groups/'.$linked->group->uuid.'?tab=publications&publication='.$linked->id) : null,
+        ];
+    }
+
     public function toExchangePayload(): array
     {
         return [
@@ -50,11 +76,13 @@ class Publication extends Model
             'source_type'       => $this->source,
             'source_id'         => $this->identifier,
             'title'             => $this->meta['title'] ?? null,
+            'title_format'      => 'plain',
             'authors'           => $this->meta['authors'] ?? [],
             'journal'           => $this->meta['journal'] ?? null,            
             'published_at'      => $this->published_at ?? $this->meta['published_at'] ?? null,
             'url'               => $this->link ?? null,
-            'meta'              => $this->meta ?? []
+            'meta'              => $this->meta ?? [],
+            'created_at'        => $this->created_at,
         ];
     }
 

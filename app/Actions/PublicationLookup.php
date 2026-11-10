@@ -134,6 +134,7 @@ class PublicationLookup
             'pub_type' => $meta['type'],
             'published_at' => $meta['published_at'],
             'meta' => $meta,
+            'title_plain' => \App\Support\PublicationTitle::plain($meta['title']),
         ];
     }
 

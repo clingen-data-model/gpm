@@ -41,7 +41,7 @@ class ReportSummaryMake extends ReportMakeAbstract
 
     private function metrics(): iterable
     {
-        $cached = Cache::remember('report:basic-summary', now()->addMinutes(30), function () {
+        $cached = Cache::remember('report:basic-summary:v2', now()->addMinutes(30), function () {
             return iterator_to_array($this->metricsUncached());
         });
 
@@ -94,7 +94,9 @@ class ReportSummaryMake extends ReportMakeAbstract
         yield 'People in 2+ EPs' => $this->getPeopleInManyEpsCount();
         yield 'Individuals with demographics info' => $this->getEverFilledDemographics();
         yield 'Individuals with current demographics info (within last year)' => $this->getFilledDemographicsInLastYear();
-        yield 'Number of Publications' => $this->getNumberOfPublications();
+        $publications = Publication::get(['id', 'source', 'identifier', 'meta']);
+        yield 'Number of Publications' => $publications->count();
+        yield 'Unique publications' => \App\Support\PublicationIdentity::count($publications);
         yield 'Individuals has taken Code of Conduct attestation and not expire per today\'s date' => $this->getPeopleWithCocCount();
     }
 

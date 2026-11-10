@@ -105,6 +105,22 @@ class AnnualUpdate extends Model
         return $this->completed_at !== null;
     }
 
+    public function getDataAttribute($value)
+    {
+        $data = $this->fromJson($value);
+        if (isset($data['publications']) && is_array($data['publications'])) {
+            foreach ($data['publications'] as &$publication) {
+                if (isset($publication['title'])) {
+                    if (($publication['title_format'] ?? null) !== 'plain') {
+                        $publication['title'] = \App\Support\PublicationTitle::plain($publication['title']);
+                        $publication['title_format'] = 'plain';
+                    }
+                }
+            }
+        }
+        return $data;
+    }
+
     public function getForYearAttribute()
     {
         return $this->created_at->year - 1;

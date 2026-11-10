@@ -15,6 +15,8 @@ class ReportPublicationsMake extends ReportMakeAbstract
                 'group',
                 'group.type',
                 'group.expertPanel',
+                'publishedPublication.group',
+                'preprint.group',
             ])
             ->get();
 
@@ -27,9 +29,9 @@ class ReportPublicationsMake extends ReportMakeAbstract
             }
 
             $identifiers = [];
-            if ($base['meta']['pmid']['id']) { $identifiers[] = strtoupper("PMID: ") . $base['meta']['pmid']['id']; }
-            if ($base['meta']['doi']['id']) { $identifiers[] = strtoupper("DOI: ") . $base['meta']['doi']['id']; }
-            if ($base['meta']['pmcid']['id']) { $identifiers[] = strtoupper("PMCID: ") . $base['meta']['pmcid']['id']; }
+            if ($base['meta']['pmid']['id'] ?? null) { $identifiers[] = strtoupper("PMID: ") . $base['meta']['pmid']['id']; }
+            if ($base['meta']['doi']['id'] ?? null) { $identifiers[] = strtoupper("DOI: ") . $base['meta']['doi']['id']; }
+            if ($base['meta']['pmcid']['id'] ?? null) { $identifiers[] = strtoupper("PMCID: ") . $base['meta']['pmcid']['id']; }
 
             $group         = $pub->group;
             $groupType     = $group?->type?->display_name;
@@ -47,6 +49,7 @@ class ReportPublicationsMake extends ReportMakeAbstract
                 'identifiers' => $identifiers,
                 'published_at'   => $base['published_at'] ?? null,
                 'url'         => $base['url'] ?? null,
+                'added_to_gpm'   => $base['created_at'] ?? null,
 
                 // From Group
                 'group_uuid'       => $groupUuid,
@@ -54,6 +57,8 @@ class ReportPublicationsMake extends ReportMakeAbstract
                 'group_type'       => $groupType,
                 'affiliation_id'   => $affiliationID,
             ];
+
+            $row = array_merge($row, $pub->linkedPublicationReportFields());
 
             foreach ($row as $k => $v) {
                 if (is_string($v)) {

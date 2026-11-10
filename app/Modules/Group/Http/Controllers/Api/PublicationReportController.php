@@ -19,7 +19,7 @@ class PublicationReportController extends Controller
         ]);
 
         $q = Publication::query()
-            ->with(['group.expertPanel'])
+            ->with(['group.expertPanel', 'publishedPublication.group', 'preprint.group'])
             ->when($validated['start'] ?? null, fn($qq,$start)=>$qq->whereDate('published_at','>=',$start))
             ->when($validated['end'] ?? null,   fn($qq,$end)=>$qq->whereDate('published_at','<=',$end))
             ->when($validated['group_id'] ?? null, fn($qq,$gid)=>$qq->where('group_id',$gid))
@@ -32,19 +32,21 @@ class PublicationReportController extends Controller
             ];
             return new StreamedResponse(function () use ($q) {
                 $out = fopen('php://output', 'w');
-                fputcsv($out, ['Group','EP Type','Pub Type','Title','Journal','PMID','PMCID','DOI','Published','URL']);
+                fputcsv($out, ['Group','EP Type','Pub Type','Title','Journal','PMID','PMCID','DOI','Published','URL','Added','Publication relationship','Linked publication title','Linked publication PMCID','Linked publication GPM URL']);
                 $q->orderBy('published_at','desc')->lazyById(1000)->each(function ($p) use ($out) {
                     fputcsv($out, [
                         optional($p->group)->name,
                         optional($p->group->expertPanel)->type->name ?? null,
                         $p->pub_type,
-                        $p->title,
+                        $p->meta['title'] ?? null,
                         $p->journal,
                         $p->pmid,
                         $p->pmcid,
                         $p->doi,
                         optional($p->published_at)?->toDateString(),
                         $p->url,
+                        optional($p->created_at)?->toDateString(),
+                        ...array_values($p->linkedPublicationReportFields()),
                     ]);
                 });
                 fclose($out);

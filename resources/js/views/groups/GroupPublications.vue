@@ -3,6 +3,9 @@ import { ref, watch, computed, reactive, onActivated, defineExpose } from "vue";
 import { api } from "@/http";
 import useOpenAlex from "@/composables/useOpenAlex";
 import { hasRole } from '@/auth_utils'
+import { useRoute } from 'vue-router'
+
+const route = useRoute();
 
 const props = defineProps({ group: { type: Object, required: true } });
 
@@ -35,6 +38,9 @@ async function fetchPublications() {
     try {
         const { data } = await api.get(`/api/groups/${groupUuid.value}/publications`, { });
         items.value = data;
+        if (detailsModal.open) {
+            detailsModal.item = data.find(p => p.id === detailsModal.item?.id) ?? null;
+        }
         loadedFor.value = groupUuid.value
     } catch (e) {
         error.value = "Failed to load publications.";
@@ -99,6 +105,10 @@ async function removePublication(pub) {
 
 /** DETAIL SECTION */
 function showDetails(p){
+  linkQuery.value = '';
+  linkResults.value = [];
+  linkTarget.value = '';
+  linkError.value = '';
   detailsModal.item = p;
   detailsModal.open = true;
 }
@@ -107,6 +117,49 @@ function closeDetails(){
   detailsModal.item = null;
 }
 
+const linkQuery = ref('');
+const linkResults = ref([]);
+const linkTarget = ref('');
+const linkError = ref('');
+const linkBusy = ref(false);
+const canEdit = computed(() => hasRole('super-user') || hasRole('super-admin') || hasRole('coordinator', props.group));
+async function searchLinks() {
+  linkError.value = '';
+  try {
+    const { data } = await api.get(`/api/groups/${groupUuid.value}/publications/search`, { params: { query: linkQuery.value } });
+    linkResults.value = data.filter(p => p.id !== detailsModal.item.id);
+  } catch (e) { linkError.value = e?.response?.data?.message || 'Search failed.'; }
+}
+async function saveLink(target) {
+  linkBusy.value = true;
+  linkError.value = '';
+  try {
+    const id = detailsModal.item.id;
+    await api.put(`/api/groups/${groupUuid.value}/publications/${id}/link`, { published_publication_id: target || null });
+    await fetchPublications();
+    detailsModal.item = items.value.find(p => p.id === id);
+    linkTarget.value = '';
+  } catch (e) { linkError.value = e?.response?.data?.message || 'Unable to save link.'; }
+  finally { linkBusy.value = false; }
+}
+const relatedPublications = (p) => [
+  { label: 'Published version', publication: p?.published_publication },
+  { label: 'Linked preprint', publication: p?.preprint },
+].filter(related => related.publication);
+const pmcidOf = (p) => p?.meta?.pmcid?.id || (p?.source === 'pmcid' ? p.identifier : null);
+const publicationUrl = (p) => `/groups/${p.group?.uuid || groupUuid.value}?tab=publications&publication=${p.id}`;
+function openRelated(event, p) {
+  const local = items.value.find(item => item.id === p.id);
+  if (local && !event.ctrlKey && !event.metaKey && !event.shiftKey && !event.altKey) {
+    event.preventDefault();
+    showDetails(local);
+  }
+}
+watch(() => [route.query.publication, items.value], ([id]) => {
+  if (!id) return;
+  const publication = items.value.find(p => String(p.id) === String(id));
+  if (publication) showDetails(publication);
+}, { immediate: true });
 const prettyMeta = computed(() => JSON.stringify(detailsModal.item?.meta ?? {}, null, 2));
 
 const metaEntries = computed(() => {
@@ -193,6 +246,11 @@ function clearAddModal() {
                                     </svg>
                                 </a>
                             </div>
+                            <div v-for="{ label, publication: linked } in relatedPublications(p)" :key="label" class="text-xs mt-1">
+                                {{ label }}:
+                                <a :href="publicationUrl(linked)" class="underline" @click="openRelated($event, linked)">{{ linked.meta?.title || linked.identifier }}</a>
+                                <span v-if="pmcidOf(linked)"> (PMCID: {{ pmcidOf(linked) }})</span>
+                            </div>
                         </td>
 
                         <td class="px-3 py-2">{{ p.meta?.journal }}</td>
@@ -229,7 +287,7 @@ function clearAddModal() {
 
             <p v-if="addModal.error" class="text-sm text-red-600">{{ addModal.error }}</p>
             <div v-if="addModal.preview" class="rounded border p-3 space-y-1">
-              <div class="font-medium">{{ addModal.preview.meta.title || 'Untitled' }}</div>
+              <div class="font-medium">{{ addModal.preview.title_plain || 'Untitled' }}</div>
 
               <div class="text-sm text-gray-600">
                 {{ addModal.preview.meta.journal || '—' }}
@@ -280,6 +338,28 @@ function clearAddModal() {
                     </div>
                 </div>
 
+                <div class="border rounded p-3 space-y-2">
+                    <div v-for="{ label, publication: linked } in relatedPublications(detailsModal.item)" :key="label" data-testid="publication-relationship">
+                        <strong>{{ label }}:</strong>
+                        <a :href="publicationUrl(linked)" class="underline" @click="openRelated($event, linked)">{{ linked.meta?.title || linked.identifier }}</a>
+                        <span v-if="pmcidOf(linked)"> (PMCID: {{ pmcidOf(linked) }})</span>
+                    </div>
+                    <div v-if="canEdit && !detailsModal.item?.preprint" class="space-y-2">
+                        <p>Link this preprint to an existing published article.</p>
+                        <div class="flex gap-2">
+                            <input v-model="linkQuery" aria-label="Find existing publication" placeholder="Title or identifier" class="border rounded p-2" @keydown.enter.prevent="searchLinks" />
+                            <button class="btn" :disabled="linkQuery.trim().length < 2 || linkBusy" @click="searchLinks">Search</button>
+                        </div>
+                        <select v-model="linkTarget" aria-label="Published article" class="border rounded p-2 w-full">
+                            <option value="">Select an existing publication</option>
+                            <option v-for="candidate in linkResults" :key="candidate.id" :value="candidate.id">{{ candidate.meta?.title || candidate.identifier }} - {{ candidate.identifier }} - {{ candidate.group?.name }}</option>
+                        </select>
+                        <button class="btn" :disabled="!linkTarget || linkBusy" @click="saveLink(linkTarget)">Save link</button>
+                        <button v-if="detailsModal.item?.published_publication_id" class="btn ml-2" :disabled="linkBusy" @click="saveLink(null)">Remove link</button>
+                    </div>
+                    <p v-if="detailsModal.item?.preprint" class="text-sm text-gray-600">Edit this link from the preprint's group publication details.</p>
+                    <p v-if="linkError" class="text-red-600">{{ linkError }}</p>
+                </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm max-h-[65vh] overflow-auto border rounded p-3">
                     <div v-for="[k, v] in metaEntries" :key="k" class="flex flex-col">
                         <div class="text-xs text-gray-500 tracking-wider uppercase">{{ k }}</div>

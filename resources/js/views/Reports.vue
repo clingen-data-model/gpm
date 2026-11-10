@@ -209,8 +209,8 @@ const qualityRows = computed(() => [
   },
   {
     label: 'Publications',
-    value: getMetric('Number of Publications'),
-    meta: 'Total Publication from all Groups',
+    value: getMetric('Unique publications'),
+    meta: 'Total Unique Publications from all Groups',
   },
 ])
 

@@ -15,7 +15,13 @@ class PublicationDelete
         abort_if($publication->group_id !== $group->id, 404);
 
         $toLog = $publication->replicate();
-        $publication->delete();
+        \Illuminate\Support\Facades\DB::transaction(function () use ($publication) {
+            $locked = Publication::whereKey($publication->id)->lockForUpdate()->firstOrFail();
+            Publication::where('published_publication_id', $locked->id)->update(['published_publication_id' => null]);
+            $locked->published_publication_id = null;
+            $locked->save();
+            $locked->delete();
+        }, 3);
         event(new PublicationDeleted($group, $toLog));
 
         return response()->noContent();
