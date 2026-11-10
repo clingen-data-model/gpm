@@ -48,6 +48,14 @@ return [
         'base_url' => env('CILOGON_BASE_URL', 'https://cilogon.org'),
         // IdP entityIDs (the `idp` claim) whose asserted email may link an existing account.
         'email_trusted_idps' => array_filter(explode(',', env('CILOGON_EMAIL_TRUSTED_IDPS', ''))),
+        // EntityIDs as listed at https://cilogon.org/idplist/ (not the OIDC issuers in CILogon's docs).
+        'common_idps' => [
+            ['id' => 'http://orcid.org/oauth/authorize', 'name' => 'ORCID'],
+            ['id' => 'http://google.com/accounts/o8/id', 'name' => 'Google'],
+            ['id' => 'http://login.microsoftonline.com/common/oauth2/v2.0/authorize', 'name' => 'Microsoft'],
+            ['id' => 'http://github.com/login/oauth/authorize', 'name' => 'GitHub'],
+        ],
+        'idp_list_url' => env('CILOGON_IDP_LIST_URL', 'https://cilogon.org/idplist/'),
     ],
 
     'affiliation_api' => [

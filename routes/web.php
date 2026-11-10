@@ -22,6 +22,7 @@ use App\Modules\Funding\Http\Controllers\Api\FundingSourceController;
 use App\Actions\ReportForeignComponentsMake;
 use App\Actions\Auth\CILogonRedirect;
 use App\Actions\Auth\CILogonCallback;
+use App\Actions\Auth\CILogonIdpList;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -37,6 +38,7 @@ Route::get('/funding-sources/logo/{logo_path}', [FundingSourceController::class,
 
 Route::get('/auth/cilogon/redirect', CILogonRedirect::class)->name('cilogon.redirect');
 Route::get('/auth/cilogon/callback', CILogonCallback::class)->name('cilogon.callback');
+Route::get('/auth/cilogon/idps', CILogonIdpList::class)->name('cilogon.idps');
 
 Route::get('/{any}', [ViewController::class, 'app'])
     ->where('any', '^(?!(api|sanctum|impersonate|dev|documents|downloads|clockwork|profile-photos|storage)).*$');
