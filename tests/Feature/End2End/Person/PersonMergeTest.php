@@ -199,6 +199,17 @@ class PersonMergeTest extends TestCase
         );
     }
     
+    #[Test]
+    public function moves_linked_identities_to_the_authority()
+    {
+        $this->person1->identities()->create(['issuer' => 'https://cilogon.org', 'sub' => 'sub-1']);
+        $this->person2->identities()->create(['issuer' => 'https://cilogon.org', 'sub' => 'sub-2']);
+
+        $this->makeRequest()->assertStatus(200);
+
+        $this->assertEqualsCanonicalizing(['sub-1', 'sub-2'], $this->person1->identities()->pluck('sub')->all());
+    }
+
     private function makeRequest($data = null)
     {
         $data = $data ?? ['authority_id' => $this->person1->id, 'obsolete_id' => $this->person2->id];

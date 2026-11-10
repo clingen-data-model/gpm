@@ -31,6 +31,7 @@ class PersonMerge
 
         $this->transferMemberships($authority, $obsolete);
         $this->transferUser($authority, $obsolete);
+        $obsolete->identities()->update(['person_id' => $authority->id]);
 
         $this->deletePerson->handle($obsolete);
 
