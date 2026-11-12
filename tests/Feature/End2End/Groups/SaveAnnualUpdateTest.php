@@ -84,6 +84,18 @@ class SaveAnnualUpdateTest extends TestCase
         }
     }
 
+    #[Test]
+    public function saves_publications_outside_the_review_period()
+    {
+        $data = $this->makeRequestData();
+        $data['data']['publications'] = [
+            ['publication_id' => 'old-publication', 'published_at' => '1999-01-01', 'included' => true],
+            ['publication_id' => 'future-publication', 'published_at' => '2099-01-01', 'included' => true],
+        ];
+        $this->makeRequest($data)->assertOk();
+        $this->assertSame($data['data']['publications'], $this->annualReview->fresh()->data['publications']);
+    }
+
     private function makeRequest($data = null)
     {
         $data = $data ?? $this->makeRequestData();

@@ -36,6 +36,7 @@ class GroupPublicationsController extends Controller
         if ($request->boolean('shape_exchange')) { // For Annual Updates
             return $q->get()->map->toExchangePayload();
         }
-        return $q->get();
+        // Group list only: annual reviews above retain both publication records.
+        return $q->whereNull('published_publication_id')->get();
     }
 }
