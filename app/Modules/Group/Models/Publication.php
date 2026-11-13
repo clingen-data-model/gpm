@@ -68,6 +68,13 @@ class Publication extends Model
         ];
     }
 
+    public function toAnnualUpdatePayload(): array
+    {
+        return array_merge($this->toExchangePayload(), [
+            'preprint' => $this->preprint?->toExchangePayload(),
+        ]);
+    }
+
     public function toExchangePayload(): array
     {
         return [

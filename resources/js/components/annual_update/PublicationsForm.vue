@@ -1,7 +1,7 @@
 <script setup>
 import { api } from"@/http";
 import { debounce, cloneDeep } from 'lodash-es'
-import { computed, ref, watch } from 'vue'
+import { computed, ref, watch, onBeforeUnmount } from 'vue'
 
 const props = defineProps({
   modelValue: { type: Object, required: true },
@@ -25,162 +25,83 @@ const groupUuid = computed(() => {
   return ( props.groupUuid || au.value?.expert_panel?.group?.uuid || (typeof window !== 'undefined' && window?.appRouteParams?.uuid) || null )
 })
 
-const pubs = ref([]);
-const loading = ref(false);
-const note = ref('');
-const totalCount = computed(() => Number(pubs.value.length) || 0)
-const includedCount = computed(() => pubs.value.filter(p => !!p.included).length)
-
-const publicationKey = (p) => p?.publication_id ?? null
-const sourceLabel = (p) => String(p?.source_type).toUpperCase()
-const sourceValue = (p) => p?.source_id ?? null
-const inPeriod = (p) => publishedOf(p) >= publicationPeriodStart.value && publishedOf(p) <= publicationPeriodEnd.value
-const publishedOf = (p) => formatDateParam(p?.published_at)
-
-// Need to double check the date range we want to use to fetch the publications for the Annual Update.
+const pubs = ref([])
+const loading = ref(false)
+const note = ref('')
+const loadError = ref('')
+const publicationKey = p => p?.publication_id
+const sourceLabel = p => String(p?.source_type || '').toUpperCase()
+const sourceValue = p => p?.source_id
+const publishedOf = p => formatDateParam(p?.published_at)
 const publicationPeriodStart = computed(() => `${year.value}-01-01`)
 const publicationPeriodEnd = computed(() => `${year.value + 1}-03-31`)
-
+const inPeriod = p => publishedOf(p) >= publicationPeriodStart.value && publishedOf(p) <= publicationPeriodEnd.value
+const totalCount = computed(() => pubs.value.length)
+const includedCount = computed(() => pubs.value.filter(p => p.included).length)
+const isMissing = p => !!p._missing
+const isNew = p => !!p._new
 const emitChange = debounce(() => {
   if (isComplete.value) return
-  const next = cloneDeep(au.value) || {}
+  const next = cloneDeep(au.value)
   next.data = next.data || {}
-  next.data.publications = stripUiFlags(pubs.value)
-  next.data.publications_note = note.value ?? ''
+  next.data.publications = pubs.value.filter(p => p.included).map(p => ({ publication_id: publicationKey(p) }))
+  next.data.publications_note = note.value
   emit('update:modelValue', next)
 }, 600)
+onBeforeUnmount(() => { generation++; emitChange.cancel() })
+defineExpose({ flush: () => emitChange.flush() })
 
-watch(() => props.modelValue, (val) => {
-  if (!val) return
-  const d = val.data || {}
-  if (Array.isArray(d.publications) && d.publications.length > 0) {
-    pubs.value = cloneDeep(d.publications).map((p) => ({
-      ...p,
-      included: p.included ?? true,
-    }))
-  }
-  if (typeof d.publications_note === 'string') note.value = d.publications_note
-}, { deep: true, immediate: true })
-
+let generation = 0
 const preloadPublications = async () => {
-  if (!year.value || !groupUuid.value) return
+  if (isComplete.value || !au.value.id || !groupUuid.value) return
+  const current = generation
   loading.value = true
-  const params = {
-    shape_exchange: props.shapeExchange ?? 'false',
-  }
-
+  loadError.value = ''
   try {
-    const { data } = await api.get(`/api/groups/${groupUuid.value}/publications`, { params })
-    /* pubs.value = (Array.isArray(data) ? data : []).map(p => ({
-      ...p,
-      included: p.included ?? false,
-    }))
-    emitChange() */
-    const latest = (Array.isArray(data) ? data : []).map((p) => ({
-      ...p,
-      included: false, // Flag whether to be included in the Annual Update - default is set to false
-    }))
-    const seen = new Set()
-    const unique = []
-    for (const p of latest) {
-      const key = publicationKey(p)
-      if (!key || seen.has(key)) continue
-      seen.add(key)
-      unique.push(p)
+    const { data } = await api.get(`/api/groups/${groupUuid.value}/publications`, { params: { shape_exchange: true } })
+    if (current !== generation || isComplete.value) return
+    const saved = new Map(pubs.value.map(p => [publicationKey(p), p]))
+    const latest = new Map(data.map(p => [publicationKey(p), {
+      ...p, included: saved.get(publicationKey(p))?.included ?? false,
+      _new: !saved.has(publicationKey(p)),
+    }]))
+    for (const [key, p] of saved) {
+      if (p.included && !latest.has(key)) latest.set(key, { ...p, _missing: true })
     }
-    mergePublications(unique)
+    pubs.value = [...latest.values()].sort((a, b) =>
+      (publishedOf(b) || '').localeCompare(publishedOf(a) || '') || String(a.title || '').localeCompare(String(b.title || '')))
   } catch (e) {
-    //
+    if (current === generation) loadError.value = 'Unable to load publications. Retry using Refresh list.'
   } finally {
-    loading.value = false
+    if (current === generation) loading.value = false
   }
 }
-
-const preloaded = ref(false)
-watch(() => [groupUuid.value, year.value, au.value?.data?.publications?.length],
-  async ([uuid, yr]) => {
-    if (!uuid || !yr) return
-
-    const parentHas = Array.isArray(au.value?.data?.publications) && au.value.data.publications.length > 0
-    if (parentHas || pubs.value.length > 0 || preloaded.value) return
-    preloaded.value = true
-    await preloadPublications()
+watch(() => [au.value.id, groupUuid.value, isComplete.value], () => {
+  generation++
+  loading.value = false
+  loadError.value = ''
+  emitChange.cancel()
+  pubs.value = cloneDeep(au.value.data?.publications || []).map(p => ({ ...p, included: p.included ?? true }))
+  note.value = au.value.data?.publications_note || ''
+  if (!isComplete.value) preloadPublications()
 }, { immediate: true })
-
-const toggleAll = (include) => {
+const refresh = () => { if (!loading.value) return preloadPublications() }
+const toggleAll = include => {
   if (isComplete.value) return
-  pubs.value = pubs.value.map(p => ({ ...p, included: !!include }))
+  pubs.value = pubs.value.map(p => ({ ...p, included: include ? (p._missing ? p.included : true) : false }))
   emitChange()
 }
 const onToggleRow = (idx, value) => {
   if (isComplete.value) return
-  pubs.value = pubs.value.map((p, i) => i === idx ? { ...p, included: !!value } : p);
+  pubs.value[idx].included = value
+  emitChange()
+}
+const removeRow = idx => {
+  if (isComplete.value) return
+  pubs.value.splice(idx, 1)
   emitChange()
 }
 const onNoteInput = () => { if (!isComplete.value) emitChange() }
-const latestKeys = ref(new Set())
-const newKeys = ref(new Set())
-
-const isMissing = (p) => latestKeys.value.size > 0 && !latestKeys.value.has(publicationKey(p))
-
-const isNew = (p) => newKeys.value.has(publicationKey(p))
-
-const stripUiFlags = (arr) => arr.map(({ _new, _missing, ...rest }) => rest)
-
-const mergePublications = (latestRaw) => {
-  const latest = Array.isArray(latestRaw) ? latestRaw : []
-
-  latestKeys.value = new Set(latest.map(publicationKey).filter(Boolean))
-
-  const byKey = (arr) => {
-    const m = new Map()
-    for (const p of arr) {
-      const key = publicationKey(p)
-      if (key) m.set(key, p)
-    }
-    return m;
-  }
-
-  const saved = Array.isArray(pubs.value) ? pubs.value : [];
-  const savedMap = byKey(saved);
-  newKeys.value = new Set(latest.filter(p => !savedMap.has(publicationKey(p))).map(publicationKey).filter(Boolean));
-
-  const mergedMap = new Map(saved.map(p => [publicationKey(p), { ...p }]).filter(([key]) => !!key))
-
-  for (const l of latest) {
-    const key = publicationKey(l)
-    if (!key) continue
-    if (!mergedMap.has(key)) {
-      mergedMap.set(key, { ...l, included: false })
-    } else {
-      const prev = mergedMap.get(key)
-      mergedMap.set(key, { ...prev, ...l, included: prev.included });
-    }
-  }
-  const merged = Array.from(mergedMap.values());
-
-  merged.sort((a, b) => {
-    const da = publishedOf(a);
-    const db = publishedOf(b);
-    if (da !== db) return db.localeCompare(da);
-    return String(a.title || '').localeCompare(String(b.title || ''));
-  })
-
-  pubs.value = merged
-  emitChange();
-}
-
-const refresh = async () => {
-  if (isComplete.value || loading.value) return
-  await preloadPublications()
-}
-
-const removeRow = (idx) => {
-  if (isComplete.value) return
-  pubs.value = pubs.value.filter((_, i) => i !== idx)
-  emitChange();
-}
-
 const groupPublicationsUrl = computed(() =>
   groupUuid.value ? `/groups/${groupUuid.value}?tab=publications` : null
 )
@@ -214,6 +135,9 @@ const groupPublicationsUrl = computed(() =>
       </div>
     </div>
 
+    <p v-if="loadError" class="text-red-600">{{ loadError }}</p>
+    <p v-if="errors?.publications" class="text-red-600">{{ errors.publications }}</p>
+    <p v-if="pubs.some(p => p._missing && p.included)" class="text-amber-700">Some selected publications are unavailable. Remove these selections before submitting.</p>
     <div v-if="loading" class="text-gray-500">Loading publications...</div>
     <div v-else class="overflow-x-auto">
       <table class="min-w-full border border-gray-200 rounded-md">
@@ -248,9 +172,9 @@ const groupPublicationsUrl = computed(() =>
             </td>
             <td class="px-3 py-2">
               <div class="font-medium leading-snug line-clamp-2">
-                {{ p.title }}
+                {{ p.title || p.publication_id }}
                 <span v-if="isNew(p)" class="ml-2 text-[10px] px-1.5 py-0.5 rounded bg-green-100 text-green-800 align-middle">New</span>
-                <span v-if="isMissing(p)" class="ml-2 text-[10px] px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 align-middle">Not in latest</span>
+                <span v-if="isMissing(p)" class="ml-2 text-[10px] px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 align-middle">Unavailable selection</span>
                 <button
                   v-if="isMissing(p)"
                   type="button"
@@ -262,6 +186,10 @@ const groupPublicationsUrl = computed(() =>
                 </button>
               </div>
               <div>
+                <div v-if="p.preprint" class="text-xs mt-1">
+                  Linked preprint: {{ p.preprint.title }} ? {{ sourceLabel(p.preprint) }}: {{ sourceValue(p.preprint) }}
+                  <span v-if="publishedOf(p.preprint)"> ? {{ formatDate(publishedOf(p.preprint)) }}</span>
+                </div>
                 <div v-if="p.authors && p.authors.length > 0"><span class="font-medium">Authors:</span> {{ p.authors.join(', ') }}</div>                
                 <span class="font-medium">Publication Type:</span> {{ p.type ?? 'n.a' }}  · 
                 <span class="font-medium">Journal:</span> {{ p.journal ?? 'n.a' }}

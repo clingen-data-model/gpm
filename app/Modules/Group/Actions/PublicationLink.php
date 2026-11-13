@@ -15,7 +15,10 @@ class PublicationLink extends PublicationAdd
     {
         $this->authorize($request->user(), $group);
         abort_unless($publication && $publication->group_id === $group->id, 404);
-        $data = $request->validate(['published_publication_id' => 'present|nullable|integer']);
+        $data = $request->validate([
+            'published_publication_id' => 'present|nullable|integer',
+            'expected_published_publication_id' => 'sometimes|nullable|integer',
+        ]);
         DB::transaction(function () use ($publication, $data) {
             $targetId = $data['published_publication_id'];
             // Lock endpoints in a consistent order to serialize competing links.
@@ -25,6 +28,13 @@ class PublicationLink extends PublicationAdd
             $target = $rows->get($targetId);
             if (!$source || ($targetId !== null && (!$target || $source->id === $target->id))) {
                 throw ValidationException::withMessages(['published_publication_id' => 'Choose another existing publication.']);
+            }
+            if (array_key_exists('expected_published_publication_id', $data)
+                && $source->published_publication_id != $data['expected_published_publication_id']) {
+                throw ValidationException::withMessages(['published_publication_id' => 'This relationship has changed. Refresh and try again.']);
+            }
+            if ($target && $target->group_id !== $source->group_id) {
+                throw ValidationException::withMessages(['published_publication_id' => 'Choose a publication from the same group.']);
             }
             if ($target) {
                 Gate::authorize('view', $target->group);

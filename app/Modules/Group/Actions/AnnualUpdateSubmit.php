@@ -4,11 +4,14 @@ namespace App\Modules\Group\Actions;
 
 use Carbon\Carbon;
 use App\Models\AnnualUpdate;
-use Illuminate\Validation\Rule;
 use App\Modules\Group\Models\Group;
+use App\Modules\Group\Models\Publication;
+use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
-use Lorisleiva\Actions\ActionRequest;
 use Illuminate\Support\Facades\Validator;
+use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsController;
 
 class AnnualUpdateSubmit
@@ -17,23 +20,39 @@ class AnnualUpdateSubmit
 
     public function handle(AnnualUpdate $annualReview): AnnualUpdate
     {
-        $annualReview->update(['completed_at' => Carbon::now()]);
-        return $annualReview;
+        return DB::transaction(function () use ($annualReview) {
+            $annualReview = AnnualUpdate::whereKey($annualReview->id)->lockForUpdate()->firstOrFail();
+            if ($annualReview->completed_at !== null) return $annualReview;
+            $this->makeDataValidator($annualReview)->validate();
+            $data = $annualReview->data ?? [];
+            Validator::make($data, [
+                'publications' => 'sometimes|array',
+                'publications.*.publication_id' => 'required|uuid|distinct',
+            ])->validate();
+            $ids = collect($data['publications'] ?? [])->pluck('publication_id');
+            $publications = Publication::where('group_id', $annualReview->expertPanel->group_id)
+                ->whereIn('uuid', $ids)->orderBy('id')->lockForUpdate()->get();
+            if ($publications->count() !== $ids->count() || $publications->contains(fn ($p) =>
+                $p->published_publication_id !== null || ($p->annual_update_id !== null && $p->annual_update_id != $annualReview->id))) {
+                throw ValidationException::withMessages([
+                    'publications' => 'Some selected publications are unavailable. Refresh the list and remove unavailable selections.',
+                ]);
+            }
+            $publications->load('preprint');
+            $data['publications'] = $publications->map(fn ($p) => array_merge($p->toAnnualUpdatePayload(), ['included' => true]))->all();
+            foreach ($publications as $publication) {
+                $publication->annual_update_id = $annualReview->id;
+                $publication->save();
+            }
+            $annualReview->update(['data' => $data, 'completed_at' => Carbon::now()]);
+            return $annualReview;
+        }, 3);
     }
 
     public function asController(ActionRequest $request, $groupUuid, $annualReviewId)
     {
         $group = Group::findByUuidOrFail($groupUuid);
-        $annualReview = $group->expertPanel->annualUpdates()->find($annualReviewId);
-
-        $validator = $this->makeDataValidator($annualReview);
-        if ($validator->fails()) {
-            return response([
-                'errors' => $validator->errors()
-            ], 422);
-        }
-
-        return $this->handle($annualReview);
+        return $this->handle($group->expertPanel->annualUpdates()->findOrFail($annualReviewId));
     }
 
     public function authorize(ActionRequest $request)

@@ -1,5 +1,6 @@
 <script setup>
 import { ref, watch, computed, reactive, onActivated, defineExpose } from "vue";
+import SearchSelect from '@/components/forms/SearchSelect.vue';
 import { api } from "@/http";
 import useOpenAlex from "@/composables/useOpenAlex";
 import { hasRole } from '@/auth_utils'
@@ -29,6 +30,7 @@ const detailsModal = reactive({
   copyLabel: 'Copy JSON',
 });
 
+const visibleItems = computed(() => items.value.filter(p => !p.published_publication_id));
 const groupUuid = computed(() => props.group?.uuid);
 
 async function fetchPublications() {
@@ -36,7 +38,7 @@ async function fetchPublications() {
     loading.value = true;
     error.value = "";
     try {
-        const { data } = await api.get(`/api/groups/${groupUuid.value}/publications`, { });
+        const { data } = await api.get(`/api/groups/${groupUuid.value}/publications`, { params: { include_linked: true } });
         items.value = data;
         if (detailsModal.open) {
             detailsModal.item = data.find(p => p.id === detailsModal.item?.id) ?? null;
@@ -109,6 +111,7 @@ function showDetails(p){
   linkResults.value = [];
   linkTarget.value = '';
   linkError.value = '';
+  linkDirection.value = p.preprint ? 'preprint' : (p.pub_type === 'published' && !p.published_publication_id ? 'preprint' : 'published');
   detailsModal.item = p;
   detailsModal.open = true;
 }
@@ -117,28 +120,72 @@ function closeDetails(){
   detailsModal.item = null;
 }
 
+const linkDirection = ref('published');
 const linkQuery = ref('');
+let searchSequence = 0;
 const linkResults = ref([]);
 const linkTarget = ref('');
+const linkSelection = ref(null);
+const publicationSelect = ref(null);
+const hasRelationship = computed(() => !!(detailsModal.item?.published_publication_id || detailsModal.item?.preprint));
+function selectLink(publication) {
+  linkSelection.value = publication;
+  linkTarget.value = publication?.id || '';
+}
+watch(linkTarget, value => { if (!value) linkSelection.value = null; });
 const linkError = ref('');
 const linkBusy = ref(false);
 const canEdit = computed(() => hasRole('super-user') || hasRole('super-admin') || hasRole('coordinator', props.group));
 async function searchLinks() {
+  const sequence = ++searchSequence;
+  const id = detailsModal.item?.id;
+  const query = linkQuery.value.trim();
   linkError.value = '';
   try {
-    const { data } = await api.get(`/api/groups/${groupUuid.value}/publications/search`, { params: { query: linkQuery.value } });
-    linkResults.value = data.filter(p => p.id !== detailsModal.item.id);
-  } catch (e) { linkError.value = e?.response?.data?.message || 'Search failed.'; }
+    const { data } = await api.get(`/api/groups/${groupUuid.value}/publications/search`, { params: { query, publication_id: id } });
+    if (sequence === searchSequence && detailsModal.item?.id === id && linkQuery.value.trim() === query) {
+      linkResults.value = data;
+      if (publicationSelect.value && !linkSelection.value) {
+        publicationSelect.value.filteredOptions = data;
+        publicationSelect.value.hasFocus = true;
+      }
+      return data;
+    }
+  } catch (e) {
+    if (sequence === searchSequence) linkError.value = e?.response?.data?.message || 'Search failed.';
+  }
 }
+function openLinkOptions() {
+  if (!linkSelection.value) searchLinks();
+}
+function updateSelectorQuery(event) {
+  linkQuery.value = event.target.value;
+  if (!linkQuery.value.trim()) searchLinks();
+}
+async function searchPublicationOptions(query) {
+  linkQuery.value = query;
+  return (await searchLinks()) || linkResults.value;
+}
+watch(linkDirection, () => { linkTarget.value = ''; });
 async function saveLink(target) {
   linkBusy.value = true;
   linkError.value = '';
   try {
-    const id = detailsModal.item.id;
-    await api.put(`/api/groups/${groupUuid.value}/publications/${id}/link`, { published_publication_id: target || null });
+    const item = detailsModal.item;
+    const id = item.id;
+    const reverse = target ? linkDirection.value === 'preprint' : !!item.preprint;
+    const preprintId = reverse ? (target || item.preprint.id) : id;
+    const publishedId = target ? (reverse ? id : target) : null;
+    const expected = reverse ? (target ? null : id) : (item.published_publication_id || null);
+    // Always write the relationship on the preprint, whichever side is open.
+    await api.put(`/api/groups/${groupUuid.value}/publications/${preprintId}/link`, {
+      published_publication_id: publishedId,
+      expected_published_publication_id: expected,
+    });
     await fetchPublications();
     detailsModal.item = items.value.find(p => p.id === id);
     linkTarget.value = '';
+    linkResults.value = [];
   } catch (e) { linkError.value = e?.response?.data?.message || 'Unable to save link.'; }
   finally { linkBusy.value = false; }
 }
@@ -210,7 +257,7 @@ function clearAddModal() {
             <button v-if="hasRole('super-user') || hasRole('super-admin') || hasRole('coordinator', group)" class="btn btn-primary btn-sm" @click="addModal.open = true">Add publication</button>
         </header>
         <p v-if="error" class="text-red-600">{{ error }}</p>
-        <div v-if="!loading && items.length === 0" class="text-gray-600">No publications added yet.</div>
+        <div v-if="!loading && visibleItems.length === 0" class="text-gray-600">No publications added yet.</div>
         <div v-else-if="loading">Loading...</div>
         <div v-else class="overflow-x-auto border rounded">
             <table class="min-w-full text-sm">
@@ -226,7 +273,7 @@ function clearAddModal() {
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="p in items" :key="p.id" class="border-t">
+                    <tr v-for="p in visibleItems" :key="p.id" class="border-t">
                         <td class="px-3 py-2">
                             <span class="inline-block px-2 py-0.5 rounded text-xs" :class="p.pub_type === 'preprint' ? 'bg-rose-100 text-rose-800' : 'bg-emerald-100 text-emerald-800'">{{ p.pub_type }}</span>
                         </td>
@@ -249,7 +296,8 @@ function clearAddModal() {
                             <div v-for="{ label, publication: linked } in relatedPublications(p)" :key="label" class="text-xs mt-1">
                                 {{ label }}:
                                 <a :href="publicationUrl(linked)" class="underline" @click="openRelated($event, linked)">{{ linked.meta?.title || linked.identifier }}</a>
-                                <span v-if="pmcidOf(linked)"> (PMCID: {{ pmcidOf(linked) }})</span>
+                                <span> ({{ String(linked.source || '').toUpperCase() }}: {{ linked.identifier }})</span>
+                                <span v-if="linked.published_at"> ? {{ formatDate(linked.published_at) }}</span>
                             </div>
                         </td>
 
@@ -342,22 +390,55 @@ function clearAddModal() {
                     <div v-for="{ label, publication: linked } in relatedPublications(detailsModal.item)" :key="label" data-testid="publication-relationship">
                         <strong>{{ label }}:</strong>
                         <a :href="publicationUrl(linked)" class="underline" @click="openRelated($event, linked)">{{ linked.meta?.title || linked.identifier }}</a>
-                        <span v-if="pmcidOf(linked)"> (PMCID: {{ pmcidOf(linked) }})</span>
+                        <span> ({{ String(linked.source || '').toUpperCase() }}: {{ linked.identifier }})</span>
+                                <span v-if="linked.published_at"> ? {{ formatDate(linked.published_at) }}</span>
                     </div>
-                    <div v-if="canEdit && !detailsModal.item?.preprint" class="space-y-2">
-                        <p>Link this preprint to an existing published article.</p>
-                        <div class="flex gap-2">
-                            <input v-model="linkQuery" aria-label="Find existing publication" placeholder="Title or identifier" class="border rounded p-2" @keydown.enter.prevent="searchLinks" />
-                            <button class="btn" :disabled="linkQuery.trim().length < 2 || linkBusy" @click="searchLinks">Search</button>
-                        </div>
-                        <select v-model="linkTarget" aria-label="Published article" class="border rounded p-2 w-full">
-                            <option value="">Select an existing publication</option>
-                            <option v-for="candidate in linkResults" :key="candidate.id" :value="candidate.id">{{ candidate.meta?.title || candidate.identifier }} - {{ candidate.identifier }} - {{ candidate.group?.name }}</option>
-                        </select>
-                        <button class="btn" :disabled="!linkTarget || linkBusy" @click="saveLink(linkTarget)">Save link</button>
-                        <button v-if="detailsModal.item?.published_publication_id" class="btn ml-2" :disabled="linkBusy" @click="saveLink(null)">Remove link</button>
+                    <div v-if="canEdit" class="min-w-0 space-y-2">
+                        <button v-if="hasRelationship" class="btn" :disabled="linkBusy" @click="saveLink(null)">Remove link</button>
+                        <template v-else>
+                            <div class="flex flex-col gap-2 sm:flex-row sm:items-center">
+                                <label class="flex min-w-0 items-center gap-2 sm:shrink-0">
+                                    <span class="shrink-0">Link to</span>
+                                    <select v-model="linkDirection" aria-label="Relationship direction" :disabled="linkBusy" class="min-w-0 flex-1 rounded border p-2">
+                                        <option value="published">Published version</option>
+                                        <option value="preprint">Preprint</option>
+                                    </select>
+                                </label>
+                                <div class="flex min-w-0 flex-1 gap-2">
+                                    <input v-model="linkQuery" @input="searchLinks" aria-label="Find existing publication" placeholder="Title or identifier" class="min-w-0 w-full flex-1 rounded border p-2" @keydown.enter.prevent="searchLinks" />
+                                    <button class="btn shrink-0" :disabled="linkBusy" @click="searchLinks">Search</button>
+                                </div>
+                            </div>
+                            <div class="flex min-w-0 flex-col gap-2 sm:flex-row sm:items-start">
+                                <SearchSelect
+                                    :key="`${detailsModal.item?.id}-${linkDirection}`"
+                                    ref="publicationSelect"
+                                    :model-value="linkSelection"
+                                    class="publication-link-select min-w-0 flex-1"
+                                    :aria-label="linkDirection === 'published' ? 'Published article' : 'Preprint'"
+                                    :disabled="linkBusy"
+                                    :options="linkResults"
+                                    :search-function="searchPublicationOptions"
+                                    :options-height="240"
+                                    :throttle="0"
+                                    placeholder="Select a publication"
+                                    @focusin="openLinkOptions"
+                                    @input="updateSelectorQuery"
+                                    @update:model-value="selectLink"
+                                >
+                                    <template #option="{ option }">
+                                        <div class="whitespace-normal [overflow-wrap:anywhere]">{{ option.meta?.title || option.identifier }}</div>
+                                        <div class="text-xs text-gray-600 whitespace-normal [overflow-wrap:anywhere]">{{ String(option.source || '').toUpperCase() }}: {{ option.identifier }}</div>
+                                    </template>
+                                    <template #selection-label="{ selection }">
+                                        <span class="block whitespace-normal [overflow-wrap:anywhere]">{{ selection.meta?.title || selection.identifier }}</span>
+                                        <span class="block text-xs whitespace-normal [overflow-wrap:anywhere]">{{ String(selection.source || '').toUpperCase() }}: {{ selection.identifier }}</span>
+                                    </template>
+                                </SearchSelect>
+                                <button class="btn shrink-0 self-end sm:self-start" :disabled="!linkTarget || linkBusy" @click="saveLink(linkTarget)">Save link</button>
+                            </div>
+                        </template>
                     </div>
-                    <p v-if="detailsModal.item?.preprint" class="text-sm text-gray-600">Edit this link from the preprint's group publication details.</p>
                     <p v-if="linkError" class="text-red-600">{{ linkError }}</p>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm max-h-[65vh] overflow-auto border rounded p-3">
@@ -371,3 +452,26 @@ function clearAddModal() {
         </modal-dialog>
   </section>
 </template>
+
+<style scoped>
+.publication-link-select :deep(.selection) {
+    min-width: 0;
+    flex: 1 1 0%;
+}
+.publication-link-select :deep(.selection > label) {
+    min-width: 0;
+    flex: 1;
+    white-space: normal;
+}
+.publication-link-select :deep(.remove-btn) {
+    flex-shrink: 0;
+}
+.publication-link-select :deep(.result-container),
+.publication-link-select :deep(.option-list) {
+    max-width: 100%;
+    overflow-x: hidden;
+}
+.publication-link-select :deep(.option-list) {
+    overflow-y: auto;
+}
+</style>

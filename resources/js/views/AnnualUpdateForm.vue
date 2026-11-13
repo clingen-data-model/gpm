@@ -1,4 +1,5 @@
 <script>
+import { nextTick } from 'vue'
 import { debounce } from 'lodash-es'
 import { api, isValidationError } from '@/http'
 
@@ -64,6 +65,7 @@ export default {
     },
     data() {
         return {
+            submitting: false,
             annualUpdate: {
                 expert_panel: {
                     group: {
@@ -184,7 +186,7 @@ export default {
     watch: {
         annualUpdate: {
             handler () {
-                this.debounceSave();
+                if (!this.submitting && !this.annualUpdate.completed_at) this.debounceSave();
             },
             deep: true
         },
@@ -222,12 +224,19 @@ export default {
     },
     methods: {
         async submit () {
+            if (this.submitting || this.annualUpdate.completed_at) return;
+            this.submitting = true;
             this.saving = true;
             this.errors = {};
             try {
+                this.$refs.publications?.flush();
+                await nextTick();
+                this.debounceSave.cancel();
+                await this.saveQueue?.catch(() => {});
+                await this.save();
                 const updatedAnnualUpdate = await api.post(`/api/groups/${this.group.uuid}/expert-panel/annual-updates/${this.annualUpdate.id}`)
                     .then(response => response.data);
-                this.annualUpdate.completed_at = updatedAnnualUpdate.completed_at;
+                this.annualUpdate = { ...this.annualUpdate, data: updatedAnnualUpdate.data, completed_at: updatedAnnualUpdate.completed_at };
                 this.saving = false;
             } catch (error) {
                 this.saving = false;
@@ -236,6 +245,8 @@ export default {
                     return;
                 }
                 throw error
+            } finally {
+                this.submitting = false;
             }
         },
         hideModal () {
@@ -283,11 +294,18 @@ export default {
                 });
             this.lastSaved = new Date(Date.parse(this.annualUpdate.updated_at));
         },
-        async save() {
-            if (!this.annualUpdate.id)  return;
+        save() {
+            if (!this.annualUpdate.id || this.annualUpdate.completed_at) return Promise.resolve();
+            const payload = JSON.parse(JSON.stringify(this.annualUpdate));
+            const pending = (this.saveQueue || Promise.resolve()).catch(() => {}).then(() => this.persistDraft(payload));
+            this.saveQueue = pending;
+            return pending;
+        },
+        async persistDraft(payload) {
+            if (this.annualUpdate.completed_at) return;
             try {
                 this.saving = true;
-                await api.put( `/api/groups/${this.group.uuid}/expert-panel/annual-updates/${this.annualUpdate.id}`,  this.annualUpdate);
+                await api.put( `/api/groups/${this.group.uuid}/expert-panel/annual-updates/${this.annualUpdate.id}`,  payload);
                 this.saving = false;
                 this.lastSaved = new Date();
             } catch (error) {
@@ -302,7 +320,7 @@ export default {
 }
 </script>
 <template>
-  <div class="annual-update relative">
+  <div class="annual-update relative" :inert="submitting ? true : null">
     <static-alert v-if="!annualUpdate.completed_at" :variant="dueDateAlertVariant" class="mb-4">
       This annual update for {{ window.for_year }} is due on {{ formatDate(window.end) }}
     </static-alert>
@@ -362,7 +380,7 @@ export default {
       </AppSection>
 
       <AppSection title="Publications">
-        <PublicationsForm v-model="annualUpdate" :version="window" :errors="errors" :group-uuid="uuid" :shape-exchange="true" />
+        <PublicationsForm ref="publications" v-model="annualUpdate" :version="window" :errors="errors" :group-uuid="uuid" :shape-exchange="true" />
       </AppSection>
 
       <AppSection title="Goals for next year">
@@ -413,7 +431,7 @@ export default {
       </template>
     </div>
     <hr>
-    <button v-if="!annualUpdate.completed_at" class="btn btn-lg" @click="submit">
+    <button v-if="!annualUpdate.completed_at" class="btn btn-lg" :disabled="submitting" @click="submit">
       Submit annual update
     </button>
     <static-alert v-if="hasErrors" variant="danger mt-4">

@@ -7,6 +7,8 @@ use App\Modules\Group\Models\Group;
 use Illuminate\Support\Facades\Auth;
 use Lorisleiva\Actions\ActionRequest;
 use Lorisleiva\Actions\Concerns\AsController;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class AnnualUpdateSave
 {
@@ -14,11 +16,23 @@ class AnnualUpdateSave
 
     public function handle(AnnualUpdate $annualReview, $submitterId, $data): AnnualUpdate
     {
-        $annualReview->submitter_id = $submitterId;
-        $annualReview->data = $data;
-        $annualReview->save();
-
-        return $annualReview;
+        return DB::transaction(function () use ($annualReview, $submitterId, $data) {
+            $annualReview = AnnualUpdate::whereKey($annualReview->id)->lockForUpdate()->firstOrFail();
+            abort_if($annualReview->completed_at !== null, 409, 'Completed annual updates are read-only.');
+            Validator::make($data, [
+                'publications' => 'sometimes|array',
+                'publications.*.publication_id' => 'required|uuid|distinct',
+            ])->validate();
+            if (isset($data['publications'])) {
+                $data['publications'] = collect($data['publications'])
+                    ->filter(fn ($p) => ($p['included'] ?? true) === true)
+                    ->map(fn ($p) => ['publication_id' => $p['publication_id']])->values()->all();
+            }
+            $annualReview->submitter_id = $submitterId;
+            $annualReview->data = $data;
+            $annualReview->save();
+            return $annualReview;
+        }, 3);
     }
 
     public function asController(ActionRequest $request, $groupUuid, $annualReviewId)
