@@ -7,7 +7,6 @@ use App\Models\AnnualUpdate;
 use App\Modules\Group\Models\Group;
 use App\Modules\Group\Models\Publication;
 use Illuminate\Validation\Rule;
-use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -25,25 +24,10 @@ class AnnualUpdateSubmit
             if ($annualReview->completed_at !== null) return $annualReview;
             $this->makeDataValidator($annualReview)->validate();
             $data = $annualReview->data ?? [];
-            Validator::make($data, [
-                'publications' => 'sometimes|array',
-                'publications.*.publication_id' => 'required|uuid|distinct',
-            ])->validate();
-            $ids = collect($data['publications'] ?? [])->pluck('publication_id');
             $publications = Publication::where('group_id', $annualReview->expertPanel->group_id)
-                ->whereIn('uuid', $ids)->orderBy('id')->lockForUpdate()->get();
-            if ($publications->count() !== $ids->count() || $publications->contains(fn ($p) =>
-                $p->published_publication_id !== null || ($p->annual_update_id !== null && $p->annual_update_id != $annualReview->id))) {
-                throw ValidationException::withMessages([
-                    'publications' => 'Some selected publications are unavailable. Refresh the list and remove unavailable selections.',
-                ]);
-            }
-            $publications->load('preprint');
-            $data['publications'] = $publications->map(fn ($p) => array_merge($p->toAnnualUpdatePayload(), ['included' => true]))->all();
-            foreach ($publications as $publication) {
-                $publication->annual_update_id = $annualReview->id;
-                $publication->save();
-            }
+                ->whereNull('published_publication_id')->with('preprint')
+                ->orderByDesc('published_at')->orderByDesc('id')->lockForUpdate()->get();
+            $data['publications'] = $publications->map->toAnnualUpdatePayload()->all();
             $annualReview->update(['data' => $data, 'completed_at' => Carbon::now()]);
             return $annualReview;
         }, 3);
@@ -77,7 +61,9 @@ class AnnualUpdateSubmit
                     'required_with' => 'This is required.',
                     'in' => 'The selection is invalid.',
                     'numeric' => 'This must be a number.',
-                    'accepted' => 'This is required.'
+                    'accepted' => 'This is required.',
+                    'publications_reviewed.accepted' => 'Please confirm that you have reviewed the group publication list.',
+                    'publications_reviewed.required' => 'Please confirm that you have reviewed the group publication list.'
             ]
         );
     }
@@ -89,6 +75,7 @@ class AnnualUpdateSubmit
                 'required',
                 'exists:group_members,id',
             ],
+            'publications_reviewed' => 'required|boolean|accepted',
             'grant' => 'required|in:Broad/Geisinger,Stanford/Baylor,UNC,Unsure',
             'membership_attestation' => 'exclude_if:ep_activity,inactive|required',
             'goals' => 'exclude_if:ep_activity,inactive|required',

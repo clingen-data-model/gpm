@@ -16,7 +16,7 @@ class AnnualUpdateCreate
 
     public function handle(ExpertPanel $expertPanel): AnnualUpdate
     {
-        $annualReview = AnnualUpdate::create(['expert_panel_id' => $expertPanel->id]);
+        $annualReview = AnnualUpdate::create(['expert_panel_id' => $expertPanel->id, 'data' => ['publications_reviewed' => false]]);
 
         return $annualReview;
     }

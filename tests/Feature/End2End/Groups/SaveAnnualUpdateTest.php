@@ -85,15 +85,22 @@ class SaveAnnualUpdateTest extends TestCase
     }
 
     #[Test]
-    public function saves_publications_outside_the_review_period()
+    public function saves_and_restores_boolean_review_and_notes_without_publication_selections()
     {
         $data = $this->makeRequestData();
-        $data['data']['publications'] = [
-            ['publication_id' => 'old-publication', 'published_at' => '1999-01-01', 'included' => true],
-            ['publication_id' => 'future-publication', 'published_at' => '2099-01-01', 'included' => true],
-        ];
-        $this->makeRequest($data)->assertOk();
-        $this->assertSame($data['data']['publications'], $this->annualReview->fresh()->data['publications']);
+        $data['data']['publications_note'] = 'Keep note';
+        $data['data']['publications'] = [['publication_id' => 'obsolete-selection', 'included' => true]];
+        foreach ([true, false] as $value) {
+            $data['data']['publications_reviewed'] = $value;
+            $this->makeRequest($data)->assertOk()->assertJsonPath('data.publications_reviewed', $value)
+                ->assertJsonPath('data.publications_note', 'Keep note')->assertJsonMissingPath('data.publications');
+            $this->assertSame($value, $this->annualReview->fresh()->data['publications_reviewed']);
+            $this->getJson('/api/groups/'.$this->expertPanel->group->uuid.'/expert-panel/annual-updates/'.$this->annualReview->id)
+                ->assertOk()->assertJsonPath('data.publications_reviewed', $value);
+            $this->assertSame('yes', $this->annualReview->fresh()->data['gci_use']);
+        }
+        $data['data']['publications_reviewed'] = 'invalid';
+        $this->makeRequest($data)->assertUnprocessable()->assertJsonValidationErrors('publications_reviewed');
     }
 
     private function makeRequest($data = null)

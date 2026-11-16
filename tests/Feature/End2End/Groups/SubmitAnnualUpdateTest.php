@@ -102,7 +102,8 @@ class SubmitAnnualUpdateTest extends TestCase
             'data' => [
                 'grant' => 'UNC',
                 'ep_activity' => 'inactive',
-                'submitted_inactive_form' => 'yes'
+                'submitted_inactive_form' => 'yes',
+                'publications_reviewed' => true
             ]
         ]);
 
@@ -323,6 +324,55 @@ class SubmitAnnualUpdateTest extends TestCase
     }
 
 
+    #[Test]
+    public function snapshots_all_visible_group_publications_and_allows_reuse_in_later_updates()
+    {
+        $model = \App\Modules\Group\Models\Publication::class;
+        $pub = $model::create(['group_id' => $this->expertPanel->group_id, 'source' => 'pmid', 'identifier' => '123',
+            'meta' => ['title' => 'Original title', 'authors' => ['Author']], 'published_at' => '1999-01-01']);
+        $preprint = $model::create(['group_id' => $pub->group_id, 'source' => 'doi', 'identifier' => '10.1/preprint', 'meta' => ['title' => 'Preprint']]);
+        $preprint->published_publication_id = $pub->id;
+        $preprint->save();
+        $unlinked = $model::create(['group_id' => $pub->group_id, 'source' => 'pmid', 'identifier' => 'unlinked', 'pub_type' => 'preprint']);
+        $foreign = $model::create(['group_id' => \App\Modules\Group\Models\Group::factory()->create()->id, 'source' => 'pmid', 'identifier' => '123']);
+        $deleted = $model::create(['group_id' => $pub->group_id, 'source' => 'pmid', 'identifier' => 'deleted']);
+        $deleted->delete();
+        $data = $this->makeGcepSubmitData(['publications' => [['publication_id' => $foreign->uuid]], 'publications_note' => 'Keep note']);
+        $review = AnnualUpdate::factory()->create(['expert_panel_id' => $this->expertPanel->id, 'submitter_id' => $this->coordinator->id, 'data' => $data]);
+        $later = AnnualUpdate::factory()->create(['expert_panel_id' => $this->expertPanel->id, 'submitter_id' => $this->coordinator->id, 'data' => $data]);
+        $response = $this->makeRequest($review)->assertOk()->assertJsonCount(2, 'data.publications');
+        $snapshots = collect($response->json('data.publications'))->keyBy('publication_id');
+        $this->assertSame('Preprint', $snapshots[$pub->uuid]['preprint']['title']);
+        $this->assertTrue($snapshots->has($unlinked->uuid));
+        $this->assertArrayNotHasKey('included', $snapshots[$pub->uuid]);
+        $snapshot = $review->fresh()->data;
+        $this->assertSame('Keep note', $snapshot['publications_note']);
+        $this->assertTrue($snapshot['publications_reviewed']);
+        $this->assertSame($data['goals'], $snapshot['goals']);
+        $pub->update(['meta' => ['title' => 'Changed']]);
+        $this->makeRequest($review)->assertOk();
+        $this->assertSame($snapshot, $review->fresh()->data);
+        $this->makeRequest($later)->assertOk()->assertJsonCount(2, 'data.publications');
+        $url = '/api/groups/'.$this->expertPanel->group->uuid;
+        $this->putJson($url.'/expert-panel/annual-updates/'.$review->id, ['data' => $data])->assertStatus(409);
+        $this->assertSame($snapshot, $review->fresh()->data);
+        $this->getJson($url.'/publications?shape_exchange=true')->assertOk()->assertJsonCount(2);
+    }
+
+    #[Test]
+    public function requires_publication_review_confirmation_even_with_no_publications()
+    {
+        foreach ([null, false, 'invalid'] as $value) {
+            $data = $this->makeGcepSubmitData(['publications_reviewed' => $value]);
+            if ($value === null) unset($data['publications_reviewed']);
+            $review = AnnualUpdate::factory()->create(['expert_panel_id' => $this->expertPanel->id, 'submitter_id' => $this->coordinator->id, 'data' => $data]);
+            $this->makeRequest($review)->assertUnprocessable()->assertJsonValidationErrors('publications_reviewed');
+            $this->assertNull($review->fresh()->completed_at);
+        }
+        $review->update(['data' => $this->makeGcepSubmitData()]);
+        $this->makeRequest($review)->assertOk()->assertJsonPath('data.publications', [])->assertJsonPath('data.publications_reviewed', true);
+    }
+
     private function makeRequest($annualReview)
     {
         $url = '/api/groups/'.$this->expertPanel->group->uuid.'/expert-panel/annual-updates/'.$annualReview->id;
@@ -332,6 +382,7 @@ class SubmitAnnualUpdateTest extends TestCase
     private function makeGcepSubmitData(array $overrides = []): array
     {
         return array_merge([
+            'publications_reviewed' => true,
             'grant' => 'UNC',
             'ep_activity' => 'active',
             'membership_attestation' => 'yes',

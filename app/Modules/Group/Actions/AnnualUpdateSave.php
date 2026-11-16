@@ -19,15 +19,10 @@ class AnnualUpdateSave
         return DB::transaction(function () use ($annualReview, $submitterId, $data) {
             $annualReview = AnnualUpdate::whereKey($annualReview->id)->lockForUpdate()->firstOrFail();
             abort_if($annualReview->completed_at !== null, 409, 'Completed annual updates are read-only.');
-            Validator::make($data, [
-                'publications' => 'sometimes|array',
-                'publications.*.publication_id' => 'required|uuid|distinct',
-            ])->validate();
-            if (isset($data['publications'])) {
-                $data['publications'] = collect($data['publications'])
-                    ->filter(fn ($p) => ($p['included'] ?? true) === true)
-                    ->map(fn ($p) => ['publication_id' => $p['publication_id']])->values()->all();
-            }
+            Validator::make($data, ['publications_reviewed' => 'sometimes|boolean'])->validate();
+            $data['publications_reviewed'] = (bool) ($data['publications_reviewed'] ?? false);
+            // Draft publication rows come from the group, never from client JSON.
+            unset($data['publications']);
             $annualReview->submitter_id = $submitterId;
             $annualReview->data = $data;
             $annualReview->save();
@@ -177,7 +172,7 @@ class AnnualUpdateSave
             'member_designation_changed',
 
             // --- NEW: Publications snapshot GPM-470 ---
-            'publications',
+            'publications_reviewed',
             'publications_note',
         ];
     }

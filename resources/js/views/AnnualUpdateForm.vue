@@ -79,6 +79,7 @@ export default {
                     person: {},
                 },
                 data: {
+                    publications_reviewed: false,
                     // SubmitterInformation
                     // submitter_id is in top level
                     grant: null,
@@ -229,7 +230,6 @@ export default {
             this.saving = true;
             this.errors = {};
             try {
-                this.$refs.publications?.flush();
                 await nextTick();
                 this.debounceSave.cancel();
                 await this.saveQueue?.catch(() => {});
@@ -380,7 +380,7 @@ export default {
       </AppSection>
 
       <AppSection title="Publications">
-        <PublicationsForm ref="publications" v-model="annualUpdate" :version="window" :errors="errors" :group-uuid="uuid" :shape-exchange="true" />
+        <PublicationsForm ref="publications" v-model="annualUpdate" :version="window" :errors="errors" :group="group" />
       </AppSection>
 
       <AppSection title="Goals for next year">

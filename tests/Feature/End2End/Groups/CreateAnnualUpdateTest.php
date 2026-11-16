@@ -29,7 +29,8 @@ class CreateAnnualUpdateTest extends TestCase
     {
         $action = new AnnualUpdateCreate();
 
-        $action->handle($this->expertPanel);
+        $review = $action->handle($this->expertPanel);
+        $this->assertFalse($review->data['publications_reviewed']);
 
         $this->assertDatabaseHas('annual_updates', [
             'expert_panel_id' => $this->expertPanel->id,

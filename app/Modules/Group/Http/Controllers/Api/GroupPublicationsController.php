@@ -47,7 +47,7 @@ class GroupPublicationsController extends Controller
         if($end = $request->query('end')) { $q->whereDate('published_at', '<=', $end); }
 
         if ($request->boolean('shape_exchange')) { // For Annual Updates
-            return $q->whereNull('published_publication_id')->whereNull('annual_update_id')->get()->map->toAnnualUpdatePayload();
+            return $q->whereNull('published_publication_id')->get()->map->toAnnualUpdatePayload();
         }
         // Default group list hides superseded preprints but retains reported articles.
         if (!$request->boolean('include_linked')) $q->whereNull('published_publication_id');
