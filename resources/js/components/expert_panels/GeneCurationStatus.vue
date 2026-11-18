@@ -2,17 +2,31 @@
 import { ref, computed, watch } from 'vue'
 import { useStore } from 'vuex'
 import api from '@/http/api'
+import { useGcepGenePages } from '@/composables/gcep_gene_pages'
 
 const props = defineProps({
 	genes: { type: Array, required: true, default: () => [] },
 	groupID: { type: String, required: true },
 	editing: { type: Boolean, default: true },
 	readonly: { type: Boolean, default: false },
+    paged: { type: Boolean, default: false },
 })
 
 const emit = defineEmits(['removed'])
 
 const store = useStore()
+const reviewRetrying = ref(false)
+const reviewFailed = computed(() => !props.paged && props.genes.some(gene => gene.enrichment_error))
+async function retryReview() {
+    reviewRetrying.value = true
+    try {
+        await store.dispatch('groups/getGenes', store.getters['groups/getItemByUuid'](props.groupID))
+    } catch (error) {
+        store.commit('pushError', error.response?.data?.message || 'Could not reload the gene list. Please retry.')
+    } finally {
+        reviewRetrying.value = false
+    }
+}
 
 const search = ref('')
 const selectedStatuses = ref([])
@@ -28,6 +42,10 @@ const filterMoi = ref('')
 const filterClassification = ref('')
 const filterCurationType = ref('')
 
+// Global controls retain their full-scope semantics; ordinary browsing stays paged.
+const globalQuery = computed(() => Boolean(search.value.trim() || showFilters.value || selectedStatuses.value.length || filterTier.value || filterMoi.value || filterClassification.value || filterCurationType.value || ['statuses', 'expert_panel'].includes(sortKey.value)))
+const { source, total, loading: pageLoading, error: pageError, progress, refresh: refreshPage, reloadCurations, updateTiers } = useGcepGenePages(props, { currentPage, pageSize, sortKey, sortOrder, globalQuery })
+
 const detailEntries = (gene) => Array.isArray(gene.details) ? gene.details : []
 
 const normalize = (value) => (value ?? '').toString().trim()
@@ -39,6 +57,12 @@ const matchesDetailField = (gene, field, selectedValue) => {
 
 const expanded = ref([])          
 const selectedGenes = ref([])
+watch(() => props.groupID, () => { selectedGenes.value = []; expanded.value = []; currentPage.value = 1 })
+watch(() => props.genes, genes => {
+    const ids = new Set(genes.map(gene => gene.id))
+    selectedGenes.value = selectedGenes.value.filter(id => ids.has(id))
+    expanded.value = expanded.value.filter(id => ids.has(id))
+})
 const bulkTier = ref('')
 const savingTierFor = ref(null)
 const savingBulk = ref(false)
@@ -48,6 +72,10 @@ const showConfirmRemove = ref(false)
 const genesPendingRemoval = ref([])
 const removingIds = ref([])
 const removingBulk = ref(false)
+const mutationError = ref('')
+const retryMutation = ref(null)
+const mutating = computed(() => removingIds.value.length > 0 || savingTierFor.value !== null || savingBulk.value)
+
 
 const selectedGeneRows = computed(() => {
   return props.genes.filter(g => selectedGenes.value.includes(g.id))
@@ -73,7 +101,8 @@ const cancelRemove = () => {
   showConfirmRemove.value = false
 }
 const removeGenes = async () => {
-  if (!genesPendingRemoval.value.length) return
+  if (!genesPendingRemoval.value.length || mutating.value) return
+  mutationError.value = ''
   const ids = genesPendingRemoval.value.map(g => g.id)
   const names = genesPendingRemoval.value.map(g => g.gene_symbol).filter(Boolean)
   removingIds.value = ids
@@ -86,7 +115,9 @@ const removeGenes = async () => {
     genesPendingRemoval.value = []
     emit('removed', { ids, gene_symbols: names })
   } catch (error) {
-    store.commit('pushError', error.response?.data || 'Failed to remove gene(s)')
+    mutationError.value = error.response?.data?.message || 'Failed to remove genes. Please retry.'
+    retryMutation.value = removeGenes
+    store.commit('pushError', mutationError.value)
   } finally {
     removingIds.value = []
     removingBulk.value = false
@@ -123,14 +154,14 @@ const statusPriority = {
 
 const allStatuses = computed(() => {
 	const set = new Set()
-	props.genes.forEach(g => g.statuses.forEach(s => set.add(s)))
+	source.value.forEach(g => (g.statuses || []).forEach(s => set.add(s)))
 	return Array.from(set).sort((a, b) => (statusPriority[a] ?? 0) - (statusPriority[b] ?? 0))
 })
 
 const filteredGenes = computed(() => {
 	const kw = search.value.trim().toLowerCase()
 
-	return props.genes.filter(g => {
+	return source.value.filter(g => {
 		const details = detailEntries(g)
 
 		const symbolMatch = g.gene_symbol?.toLowerCase().includes(kw)
@@ -182,11 +213,20 @@ const sortedGenes = computed(() => {
   })
 })
 
-const totalPages = computed(() => Math.ceil(sortedGenes.value.length / pageSize.value))
+const totalPages = computed(() => Math.max(1, Math.ceil((props.paged && !globalQuery.value ? total.value : sortedGenes.value.length) / pageSize.value)))
+watch([totalPages, pageLoading], ([pages, busy]) => { if (!busy && currentPage.value > pages) currentPage.value = pages })
 const paginatedGenes = computed(() => {
+    if (props.paged && !globalQuery.value) return source.value
 	const start = (currentPage.value - 1) * pageSize.value
 	return sortedGenes.value.slice(start, start + pageSize.value)
 })
+
+// Freeze the last successful view on failure; it is explicitly labelled, not current query output.
+const displayedGenes = ref([])
+watch([paginatedGenes, pageLoading, pageError], ([genes, busy, error]) => {
+    if (!busy && !error) displayedGenes.value = [...genes]
+}, { immediate: true })
+watch(() => props.groupID, () => { displayedGenes.value = [] })
 
 const toggleExpanded = (index) => {
 	if (expanded.value.includes(index)) {
@@ -211,20 +251,27 @@ const toggleSelectAll = () => {
 		selectedGenes.value = [...new Set([...selectedGenes.value, ...idsOnPage])]
 	}
 }
-const isAllSelected = computed(() => paginatedGenes.value.every(g => selectedGenes.value.includes(g.id)))
+const isAllSelected = computed(() => paginatedGenes.value.length > 0 && paginatedGenes.value.every(g => selectedGenes.value.includes(g.id)))
 
-const updateTier = async (gene) => {
-	if (props.readonly || !props.editing) return
+const updateTier = async (gene, event) => {
+	if (props.readonly || !props.editing || mutating.value) return
+    mutationError.value = ''
+	const value = event.target.value
 	savingTierFor.value = gene.id
 	const oldTier = gene.tier
 	try {
 		await api.put(`/api/groups/${props.groupID}/expert-panel/genes/update-tier`, {
 		ids: [gene.id],
-		tier: gene.tier || null,
+		tier: value || null,
 		})
-		store.commit('pushSuccess', `Tier updated for ${gene.gene_symbol}`)
+		gene.tier = value || null
+        if (props.paged) updateTiers([gene.id], value || null)
+        store.commit('pushSuccess', `Tier updated for ${gene.gene_symbol}`)
 	} catch (err) {
 		gene.tier = oldTier
+        event.target.value = oldTier ?? ''
+        mutationError.value = 'Failed to update tier. Please retry.'
+        retryMutation.value = () => updateTier(gene, { target: { value } })
 		store.commit('pushError', `Failed to update tier for ${gene.gene_symbol}`)
 		console.error(err?.response?.data || err)
 	} finally {
@@ -233,20 +280,26 @@ const updateTier = async (gene) => {
 }
 
 const applyBulkTier = async () => {
-	if (!bulkTier.value || selectedGenes.value.length === 0) return
+	if (!bulkTier.value || selectedGenes.value.length === 0 || mutating.value) return
+    mutationError.value = ''
 	savingBulk.value = true
+    const ids = [...selectedGenes.value]
+    const tier = bulkTier.value
 	try {
 		await api.put(`/api/groups/${props.groupID}/expert-panel/genes/update-tier`, {
-			ids: selectedGenes.value,
-			tier: bulkTier.value,
+			ids,
+			tier,
 		})
-		store.commit('pushSuccess', `Tier updated for ${selectedGenes.value.length} genes`)
+		store.commit('pushSuccess', `Tier updated for ${ids.length} genes`)
 		// reflect locally
-		props.genes.forEach(g => { if (selectedGenes.value.includes(g.id)) g.tier = bulkTier.value })
+		source.value.forEach(g => { if (ids.includes(g.id)) g.tier = tier })
+        if (props.paged) updateTiers(ids, tier)
 		selectedGenes.value = []
 		bulkTier.value = ''
 	} catch (err) {
-		store.commit('pushError', 'Failed to update tiers in bulk')
+		mutationError.value = 'Failed to update tiers in bulk. Please retry.'
+        retryMutation.value = applyBulkTier
+        store.commit('pushError', mutationError.value)
 	} finally {
 		savingBulk.value = false
 	}
@@ -258,7 +311,7 @@ const clearSelection = () => {
 
 const moiOptions = computed(() => {
 	const set = new Set()
-	props.genes.forEach(g => {
+	source.value.forEach(g => {
 		detailEntries(g).forEach(entry => {
 			if (entry?.moi_name) set.add(entry.moi_name)
 		})
@@ -268,7 +321,7 @@ const moiOptions = computed(() => {
 
 const classificationOptions = computed(() => {
 	const set = new Set()
-	props.genes.forEach(g => {
+	source.value.forEach(g => {
 		detailEntries(g).forEach(entry => {
 			if (entry?.classification) set.add(entry.classification)
 		})
@@ -278,7 +331,7 @@ const classificationOptions = computed(() => {
 
 const curationTypeOptions = computed(() => {
 	const set = new Set()
-	props.genes.forEach(g => {
+	source.value.forEach(g => {
 		detailEntries(g).forEach(entry => {
 			if (entry?.curation_type) set.add(entry.curation_type)
 		})
@@ -304,7 +357,7 @@ const clearFilters = () => {
 	currentPage.value = 1
 }
 watch(
-	[search, selectedStatuses, filterTier, filterMoi, filterClassification, filterCurationType, pageSize],
+	[search, selectedStatuses, filterTier, filterMoi, filterClassification, filterCurationType, pageSize, sortKey, sortOrder],
 	() => {
 		currentPage.value = 1
 	}
@@ -314,12 +367,33 @@ watch(
 
 <template>
   <div class="space-y-3">
+    <div v-if="reviewFailed" role="alert" class="border border-red-300 rounded p-3">
+      GeneTracker curations are unavailable. Statuses and global filters may be incomplete.
+      <button type="button" class="underline" :disabled="reviewRetrying" @click="retryReview">{{ reviewRetrying ? 'Retrying...' : 'Retry' }}</button>
+    </div>
+    <div v-if="pageLoading" role="status" aria-live="polite" class="sticky top-0 z-30 rounded border border-blue-300 bg-blue-50 p-3">
+      <template v-if="progress && progress.total">
+        Loading GeneTracker curation data &mdash; {{ progress.completed }} of {{ progress.total }} batches complete
+        <progress class="block w-full mt-2" :value="progress.completed" :max="progress.total" aria-label="Completed curation batches" />
+        <small>Each batch includes all curation result pages for up to 100 genes.</small>
+      </template>
+      <template v-else>Loading gene list...</template>
+    </div>
+    <div v-if="mutating" role="status" class="rounded border bg-blue-50 p-3">{{ removingIds.length ? (removingIds.length === 1 ? 'Removing gene...' : 'Removing genes...') : 'Saving tier changes...' }}</div>
+    <div v-if="mutationError" role="alert" class="rounded border border-red-300 p-3">
+      {{ mutationError }} <button type="button" :disabled="mutating" @click="retryMutation()">Retry</button>
+    </div>
+    <div v-if="pageError" role="alert" class="border border-red-300 rounded p-3">
+      {{ pageError }} <span v-if="displayedGenes.length">Showing previous results; they may not reflect the current scope or filters.</span> <button type="button" class="underline" @click="refreshPage">Retry</button>
+    </div>
+    <button v-if="paged" type="button" class="underline text-sm" :disabled="pageLoading || mutating" @click="reloadCurations">Refresh curations</button>
+    <span v-if="paged" class="text-xs text-gray-600"> Curations are reused in this view. Refresh to check for updates.</span>
     <!-- Toolbar (search, status filter, sort, page size) -->
     <div class="mb-3 border rounded-lg bg-white px-3 py-2">
       <div class="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
         <!-- Left -->
         <div class="flex flex-wrap items-center gap-3 w-full lg:w-auto">
-          <input v-if="editing" type="checkbox" :checked="isAllSelected" @change="toggleSelectAll" />
+          <input v-if="editing && !readonly && !pageError" :disabled="pageLoading || !!pageError || mutating" type="checkbox" :checked="isAllSelected" @change="toggleSelectAll" />
           <input v-model="search" type="text" placeholder="Search genes, statuses, diseases, MOI..." class="border rounded px-2 py-1 text-sm w-full sm:w-72" />
           <button type="button" class="border rounded px-3 py-1 text-sm bg-white hover:bg-gray-50" @click="showFilters = !showFilters">
             Filters <span v-if="activeFilterCount"> ({{ activeFilterCount }})</span>
@@ -358,7 +432,7 @@ watch(
 
       <!-- Filters panel -->
       <transition name="fade">
-        <div v-if="showFilters" class="mt-3 border rounded-lg bg-gray-50 p-3">
+        <div v-if="showFilters && !pageLoading && !pageError" class="mt-3 border rounded-lg bg-gray-50 p-3">
           <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-3">
             <!-- Status -->
             <div class="relative">
@@ -443,52 +517,53 @@ watch(
     </div>
 
     <!-- Bulk Tier Update Bar -->
-    <div v-if="selectedGenes.length > 0 && editing && !readonly" class="flex flex-col gap-3 rounded border bg-gray-50 p-3 lg:flex-row lg:items-center lg:justify-between">
+    <div v-if="selectedGenes.length > 0 && editing && !readonly && !pageLoading && !pageError" class="flex flex-col gap-3 rounded border bg-gray-50 p-3 lg:flex-row lg:items-center lg:justify-between">
       <!-- Left: summary -->
       <div class="flex items-center gap-2">
         <span class="inline-flex items-center rounded-full bg-white border px-3 py-1 text-sm font-medium text-gray-700">
           {{ selectedGenes.length }} gene(s) selected
         </span>
-        <button type="button" class="border rounded px-3 py-1 text-sm bg-white hover:bg-gray-50" @click="clearSelection" title="Clear selection">Clear</button>
+        <button type="button" class="border rounded px-3 py-1 text-sm bg-white hover:bg-gray-50" :disabled="mutating" @click="clearSelection" title="Clear selection">Clear</button>
       <!-- 
       </div>
 
         Middle: bulk tier action
       <div class="flex flex-wrap items-center gap-2">  -->
         <span class="mr-2 font-semibold text-sm text-gray-700">Bulk Tier Update:</span>
-        <select v-model="bulkTier" class="border rounded px-2 py-1 text-sm bg-white">
+        <select v-model="bulkTier" :disabled="mutating" class="border rounded px-2 py-1 text-sm bg-white">
           <option value="">Select Tier</option>
           <option value="1">Primary</option>
           <option value="2">Secondary</option>
         </select>
-        <button class="bg-blue-600 text-white px-3 py-1 rounded disabled:opacity-50" @click="applyBulkTier" :disabled="!bulkTier || selectedGenes.length === 0 || savingBulk">
+        <button class="bg-blue-600 text-white px-3 py-1 rounded disabled:opacity-50" @click="applyBulkTier" :disabled="!bulkTier || selectedGenes.length === 0 || mutating">
           {{ savingBulk ? 'Applying…' : 'Apply' }}
         </button>
       </div>
 
       <!-- Right: selection actions -->
       <div class="flex flex-wrap items-center gap-2 lg:justify-end">
-        <button type="button" class="rounded bg-red-600 text-white px-3 py-1 text-sm hover:bg-red-700 disabled:opacity-50" @click="confirmRemove(selectedGeneRows)" :disabled="selectedGenes.length === 0 || removingBulk" title="Remove selected genes">
+        <button type="button" class="rounded bg-red-600 text-white px-3 py-1 text-sm hover:bg-red-700 disabled:opacity-50" @click="confirmRemove(selectedGeneRows)" :disabled="selectedGenes.length === 0 || mutating" title="Remove selected genes">
           {{ removingBulk ? 'Removing…' : 'Remove Selected' }}
         </button>
       </div>
     </div>
 
     <!-- Empty -->
-    <div v-if="paginatedGenes.length === 0" class="p-6 text-center text-sm text-gray-500 border rounded-lg bg-white">
+    <div v-if="!pageLoading && !pageError && paginatedGenes.length === 0" class="p-6 text-center text-sm text-gray-500 border rounded-lg bg-white">
       No genes found.
     </div>
 
     <!-- Card list -->
-    <ul v-else class="space-y-2">
-      <li v-for="(gene, index) in paginatedGenes" :key="gene.id">
+    <ul v-else-if="!pageLoading && displayedGenes.length" class="space-y-2">
+      <li v-for="gene in displayedGenes" :key="gene.id">
         <div class="rounded-2xl overflow-hidden border border-gray-200 bg-white shadow-sm hover:shadow transition-shadow">
           <!-- Top row -->
           <div class="flex items-start justify-between gap-3 p-3">
             <div class="flex items-start gap-3 flex-1 min-w-0">
-              <div v-if="editing && !readonly" class="mt-1">
+              <div v-if="editing && !readonly && !pageError" class="mt-1">
                 <input
                   type="checkbox"
+                  :disabled="mutating"
                   :checked="selectedGenes.includes(gene.id)"
                   @change="toggleSelect(gene.id)"
                   :aria-label="`Select ${gene.gene_symbol}`"
@@ -510,21 +585,21 @@ watch(
             <div class="flex items-center gap-2">
               <button
                 v-if="(gene.details || []).length"
-                @click="toggleExpanded(index)"
+                @click="toggleExpanded(gene.id)"
                 class="rounded border px-2 py-1 text-xs bg-white"
-                :aria-expanded="expanded.includes(index)"
+                :aria-expanded="expanded.includes(gene.id)"
                 :aria-controls="`gene-details-${gene.id}`"
                 title="Toggle details"
               >
-                {{ expanded.includes(index) ? 'Hide Details' : 'Show Details' }}
+                {{ expanded.includes(gene.id) ? 'Hide Details' : 'Show Details' }}
               </button>
 
-              <template v-if="editing && !readonly">
+              <template v-if="editing && !readonly && !pageError">
                 <select
-                  v-model="gene.tier"
+                  :value="gene.tier ?? ''"
                   class="border rounded px-2 py-1 text-xs"
-                  @change="updateTier(gene)"
-                  :disabled="savingTierFor === gene.id || readonly"
+                  @change="updateTier(gene, $event)"
+                  :disabled="mutating || readonly"
                   title="Tier"
                 >
                   <option value="">—</option>
@@ -533,7 +608,7 @@ watch(
                 </select>
                 <span v-if="savingTierFor === gene.id" class="text-xs text-gray-500">Saving…</span>
                 <button class="rounded px-2 py-1 text-xs border"
-                  :disabled="removingIds.includes(gene.id)"
+                  :disabled="mutating"
                   :class="(gene.details || []).length ? 'border-amber-400 bg-amber-50 font-semibold' : 'border-gray-400 bg-gray-50'"
                   @click="confirmRemove(gene)"
                   title="Remove gene"
@@ -548,7 +623,7 @@ watch(
           <!-- Expanded details -->
           <transition name="fade">
             <div
-              v-if="expanded.includes(index)"
+              v-if="expanded.includes(gene.id)"
               :id="`gene-details-${gene.id}`"
               class="px-3 pb-3 pt-2 text-sm"
             >
@@ -592,9 +667,9 @@ watch(
 
     <!-- Pagination -->
     <div class="mt-4 flex justify-between items-center">
-      <button class="border rounded px-3 py-1 text-sm" :disabled="currentPage === 1" @click="currentPage--">Prev</button>
+      <button class="border rounded px-3 py-1 text-sm" :disabled="pageLoading || currentPage <= 1" @click="currentPage--">Prev</button>
       <span class="text-sm">Page {{ currentPage }} of {{ totalPages }}</span>
-      <button class="border rounded px-3 py-1 text-sm" :disabled="currentPage === totalPages" @click="currentPage++">Next</button>
+      <button class="border rounded px-3 py-1 text-sm" :disabled="pageLoading || currentPage >= totalPages" @click="currentPage++">Next</button>
     </div>
 	  <div v-if="showConfirmRemove" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
       <div class="bg-white rounded-lg shadow-lg w-96 p-6">
@@ -603,7 +678,7 @@ watch(
         <p v-else class="mb-6">Are you sure you want to remove <strong>{{ removalCount }}</strong> selected genes?</p>
         <div class="flex justify-end gap-2">
           <button class="btn btn-gray" @click="cancelRemove">Cancel</button>
-          <button class="btn btn-red" @click="removeGenes">{{ removingBulk || removingIds.length ? 'Removing…' : 'Remove' }}</button>
+          <button class="btn btn-red" :disabled="mutating" @click="removeGenes">{{ removingBulk || removingIds.length ? 'Removing…' : 'Remove' }}</button>
         </div>
       </div>
     </div>

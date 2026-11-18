@@ -132,7 +132,7 @@ export default {
 
       if (group.value.is_ep) {
         promises.push(
-          store.dispatch("groups/getGenes", group.value),
+          store.dispatch(group.value.is_gcep ? "groups/getGeneMembership" : "groups/getGenes", group.value),
           store.dispatch("groups/getDocuments", group.value),
           store.dispatch("groups/getPendingTasks", group.value),
           store.dispatch("groups/getAnnualUpdate", group.value),
@@ -299,7 +299,7 @@ export default {
       return this.$store.dispatch("groups/find", this.group.uuid).then(() => {
         this.$store.commit("groups/setCurrentItemIndexByUuid", this.group.uuid);
         if (this.group.is_ep) {
-          return this.$store.dispatch("groups/getGenes", this.group);
+          return this.$store.dispatch(this.group.is_gcep ? "groups/getGeneMembership" : "groups/getGenes", this.group);
         }
       }).then(() => {
         this.$store.commit("pushInfo", "Update canceled.");

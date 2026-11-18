@@ -58,7 +58,7 @@
         <p v-if="group.is_gcep">
           {{ expertPanel.genes.map(g => g.gene_symbol).join(', ') }}
         </p>
-        <GeneCurationStatus v-if="group.is_gcep" :genes="expertPanel.genes" :readonly="true" :editing="false" />
+        <GeneCurationStatus v-if="group.is_gcep" :groupID="group.uuid" :genes="expertPanel.genes" :readonly="true" :editing="false" />
         <VcepGeneList v-if="group.is_vcep_or_scvcep" :group="group" :editing="false" />
       </div>
 

@@ -90,6 +90,56 @@ class GtApiService
         return $response->json(); 
     }
 
+    /** Complete GCEP lookup. Never expose a successful prefix of a failed lookup. */
+    public function lookupGcepGenesComplete(array $symbols): array
+    {
+        $symbols = array_values(array_unique(array_filter(array_map(
+            fn ($symbol) => strtoupper(trim((string) $symbol)), $symbols
+        ))));
+        $rows = [];
+        foreach (array_chunk($symbols, 100) as $batch) {
+            $expectedTotal = null;
+            $batchRows = [];
+            for ($page = 1; ; $page++) {
+                $result = $this->client->post('/bulk-lookup', [
+                    'gene_symbol' => implode(', ', $batch), 'resource' => 'simple',
+                    'page' => $page, 'perPage' => 100,
+                    'sortBy' => 'id', 'sortDesc' => 'false',
+                ])->json();
+                $meta = $result['meta'] ?? [];
+                $data = $result['data'] ?? null;
+                if (!is_array($data) || !isset($meta['current_page'], $meta['last_page'], $meta['total'])
+                    || (int) $meta['current_page'] !== $page || (int) $meta['last_page'] < $page
+                    || (int) $meta['last_page'] > 10000 || (int) $meta['total'] < 0) {
+                    throw new \RuntimeException('Incomplete GeneTracker pagination metadata.');
+                }
+                $expectedTotal ??= (int) $meta['total'];
+                if ($expectedTotal !== (int) $meta['total']) {
+                    throw new \RuntimeException('GeneTracker results changed during lookup. Please retry.');
+                }
+                foreach ($data as $row) {
+                    $id = $row['curation_id'] ?? null;
+                    if (!$id || !in_array(strtoupper(trim($row['gene_symbol'] ?? '')), $batch, true)
+                        || isset($batchRows[$id])) {
+                        throw new \RuntimeException('Unexpected or repeated GeneTracker curation.');
+                    }
+                    $batchRows[$id] = $row;
+                }
+                if ($page === (int) $meta['last_page']) {
+                    if (count($batchRows) !== $expectedTotal) {
+                        throw new \RuntimeException('Incomplete GeneTracker curation results.');
+                    }
+                    break;
+                }
+                if (!$data) {
+                    throw new \RuntimeException('Empty intermediate GeneTracker page.');
+                }
+            }
+            $rows = array_merge($rows, array_values($batchRows));
+        }
+        return ['data' => $rows];
+    }
+
     public function getCurationByID(string $uuid): array
     {
         $response = $this->client->post('/bulk-lookup', ['uuid' => $uuid, 'resource' => 'simple', 'perPage' => 1500]);

@@ -3,7 +3,14 @@ import Group from '@/domain/group';
 import { api, queryStringFromParams } from '@/http';
 import { clone } from 'lodash-es';
 import groupBy from 'lodash/groupBy';
+import { getCompleteGcepCurations } from '@/composables/gcep_gene_pages';
 
+const pendingGeneLoads = new Map();
+const pendingMembershipLoads = new Map();
+function shareGeneRequest(pending, key, load) {
+    if (!pending.has(key)) pending.set(key, Promise.resolve().then(load).finally(() => pending.delete(key)));
+    return pending.get(key);
+}
 const baseUrl = '/api/groups';
 const getApplicationUrl = (uuid) => `${baseUrl}/${uuid}/expert-panel`;
 
@@ -404,64 +411,83 @@ export const actions = {
             })
     },
 
+    async getGeneMembership({ commit, getters }, group) {
+        return shareGeneRequest(pendingMembershipLoads, group.uuid, async () => {
+            const { data } = await api.get(`${getApplicationUrl(group.uuid)}/genes`);
+            const item = getters.getItemByUuid(group.uuid);
+            item.expert_panel.genes = data;
+            commit('addItem', item);
+            return data;
+        });
+    },
+
     async getGenes({ commit, getters, dispatch }, group) {
-        const response = await api.get(`${getApplicationUrl(group.uuid)}/genes`);
+        const load = async () => {
+            const response = await api.get(`${getApplicationUrl(group.uuid)}/genes`);
+            const genes = response.data;
+            const item = getters.getItemByUuid(group.uuid);
+            const geneSymbols = genes.map(g => g.gene_symbol).filter(Boolean);
+            const curationIDs = genes.map(g => g.plan?.curation_id).filter(Boolean);
 
-        const genes = response.data;
-        const item = getters.getItemByUuid(group.uuid);
-        const geneSymbols = genes.map(g => g.gene_symbol).filter(Boolean);
-        const curationIDs = genes.map(g => g.plan?.curation_id).filter(Boolean);
+            if (geneSymbols.length && group.is_gcep) {
+                const curatedResult = await dispatch('loadCurationStatuses', geneSymbols);
 
-        if (geneSymbols.length && group.is_gcep) {
-            const curatedResult = await dispatch('loadCurationStatuses', geneSymbols);
+                // Convert statuses array to a lookup by gene_symbol
+                const statusLookup = Object.fromEntries(
+                    curatedResult.map(entry => [entry.gene_symbol, entry])
+                )
 
-            // Convert statuses array to a lookup by gene_symbol
-            const statusLookup = Object.fromEntries(
-                curatedResult.map(entry => [entry.gene_symbol, entry])
-            )
+                // Merge / Add details and statuses to each gene
+                const previous = new Map(item.expert_panel.genes.map(gene => [gene.id, gene]));
+                item.expert_panel.genes = genes.map(gene => {
+                    const status = statusLookup[gene.gene_symbol];
+                    const old = previous.get(gene.id);
+                    const retained = status?.enrichment_error && old?.gene_symbol === gene.gene_symbol ? old : null;
+                    return {
+                        ...gene,
+                        statuses: retained?.statuses || status?.statuses || ['Not Curated'],
+                        expert_panels: retained?.expert_panels || status?.expert_panels || [],
+                        details: retained?.details || status?.entries || [],
+                        enrichment_error: status?.enrichment_error || false,
+                    };
+                })
+            } else if (group.is_vcep_or_scvcep) {
+                const response = await api.post('/api/curationids', { curation_ids: curationIDs.join(',') });
+                const gtCurations = response.data?.data ?? [];
 
-            // Merge / Add details and statuses to each gene
-            item.expert_panel.genes = genes.map(gene => ({
-                ...gene,
-                statuses: statusLookup[gene.gene_symbol]?.statuses || ['Not Curated'],
-                expert_panels: statusLookup[gene.gene_symbol]?.expert_panels || [],
-                details: statusLookup[gene.gene_symbol]?.entries || [],
-            }))
-        } else if (group.is_vcep_or_scvcep) {
-            const response = await api.post('/api/curationids', { curation_ids: curationIDs.join(',') });
-            const gtCurations = response.data?.data ?? [];
+                const gtById = Object.fromEntries( gtCurations.map(c => [String(c.curation_id), c]) );
+                item.expert_panel.genes = genes.map(g => {
+                    const plan = g.plan || {};
+                    const localCid = plan?.curation_id != null ? String(plan.curation_id) : null;
+                    const gt = localCid ? gtById[localCid] : undefined;
 
-            const gtById = Object.fromEntries( gtCurations.map(c => [String(c.curation_id), c]) );
-            item.expert_panel.genes = genes.map(g => {
-                const plan = g.plan || {};
-                const localCid = plan?.curation_id != null ? String(plan.curation_id) : null;
-                const gt = localCid ? gtById[localCid] : undefined;
+                    // local snapshot key (from GPM) vs server hash (from GT)
+                    const localKey = plan?.checkKey || null;
+                    const remoteKey = gt?.checkKey || null;
 
-                // local snapshot key (from GPM) vs server hash (from GT)
-                const localKey = plan?.checkKey || null;
-                const remoteKey = gt?.checkKey || null;
+                    let is_outdated = false;
+                    let gt_data = null;
 
-                let is_outdated = false;
-                let gt_data = null;
-
-                if (localKey && remoteKey) {
-                    is_outdated = localKey !== remoteKey;
-                    if (is_outdated) {
-                        gt_data = gt;
+                    if (localKey && remoteKey) {
+                        is_outdated = localKey !== remoteKey;
+                        if (is_outdated) {
+                            gt_data = gt;
+                        }
                     }
-                }
 
-                return {
-                    ...g,
-                    is_outdated,
-                    gt_data,
-                };
-            });
-        } else {
-            item.expert_panel.genes = genes;
-        }
-        commit('addItem', item);
-        return genes;
+                    return {
+                        ...g,
+                        is_outdated,
+                        gt_data,
+                    };
+                });
+            } else {
+                item.expert_panel.genes = genes;
+            }
+            commit('addItem', item);
+            return genes;
+        };
+        return group.is_gcep ? shareGeneRequest(pendingGeneLoads, group.uuid, load) : load();
     },
 
     async loadCurationStatuses(_, geneSymbols) {
@@ -470,11 +496,9 @@ export const actions = {
         try {
             const upperCaseSymbols = geneSymbols.map(s => s.toUpperCase());
 
-            const response = await api.post('/api/genes/check-genes', {
-                gene_symbol: geneSymbols.join(', ')
-            });
+            const curations = await getCompleteGcepCurations(geneSymbols);
 
-            const data = (response.data.data || []).map(item => ({
+            const data = curations.map(item => ({
                             ...item,
                             gene_symbol: item.gene_symbol.toUpperCase()
                         }));
@@ -509,7 +533,7 @@ export const actions = {
             return result;
         } catch (e) {
             console.error('Failed to load curation status:', e);
-            return [];
+            return geneSymbols.map(gene_symbol => ({ gene_symbol, entries: [], expert_panels: [], statuses: ['Curation data unavailable'], enrichment_error: true }));
         }
 
     },

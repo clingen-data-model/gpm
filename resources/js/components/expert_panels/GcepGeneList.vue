@@ -35,12 +35,15 @@ export default {
         const store = useStore();
 
         const loading = ref(false);
+        const membershipError = ref('');
         const genesAsText = ref(null);
         const geneCheckResults = ref([]);
 
         const selectedGene = ref(null)
         const selectKey = ref(0)
         const adding = ref(false)
+        const addError = ref('')
+        const bulkError = ref('')
 
         const bulkCheckResults = ref([])
         const showPasteModal = ref(false)
@@ -49,6 +52,8 @@ export default {
         const reviewing = ref(false)
 
         const checkingSelectedGeneCuration = ref(false)
+        const selectedGeneCurationError = ref('')
+        let curationRequest = 0
         const selectedGeneCurations = ref([])
         const confirmCuratedGeneAdd = ref(false)
 
@@ -74,24 +79,30 @@ export default {
         }
 
         async function checkSelectedGeneCuration (gene) {
+            const request = ++curationRequest
             resetSelectedGeneCurationState()
+            selectedGeneCurationError.value = ''
+            checkingSelectedGeneCuration.value = false
 
             const geneSymbol = gene?.gene_symbol ?? gene?.symbol
             if (!geneSymbol) return
 
             checkingSelectedGeneCuration.value = true
             try {
-                const response = await api.post('/api/genes/check-genes', {
+                const response = await api.post('/api/genes/check-gcep-genes', {
                     gene_symbol: geneSymbol
                 })
 
                 const rows = Array.isArray(response.data?.data) ? response.data.data : []
+                if (request !== curationRequest) return
                 selectedGeneCurations.value = rows
             } catch (error) {
+                if (request !== curationRequest) return
                 console.error('Failed to check gene curations', error)
+                selectedGeneCurationError.value = 'Could not check this gene’s curations. Please retry.'
                 selectedGeneCurations.value = []
             } finally {
-                checkingSelectedGeneCuration.value = false
+                if (request === curationRequest) checkingSelectedGeneCuration.value = false
             }
         }
 
@@ -107,18 +118,21 @@ export default {
         });
 
         const addGene = async () => {
-            if (!selectedGene.value) return
+            if (adding.value || submittingBulk.value || !selectedGene.value || selectedGeneCurationError.value || checkingSelectedGeneCuration.value) return
             if (selectedGeneHasCurations.value && !confirmCuratedGeneAdd.value) {
                 store.commit('pushError', 'Please confirm that you want to add this curated gene.')
                 return
             }
             adding.value = true
+            addError.value = ''
+            let saved = false
+            const payloadItem = {
+                hgnc_id: selectedGene.value.hgnc_id,
+                gene_symbol: selectedGene.value.gene_symbol ?? selectedGene.value.symbol
+            }
             try {
-                const payloadItem = {
-                    hgnc_id: selectedGene.value.hgnc_id,
-                    gene_symbol: selectedGene.value.gene_symbol ?? selectedGene.value.symbol
-                }
                 await api.post(`/api/groups/${group.value.uuid}/expert-panel/genes`, { genes: [payloadItem] })
+                saved = true
                 await getGenes()
                 context.emit('saved')
                 store.commit('pushSuccess', `Added ${payloadItem.gene_symbol}`)
@@ -126,28 +140,37 @@ export default {
                 const res = error?.response
                 if (res?.status === 422 && res.data?.errors) {
                     const all = Object.values(res.data.errors).flat()
-                    store.commit('pushError', all.join('\n'))
+                    addError.value = all.join('\n')
+                    store.commit('pushError', addError.value)
                 } else {
-                    store.commit('pushError', res?.data?.message || `Failed to add ${payloadItem.gene_symbol}`)
+                    addError.value = res?.data?.message || `Failed to add ${payloadItem.gene_symbol}`
+                    store.commit('pushError', addError.value)
                 }
             } finally {
-                selectedGene.value = null
-                resetSelectedGeneCurationState()
-                await nextTick()
-                selectKey.value++
+                if (saved) {
+                    selectedGene.value = null
+                    resetSelectedGeneCurationState()
+                    await nextTick()
+                    selectKey.value++
+                }
                 adding.value = false
             }
         }
 
+        let geneRequest = 0
         const getGenes = async () => {
-            if (!group.value.uuid || loading.value) return 
+            if (!group.value.uuid) return
+            const request = ++geneRequest
+            const requestedGroup = group.value
             loading.value = true;
+            membershipError.value = '';
             try {
-                await store.dispatch('groups/getGenes', group.value);
-                const genes = Array.isArray(group.value?.expert_panel?.genes) ? group.value.expert_panel.genes : []
+                const genes = await store.dispatch('groups/getGeneMembership', requestedGroup);
+                if (request !== geneRequest || group.value.uuid !== requestedGroup.uuid) return
                 genesAsText.value = genes.map(g => g.gene_symbol).join(", ");
                 geneCheckResults.value = genes;
             } catch (error) {
+                if (request !== geneRequest || group.value.uuid !== requestedGroup.uuid) return
                 let message = 'An unexpected error occurred.';
     
                 if (error.response) {
@@ -164,9 +187,10 @@ export default {
                     message = error.message;
                 }
 
+                membershipError.value = message;
                 store.commit('pushError', message);
             } finally {
-                loading.value = false;            
+                if (request === geneRequest) loading.value = false;
             }
         }
         const hideForm = () => {
@@ -257,6 +281,7 @@ export default {
         const submittingBulk = ref(false)
 
         async function submitBulkFromReviewUI () {
+          if (submittingBulk.value || adding.value) return
           const symbols = reviewBuckets.value.ready
           if (!symbols.length) return
           
@@ -281,6 +306,7 @@ export default {
           }
 
           submittingBulk.value = true
+          bulkError.value = ''
           try {
             await api.post(`/api/groups/${group.value.uuid}/expert-panel/genes`, { genes: finalToAdd })
             store.commit('pushSuccess', `Added ${finalToAdd.length} gene${finalToAdd.length > 1 ? 's' : ''}.`)
@@ -295,9 +321,11 @@ export default {
             if (is_validation_error(err)) {
               const messages = err.response?.data?.errors || {}
               const items = Object.keys(messages).map(k => `${k}: ${[].concat(messages[k]).join(', ')}`)
-              store.commit('pushError', items.join('\n') || 'Validation failed while adding genes.')
+              bulkError.value = items.join('\n') || 'Validation failed while adding genes.'
+              store.commit('pushError', bulkError.value)
             } else {
-              store.commit('pushError', err?.response?.data?.message || 'Failed to add genes.')
+              bulkError.value = err?.response?.data?.message || 'Failed to add genes.'
+              store.commit('pushError', bulkError.value)
             }
           } finally {
             submittingBulk.value = false
@@ -307,6 +335,8 @@ export default {
         watch(() => group.value?.uuid, (uuid, prev) => {
             if (!uuid) return
             if (uuid === prev && geneCheckResults.value?.length) return
+            geneCheckResults.value = []
+            genesAsText.value = null
             getGenes()
         }, { immediate: true })
 
@@ -321,10 +351,11 @@ export default {
         }
 
         return {
-            group, genesAsText, loading, errors, resetErrors, hideForm, cancel,
-            geneCheckResults, selectedGene, adding, addGene, onChildChange, selectKey,
+            group, genesAsText, loading, membershipError, getGenes, errors, resetErrors, hideForm, cancel,
+            geneCheckResults, selectedGene, adding, addError, bulkError, addGene, onChildChange, selectKey,
             showPasteModal, pasteText, pasteArea, openPasteModal, closePasteModal, onReviewClick, reviewing, bulkCheckResults,
             reviewBuckets, submitBulkFromReviewUI, submittingBulk, lastReviewedSymbols,
+            selectedGeneCurationError, checkSelectedGeneCuration,
             checkingSelectedGeneCuration, selectedGeneCurations, selectedGeneHasCurations, curatedExpertPanels, confirmCuratedGeneAdd, selectedGeneLabel
         }
     },
@@ -353,8 +384,13 @@ export default {
                 @click="showForm"
             />
         </h4>
+        <div v-if="adding || submittingBulk" role="status" class="rounded border bg-blue-50 p-3">{{ submittingBulk ? "Adding genes..." : "Adding gene..." }}</div>
+        <div v-else-if="loading" role="status">Updating scope membership...</div>
         <div v-if="genesAsText != ''" class="mb-2">{{ genesAsText }}</div>
         <div v-else class="well cursor-pointer mb-2" @click="showForm">{{ loading ? `Loading...` : `No genes have been added to the gene list.` }}</div>
+        <div v-if="membershipError" role="alert" class="border border-red-300 rounded p-3">
+          {{ membershipError }} <button type="button" class="underline" @click="getGenes">Retry</button>
+        </div>
 
         <div v-if="editing && !readonly" class="border rounded bg-gray-50 p-4 mb-4">          
           <div class="flex items-center justify-between gap-3 mb-3">
@@ -363,11 +399,17 @@ export default {
           </div>
           <div class="flex flex-wrap items-start gap-2">
             <GeneSearchSelect v-model="selectedGene" placeholder="Search gene by HGNC symbol…" class="flex-1 min-w-[16rem] max-w-md" :key="selectKey" />
-            <button type="button" class="rounded bg-blue-600 text-white px-3 py-1.5 text-sm disabled:opacity-50" :disabled="!selectedGene || adding || checkingSelectedGeneCuration || (selectedGeneHasCurations && !confirmCuratedGeneAdd)" @click="addGene">
+            <button type="button" class="rounded bg-blue-600 text-white px-3 py-1.5 text-sm disabled:opacity-50" :disabled="!selectedGene || adding || submittingBulk || selectedGeneCurationError || checkingSelectedGeneCuration || (selectedGeneHasCurations && !confirmCuratedGeneAdd)" @click="addGene">
               {{ adding ? 'Adding…' : 'Add' }}
             </button>
           </div>
 
+          <div v-if="addError" role="alert" class="mt-3 text-red-700">
+            {{ addError }} <button type="button" :disabled="adding || submittingBulk" @click="addGene">Retry</button>
+          </div>
+          <div v-if="selectedGeneCurationError" role="alert" class="mt-3 text-red-700">
+            {{ selectedGeneCurationError }} <button type="button" class="underline" @click="checkSelectedGeneCuration(selectedGene)">Retry</button>
+          </div>
           <div v-if="selectedGene && checkingSelectedGeneCuration" class="mt-3 text-sm text-gray-600">
             Checking whether this gene is already curated by another group...
           </div>
@@ -389,7 +431,7 @@ export default {
         </div>
 
         <div v-if="geneCheckResults.length">
-          <GeneCurationStatus :genes="geneCheckResults" :groupID="group.uuid" :editing="editing" :readonly="readonly" @removed="onChildChange" />
+          <GeneCurationStatus :genes="geneCheckResults" :groupID="group.uuid" :paged="true" :editing="editing" :readonly="readonly" @removed="onChildChange" />
         </div>
     </div>
 
@@ -408,10 +450,13 @@ export default {
           <textarea ref="pasteArea" v-model="pasteText" class="w-full min-h-[260px] border rounded-md p-3 font-mono text-sm outline-none focus:ring focus:ring-blue-200" placeholder="BRCA1 BRCA2 CFTR"></textarea>
         </div>
 
+        <div v-if="bulkError" role="alert" class="px-4 py-3 text-red-700">
+          {{ bulkError }} <button type="button" :disabled="submittingBulk || adding" @click="submitBulkFromReviewUI">Retry</button>
+        </div>
         <div class="flex justify-end gap-2 border-t px-4 py-3">
           <button class="rounded border border-gray-300 px-3 py-1.5 text-sm hover:bg-gray-100" @click="closePasteModal">Cancel</button>
           <button class="rounded bg-blue-600 text-white px-3 py-1.5 text-sm disabled:opacity-50" :disabled="!pasteText.trim() || reviewing" @click="onReviewClick">{{ reviewing ? 'Reviewing…' : 'Review' }}</button>
-          <button class="rounded bg-green-600 text-white px-3 py-1.5 text-sm disabled:opacity-50" :disabled="reviewBuckets.ready.length === 0 || submittingBulk" @click="submitBulkFromReviewUI" title="Add only genes that exist in GT and aren’t already in this list">
+          <button class="rounded bg-green-600 text-white px-3 py-1.5 text-sm disabled:opacity-50" :disabled="reviewBuckets.ready.length === 0 || submittingBulk || adding" @click="submitBulkFromReviewUI" title="Add only genes that exist in GT and aren’t already in this list">
             {{ submittingBulk ? 'Adding…' : `Add ${reviewBuckets.ready.length} gene${reviewBuckets.ready.length !== 1 ? 's' : ''}` }}
           </button>
         </div>

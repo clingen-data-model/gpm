@@ -36,6 +36,17 @@ class GeneLookupController extends Controller
         return $this->gtApi->lookupGenesBulk($symbols);
     }
 
+    public function checkGcep(Request $request)
+    {
+        $input = $request->validate(['gene_symbol' => ['required', 'string']]);
+        try {
+            return $this->gtApi->lookupGcepGenesComplete(preg_split('/[\s,]+/', $input['gene_symbol'], -1, PREG_SPLIT_NO_EMPTY));
+        } catch (\Throwable $error) {
+            report($error);
+            return response()->json(['message' => 'Could not retrieve complete GeneTracker curations. Please retry.'], 502);
+        }
+    }
+
     public function curations(Request $request)
     {        
         $query = $request->get('query');

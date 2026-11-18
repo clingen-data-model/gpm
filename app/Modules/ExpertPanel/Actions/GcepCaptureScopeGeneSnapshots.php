@@ -26,8 +26,7 @@ class GcepCaptureScopeGeneSnapshots
             return;
         }
 
-        $bulkGeneString = $symbols->implode(', ');
-        $response = $this->gtApiService->lookupGenesBulk($bulkGeneString);
+        $response = $this->gtApiService->lookupGcepGenesComplete($symbols->all());
         $data = $response['data'] ?? [];
 
         $genesBySymbol = $scopeGenes->keyBy(fn ($g) => Str::upper(trim((string) $g->gene_symbol)));

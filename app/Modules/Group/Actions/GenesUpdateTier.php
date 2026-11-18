@@ -28,6 +28,10 @@ class GenesUpdateTier
 
     public function asController(ActionRequest $request, Group $group)
     {
+        if ($group->is_gcep && $group->expertPanel->genes()->whereIn('id', $request->input('ids', []))->count()
+            !== count(array_unique($request->input('ids', [])))) {
+            throw ValidationException::withMessages(['ids' => 'One or more genes do not belong to this expert panel.']);
+        }
         $this->handle(
             $request->input('ids', []),
             $request->input('tier')
