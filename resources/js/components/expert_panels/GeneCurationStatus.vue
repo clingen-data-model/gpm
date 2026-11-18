@@ -576,7 +576,7 @@ watch(
                     {{ (gene.statuses || []).join(', ') }}
                   </span>
                 </div>
-                <div v-if="(gene.expert_panels || []).length" class="mt-0.5 text-sm text-gray-700 truncate max-w-full">
+                <div v-if="(gene.expert_panels || []).length" class="mt-0.5 text-sm text-gray-700 max-w-full">
                     {{ gene.expert_panels.join(', ') }}
                 </div>
               </div>
