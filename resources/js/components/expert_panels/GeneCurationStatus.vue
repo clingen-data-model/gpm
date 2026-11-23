@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, onBeforeUnmount } from 'vue'
 import { useStore } from 'vuex'
 import api from '@/http/api'
 import { useGcepGenePages } from '@/composables/gcep_gene_pages'
@@ -10,6 +10,7 @@ const props = defineProps({
 	editing: { type: Boolean, default: true },
 	readonly: { type: Boolean, default: false },
     paged: { type: Boolean, default: false },
+    membershipPending: { type: Boolean, default: false },
 })
 
 const emit = defineEmits(['removed'])
@@ -158,6 +159,10 @@ const allStatuses = computed(() => {
 	return Array.from(set).sort((a, b) => (statusPriority[a] ?? 0) - (statusPriority[b] ?? 0))
 })
 
+const matchesTierFilter = gene => !filterTier.value || (filterTier.value === 'none'
+    ? gene.tier === null || gene.tier === undefined || gene.tier === ''
+    : String(gene.tier) === filterTier.value)
+
 const filteredGenes = computed(() => {
 	const kw = search.value.trim().toLowerCase()
 
@@ -171,8 +176,7 @@ const filteredGenes = computed(() => {
 		const detailSearchMatch = details.some(d => d?.classification?.toLowerCase().includes(kw) || d?.moi_name?.toLowerCase().includes(kw) || d?.curation_type?.toLowerCase().includes(kw) || d?.curation_status?.toLowerCase().includes(kw))
 		const matchesSearch = !kw || symbolMatch || epMatch || diseaseMatch || statusSearchMatch || detailSearchMatch
 		const matchesStatus = selectedStatuses.value.length === 0 || (g.statuses || []).some(s => selectedStatuses.value.includes(s)) || details.some(d => selectedStatuses.value.includes(d?.curation_status))
-		// const matchesTier = !filterTier.value || String(g.tier ?? '') === filterTier.value
-    const matchesTier = !filterTier.value ? true : filterTier.value === 'none' ? (g.tier === null || g.tier === undefined || g.tier === '') : String(g.tier) === filterTier.value
+		const matchesTier = matchesTierFilter(g)
 		const matchesMoi = matchesDetailField(g, 'moi_name', filterMoi.value)
 		const matchesClassification = matchesDetailField(g, 'classification', filterClassification.value)
 		const matchesCurationType = matchesDetailField(g, 'curation_type', filterCurationType.value)
@@ -182,8 +186,7 @@ const filteredGenes = computed(() => {
 	})
 })
 
-const sortedGenes = computed(() => {
-  return [...filteredGenes.value].sort((a, b) => {
+const compareGenes = (a, b) => {
     if (sortKey.value === 'statuses') {
       const pri = (g) => {
         const arr = Array.isArray(g.statuses) ? g.statuses : []
@@ -210,8 +213,56 @@ const sortedGenes = computed(() => {
     }
 
     return sortOrder.value === 'asc' ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal)
-  })
+}
+const sortedGenes = computed(() => [...filteredGenes.value].sort(compareGenes))
+
+// Copy uses the full matching GPM row set, never the visible page or curation rows.
+const copyNeedsCurations = computed(() => Boolean(search.value.trim() || selectedStatuses.value.length
+    || filterMoi.value || filterClassification.value || filterCurationType.value
+    || ['statuses', 'expert_panel'].includes(sortKey.value)))
+const copySymbols = computed(() => {
+    const genes = copyNeedsCurations.value
+        ? sortedGenes.value
+        : [...props.genes].filter(matchesTierFilter).sort((a, b) => compareGenes(a, b)
+            // Ordinary SQL pagination breaks local-sort ties by GPM row ID.
+            || (globalQuery.value ? 0 : Number(a.id) - Number(b.id)))
+    const seen = new Set()
+    return genes.filter(gene => {
+        if (seen.has(String(gene.id))) return false
+        seen.add(String(gene.id))
+        return true
+    }).map(gene => String(gene.gene_symbol || '').trim()).filter(Boolean)
 })
+const copying = ref(false)
+const copyMessage = ref('')
+const copyError = ref('')
+let copySequence = 0
+const copyDisabled = computed(() => copying.value || pageLoading.value || !!pageError.value || props.membershipPending || mutating.value || !copySymbols.value.length)
+async function copyGenes() {
+    if (copyDisabled.value) return
+    const request = ++copySequence
+    const symbols = [...copySymbols.value]
+    copying.value = true
+    copyMessage.value = ''
+    copyError.value = ''
+    try {
+        if (!navigator.clipboard?.writeText) throw new Error('Clipboard unavailable')
+        await navigator.clipboard.writeText(symbols.join('\n'))
+        if (request === copySequence) copyMessage.value = `Copied ${symbols.length} gene symbols`
+    } catch {
+        if (request === copySequence) copyError.value = 'Could not copy gene symbols. Check clipboard permission and try again.'
+    } finally {
+        if (request === copySequence) copying.value = false
+    }
+}
+watch([search, selectedStatuses, filterTier, filterMoi, filterClassification, filterCurationType,
+    sortKey, sortOrder, () => props.genes, () => props.groupID], () => {
+    copySequence++
+    copying.value = false
+    copyMessage.value = ''
+    copyError.value = ''
+})
+onBeforeUnmount(() => { copySequence++; copying.value = false })
 
 const totalPages = computed(() => Math.max(1, Math.ceil((props.paged && !globalQuery.value ? total.value : sortedGenes.value.length) / pageSize.value)))
 watch([totalPages, pageLoading], ([pages, busy]) => { if (!busy && currentPage.value > pages) currentPage.value = pages })
@@ -388,6 +439,7 @@ watch(
     </div>
     <button v-if="paged" type="button" class="underline text-sm" :disabled="pageLoading || mutating" @click="reloadCurations">Refresh curations</button>
     <span v-if="paged" class="text-xs text-gray-600"> Curations are reused in this view. Refresh to check for updates.</span>
+    
     <!-- Toolbar (search, status filter, sort, page size) -->
     <div class="mb-3 border rounded-lg bg-white px-3 py-2">
       <div class="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
@@ -546,6 +598,16 @@ watch(
           {{ removingBulk ? 'Removing…' : 'Remove Selected' }}
         </button>
       </div>
+    </div>
+
+    <div class="flex flex-wrap items-center gap-2">
+      <button type="button" class="rounded border px-3 py-1 text-sm disabled:opacity-50"
+        :disabled="copyDisabled" @click="copyGenes"
+        title="Copy all matching gene symbols across every page, one per line">
+        {{ copying ? 'Copying...' : 'Copy Genes from the list' }}
+      </button>
+      <span v-if="copyMessage" role="status" class="text-sm text-green-700">{{ copyMessage }}</span>
+      <span v-if="copyError" role="alert" class="text-sm text-red-700">{{ copyError }}</span>
     </div>
 
     <!-- Empty -->

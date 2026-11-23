@@ -4,11 +4,13 @@
   import {computed, watch } from 'vue'
   import {useStore} from 'vuex'
   import ReviewSection from '@/components/expert_panels/ReviewSection.vue'
+  import { biocuratorTrainingCategories } from '@/domain/biocurator_training'
 
   const store = useStore();
   const group = computed(() => store.getters['groups/currentItemOrNew'])
   const expertPanel = computed(() => group.value.expert_panel)
   const expandedAttestationResponses = ref({})
+  const trainingCategories = computed(() => biocuratorTrainingCategories(group.value))
 
   const toggleAttestationResponses = (memberId) => {
     expandedAttestationResponses.value[memberId] = !expandedAttestationResponses.value[memberId]
@@ -83,9 +85,24 @@
       <dictionary-row label="Biocurator Trainers" label-width-class="w-48 font-bold">
         {{ group.biocuratorTrainers.map(m => m.person.name).join(', ') }}
       </dictionary-row>
-      <dictionary-row label="Trained Biocurators" label-width-class="w-48 font-bold">
-        {{ group.trainedBiocurators.map(m => m.person.name).join(', ') }}
-      </dictionary-row>
+      <template v-for="category in trainingCategories" :key="category.key">
+        <dictionary-row
+          v-if="category.key !== 'verification' || category.members.length"
+          :label="`${category.label} (${category.members.length})`"
+          label-width-class="w-48 font-bold"
+        >
+          <template v-if="category.key !== 'verification'">
+            {{ category.members.map(({ member }) => member.person.name).join(', ') || 'None' }}
+          </template>
+          <div v-else class="space-y-2">
+            <p class="text-sm text-amber-800">These records have unknown or inconsistent training flags and are excluded from the confirmed categories above.</p>
+            <div v-for="{ member, details } in category.members" :key="member.id">
+              <span class="font-medium">{{ member.person.name }}</span>
+              <span class="text-sm text-gray-600"> &mdash; {{ details }}</span>
+            </div>
+          </div>
+        </dictionary-row>
+      </template>
     </ReviewSection>
 
     <!-- <div v-if="!expertPanel.has_appoved_pilot" class="screen-block">
