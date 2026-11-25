@@ -77,7 +77,11 @@ export function useGcepGenePages(props, { currentPage, pageSize, sortKey, sortOr
     // Component-lifetime cache: each entry contains ALL curations, including confirmed empty results.
     // Local tier/membership changes do not invalidate unchanged GeneTracker facts.
     const curations = new Map()
-    const source = computed(() => props.paged ? rows.value : props.genes)
+    const source = computed(() => props.snapshotView
+        ? props.genes.map(gene => gene.curation_source === 'snapshot' ? gene : {
+            ...gene, details: [], statuses: ['No curation snapshot available'], expert_panels: [], snapshot_captured_at: [],
+        })
+        : props.paged ? rows.value : props.genes)
 
     function refresh() {
         generations.set(props.groupID, (generations.get(props.groupID) || 0) + 1)
@@ -97,6 +101,8 @@ export function useGcepGenePages(props, { currentPage, pageSize, sortKey, sortOr
     watch(() => props.groupID, () => { curations.clear(); rows.value = []; total.value = 0 })
 
     async function enrich(genes, isCurrent) {
+        // The server may know about a new approval before the mounted group model does.
+        if (genes.every(gene => gene.curation_source === 'snapshot')) return genes
         const missing = genes.map(gene => symbolKey(gene.gene_symbol)).filter(symbol => !curations.has(symbol))
         if (missing.length) {
             await getCompleteGcepCurations(missing, {
@@ -121,7 +127,12 @@ export function useGcepGenePages(props, { currentPage, pageSize, sortKey, sortOr
     }
     async function load() {
         const request = ++sequence
-        if (!props.paged || !props.groupID) return
+        if (!props.paged || props.snapshotView || !props.groupID) {
+            loading.value = false
+            error.value = ''
+            progress.value = null
+            return
+        }
         const isCurrent = () => request === sequence
         loading.value = true
         error.value = ''
@@ -151,7 +162,7 @@ export function useGcepGenePages(props, { currentPage, pageSize, sortKey, sortOr
             if (isCurrent()) { loading.value = false; progress.value = null }
         }
     }
-    watch([() => props.groupID, () => props.paged, currentPage, pageSize, sortKey, sortOrder, globalQuery, revision], load, { immediate: true })
+    watch([() => props.groupID, () => props.paged, () => props.snapshotView, currentPage, pageSize, sortKey, sortOrder, globalQuery, revision], load, { immediate: true })
     onBeforeUnmount(() => { sequence++; loading.value = false; error.value = ''; progress.value = null; curations.clear() })
     return { source, total, loading, error, progress, refresh, reloadCurations, updateTiers }
 }

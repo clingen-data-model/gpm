@@ -11,13 +11,17 @@ const props = defineProps({
 	readonly: { type: Boolean, default: false },
     paged: { type: Boolean, default: false },
     membershipPending: { type: Boolean, default: false },
+    snapshotView: { type: Boolean, default: false },
 })
 
+const paged = computed(() => props.paged && !props.snapshotView)
 const emit = defineEmits(['removed'])
+const gtFrontendUrl = (import.meta.env.GT_FRONTEND_URL || '').trim().replace(/\/+$/, '')
+const geneTrackerUrl = symbol => `${gtFrontendUrl}/#/genes/${encodeURIComponent(symbol)}`
 
 const store = useStore()
 const reviewRetrying = ref(false)
-const reviewFailed = computed(() => !props.paged && props.genes.some(gene => gene.enrichment_error))
+const reviewFailed = computed(() => !paged.value && props.genes.some(gene => gene.enrichment_error))
 async function retryReview() {
     reviewRetrying.value = true
     try {
@@ -264,10 +268,10 @@ watch([search, selectedStatuses, filterTier, filterMoi, filterClassification, fi
 })
 onBeforeUnmount(() => { copySequence++; copying.value = false })
 
-const totalPages = computed(() => Math.max(1, Math.ceil((props.paged && !globalQuery.value ? total.value : sortedGenes.value.length) / pageSize.value)))
+const totalPages = computed(() => Math.max(1, Math.ceil((paged.value && !globalQuery.value ? total.value : sortedGenes.value.length) / pageSize.value)))
 watch([totalPages, pageLoading], ([pages, busy]) => { if (!busy && currentPage.value > pages) currentPage.value = pages })
 const paginatedGenes = computed(() => {
-    if (props.paged && !globalQuery.value) return source.value
+    if (paged.value && !globalQuery.value) return source.value
 	const start = (currentPage.value - 1) * pageSize.value
 	return sortedGenes.value.slice(start, start + pageSize.value)
 })
@@ -316,7 +320,7 @@ const updateTier = async (gene, event) => {
 		tier: value || null,
 		})
 		gene.tier = value || null
-        if (props.paged) updateTiers([gene.id], value || null)
+        if (paged.value) updateTiers([gene.id], value || null)
         store.commit('pushSuccess', `Tier updated for ${gene.gene_symbol}`)
 	} catch (err) {
 		gene.tier = oldTier
@@ -344,7 +348,7 @@ const applyBulkTier = async () => {
 		store.commit('pushSuccess', `Tier updated for ${ids.length} genes`)
 		// reflect locally
 		source.value.forEach(g => { if (ids.includes(g.id)) g.tier = tier })
-        if (props.paged) updateTiers(ids, tier)
+        if (paged.value) updateTiers(ids, tier)
 		selectedGenes.value = []
 		bulkTier.value = ''
 	} catch (err) {
@@ -418,6 +422,10 @@ watch(
 
 <template>
   <div class="space-y-3">
+    <div v-if="snapshotView" role="note" class="mb-3 rounded border border-blue-200 bg-blue-50 p-3">
+      <strong>Approved scope snapshot</strong>
+      <p>This view displays saved GeneTracker curation information for the GCEP gene list. The information may differ from current GeneTracker data.</p>
+    </div>
     <div v-if="reviewFailed" role="alert" class="border border-red-300 rounded p-3">
       GeneTracker curations are unavailable. Statuses and global filters may be incomplete.
       <button type="button" class="underline" :disabled="reviewRetrying" @click="retryReview">{{ reviewRetrying ? 'Retrying...' : 'Retry' }}</button>
@@ -437,7 +445,7 @@ watch(
     <div v-if="pageError" role="alert" class="border border-red-300 rounded p-3">
       {{ pageError }} <span v-if="displayedGenes.length">Showing previous results; they may not reflect the current scope or filters.</span> <button type="button" class="underline" @click="refreshPage">Retry</button>
     </div>
-    <button v-if="paged" type="button" class="underline text-sm" :disabled="pageLoading || mutating" @click="reloadCurations">Refresh curations</button>
+    <button v-if="paged && !snapshotView" type="button" class="underline text-sm" :disabled="pageLoading || mutating" @click="reloadCurations">Refresh curations</button>
     <span v-if="paged" class="text-xs text-gray-600"> Curations are reused in this view. Refresh to check for updates.</span>
     
     <!-- Toolbar (search, status filter, sort, page size) -->
@@ -638,7 +646,13 @@ watch(
                     {{ (gene.statuses || []).join(', ') }}
                   </span>
                 </div>
-                <div v-if="(gene.expert_panels || []).length" class="mt-0.5 text-sm text-gray-700 max-w-full">
+                <div v-if="snapshotView" class="mt-0.5 text-sm text-gray-700">
+                  <span v-if="gene.snapshot_captured_at?.length" :title="gene.snapshot_captured_at.join(', ')">Snapshot: {{ [...new Set(gene.snapshot_captured_at.map(date => date.slice(0, 10)))].join(', ') }}</span>
+                  <span v-else>{{ (gene.details || []).length ? 'Snapshot capture date unavailable' : 'No curation snapshot available' }}</span>
+                  <span v-if="gtFrontendUrl"> &middot; </span>
+                  <a v-if="gtFrontendUrl" :href="geneTrackerUrl(gene.gene_symbol)" target="_blank" rel="noopener noreferrer" class="text-blue-600 underline">View current curations in GeneTracker</a>                  
+                </div>
+                <div v-else-if="(gene.expert_panels || []).length" class="mt-0.5 text-sm text-gray-700 max-w-full">
                     {{ gene.expert_panels.join(', ') }}
                 </div>
               </div>
@@ -691,8 +705,8 @@ watch(
             >
               <div class="space-y-2">
                 <div
-                  v-for="entry in gene.details"
-                  :key="entry.disease_name + entry.curation_status + (entry.mondo_id || '')"
+                  v-for="(entry, detailIndex) in gene.details"
+                  :key="entry.curation_id || detailIndex"
                   class="rounded-lg border border-gray-200 bg-gray-50 p-2"
                 >
                   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">

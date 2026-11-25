@@ -29,6 +29,10 @@ class GcepGenePageController extends Controller
             $query->orderBy('gene_symbol', $direction);
         }
         $page = $query->orderBy('id')->paginate($input['per_page'] ?? 20);
+        if ($group->expertPanel->definition_is_approved) {
+            $page->setCollection(app(\App\Services\GcepGeneCurations::class)->saved($page->getCollection()));
+            return $page;
+        }
         // GCEP clients with complete per-gene results can reuse them after local mutations.
         // The default response contract remains enriched.
         if (!$request->boolean('enrich', true)) {
@@ -43,11 +47,7 @@ class GcepGenePageController extends Controller
         }
         $page->setCollection($page->getCollection()->map(function ($gene) use ($curations) {
             $entries = $curations->get(strtoupper(trim($gene->gene_symbol)), collect());
-            return array_merge($gene->toArray(), [
-                'details' => $entries->values()->all(),
-                'statuses' => $entries->isEmpty() ? ['Not Curated'] : $entries->map(fn ($r) => ($r['curation_status'] ?? null) ?: 'Unknown')->unique()->values()->all(),
-                'expert_panels' => $entries->pluck('expert_panel')->filter()->unique()->values()->all(),
-            ]);
+            return app(\App\Services\GcepGeneCurations::class)->enrich($gene, $entries);
         }));
         return $page;
     }

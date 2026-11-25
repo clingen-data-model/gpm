@@ -431,7 +431,7 @@ export default {
         </div>
 
         <div v-if="geneCheckResults.length">
-          <GeneCurationStatus :genes="geneCheckResults" :groupID="group.uuid" :paged="true" :membership-pending="loading || !!membershipError || adding || submittingBulk" :editing="editing" :readonly="readonly" @removed="onChildChange" />
+          <GeneCurationStatus :genes="geneCheckResults" :groupID="group.uuid" :paged="!group.expert_panel.step_1_approval_date" :snapshot-view="!!group.expert_panel.step_1_approval_date" :membership-pending="loading || !!membershipError || adding || submittingBulk" :editing="editing" :readonly="readonly" @removed="onChildChange" />
         </div>
     </div>
 

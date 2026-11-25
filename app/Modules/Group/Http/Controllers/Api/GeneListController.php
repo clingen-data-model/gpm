@@ -28,6 +28,10 @@ class GeneListController extends Controller
         }
         $genes = $query->get();
 
+        if ($group->is_gcep && $group->expertPanel->definition_is_approved) {
+            return app(\App\Services\GcepGeneCurations::class)->saved($genes);
+        }
+
         if (!$group->is_vcep) {
             return $genes;
         }

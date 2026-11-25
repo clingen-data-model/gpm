@@ -259,7 +259,7 @@
                                 </span>
                                 <span v-if="gene.moi" class="rounded-full bg-gray-100 px-2 py-0.5 text-gray-700">{{ gene.moi }}</span>
                                 <template v-if="! gene.gt_curation_uuid">
-                                    <span class="text-xs rounded-full px-2 py-0.5 text-gray-700 border border-rose-300 bg-rose-50">No Gene Curation</span>
+                                    <span class="text-xs rounded-full px-2 py-0.5 text-gray-700 border border-rose-300 bg-rose-50">No curation snapshot available</span>
                                 </template>
                                 <span
                                     v-if="gene.is_outdated && gene.gt_data"

@@ -429,7 +429,9 @@ export const actions = {
             const geneSymbols = genes.map(g => g.gene_symbol).filter(Boolean);
             const curationIDs = genes.map(g => g.plan?.curation_id).filter(Boolean);
 
-            if (geneSymbols.length && group.is_gcep) {
+            if (group.is_gcep && (group.expert_panel?.step_1_approval_date || genes.some(gene => gene.curation_source === 'snapshot'))) {
+                item.expert_panel.genes = genes;
+            } else if (geneSymbols.length && group.is_gcep) {
                 const curatedResult = await dispatch('loadCurationStatuses', geneSymbols);
 
                 // Convert statuses array to a lookup by gene_symbol
