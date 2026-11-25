@@ -35,6 +35,7 @@ import WGWebTextForm from '@/components/groups/WGWebTextForm.vue';
 import ClinvarForm from '@/components/expert_panels/ClinvarForm.vue';
 import GroupPublications from "./GroupPublications.vue";
 import FundingAwardsTab from '@/components/expert_panels/FundingAwardsTab.vue'
+import InactivationRequest from '@/components/groups/InactivationRequest.vue';
 
 import { api, isValidationError } from "../../http";
 
@@ -72,6 +73,7 @@ export default {
     ClinvarForm,
     GroupPublications,
     FundingAwardsTab,
+    InactivationRequest,
   },
   props: {
     uuid: {
@@ -563,6 +565,9 @@ export default {
 
           <tab-item label="Funding Awards" :visible="group.is_ep">
             <FundingAwardsTab v-if="group.expert_panel?.uuid" :expert-panel="group.expert_panel" />
+          </tab-item>
+          <tab-item label="Inactivation Request" :visible="group.is_gcep || group.is_vcep || group.is_scvcep">
+            <InactivationRequest v-if="group.uuid && (group.is_gcep || group.is_vcep || group.is_scvcep)" :key="group.uuid" :group="group" />
           </tab-item>
 
 

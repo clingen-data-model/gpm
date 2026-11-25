@@ -31,6 +31,9 @@ class DocumentPolicy
      */
     public function view(User $user, Document $document)
     {
+        if ($document->owner instanceof \App\Modules\Group\Models\ExpertPanelInactivationRequest) {
+            return $user->can('view', $document->owner);
+        }
         if ($this->viewAny($user)) {
             return true;
         }
@@ -108,6 +111,9 @@ class DocumentPolicy
 
     private function canEdit(User $user, Document $document): bool
     {
+        if ($document->owner instanceof \App\Modules\Group\Models\ExpertPanelInactivationRequest) {
+            return $user->can('update', $document->owner);
+        }
         if ($this->viewAny($user)) {
             return true;
         }

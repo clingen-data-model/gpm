@@ -31,6 +31,7 @@ class DocumentUpdate
     
     public function asController(ActionRequest $request, Group $group, Document $document)
     {
+        abort_unless($document->owner_type === Group::class && $document->owner_id === $group->id, 404);
         return $this->handle($group, $document, $request->only(['filename', 'document_type_id', 'notes']));
     }
 

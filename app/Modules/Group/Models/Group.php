@@ -433,6 +433,11 @@ class Group extends Model implements HasMembers, RecordsEvents, HasDocuments, Ha
         return $this->hasMany(Publication::class);
     }
 
+    public function inactivationRequest()
+    {
+        return $this->hasOne(ExpertPanelInactivationRequest::class);
+    }
+
     public function fundingAwards(): HasManyThrough
     {
         // Group.id -> ExpertPanel.group_id -> FundingAward.expert_panel_id

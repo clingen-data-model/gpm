@@ -41,6 +41,7 @@ class GroupModuleServiceProvider extends ModuleServiceProvider
     ];
 
     protected $policies = [
+        \App\Modules\Group\Models\ExpertPanelInactivationRequest::class => \App\Modules\Group\Policies\ExpertPanelInactivationRequestPolicy::class,
         Group::class => GroupPolicy::class,
         Activity::class => LogEntryPolicy::class
     ];

@@ -15,7 +15,7 @@ class ApplicationDocumentMarkFinal
     public function handle(string $expertPanelUuid, string $documentUuid): Document
     {
         $expertPanel = ExpertPanel::findByUuidOrFail($expertPanelUuid);
-        $document = Document::findByUuidOrFail($documentUuid);
+        $document = $expertPanel->group->documents()->where('uuid', $documentUuid)->firstOrFail();
 
         $prevFinal = $expertPanel->group
             ->documents()

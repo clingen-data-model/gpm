@@ -95,6 +95,17 @@ Route::group([
     Route::post('/checkpoints', EmitGroupCheckpoints::class)->name('groups.checkpoint');
 
     Route::group(['prefix' => '/{group:uuid}'], function () {
+        Route::prefix('inactivation-request')->controller(\App\Modules\Group\Http\Controllers\Api\InactivationRequestController::class)->group(function () {
+            Route::get('/', 'show');
+            Route::post('/', 'store');
+            Route::put('/', 'update');
+            Route::delete('/', 'destroy');
+            Route::get('/options', 'options');
+            Route::post('/submit', 'submit');
+            Route::post('/publications/refresh', 'refreshPublications');
+            Route::post('/documents', 'upload');
+            Route::delete('/documents/{documentUuid}', 'deleteDocument');
+        });
         Route::get('/', [GroupController::class, 'show']);
         Route::delete('/', GroupDelete::class);
         Route::put('/', GroupAttributesUpdate::class);

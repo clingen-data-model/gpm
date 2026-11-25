@@ -22,7 +22,7 @@ class ApplicationDocumentUpdate
         string|null $notes = null
     ): Document {
         $expertPanel = ExpertPanel::findByUuidOrFail($expertPanelUuid);
-        $document = Document::findByUuidOrFail($uuid);
+        $document = $expertPanel->group->documents()->where('uuid', $uuid)->firstOrFail();
 
         $document->date_received = $dateReceived;
         $document->notes = $notes;
